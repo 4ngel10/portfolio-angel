@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "about": "Sobre mí",
+    "services": "Servicios",
+    "portfolio": "Portfolio",
+    "contact": "Contacto",
+    "ctaContact": "Contactar"
+  },
+  "hero": {
+    "badge": "Disponible para nuevos proyectos",
+    "titleStart": "Infraestructura",
+    "titleAccent1": "sólida",
+    "titleMid": "desarrollo",
+    "titleAccent2": "cuidado",
+    "role1": "Administrador de Sistemas",
+    "role2": "Desarrollador Web",
+    "location": "Palma de Mallorca, España",
+    "lead": "Diseño, despliego y mantengo entornos IT que simplemente funcionan. Con foco en seguridad, continuidad de negocio y una experiencia web profesional de principio a fin.",
+    "ctaPrimary": "Contactar",
+    "ctaSecondary": "Ver portfolio"
+  },
+  "about": {
+    "title": "Infraestructura como base invisible que permite que todo funcione.",
+    "p1": "Soy Ángel Fernández Garriga, técnico de sistemas y desarrollador web. Entiendo la tecnología como una herramienta al servicio del negocio: cuando una infraestructura está bien pensada, nadie habla de ella: simplemente funciona.",
+    "p2": "He trabajado con infraestructuras complejas del sector hotelero: segmentación VLAN, virtualización, múltiples servidores en paralelo y entornos que no se pueden permitir un minuto de parada. De ahí nace mi forma de trabajar: documentación, estandarización y continuidad de negocio como pilares.",
+    "p3": "En paralelo diseño y desarrollo webs profesionales para empresas y profesionales que quieren una presencia online cuidada, rápida y mantenible, sin plantillas infladas ni letra pequeña.",
+    "stackLabel": "Stack técnico",
+    "certsLabel": "Certificaciones",
+    "eduLabel": "Formación",
+    "edu1": "Técnico Superior en Administración de Sistemas Informáticos en Red",
+    "edu2": "Técnico en Instalaciones de Telecomunicaciones"
+  },
+  "services": {
+    "title": "Dos disciplinas, un mismo criterio.",
+    "lead": "Trabajo con empresas y profesionales que necesitan una base técnica fiable y una presencia web cuidada. Ambas pensadas para durar y crecer.",
+    "s1Title": "Administración de Sistemas",
+    "s1Lead": "Entornos IT estables, seguros y documentados para que tu equipo trabaje sin fricciones.",
+    "s1b1": "Gestión de servidores y entornos virtualizados",
+    "s1b2": "Segmentación de redes y seguridad perimetral",
+    "s1b3": "Backup y continuidad de negocio",
+    "s1b4": "Monitorización y gestión remota",
+    "s2Title": "Desarrollo Web",
+    "s2Lead": "Webs profesionales a medida. Rápidas, mantenibles, pensadas para representarte bien.",
+    "s2b1": "Diseño y desarrollo de páginas profesionales",
+    "s2b2": "Webs corporativas, portfolios y landing pages",
+    "s2b3": "Responsive y optimizado en rendimiento",
+    "s2b4": "Mantenimiento y actualización continua"
+  },
+  "portfolio": {
+    "title": "Proyectos recientes.",
+    "lead": "Una selección en construcción. Esta sección se irá ampliando con nuevos casos.",
+    "p1Tag": "En desarrollo",
+    "p1Title": "Web corporativa, cliente hotelero",
+    "p1Desc": "Rediseño con foco en rendimiento, reservas y navegación multi-idioma.",
+    "p2Tag": "En producción",
+    "p2Title": "PrinterMapping, logon script RDS",
+    "p2Desc": "Script PowerShell que mapea impresoras a usuarios RDS leyendo atributos de Active Directory.",
+    "p3Tag": "Documentación en curso",
+    "p3Title": "Homelab personal sobre Proxmox",
+    "p3Desc": "Infraestructura self-hosted: servicios, política de backups 3-2-1 y automatización HAOS."
+  },
+  "contact": {
+    "title": "¿Tienes un proyecto en mente? Hablemos.",
+    "lead": "Cuéntame qué necesitas y en qué plazo. Te respondo en 24-48 h con una propuesta clara, sin compromiso.",
+    "emailLabel": "Email",
+    "linkedinLabel": "LinkedIn",
+    "githubLabel": "GitHub",
+    "formName": "Nombre",
+    "formNamePh": "Tu nombre",
+    "formEmail": "Email",
+    "formEmailPh": "tu@email.com",
+    "formMessage": "Mensaje",
+    "formMessagePh": "Cuéntame brevemente tu proyecto...",
+    "formSubmit": "Enviar mensaje",
+    "formSending": "Enviando...",
+    "formOk": "Mensaje enviado. Te contesto pronto.",
+    "formErr": "No se ha podido enviar. Prueba por email."
+  },
+  "footer": {
+    "year": "2026"
+  },
+  "a11y": {
+    "toggleTheme": "Cambiar tema",
+    "toggleMenu": "Abrir menú"
+  }
+}

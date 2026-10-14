@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "about": "About",
+    "services": "Services",
+    "portfolio": "Work",
+    "contact": "Contact",
+    "ctaContact": "Get in touch"
+  },
+  "hero": {
+    "badge": "Available for new projects",
+    "titleStart": "Solid",
+    "titleAccent1": "infrastructure",
+    "titleMid": "crafted",
+    "titleAccent2": "web",
+    "role1": "Systems Administrator",
+    "role2": "Web Developer",
+    "location": "Palma de Mallorca, Spain",
+    "lead": "I design, deploy and maintain IT environments that simply work. Focused on security, business continuity and a web experience polished end to end.",
+    "ctaPrimary": "Get in touch",
+    "ctaSecondary": "View work"
+  },
+  "about": {
+    "title": "Infrastructure as the invisible base that lets everything run.",
+    "p1": "I'm Ángel Fernández Garriga, systems technician and web developer. I treat technology as a tool at the service of the business: when infrastructure is well thought out, nobody talks about it: it just works.",
+    "p2": "I've run complex hospitality infrastructures: VLAN segmentation, virtualization, multiple servers in parallel and environments that cannot afford a minute of downtime. From there comes my way of working: documentation, standardization and business continuity as pillars.",
+    "p3": "In parallel I design and build professional websites for companies and professionals that want a careful, fast and maintainable online presence, no inflated templates or fine print.",
+    "stackLabel": "Technical stack",
+    "certsLabel": "Certifications",
+    "eduLabel": "Education",
+    "edu1": "Advanced Diploma in Network Systems Administration",
+    "edu2": "Diploma in Telecommunications Installations"
+  },
+  "services": {
+    "title": "Two disciplines, one standard.",
+    "lead": "I work with companies and professionals that need a reliable technical base and a careful web presence. Both built to last and grow.",
+    "s1Title": "Systems Administration",
+    "s1Lead": "Stable, secure, documented IT environments so your team works without friction.",
+    "s1b1": "Server and virtualized environment management",
+    "s1b2": "Network segmentation and perimeter security",
+    "s1b3": "Backup and business continuity",
+    "s1b4": "Monitoring and remote management",
+    "s2Title": "Web Development",
+    "s2Lead": "Custom professional websites. Fast, maintainable, built to represent you well.",
+    "s2b1": "Design and development of professional pages",
+    "s2b2": "Corporate sites, portfolios and landing pages",
+    "s2b3": "Responsive and performance-tuned",
+    "s2b4": "Ongoing maintenance and updates"
+  },
+  "portfolio": {
+    "title": "Recent work.",
+    "lead": "A selection in progress. This section will keep growing with new cases.",
+    "p1Tag": "In development",
+    "p1Title": "Corporate site, hospitality client",
+    "p1Desc": "Redesign focused on performance, bookings and multi-language navigation.",
+    "p2Tag": "In production",
+    "p2Title": "PrinterMapping, RDS logon script",
+    "p2Desc": "PowerShell script that maps printers to RDS users reading Active Directory attributes.",
+    "p3Tag": "Documentation in progress",
+    "p3Title": "Personal Proxmox homelab",
+    "p3Desc": "Self-hosted infrastructure: services, 3-2-1 backup policy and HAOS automation."
+  },
+  "contact": {
+    "title": "Got a project in mind? Let's talk.",
+    "lead": "Tell me what you need and your timeline. I reply within 24-48 h with a clear proposal, no strings attached.",
+    "emailLabel": "Email",
+    "linkedinLabel": "LinkedIn",
+    "githubLabel": "GitHub",
+    "formName": "Name",
+    "formNamePh": "Your name",
+    "formEmail": "Email",
+    "formEmailPh": "you@email.com",
+    "formMessage": "Message",
+    "formMessagePh": "Briefly, tell me about your project...",
+    "formSubmit": "Send message",
+    "formSending": "Sending...",
+    "formOk": "Message sent. I'll be in touch soon.",
+    "formErr": "Could not send. Try email instead."
+  },
+  "footer": {
+    "year": "2026"
+  },
+  "a11y": {
+    "toggleTheme": "Toggle theme",
+    "toggleMenu": "Open menu"
+  }
+}
