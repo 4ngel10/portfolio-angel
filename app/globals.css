@@ -51,7 +51,25 @@
     --accent: var(--color-accent-dark);
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent; /* sin destello gris/azul al tocar */
+    -webkit-text-size-adjust: 100%;          /* sin agrandar texto al girar el móvil */
+  }
+
+  /* Sin la espera de ~300ms del doble toque: el clic se dispara al instante. */
+  a, button, [role="button"] { touch-action: manipulation; }
+
+  /* Mantener pulsado un botón no debe seleccionar su texto (el contenido sí se puede copiar). */
+  button, [role="button"], .btn-primary, .btn-secondary {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* iOS hace zoom (y no lo deshace) al enfocar un campo de menos de 16px. */
+  @media (pointer: coarse) {
+    input, textarea, select { font-size: 16px; }
+  }
 
   body {
     background: var(--bg);
@@ -74,10 +92,7 @@
   /* iOS Safari solo aplica :hover al tocar si el elemento parece clicable.
      En táctil el cursor no se ve, así que esto no tiene efecto visual. */
   @media (hover: none) {
-    .group, .carousel-item, [class*="hover:"] {
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .group, .carousel-item, [class*="hover:"] { cursor: pointer; }
   }
 
   @media (prefers-reduced-motion: reduce) {

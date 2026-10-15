@@ -19,6 +19,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme((t) => {
       const next: Theme = t === "dark" ? "light" : "dark";
       document.documentElement.classList.toggle("dark", next === "dark");
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", next === "dark" ? "#0a0f1c" : "#fbfaf7");
       try {
         localStorage.setItem("theme", next);
       } catch {}

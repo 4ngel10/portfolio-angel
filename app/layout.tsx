@@ -40,9 +40,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <head>
+        {/* Tema antes de pintar + color de la barra de estado del móvil (meta theme-color).
+            La meta la crea el script y no React: React 19 gestiona los <meta> y, al ver el
+            color cambiado, duplicaba la etiqueta. lib/theme.tsx la actualiza al cambiar tema. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'){document.documentElement.classList.add('dark');}}catch(e){document.documentElement.classList.add('dark');}})();`,
+            __html: `(function(){var d=document.documentElement,dark=true;try{dark=localStorage.getItem('theme')!=='light';}catch(e){}if(dark)d.classList.add('dark');var m=document.createElement('meta');m.name='theme-color';m.content=dark?'#0a0f1c':'#fbfaf7';document.head.appendChild(m);})();`,
           }}
         />
       </head>

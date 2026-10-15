@@ -130,6 +130,7 @@ export function Contact() {
                   id="name"
                   name="name"
                   type="text"
+                  autoComplete="name"
                   required
                   placeholder={t("contact.formNamePh")}
                   className="border-rule w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
@@ -143,6 +144,9 @@ export function Contact() {
                   id="email"
                   name="email"
                   type="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
                   required
                   placeholder={t("contact.formEmailPh")}
                   className="border-rule w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
