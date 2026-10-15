@@ -3,36 +3,41 @@
 import { Carousel } from "./carousel";
 import { useI18n } from "@/lib/i18n";
 
+// Nombres propios: iguales en todos los idiomas.
 const TECH = [
   "Hyper-V",
   "VMware",
+  "Active Directory",
   "Windows Server",
   "PowerShell",
   "Fortinet",
   "Veeam",
+  "Azure",
   "Proxmox",
   "Docker",
   "Zabbix",
-  "NinjaOne",
-  "Acronis",
   "Next.js",
+  "NinjaOne",
+  "UniFi",
+  "Acronis",
   "TypeScript",
   "Vercel",
+  "Intune",
+  "Grafana",
+  "pfSense",
+  "OPNsense",
+  "GitLab",
+  "Nginx",
+  "Apache",
+  "SOTI",
 ];
 
-const TAGS = [
-  "Omada OCNA Wireless",
-  "Hornetsecurity Engineering",
-  "3CX Basic Engineer V20",
-  "ASIR",
-  "Microsoft 365",
-  "VLAN",
-  "Backup 3-2-1",
-  "Home Assistant",
-];
+// Áreas de trabajo: traducidas en messages/*.json (marquee.area1..area12).
+const AREA_KEYS = Array.from({ length: 12 }, (_, i) => `marquee.area${i + 1}`);
 
 export function StackBand() {
   const { t } = useI18n();
+  const areas = AREA_KEYS.map((k) => t(k));
 
   return (
     <section
@@ -42,7 +47,7 @@ export function StackBand() {
     >
       <Carousel
         direction="right"
-        speed={45}
+        speed={77}
         gap="2.5rem"
         items={TECH}
         separator={
@@ -65,10 +70,10 @@ export function StackBand() {
       />
       <Carousel
         direction="right"
-        speed={55}
-        repeat={3}
+        speed={124}
+        repeat={2}
         gap="1.25rem"
-        items={TAGS}
+        items={areas}
         separator={
           <span className="opacity-40" aria-hidden>
             /

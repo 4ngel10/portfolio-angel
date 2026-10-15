@@ -25,7 +25,19 @@
     "scroll": "Scroll"
   },
   "marquee": {
-    "stack": "Technologies I work with"
+    "stack": "Technologies I work with",
+    "area1": "Microsoft 365 administration",
+    "area2": "Network setup and management",
+    "area3": "Backup strategy",
+    "area4": "Virtualization and servers",
+    "area5": "Infrastructure monitoring",
+    "area6": "Perimeter and email security",
+    "area7": "Mobile device management",
+    "area8": "VoIP and phone systems",
+    "area9": "Home automation with Home Assistant",
+    "area10": "Web development",
+    "area11": "Domains and hosting",
+    "area12": "SEO management"
   },
   "about": {
     "title": "Infrastructure as the invisible base that lets everything run.",
@@ -35,6 +47,12 @@
     "stackLabel": "Technical stack",
     "certsLabel": "Certifications",
     "eduLabel": "Education",
+    "catVirt": "Virtualization",
+    "catSystems": "Systems",
+    "catNetwork": "Security and networking",
+    "catBackup": "Backup",
+    "catManagement": "Management and monitoring",
+    "catWeb": "Web",
     "edu1": "Advanced Diploma in Network Systems Administration",
     "edu2": "Diploma in Telecommunications Installations"
   },

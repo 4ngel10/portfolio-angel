@@ -25,7 +25,19 @@
     "scroll": "Desliza"
   },
   "marquee": {
-    "stack": "Tecnologías con las que trabajo"
+    "stack": "Tecnologías con las que trabajo",
+    "area1": "Administración Microsoft 365",
+    "area2": "Configuración y gestión de redes",
+    "area3": "Estrategia de backups",
+    "area4": "Virtualización y servidores",
+    "area5": "Monitorización de infraestructura",
+    "area6": "Seguridad perimetral y correo",
+    "area7": "Gestión de dispositivos móviles",
+    "area8": "VoIP y centralitas",
+    "area9": "Domótica con Home Assistant",
+    "area10": "Desarrollo web",
+    "area11": "Dominio y hosting",
+    "area12": "Gestión de SEO"
   },
   "about": {
     "title": "Infraestructura como base invisible que permite que todo funcione.",
@@ -35,6 +47,12 @@
     "stackLabel": "Stack técnico",
     "certsLabel": "Certificaciones",
     "eduLabel": "Formación",
+    "catVirt": "Virtualización",
+    "catSystems": "Sistemas",
+    "catNetwork": "Seguridad y redes",
+    "catBackup": "Backup",
+    "catManagement": "Gestión y monitorización",
+    "catWeb": "Web",
     "edu1": "Técnico Superior en Administración de Sistemas Informáticos en Red",
     "edu2": "Técnico en Instalaciones de Telecomunicaciones"
   },

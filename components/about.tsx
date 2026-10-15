@@ -3,13 +3,15 @@
 import { useI18n } from "@/lib/i18n";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
-const STACK: { label: string; items: string[] }[] = [
-  { label: "Virtualización", items: ["Hyper-V", "VMware"] },
-  { label: "Sistemas", items: ["Windows Server", "PowerShell"] },
-  { label: "Seguridad & Red", items: ["Fortinet", "Hornetsecurity"] },
-  { label: "Backup", items: ["Veeam", "Acronis"] },
-  { label: "Gestión", items: ["NinjaOne", "Zabbix", "SOTI"] },
-  { label: "Web", items: ["Next.js", "TypeScript", "Vercel"] },
+// Mismas herramientas que la fila 1 del carrusel (components/stack-band.tsx), por área.
+// Si añades o quitas una allí, refléjalo aquí. Hornetsecurity va además por su certificación.
+const STACK: { labelKey: string; items: string[] }[] = [
+  { labelKey: "about.catVirt", items: ["Hyper-V", "VMware", "Proxmox", "Docker"] },
+  { labelKey: "about.catSystems", items: ["Windows Server", "Active Directory", "PowerShell", "Azure"] },
+  { labelKey: "about.catNetwork", items: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Hornetsecurity"] },
+  { labelKey: "about.catBackup", items: ["Veeam", "Acronis"] },
+  { labelKey: "about.catManagement", items: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"] },
+  { labelKey: "about.catWeb", items: ["Next.js", "TypeScript", "Vercel", "GitLab", "Nginx", "Apache"] },
 ];
 
 const CERTS = [
@@ -49,8 +51,8 @@ export function About() {
             </h3>
             <RevealGroup className="grid grid-cols-2 gap-x-6 gap-y-5" stagger={0.07}>
               {STACK.map((cat) => (
-                <RevealItem key={cat.label}>
-                  <div className="mb-2 text-[13px] font-semibold">{cat.label}</div>
+                <RevealItem key={cat.labelKey}>
+                  <div className="mb-2 text-[13px] font-semibold">{t(cat.labelKey)}</div>
                   <div className="flex flex-wrap gap-1.5">
                     {cat.items.map((it) => (
                       <span
