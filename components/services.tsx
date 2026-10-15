@@ -1,6 +1,7 @@
 "use client";
 
 import { TiltCard } from "./tilt-card";
+import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { useI18n } from "@/lib/i18n";
 
 export function Services() {
@@ -10,7 +11,16 @@ export function Services() {
     {
       key: "s1",
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
           <line x1="8" y1="21" x2="16" y2="21" />
           <line x1="12" y1="17" x2="12" y2="21" />
@@ -23,7 +33,16 @@ export function Services() {
     {
       key: "s2",
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <polyline points="16 18 22 12 16 6" />
           <polyline points="8 6 2 12 8 18" />
         </svg>
@@ -36,59 +55,74 @@ export function Services() {
 
   return (
     <section id="services" className="py-24 md:py-28">
-      <div className="max-w-6xl mx-auto px-6 md:px-8">
-        <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-[-0.025em] max-w-3xl">
-          {t("services.title")}
-        </h2>
-        <p className="text-[17px] text-muted leading-relaxed max-w-xl mt-5 mb-14">
-          {t("services.lead")}
-        </p>
+      <div className="mx-auto max-w-6xl px-6 md:px-8">
+        <Reveal>
+          <h2 className="max-w-3xl text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
+            {t("services.title")}
+          </h2>
+          <p className="text-muted mt-5 mb-14 max-w-xl text-[17px] leading-relaxed">
+            {t("services.lead")}
+          </p>
+        </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-5" style={{ perspective: "1200px" }}>
-          {services.map((s) => (
-            <TiltCard
-              key={s.key}
-              className="rounded-2xl border p-8 md:p-10 transition-shadow hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.22)]"
-              style={{ borderColor: "var(--rule)", background: "var(--bg)" }}
-            >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-6"
-                style={{
-                  background: "color-mix(in oklab, var(--accent) 10%, transparent)",
-                  color: "var(--accent)",
-                  transform: "translateZ(30px)",
-                }}
+        <RevealGroup
+          className="grid gap-5 md:grid-cols-2"
+          stagger={0.15}
+          style={{ perspective: "1200px" }}
+        >
+          {services.map((s, idx) => (
+            <RevealItem key={s.key} className="h-full">
+              <TiltCard
+                className="group border-rule relative h-full rounded-2xl border p-8 transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)] md:p-10"
+                style={{ background: "var(--bg)" }}
               >
-                {s.icon}
-              </div>
-              <h3 className="text-xl md:text-[22px] font-semibold tracking-tight mb-3" style={{ transform: "translateZ(30px)" }}>
-                {s.title}
-              </h3>
-              <p className="text-sm text-muted leading-relaxed mb-5">{s.lead}</p>
-              <ul className="space-y-2.5">
-                {s.bullets.map((b) => (
-                  <li key={b} className="flex gap-2.5 text-sm leading-snug">
-                    <svg
-                      className="shrink-0 mt-0.5"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      style={{ color: "var(--accent)" }}
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </TiltCard>
+                <span
+                  className="absolute top-7 right-8 font-mono text-5xl font-medium tracking-tight opacity-[0.08] transition-opacity duration-300 group-hover:opacity-25 md:text-6xl"
+                  style={{ color: "var(--accent)" }}
+                  aria-hidden
+                >
+                  0{idx + 1}
+                </span>
+                <div
+                  className="relative mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color] duration-300 group-hover:bg-[var(--accent)] group-hover:text-white"
+                  style={{ transform: "translateZ(30px)" }}
+                >
+                  <span className="transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6">
+                    {s.icon}
+                  </span>
+                </div>
+                <h3
+                  className="mb-3 text-xl font-semibold tracking-tight md:text-[22px]"
+                  style={{ transform: "translateZ(30px)" }}
+                >
+                  {s.title}
+                </h3>
+                <p className="text-muted mb-5 text-sm leading-relaxed">{s.lead}</p>
+                <ul className="space-y-2.5">
+                  {s.bullets.map((b) => (
+                    <li key={b} className="flex gap-2.5 text-sm leading-snug">
+                      <svg
+                        className="mt-0.5 shrink-0"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </TiltCard>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );

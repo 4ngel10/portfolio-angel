@@ -7,7 +7,6 @@
     "ctaContact": "Get in touch"
   },
   "hero": {
-    "badge": "Available for new projects",
     "titleStart": "Solid",
     "titleAccent1": "infrastructure",
     "titleMid": "crafted",
@@ -17,7 +16,16 @@
     "location": "Palma de Mallorca, Spain",
     "lead": "I design, deploy and maintain IT environments that simply work. Focused on security, business continuity and a web experience polished end to end.",
     "ctaPrimary": "Get in touch",
-    "ctaSecondary": "View work"
+    "ctaSecondary": "View work",
+    "rot1": "systems administration",
+    "rot2": "web development",
+    "rot3": "virtualization",
+    "rot4": "perimeter security",
+    "rot5": "business continuity",
+    "scroll": "Scroll"
+  },
+  "marquee": {
+    "stack": "Technologies I work with"
   },
   "about": {
     "title": "Infrastructure as the invisible base that lets everything run.",
@@ -77,7 +85,12 @@
     "formErr": "Could not send. Try email instead."
   },
   "footer": {
-    "year": "2026"
+    "year": "2026",
+    "ctaTitle": "Shall we start?",
+    "ctaLink": "Write to me",
+    "available": "Available for new projects",
+    "circle": "Available · Palma de Mallorca · Systems and Web · ",
+    "backTop": "Back to top"
   },
   "a11y": {
     "toggleTheme": "Toggle theme",

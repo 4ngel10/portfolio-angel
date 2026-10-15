@@ -7,36 +7,26 @@ type Theme = "light" | "dark";
 const ThemeContext = createContext<{ theme: Theme; toggle: () => void } | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  // Oscuro por defecto. El script bloqueante de layout.tsx ya pone la clase
+  // correcta en <html> antes de pintar; aquí solo sincronizamos el estado con ella.
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("theme") as Theme | null;
-      if (saved === "dark" || saved === "light") {
-        setTheme(saved);
-      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        setTheme("dark");
-      }
-    } catch {}
+    setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light");
   }, []);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
 
   const toggle = useCallback(() => {
     setTheme((t) => {
       const next: Theme = t === "dark" ? "light" : "dark";
-      try { localStorage.setItem("theme", next); } catch {}
+      document.documentElement.classList.toggle("dark", next === "dark");
+      try {
+        localStorage.setItem("theme", next);
+      } catch {}
       return next;
     });
   }, []);
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggle }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggle }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

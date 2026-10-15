@@ -7,7 +7,6 @@
     "ctaContact": "Contactar"
   },
   "hero": {
-    "badge": "Disponible para nuevos proyectos",
     "titleStart": "Infraestructura",
     "titleAccent1": "sólida",
     "titleMid": "desarrollo",
@@ -17,7 +16,16 @@
     "location": "Palma de Mallorca, España",
     "lead": "Diseño, despliego y mantengo entornos IT que simplemente funcionan. Con foco en seguridad, continuidad de negocio y una experiencia web profesional de principio a fin.",
     "ctaPrimary": "Contactar",
-    "ctaSecondary": "Ver portfolio"
+    "ctaSecondary": "Ver portfolio",
+    "rot1": "administración de sistemas",
+    "rot2": "desarrollo web",
+    "rot3": "virtualización",
+    "rot4": "seguridad perimetral",
+    "rot5": "continuidad de negocio",
+    "scroll": "Desliza"
+  },
+  "marquee": {
+    "stack": "Tecnologías con las que trabajo"
   },
   "about": {
     "title": "Infraestructura como base invisible que permite que todo funcione.",
@@ -77,7 +85,12 @@
     "formErr": "No se ha podido enviar. Prueba por email."
   },
   "footer": {
-    "year": "2026"
+    "year": "2026",
+    "ctaTitle": "¿Empezamos?",
+    "ctaLink": "Escríbeme",
+    "available": "Disponible para nuevos proyectos",
+    "circle": "Disponible · Palma de Mallorca · Sistemas y Web · ",
+    "backTop": "Volver arriba"
   },
   "a11y": {
     "toggleTheme": "Cambiar tema",

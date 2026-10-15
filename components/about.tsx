@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 const STACK: { label: string; items: string[] }[] = [
   { label: "Virtualización", items: ["Hyper-V", "VMware"] },
@@ -21,73 +22,93 @@ export function About() {
   const { t } = useI18n();
 
   return (
-    <section id="about" className="py-24 md:py-28 bg-paper-alt">
-      <div className="max-w-6xl mx-auto px-6 md:px-8">
-        <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-[-0.025em] max-w-3xl">
-          {t("about.title")}
-        </h2>
+    <section id="about" className="bg-paper-alt py-24 md:py-28">
+      <div className="mx-auto max-w-6xl px-6 md:px-8">
+        <Reveal>
+          <h2 className="max-w-4xl text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
+            {t("about.title")}
+          </h2>
+        </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-14 md:gap-20 mt-14 items-start">
-          <div className="space-y-5">
-            <p className="text-base md:text-[17px] leading-[1.75] text-muted">{t("about.p1")}</p>
-            <p className="text-base md:text-[17px] leading-[1.75] text-muted">{t("about.p2")}</p>
-            <p className="text-base md:text-[17px] leading-[1.75] text-muted">{t("about.p3")}</p>
-          </div>
+        <div className="mt-14 grid items-start gap-14 md:grid-cols-2 md:gap-20">
+          <RevealGroup className="space-y-5" stagger={0.12}>
+            <RevealItem as="div">
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p1")}</p>
+            </RevealItem>
+            <RevealItem as="div">
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p2")}</p>
+            </RevealItem>
+            <RevealItem as="div">
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p3")}</p>
+            </RevealItem>
+          </RevealGroup>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted mb-4">
+            <h3 className="text-muted mb-4 text-xs font-semibold tracking-[0.08em] uppercase">
               {t("about.stackLabel")}
             </h3>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+            <RevealGroup className="grid grid-cols-2 gap-x-6 gap-y-5" stagger={0.07}>
               {STACK.map((cat) => (
-                <div key={cat.label}>
-                  <div className="text-[13px] font-semibold mb-2">{cat.label}</div>
+                <RevealItem key={cat.label}>
+                  <div className="mb-2 text-[13px] font-semibold">{cat.label}</div>
                   <div className="flex flex-wrap gap-1.5">
                     {cat.items.map((it) => (
                       <span
                         key={it}
-                        className="font-mono text-[11px] px-2.5 py-1 rounded-md border"
-                        style={{ borderColor: "var(--rule)", background: "var(--bg)" }}
+                        className="border-rule rounded-md border px-2.5 py-1 font-mono text-[11px] transition-[transform,border-color,color] duration-200 hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                        style={{ background: "var(--bg)" }}
                       >
                         {it}
                       </span>
                     ))}
                   </div>
-                </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGroup>
 
-            <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted mb-4 mt-10">
+            <h3 className="text-muted mt-10 mb-4 text-xs font-semibold tracking-[0.08em] uppercase">
               {t("about.certsLabel")}
             </h3>
-            <div className="flex flex-col gap-2.5">
+            <RevealGroup className="flex flex-col gap-2.5" stagger={0.1}>
               {CERTS.map((c) => (
-                <div
+                <RevealItem
                   key={c.title}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl border"
-                  style={{ borderColor: "var(--rule)", background: "var(--bg)" }}
+                  className="group border-rule flex items-center gap-3 rounded-xl border px-4 py-3 transition-[transform,border-color] duration-200 hover:translate-x-1 hover:border-[var(--accent)]"
+                  style={{ background: "var(--bg)" }}
                 >
                   <span
-                    className="w-8 h-8 rounded-lg flex items-center justify-center"
-                    style={{ background: "color-mix(in oklab, var(--accent) 10%, transparent)", color: "var(--accent)" }}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg"
+                    style={{
+                      background: "color-mix(in oklab, var(--accent) 10%, transparent)",
+                      color: "var(--accent)",
+                    }}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <circle cx="12" cy="8" r="7" />
                       <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
                     </svg>
                   </span>
                   <div className="text-[13px] leading-tight">
-                    <div className="font-semibold text-ink">{c.title}</div>
-                    <div className="text-muted text-[12px] mt-0.5">{c.meta}</div>
+                    <div className="text-ink font-semibold">{c.title}</div>
+                    <div className="text-muted mt-0.5 text-[12px]">{c.meta}</div>
                   </div>
-                </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGroup>
 
-            <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted mb-3 mt-10">
+            <h3 className="text-muted mt-10 mb-3 text-xs font-semibold tracking-[0.08em] uppercase">
               {t("about.eduLabel")}
             </h3>
-            <div className="text-[13px] text-muted leading-relaxed">
+            <div className="text-muted text-[13px] leading-relaxed">
               <div>{t("about.edu1")}</div>
               <div>{t("about.edu2")}</div>
             </div>

@@ -32,3 +32,6 @@ next-env.d.ts
 
 # claude code local caches
 .claude/cache/
+
+# typescript incremental cache
+*.tsbuildinfo

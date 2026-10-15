@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Tailwind v4 limita hover: a @media (hover: hover), así que en móvil no hacía nada.
+   Lo redefinimos para que también se active al tocar con el dedo (el navegador
+   aplica :hover al elemento tocado hasta que se toca otro sitio). */
+@variant hover (&:hover);
+
 @theme {
   --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
@@ -66,8 +71,19 @@
     border-radius: 4px;
   }
 
+  /* iOS Safari solo aplica :hover al tocar si el elemento parece clicable.
+     En táctil el cursor no se ve, así que esto no tiene efecto visual. */
+  @media (hover: none) {
+    .group, .carousel-item, [class*="hover:"] {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    /* Excepción deliberada: el carrusel de tecnologías (.carousel-group) se mueve
+       siempre y sin pausa en hover. Es lento, lineal y sin parallax. Ver CLAUDE.md. */
+    *:not(.carousel-group), *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -103,4 +119,81 @@
   }
   .btn-secondary:hover { border-color: var(--fg); }
   .btn-secondary:active { transform: scale(0.97); }
+
+  /* Marquee infinito: el contenido va duplicado y el track se desplaza un 50% */
+  .marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-duration, 40s) linear infinite;
+  }
+  .marquee-reverse .marquee-track { animation-direction: reverse; }
+  @media (hover: hover) and (pointer: fine) {
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+  }
+
+  /* Carrusel infinito: dos grupos idénticos que se desplazan su propio ancho + gap */
+  .carousel {
+    --carousel-gap: 3rem;
+    --carousel-speed: 40s;
+    --gradient-width: 12%;
+    position: relative;
+    display: flex;
+    column-gap: var(--carousel-gap);
+    padding-block: 0.5rem; /* margen para el scale(1.1) del hover */
+    overflow-x: hidden;
+    overflow-x: clip; /* no fuerza overflow-y: auto, así no sale scrollbar vertical */
+  }
+  .carousel-group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    column-gap: var(--carousel-gap);
+    animation: carousel-scroll var(--carousel-speed) linear infinite;
+    will-change: transform;
+  }
+  .carousel-right .carousel-group { animation-direction: reverse; }
+  .carousel-item {
+    transition: scale 0.3s var(--ease-out), color 0.3s;
+    user-select: none;
+  }
+  .carousel-item:hover { scale: 1.1; color: var(--fg); }
+  .carousel::before,
+  .carousel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--gradient-width);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .carousel::before { left: 0; background-image: linear-gradient(to right, var(--bg), transparent); }
+  .carousel::after { right: 0; background-image: linear-gradient(to left, var(--bg), transparent); }
+
+  .spin-slow { animation: spin 18s linear infinite; }
+
+  .caret { animation: blink 1.1s steps(1) infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track, .spin-slow, .caret { animation: none !important; }
+  }
+}
+
+@keyframes carousel-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100% - var(--carousel-gap))); }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
 }

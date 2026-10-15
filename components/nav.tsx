@@ -28,7 +28,7 @@ export function Nav() {
 
         <div className="hidden md:flex items-center gap-9 text-sm font-medium text-muted">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-ink transition-colors">
+            <a key={l.href} href={l.href} className="hover:text-[var(--fg)] transition-colors">
               {l.label}
             </a>
           ))}
@@ -38,7 +38,7 @@ export function Nav() {
           <button
             type="button"
             onClick={() => setLocale(locale === "es" ? "en" : "es")}
-            className="font-mono text-xs px-2.5 py-1.5 border rounded-full text-muted hover:text-ink transition-colors"
+            className="font-mono text-xs px-2.5 py-1.5 border rounded-full text-muted hover:text-[var(--fg)] transition-colors"
             style={{ borderColor: "var(--rule)" }}
             aria-label="Toggle language"
           >

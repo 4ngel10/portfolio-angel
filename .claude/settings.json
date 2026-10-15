@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(/app/**)",
+      "Edit(/components/**)",
+      "Edit(/lib/**)",
+      "Edit(/messages/**)",
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(npm run format)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "ask": ["Bash(npm install:*)", "Bash(git commit:*)", "Bash(git push:*)"],
+    "deny": ["Read(/.env*)", "Bash(rm -rf:*)"]
+  },
+  "env": {
+    "GATEGUARD_EXEMPT_GLOBS": "app/**,components/**,lib/**,messages/**"
+  }
+}

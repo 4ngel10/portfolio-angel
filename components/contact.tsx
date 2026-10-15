@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 export function Contact() {
   const { t } = useI18n();
@@ -27,14 +28,23 @@ export function Contact() {
       label: t("contact.emailLabel"),
       value: "angelfernandezgarriga@gmail.com",
       icon: (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
           <polyline points="22,6 12,13 2,6" />
         </svg>
       ),
     },
     {
-      href: "https://linkedin.com/in/angelfernandezgarriga",
+      href: "https://www.linkedin.com/in/angelfernandezgarriga",
       label: t("contact.linkedinLabel"),
       value: "in/angelfernandezgarriga",
       icon: (
@@ -57,82 +67,130 @@ export function Contact() {
 
   return (
     <section id="contact" className="py-24 md:py-28">
-      <div className="max-w-6xl mx-auto px-6 md:px-8">
-        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-14 md:gap-20 items-start">
-          <div>
-            <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-[-0.025em]">
+      <div className="mx-auto max-w-6xl px-6 md:px-8">
+        <div className="grid items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr]">
+          <Reveal>
+            <h2 className="text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
               {t("contact.title")}
             </h2>
-            <p className="text-base md:text-[17px] text-muted leading-relaxed mt-5 mb-10">
+            <p className="text-muted mt-5 mb-10 text-base leading-relaxed md:text-[17px]">
               {t("contact.lead")}
             </p>
-            <div className="flex flex-col gap-3">
+            <RevealGroup className="flex flex-col gap-3" stagger={0.08}>
               {links.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  className="group flex items-center gap-3.5 p-4 rounded-xl border transition-all"
-                  style={{ borderColor: "var(--rule)", background: "var(--bg)" }}
-                >
-                  <span
-                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: "var(--chip)" }}
+                <RevealItem key={l.href}>
+                  <a
+                    href={l.href}
+                    {...(l.href.startsWith("http") && {
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                    })}
+                    className="group border-rule flex items-center gap-3.5 rounded-xl border p-4 transition-[border-color,transform] duration-200 hover:translate-x-1 hover:border-[var(--accent)]"
+                    style={{ background: "var(--bg)" }}
                   >
-                    {l.icon}
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-xs text-muted font-medium">{l.label}</span>
-                    <span className="block text-sm font-medium text-ink truncate">{l.value}</span>
-                  </span>
-                </a>
+                    <span className="bg-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors duration-200 group-hover:bg-[var(--accent)] group-hover:text-white">
+                      {l.icon}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="text-muted block text-xs font-medium">{l.label}</span>
+                      <span className="text-ink block truncate text-sm font-medium">{l.value}</span>
+                    </span>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-muted shrink-0 transition-[transform,color] duration-200 group-hover:translate-x-1 group-hover:text-[var(--accent)]"
+                      aria-hidden
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </a>
+                </RevealItem>
               ))}
-            </div>
-          </div>
+            </RevealGroup>
+          </Reveal>
 
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-2xl border p-6 md:p-8"
-            style={{ borderColor: "var(--rule)", background: "var(--bg)" }}
-          >
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-[13px] font-medium mb-1.5">{t("contact.formName")}</label>
-              <input
-                id="name" name="name" type="text" required
-                placeholder={t("contact.formNamePh")}
-                className="w-full px-3.5 py-3 rounded-xl border bg-transparent text-sm outline-none focus:border-[var(--accent)]"
-                style={{ borderColor: "var(--rule)" }}
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-[13px] font-medium mb-1.5">{t("contact.formEmail")}</label>
-              <input
-                id="email" name="email" type="email" required
-                placeholder={t("contact.formEmailPh")}
-                className="w-full px-3.5 py-3 rounded-xl border bg-transparent text-sm outline-none focus:border-[var(--accent)]"
-                style={{ borderColor: "var(--rule)" }}
-              />
-            </div>
-            <div className="mb-5">
-              <label htmlFor="message" className="block text-[13px] font-medium mb-1.5">{t("contact.formMessage")}</label>
-              <textarea
-                id="message" name="message" rows={5} required
-                placeholder={t("contact.formMessagePh")}
-                className="w-full px-3.5 py-3 rounded-xl border bg-transparent text-sm outline-none focus:border-[var(--accent)] resize-y min-h-[110px]"
-                style={{ borderColor: "var(--rule)" }}
-              />
-            </div>
-            <button type="submit" disabled={status === "sending"} className="btn-primary w-full disabled:opacity-70">
-              {status === "sending" ? t("contact.formSending") : t("contact.formSubmit")}
-              {status !== "sending" && (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13" />
-                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                </svg>
+          <Reveal delay={0.15}>
+            <form
+              onSubmit={handleSubmit}
+              className="border-rule rounded-2xl border p-6 md:p-8"
+              style={{ background: "var(--bg)" }}
+            >
+              <div className="mb-4">
+                <label htmlFor="name" className="mb-1.5 block text-[13px] font-medium">
+                  {t("contact.formName")}
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  placeholder={t("contact.formNamePh")}
+                  className="border-rule w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="mb-1.5 block text-[13px] font-medium">
+                  {t("contact.formEmail")}
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder={t("contact.formEmailPh")}
+                  className="border-rule w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                />
+              </div>
+              <div className="mb-5">
+                <label htmlFor="message" className="mb-1.5 block text-[13px] font-medium">
+                  {t("contact.formMessage")}
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={5}
+                  required
+                  placeholder={t("contact.formMessagePh")}
+                  className="border-rule min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                className="btn-primary w-full disabled:opacity-70"
+              >
+                {status === "sending" ? t("contact.formSending") : t("contact.formSubmit")}
+                {status !== "sending" && (
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                )}
+              </button>
+              {status === "ok" && (
+                <p className="mt-3 text-[13px] text-emerald-600">{t("contact.formOk")}</p>
               )}
-            </button>
-            {status === "ok" && <p className="text-[13px] text-emerald-600 mt-3">{t("contact.formOk")}</p>}
-            {status === "err" && <p className="text-[13px] text-red-600 mt-3">{t("contact.formErr")}</p>}
-          </form>
+              {status === "err" && (
+                <p className="mt-3 text-[13px] text-red-600">{t("contact.formErr")}</p>
+              )}
+            </form>
+          </Reveal>
         </div>
       </div>
     </section>

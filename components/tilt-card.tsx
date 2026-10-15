@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -11,18 +11,24 @@ type Props = {
   perspective?: number;
 };
 
+/** Tiempo que la card se queda inclinada tras levantar el dedo, para que se vea el efecto. */
+const TOUCH_HOLD_MS = 450;
+
+/**
+ * Tilt 3D. Con ratón sigue al cursor. En táctil, al tocar se inclina hacia el
+ * punto tocado y vuelve sola al soltar. Con reduced motion no se inclina.
+ */
 export function TiltCard({ children, className, style, maxTilt = 7, perspective = 1200 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const [fine, setFine] = useState(false);
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const update = () => setFine(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  useEffect(
+    () => () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+    },
+    [],
+  );
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -31,29 +37,39 @@ export function TiltCard({ children, className, style, maxTilt = 7, perspective 
   const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-maxTilt, maxTilt]), springCfg);
   const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [maxTilt, -maxTilt]), springCfg);
 
-  const handleMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (reduced || !fine) return;
+  const tiltTo = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (reduced) return;
     const el = ref.current;
     if (!el) return;
+    if (resetTimer.current) clearTimeout(resetTimer.current);
     const r = el.getBoundingClientRect();
     x.set((e.clientX - r.left) / r.width - 0.5);
     y.set((e.clientY - r.top) / r.height - 0.5);
   };
 
-  const handleLeave = () => {
+  const reset = () => {
     x.set(0);
     y.set(0);
+  };
+
+  const releaseTouch = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse") return;
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+    resetTimer.current = setTimeout(reset, TOUCH_HOLD_MS);
   };
 
   return (
     <motion.div
       ref={ref}
-      onPointerMove={handleMove}
-      onPointerLeave={handleLeave}
+      onPointerMove={tiltTo}
+      onPointerDown={tiltTo}
+      onPointerUp={releaseTouch}
+      onPointerCancel={releaseTouch}
+      onPointerLeave={(e) => (e.pointerType === "mouse" ? reset() : releaseTouch(e))}
       style={{
         ...style,
-        rotateX: reduced || !fine ? 0 : rotateX,
-        rotateY: reduced || !fine ? 0 : rotateY,
+        rotateX,
+        rotateY,
         transformPerspective: perspective,
         transformStyle: "preserve-3d",
         willChange: "transform",

@@ -1,87 +1,186 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
+
+const EASE = [0.23, 1, 0.32, 1] as const;
+
+// Reduced motion: lo resuelve <MotionConfig reducedMotion="user"> (lib/motion.tsx).
+// No ramificar initial/animate con useReducedMotion: en SSR vale null y rompe la hidratación.
+
+function RotatingWord({ words }: { words: string[] }) {
+  const [i, setI] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setI((v) => (v + 1) % words.length), 2600);
+    return () => clearInterval(id);
+  }, [words.length]);
+
+  return (
+    <span className="relative inline-flex overflow-hidden align-bottom" aria-live="polite">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={words[i]}
+          className="text-ink inline-block"
+          initial={{ y: "100%", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: "-100%", opacity: 0 }}
+          transition={{ duration: 0.45, ease: EASE }}
+        >
+          {words[i]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+/** Línea del H1 que sube desde detrás de una máscara. */
+function Line({ children, delay }: { children: React.ReactNode; delay: number }) {
+  return (
+    <span className="block overflow-hidden pb-[0.08em]">
+      <motion.span
+        className="block"
+        initial={{ y: "105%" }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.9, delay, ease: EASE }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
 
 export function Hero() {
   const { t } = useI18n();
+  // El parallax va por motion values (no por initial/animate), así que aquí sí hay que
+  // mirar reduced motion. Siempre se pasa un motion value para no cambiar el SSR.
+  const reduced = useReducedMotion();
+  const { scrollY } = useScroll();
+  const gridY = useTransform(scrollY, (v) => (reduced ? 0 : Math.min(v, 800) * 0.275));
+  const glowY = useTransform(scrollY, (v) => (reduced ? 0 : Math.min(v, 800) * -0.15));
+
+  const words = [t("hero.rot1"), t("hero.rot2"), t("hero.rot3"), t("hero.rot4"), t("hero.rot5")];
 
   return (
-    <section id="top" className="relative overflow-hidden pt-32 pb-28 md:pt-36 md:pb-32">
-      <div
-        className="absolute inset-0 pointer-events-none opacity-60"
+    <section
+      id="top"
+      className="relative flex min-h-[calc(100svh-72px)] flex-col justify-center overflow-hidden pt-20 pb-24 md:pt-24 md:pb-28"
+    >
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-70"
         style={{
+          y: gridY,
           backgroundImage: "radial-gradient(var(--rule) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
           maskImage: "radial-gradient(ellipse at 70% 40%, #000 20%, transparent 70%)",
           WebkitMaskImage: "radial-gradient(ellipse at 70% 40%, #000 20%, transparent 70%)",
         }}
       />
-      <div className="relative max-w-6xl mx-auto px-6 md:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-          className="font-mono inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium text-muted mb-6"
-          style={{ borderColor: "var(--rule)", background: "var(--chip)" }}
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 0 3px rgba(16,185,129,0.2)" }} />
-          {t("hero.badge")}
-        </motion.div>
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 right-[-10%] h-[620px] w-[620px] rounded-full blur-3xl"
+        style={{
+          y: glowY,
+          background:
+            "radial-gradient(circle, color-mix(in oklab, var(--accent) 22%, transparent), transparent 65%)",
+        }}
+      />
 
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.05, ease: [0.23, 1, 0.32, 1] }}
-          className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.035em] max-w-4xl"
-        >
-          {t("hero.titleStart")} <span className="text-accent">{t("hero.titleAccent1")}</span>,<br className="hidden md:inline" />{" "}
-          {t("hero.titleMid")} <span className="text-accent">{t("hero.titleAccent2")}</span>.
-        </motion.h1>
+      <div className="relative mx-auto w-full max-w-6xl px-6 md:px-8">
+        <h1 className="text-[clamp(2.4rem,7.2vw,6.5rem)] leading-[0.95] font-semibold tracking-[-0.045em]">
+          <Line delay={0.05}>
+            {t("hero.titleStart")} <span className="text-accent">{t("hero.titleAccent1")}</span>,
+          </Line>
+          <Line delay={0.17}>
+            {t("hero.titleMid")} <span className="text-accent">{t("hero.titleAccent2")}</span>.
+          </Line>
+        </h1>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="font-mono text-sm md:text-[15px] text-muted mt-5 flex flex-wrap items-center gap-2"
+          transition={{ duration: 0.5, delay: 0.45 }}
+          className="text-muted mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:text-lg"
         >
-          <span>{t("hero.role1")}</span>
-          <span className="w-1 h-1 rounded-full bg-current opacity-40" />
-          <span>{t("hero.role2")}</span>
+          <span style={{ color: "var(--accent)" }}>~/angel $</span>
+          <RotatingWord words={words} />
+          <span
+            className="caret -mb-[0.15em] inline-block h-[1.1em] w-[0.55em]"
+            style={{ background: "var(--accent)" }}
+            aria-hidden
+          />
         </motion.div>
 
-        <div className="text-sm text-muted mt-3 flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          {t("hero.location")}
+        <div className="mt-10 grid items-end gap-10 md:grid-cols-[1fr_auto]">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.55, ease: EASE }}
+          >
+            <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
+            <div className="text-muted mt-4 flex items-center gap-2 text-sm">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {t("hero.location")}
+            </div>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <a href="#contact" className="btn-primary group">
+                {t("hero.ctaPrimary")}
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </a>
+              <a href="#portfolio" className="btn-secondary">
+                {t("hero.ctaSecondary")}
+              </a>
+            </div>
+          </motion.div>
+
+          <motion.a
+            href="#about"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+            className="text-muted flex origin-top flex-col items-center gap-3 justify-self-center rounded-xl px-4 py-2 font-mono text-[11px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-115 hover:text-[var(--fg)] active:scale-105 md:justify-self-auto"
+          >
+            {t("hero.scroll")}
+            <span
+              className="relative block h-14 w-px overflow-hidden"
+              style={{ background: "var(--rule)" }}
+            >
+              <motion.span
+                className="absolute top-0 left-0 h-1/2 w-px"
+                style={{ background: "var(--accent)" }}
+                animate={{ y: ["-100%", "200%"] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </span>
+          </motion.a>
         </div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="text-lg leading-relaxed text-muted mt-8 max-w-xl"
-        >
-          {t("hero.lead")}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          className="flex flex-col sm:flex-row gap-3 mt-10"
-        >
-          <a href="#contact" className="btn-primary">
-            {t("hero.ctaPrimary")}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </a>
-          <a href="#portfolio" className="btn-secondary">{t("hero.ctaSecondary")}</a>
-        </motion.div>
       </div>
     </section>
   );
