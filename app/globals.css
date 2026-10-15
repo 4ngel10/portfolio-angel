@@ -96,9 +96,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    /* Excepción deliberada: el carrusel de tecnologías (.carousel-group) se mueve
-       siempre y sin pausa en hover. Es lento, lineal y sin parallax. Ver CLAUDE.md. */
-    *:not(.carousel-group), *::before, *::after {
+    /* Excepciones deliberadas (decisión de Ángel, ver CLAUDE.md): los carruseles
+       (.carousel-group) y el sello circular del footer (.spin-slow) se mueven siempre.
+       Son lentos, lineales y sin parallax. */
+    *:not(.carousel-group):not(.spin-slow), *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -180,7 +181,7 @@
   .caret { animation: blink 1.1s steps(1) infinite; }
 
   @media (prefers-reduced-motion: reduce) {
-    .spin-slow, .caret { animation: none !important; }
+    .caret { animation: none !important; }
   }
 }
 

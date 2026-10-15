@@ -59,7 +59,7 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Hover en móvil**: `@variant hover (&:hover)` en `globals.css` hace que `hover:` también se active al tocar (Tailwind v4 lo limita a `(hover: hover)` por defecto). No lo quites: Ángel quiere los mismos efectos en móvil que en PC.
 - **Enlaces externos**: siempre `target="_blank" rel="noopener noreferrer"`. LinkedIn con `www.` para que en móvil abra la app.
 - **Icon system**: inline SVG stroke 2px, 24x24 viewBox. No instales lucide ni heroicons sin consultar.
-- **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch. **Única excepción aprobada por Ángel**: el carrusel de tecnologías (`.carousel-group`, `components/carousel.tsx`) se mueve siempre, también con reduced motion y sin pausa al hacer hover (decisión de Ángel). Es lento y lineal.
+- **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch. **Excepciones aprobadas por Ángel** (se mueven siempre, también con reduced motion): los carruseles (`.carousel-group`, `components/carousel.tsx`: banda de habilidades y banda "Disponible" del footer), sin pausa al hacer hover, y el sello circular giratorio del footer (`.spin-slow`). Son lentos y lineales. También el scroll suave de los enlaces internos (`lib/smooth-scroll.ts`).
 
 ## i18n
 
