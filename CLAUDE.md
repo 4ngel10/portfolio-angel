@@ -69,7 +69,9 @@ Añadir un idioma: nuevo JSON + extiende el type `Locale` en `lib/i18n.tsx`.
 
 ## Trabajo con el formulario
 
-El formulario (`components/contact.tsx`) envía `name`, `email` y `message` a **Web3Forms** desde el navegador (`https://api.web3forms.com/submit`), que lo reenvía al Gmail de Ángel. No hay endpoint propio ni variables de entorno: el plan gratuito de Web3Forms no admite envíos desde servidor. La clave (`WEB3FORMS_KEY`) es pública por diseño y vive en `lib/site.ts`. Incluye un honeypot `botcheck` antispam.
+El formulario (`components/contact.tsx`) envía `name`, `email` y `message` a **Web3Forms** desde el navegador (`https://api.web3forms.com/submit`), que lo reenvía al Gmail de Ángel. No hay endpoint propio ni variables de entorno: el plan gratuito de Web3Forms no admite envíos desde servidor. La clave (`WEB3FORMS_KEY`) es pública por diseño y vive en `lib/site.ts`. Incluye un honeypot `botcheck` antispam. El `<form>` tiene `action`/`method="POST"` a Web3Forms con `access_key` oculto, así funciona aunque no haya cargado el JS.
+
+**En el panel de Web3Forms, "Captcha Protection" debe estar en `None`.** Si se activa hCaptcha sin montarlo en el frontend, Web3Forms rechaza todos los envíos ("hCaptcha Token is mandatory"). El motivo de cualquier rechazo sale en la consola del navegador como `[contacto]`.
 
 ## Dominio
 
