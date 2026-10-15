@@ -13,10 +13,9 @@ export function Contact() {
     e.preventDefault();
     setStatus("sending");
     const form = e.currentTarget;
+    // access_key y from_name ya van como campos ocultos del <form> (ver abajo).
     const data = new FormData(form);
-    data.append("access_key", WEB3FORMS_KEY);
-    data.append("subject", `Nuevo mensaje del portfolio: ${data.get("name") ?? ""}`);
-    data.append("from_name", "Portfolio Ángel Fernández");
+    data.set("subject", `Nuevo mensaje del portfolio: ${data.get("name") ?? ""}`);
     try {
       // Web3Forms reenvía el mensaje al Gmail de Ángel. Se llama desde el navegador
       // (su plan gratuito no admite envíos desde servidor), así que funciona en cualquier hosting.
@@ -25,11 +24,16 @@ export function Contact() {
         headers: { Accept: "application/json" },
         body: data,
       });
-      const json = (await res.json().catch(() => null)) as { success?: boolean } | null;
+      const json = (await res.json().catch(() => null)) as { success?: boolean; message?: string } | null;
       const ok = res.ok && json?.success === true;
+      // El motivo exacto queda en consola (p. ej. "hCaptcha Token is mandatory" si alguien
+      // reactiva el captcha en el panel de Web3Forms).
+      if (!ok) console.error("[contacto] Web3Forms rechazó el envío:", res.status, json?.message);
       setStatus(ok ? "ok" : "err");
       if (ok) form.reset();
-    } catch {
+    } catch (err) {
+      // Sin respuesta: red caída o un bloqueador cortando api.web3forms.com.
+      console.error("[contacto] No se pudo contactar con Web3Forms:", err);
       setStatus("err");
     }
   }
@@ -131,9 +135,16 @@ export function Contact() {
           <Reveal delay={0.15}>
             <form
               onSubmit={handleSubmit}
+              // Sin JS (o antes de que cargue) el navegador envía directamente a Web3Forms
+              // por POST. Sin esto hacía un GET a la propia web con nombre, email y mensaje en la URL.
+              action="https://api.web3forms.com/submit"
+              method="POST"
               className="border-rule rounded-2xl border p-6 md:p-8"
               style={{ background: "var(--bg)" }}
             >
+              <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
+              <input type="hidden" name="from_name" value="Portfolio Ángel Fernández" />
+              <input type="hidden" name="subject" value="Nuevo mensaje del portfolio" />
               {/* Honeypot antispam de Web3Forms: invisible para personas, los bots lo marcan. */}
               <input
                 type="checkbox"
