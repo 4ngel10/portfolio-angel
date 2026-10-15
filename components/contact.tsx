@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
+import { WEB3FORMS_KEY } from "@/lib/site";
 
 export function Contact() {
   const { t } = useI18n();
@@ -13,10 +14,21 @@ export function Contact() {
     setStatus("sending");
     const form = e.currentTarget;
     const data = new FormData(form);
+    data.append("access_key", WEB3FORMS_KEY);
+    data.append("subject", `Nuevo mensaje del portfolio: ${data.get("name") ?? ""}`);
+    data.append("from_name", "Portfolio Ángel Fernández");
     try {
-      const res = await fetch("/api/contact", { method: "POST", body: data });
-      setStatus(res.ok ? "ok" : "err");
-      if (res.ok) form.reset();
+      // Web3Forms reenvía el mensaje al Gmail de Ángel. Se llama desde el navegador
+      // (su plan gratuito no admite envíos desde servidor), así que funciona en cualquier hosting.
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+      });
+      const json = (await res.json().catch(() => null)) as { success?: boolean } | null;
+      const ok = res.ok && json?.success === true;
+      setStatus(ok ? "ok" : "err");
+      if (ok) form.reset();
     } catch {
       setStatus("err");
     }
@@ -122,6 +134,15 @@ export function Contact() {
               className="border-rule rounded-2xl border p-6 md:p-8"
               style={{ background: "var(--bg)" }}
             >
+              {/* Honeypot antispam de Web3Forms: invisible para personas, los bots lo marcan. */}
+              <input
+                type="checkbox"
+                name="botcheck"
+                className="hidden"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden
+              />
               <div className="mb-4">
                 <label htmlFor="name" className="mb-1.5 block text-[13px] font-medium">
                   {t("contact.formName")}

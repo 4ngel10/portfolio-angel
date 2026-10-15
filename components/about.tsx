@@ -7,11 +7,20 @@ import { Reveal, RevealGroup, RevealItem } from "./reveal";
 // Si añades o quitas una allí, refléjalo aquí. Hornetsecurity va además por su certificación.
 const STACK: { labelKey: string; items: string[] }[] = [
   { labelKey: "about.catVirt", items: ["Hyper-V", "VMware", "Proxmox", "Docker"] },
-  { labelKey: "about.catSystems", items: ["Windows Server", "Active Directory", "PowerShell", "Azure"] },
-  { labelKey: "about.catNetwork", items: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Hornetsecurity"] },
+  {
+    labelKey: "about.catSystems",
+    items: ["Windows Server", "Active Directory", "PowerShell", "Azure"],
+  },
+  {
+    labelKey: "about.catNetwork",
+    items: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Hornetsecurity"],
+  },
   { labelKey: "about.catBackup", items: ["Veeam", "Acronis"] },
   { labelKey: "about.catManagement", items: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"] },
-  { labelKey: "about.catWeb", items: ["Next.js", "TypeScript", "Vercel", "GitLab", "Nginx", "Apache"] },
+  {
+    labelKey: "about.catWeb",
+    items: ["Next.js", "TypeScript", "Vercel", "GitLab", "Nginx", "Apache"],
+  },
 ];
 
 const CERTS = [

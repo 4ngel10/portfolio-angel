@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/theme";
 import { I18nProvider } from "@/lib/i18n";
 import { MotionProvider } from "@/lib/motion";
+import { SITE_URL } from "@/lib/site";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   title: "Ángel Fernández · Portfolio",
   description:
     "Administrador de Sistemas y Desarrollador Web en Palma de Mallorca. Infraestructura IT, seguridad, continuidad de negocio y desarrollo web profesional.",
-  metadataBase: new URL("https://angelfernandez.dev"),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "Ángel Fernández · Portfolio",
     description: "Infraestructura IT y desarrollo web profesional en Palma de Mallorca.",

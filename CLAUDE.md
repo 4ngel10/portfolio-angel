@@ -35,12 +35,11 @@ app/
   globals.css      tokens @theme + utilidades
   sitemap.ts       SEO
   robots.ts        SEO
-  api/contact/     POST handler del formulario
 components/
   nav / hero / about / services / portfolio / contact / footer
   tilt-card.tsx    wrapper framer-motion
 lib/
-  theme.tsx i18n.tsx
+  theme.tsx i18n.tsx motion.tsx smooth-scroll.ts site.ts
 messages/
   es.json en.json
 ```
@@ -70,7 +69,11 @@ Añadir un idioma: nuevo JSON + extiende el type `Locale` en `lib/i18n.tsx`.
 
 ## Trabajo con el formulario
 
-`POST /api/contact` acepta `multipart/form-data` con `name`, `email`, `message`. Por defecto hace `console.log`. Para email real: setea `RESEND_API_KEY` + `CONTACT_TO` en Vercel. Alternativa HAOS: redirige `send()` a un webhook self-hosted (n8n, Home Assistant).
+El formulario (`components/contact.tsx`) envía `name`, `email` y `message` a **Web3Forms** desde el navegador (`https://api.web3forms.com/submit`), que lo reenvía al Gmail de Ángel. No hay endpoint propio ni variables de entorno: el plan gratuito de Web3Forms no admite envíos desde servidor. La clave (`WEB3FORMS_KEY`) es pública por diseño y vive en `lib/site.ts`. Incluye un honeypot `botcheck` antispam.
+
+## Dominio
+
+`SITE_URL` en `lib/site.ts` es la URL pública que usan metadata, `sitemap.xml` y `robots.txt`. Ahora es `https://portfolio-angel-vert.vercel.app`; cuando haya dominio propio se cambia solo ahí (y se añade el dominio en Vercel).
 
 ## Qué NO hacer sin consultar
 
@@ -85,6 +88,4 @@ Añadir un idioma: nuevo JSON + extiende el type `Locale` en `lib/i18n.tsx`.
 
 Vercel conectado al repo de GitHub. Push a `main` = deploy producción. PRs = preview deploys automáticos.
 
-Variables en Vercel:
-- `RESEND_API_KEY` (opcional, para email real)
-- `CONTACT_TO=angelfernandezgarriga@gmail.com`
+No hacen falta variables de entorno en Vercel.
