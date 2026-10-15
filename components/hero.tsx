@@ -23,10 +23,10 @@ function RotatingWord({ words }: { words: string[] }) {
         <motion.span
           key={words[i]}
           className="text-ink inline-block"
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: "-100%", opacity: 0 }}
-          transition={{ duration: 0.45, ease: EASE }}
+          initial={{ y: "60%", opacity: 0, filter: "blur(4px)" }}
+          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          exit={{ y: "-60%", opacity: 0, filter: "blur(4px)" }}
+          transition={{ duration: 0.28, ease: EASE }}
         >
           {words[i]}
         </motion.span>

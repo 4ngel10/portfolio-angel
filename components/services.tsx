@@ -67,7 +67,7 @@ export function Services() {
 
         <RevealGroup
           className="grid gap-5 md:grid-cols-2"
-          stagger={0.15}
+          stagger={0.08}
           style={{ perspective: "1200px" }}
         >
           {services.map((s, idx) => (

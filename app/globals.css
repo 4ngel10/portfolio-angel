@@ -102,20 +102,21 @@
   .bg-chip { background: var(--chip); }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-[15px] transition-transform duration-150;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-[15px];
     background: var(--fg);
     color: var(--bg);
-    transition-timing-function: var(--ease-out);
+    /* Pulsación: 160ms ease-out. Color en hover: 200ms ease. */
+    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease;
   }
   .btn-primary:hover { background: var(--accent); color: #fff; }
   .btn-primary:active { transform: scale(0.97); }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-[15px] border transition-transform duration-150;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-[15px] border;
     border-color: var(--rule);
     color: var(--fg);
     background: transparent;
-    transition-timing-function: var(--ease-out);
+    transition: transform 160ms var(--ease-out), border-color 200ms ease;
   }
   .btn-secondary:hover { border-color: var(--fg); }
   .btn-secondary:active { transform: scale(0.97); }

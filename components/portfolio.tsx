@@ -52,7 +52,7 @@ export function Portfolio() {
 
         <RevealGroup
           className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-          stagger={0.12}
+          stagger={0.08}
           style={{ perspective: "1200px" }}
         >
           {projects.map((p, idx) => (
@@ -67,16 +67,16 @@ export function Portfolio() {
                     background: `color-mix(in oklab, var(--accent) ${p.tint}%, var(--bg-alt))`,
                   }}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-110">
+                  <div className="absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-110">
                     <div
-                      className="absolute inset-[-20%] opacity-60 transition-transform duration-700 group-hover:-translate-y-3 group-hover:translate-x-3"
+                      className="absolute inset-[-20%] opacity-60 transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-3 group-hover:translate-x-3"
                       style={{
                         backgroundImage:
                           "radial-gradient(color-mix(in oklab, var(--fg) 14%, transparent) 1px, transparent 1px)",
                         backgroundSize: "14px 14px",
                       }}
                     />
-                    <span className="relative z-10 font-mono text-5xl font-medium tracking-tight transition-[letter-spacing,color] duration-500 group-hover:tracking-[0.12em] group-hover:text-[var(--accent)]">
+                    <span className="relative z-10 font-mono text-5xl font-medium tracking-tight transition-colors duration-200 group-hover:text-[var(--accent)]">
                       {p.cover}
                     </span>
                   </div>

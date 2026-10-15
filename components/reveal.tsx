@@ -24,7 +24,7 @@ export function Reveal({ children, className, delay = 0, y = 24 }: Props) {
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT}
-      transition={{ duration: 0.7, delay, ease: EASE }}
+      transition={{ duration: 0.5, delay, ease: EASE }}
     >
       {children}
     </motion.div>
@@ -62,7 +62,7 @@ export function RevealGroup({
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
 };
 
 export function RevealItem({

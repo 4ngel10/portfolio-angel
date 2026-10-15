@@ -31,7 +31,7 @@ export function About() {
         </Reveal>
 
         <div className="mt-14 grid items-start gap-14 md:grid-cols-2 md:gap-20">
-          <RevealGroup className="space-y-5" stagger={0.12}>
+          <RevealGroup className="space-y-5" stagger={0.08}>
             <RevealItem as="div">
               <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p1")}</p>
             </RevealItem>
@@ -69,7 +69,7 @@ export function About() {
             <h3 className="text-muted mt-10 mb-4 text-xs font-semibold tracking-[0.08em] uppercase">
               {t("about.certsLabel")}
             </h3>
-            <RevealGroup className="flex flex-col gap-2.5" stagger={0.1}>
+            <RevealGroup className="flex flex-col gap-2.5" stagger={0.06}>
               {CERTS.map((c) => (
                 <RevealItem
                   key={c.title}
