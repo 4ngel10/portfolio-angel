@@ -115,14 +115,6 @@ export function About() {
                 </RevealItem>
               ))}
             </RevealGroup>
-
-            <h3 className="text-muted mt-10 mb-3 text-xs font-semibold tracking-[0.08em] uppercase">
-              {t("about.eduLabel")}
-            </h3>
-            <div className="text-muted text-[13px] leading-relaxed">
-              <div>{t("about.edu1")}</div>
-              <div>{t("about.edu2")}</div>
-            </div>
           </div>
         </div>
       </div>

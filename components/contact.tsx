@@ -24,7 +24,10 @@ export function Contact() {
         headers: { Accept: "application/json" },
         body: data,
       });
-      const json = (await res.json().catch(() => null)) as { success?: boolean; message?: string } | null;
+      const json = (await res.json().catch(() => null)) as {
+        success?: boolean;
+        message?: string;
+      } | null;
       const ok = res.ok && json?.success === true;
       // El motivo exacto queda en consola (p. ej. "hCaptcha Token is mandatory" si alguien
       // reactiva el captcha en el panel de Web3Forms).
@@ -84,7 +87,7 @@ export function Contact() {
   return (
     <section id="contact" className="py-24 md:py-28">
       <div className="mx-auto max-w-6xl px-6 md:px-8">
-        <div className="grid items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr]">
+        <div className="grid items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <Reveal>
             <h2 className="text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
               {t("contact.title")}

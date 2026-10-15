@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import { useI18n } from "@/lib/i18n";
-import { Marquee, MarqueeDot } from "./marquee";
+import { Carousel } from "./carousel";
 import { Reveal } from "./reveal";
 
 const EMAIL = "angelfernandezgarriga@gmail.com";
@@ -11,6 +11,10 @@ const EMAIL = "angelfernandezgarriga@gmail.com";
 function CircleBadge({ text, label }: { text: string; label: string }) {
   const id = useId();
   const r = 62;
+  // "A - B" -> "A - B - " con espacios no separables: SVG recorta los espacios del final,
+  // y sin esto la unión del círculo quedaría más pegada que el separador del medio.
+  const SEP = " - ";
+  const ring = text.split(" - ").join(SEP) + SEP;
   return (
     <a
       href="#contact"
@@ -24,9 +28,11 @@ function CircleBadge({ text, label }: { text: string; label: string }) {
             d={`M80,80 m-${r},0 a${r},${r} 0 1,1 ${r * 2},0 a${r},${r} 0 1,1 -${r * 2},0`}
           />
         </defs>
-        <text className="font-mono uppercase" fontSize="11" letterSpacing="2" fill="currentColor">
+        {/* textLength = circunferencia exacta: el texto (que termina en " - ") reparte el
+            espacio sobrante por igual, así la unión del círculo queda igual que el separador. */}
+        <text className="font-mono uppercase" fontSize="11" fill="currentColor">
           <textPath href={`#${id}`} textLength={2 * Math.PI * r} lengthAdjust="spacing">
-            {text}
+            {ring}
           </textPath>
         </text>
       </svg>
@@ -64,22 +70,42 @@ export function Footer() {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-[#0f172a] text-slate-300 dark:border-t dark:border-slate-800 dark:bg-[#050506]">
-      <div className="border-b border-white/10 py-5">
-        <Marquee
-          duration={35}
-          items={Array(4).fill(t("footer.available"))}
-          separator={<MarqueeDot />}
+    <footer className="relative overflow-hidden bg-[var(--footer-bg)] text-slate-300 [--footer-bg:#0f172a] dark:border-t dark:border-slate-800 dark:[--footer-bg:#050506]">
+      <div className="border-b border-white/10 py-4">
+        {/* Mismo carrusel que la banda de habilidades: continuo, sin pausa en hover. */}
+        <Carousel
+          direction="right"
+          speed={9}
+          repeat={10}
+          gap="2rem"
+          fadeColor="var(--footer-bg)"
+          items={[t("footer.available")]}
+          separator={
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              className="shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            >
+              <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93 4.93 19.07" />
+            </svg>
+          }
           itemClassName="text-lg md:text-2xl font-medium tracking-[-0.02em] text-slate-200"
         />
       </div>
 
-      <div className="mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-28">
+      <div className="mx-auto max-w-5xl px-6 py-20 md:px-8 md:py-28">
         <Reveal className="flex flex-col justify-between gap-12 md:flex-row md:items-end">
           <div className="min-w-0">
             <a
               href={`mailto:${EMAIL}`}
-              className="group block text-[clamp(3rem,10vw,8rem)] leading-[0.9] font-semibold tracking-[-0.05em] text-white"
+              className="group block text-[clamp(3rem,9vw,7rem)] leading-[0.9] font-semibold tracking-[-0.05em] text-white"
             >
               {t("footer.ctaTitle")}
             </a>

@@ -136,22 +136,6 @@
   .btn-secondary:hover { border-color: var(--fg); }
   .btn-secondary:active { transform: scale(0.97); }
 
-  /* Marquee infinito: el contenido va duplicado y el track se desplaza un 50% */
-  .marquee {
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-  }
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    animation: marquee var(--marquee-duration, 40s) linear infinite;
-  }
-  .marquee-reverse .marquee-track { animation-direction: reverse; }
-  @media (hover: hover) and (pointer: fine) {
-    .marquee:hover .marquee-track { animation-play-state: paused; }
-  }
-
   /* Carrusel infinito: dos grupos idénticos que se desplazan su propio ancho + gap */
   .carousel {
     --carousel-gap: 3rem;
@@ -188,15 +172,15 @@
     z-index: 1;
     pointer-events: none;
   }
-  .carousel::before { left: 0; background-image: linear-gradient(to right, var(--bg), transparent); }
-  .carousel::after { right: 0; background-image: linear-gradient(to left, var(--bg), transparent); }
+  .carousel::before { left: 0; background-image: linear-gradient(to right, var(--carousel-fade, var(--bg)), transparent); }
+  .carousel::after { right: 0; background-image: linear-gradient(to left, var(--carousel-fade, var(--bg)), transparent); }
 
   .spin-slow { animation: spin 18s linear infinite; }
 
   .caret { animation: blink 1.1s steps(1) infinite; }
 
   @media (prefers-reduced-motion: reduce) {
-    .marquee-track, .spin-slow, .caret { animation: none !important; }
+    .spin-slow, .caret { animation: none !important; }
   }
 }
 
@@ -207,9 +191,4 @@
 
 @keyframes blink {
   50% { opacity: 0; }
-}
-
-@keyframes marquee {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
 }

@@ -46,15 +46,12 @@
     "p3": "En paralelo diseño y desarrollo webs profesionales para empresas y profesionales que quieren una presencia online cuidada, rápida y mantenible, sin plantillas infladas ni letra pequeña.",
     "stackLabel": "Stack técnico",
     "certsLabel": "Certificaciones",
-    "eduLabel": "Formación",
     "catVirt": "Virtualización",
     "catSystems": "Sistemas",
     "catNetwork": "Seguridad y redes",
     "catBackup": "Backup",
     "catManagement": "Gestión y monitorización",
-    "catWeb": "Web",
-    "edu1": "Técnico Superior en Administración de Sistemas Informáticos en Red",
-    "edu2": "Técnico en Instalaciones de Telecomunicaciones"
+    "catWeb": "Web"
   },
   "services": {
     "title": "Dos disciplinas, un mismo criterio.",
@@ -107,7 +104,7 @@
     "ctaTitle": "¿Empezamos?",
     "ctaLink": "Escríbeme",
     "available": "Disponible para nuevos proyectos",
-    "circle": "Disponible · Palma de Mallorca · Sistemas y Web · ",
+    "circle": "Administrador de Sistemas - Desarrollador Web",
     "backTop": "Volver arriba"
   },
   "a11y": {

@@ -46,15 +46,12 @@
     "p3": "In parallel I design and build professional websites for companies and professionals that want a careful, fast and maintainable online presence, no inflated templates or fine print.",
     "stackLabel": "Technical stack",
     "certsLabel": "Certifications",
-    "eduLabel": "Education",
     "catVirt": "Virtualization",
     "catSystems": "Systems",
     "catNetwork": "Security and networking",
     "catBackup": "Backup",
     "catManagement": "Management and monitoring",
-    "catWeb": "Web",
-    "edu1": "Advanced Diploma in Network Systems Administration",
-    "edu2": "Diploma in Telecommunications Installations"
+    "catWeb": "Web"
   },
   "services": {
     "title": "Two disciplines, one standard.",
@@ -107,7 +104,7 @@
     "ctaTitle": "Shall we start?",
     "ctaLink": "Write to me",
     "available": "Available for new projects",
-    "circle": "Available · Palma de Mallorca · Systems and Web · ",
+    "circle": "Systems Administrator - Web Developer",
     "backTop": "Back to top"
   },
   "a11y": {

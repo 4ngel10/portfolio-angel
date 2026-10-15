@@ -12,6 +12,8 @@ type Props = {
    * La velocidad visual no cambia: la duración se multiplica por lo mismo.
    */
   repeat?: number;
+  /** Color del difuminado de los bordes. Por defecto el fondo de la página (--bg). */
+  fadeColor?: string;
 };
 
 /**
@@ -27,6 +29,7 @@ export function Carousel({
   itemClassName = "",
   separator,
   repeat = 1,
+  fadeColor,
 }: Props) {
   const copies = Array.from({ length: repeat }, (_, i) => i);
 
@@ -52,7 +55,11 @@ export function Carousel({
     <div
       className={`carousel ${direction === "right" ? "carousel-right" : ""}`}
       style={
-        { "--carousel-speed": `${speed * repeat}s`, "--carousel-gap": gap } as React.CSSProperties
+        {
+          "--carousel-speed": `${speed * repeat}s`,
+          "--carousel-gap": gap,
+          ...(fadeColor && { "--carousel-fade": fadeColor }),
+        } as React.CSSProperties
       }
     >
       {group(false)}
