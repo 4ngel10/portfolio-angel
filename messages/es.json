@@ -69,6 +69,13 @@
     "s2b3": "Responsive y optimizado en rendimiento",
     "s2b4": "Mantenimiento y actualización continua"
   },
+  "servicesPage": {
+    "back": "Volver a servicios",
+    "more": "Más información",
+    "howTitle": "Cómo trabajo.",
+    "howLead": "Da igual si es un servidor o una web: los principios son los mismos.",
+    "other": "Otro servicio"
+  },
   "portfolio": {
     "title": "Proyectos recientes.",
     "lead": "Una selección en construcción. Esta sección se irá ampliando con nuevos casos.",

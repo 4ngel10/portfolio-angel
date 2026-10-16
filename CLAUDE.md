@@ -65,6 +65,10 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 
 Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slug]/page.tsx`), una página estática por proyecto. Los datos y el texto del artículo (ES y EN) viven en `lib/projects.ts`. Título, etiqueta y descripción corta salen de `messages/*.json` (`portfolio.p1Title`...), compartidos con la card. Añadir un proyecto: entrada nueva en `PROJECTS` + sus claves en los dos JSON. Las páginas usan `ProjectNav` y `ProjectFooter` porque la nav y el footer de la home enlazan a anclas `#` que solo existen allí.
 
+## Páginas de servicio
+
+Cada card de Servicios abre su propia página: `/servicios/sistemas` y `/servicios/web` (`app/servicios/[id]/page.tsx`, `components/services-page.tsx`). Las certificaciones solo salen en la de sistemas. El detalle de cada servicio (grupos, herramientas, principios) vive en `lib/services.ts`, en ES y EN, y solo recoge lo que ya figura en la web (stack, áreas, certificaciones). Reutiliza `ProjectNav` y `ProjectFooter`.
+
 ## i18n
 
 Añadir una clave: edita **los dos** JSON (`messages/es.json` y `messages/en.json`) y úsala con `t("ruta.anidada")`. El `t()` cae a la ruta si falta la clave.

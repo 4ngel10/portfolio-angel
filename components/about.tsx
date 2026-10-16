@@ -23,7 +23,7 @@ const STACK: { labelKey: string; items: string[] }[] = [
   },
 ];
 
-const CERTS = [
+export const CERTS = [
   { title: "Omada OCNA Wireless", meta: "TP-Link · 2026" },
   { title: "Hornetsecurity Engineering", meta: "Microsoft 365 · 2025" },
   { title: "3CX Basic Engineer V20", meta: "Comunicaciones · 2025" },

@@ -69,6 +69,13 @@
     "s2b3": "Responsive and performance-tuned",
     "s2b4": "Ongoing maintenance and updates"
   },
+  "servicesPage": {
+    "back": "Back to services",
+    "more": "Learn more",
+    "howTitle": "How I work.",
+    "howLead": "Whether it is a server or a website, the principles are the same.",
+    "other": "Other service"
+  },
   "portfolio": {
     "title": "Recent work.",
     "lead": "A selection in progress. This section will keep growing with new cases.",

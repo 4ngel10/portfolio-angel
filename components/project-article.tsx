@@ -34,7 +34,7 @@ function formatDate(date: string, locale: Locale) {
 }
 
 /** Texto con **negrita** y [enlace](url). Los enlaces externos abren en otra pestaña. */
-function Inline({ text }: { text: string }) {
+export function Inline({ text }: { text: string }) {
   return text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g).map((part, i) => {
     const bold = part.match(/^\*\*([^*]+)\*\*$/);
     if (bold)
