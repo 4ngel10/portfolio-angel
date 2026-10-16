@@ -76,11 +76,19 @@
     "p1Title": "Corporate site, hospitality client",
     "p1Desc": "Redesign focused on performance, bookings and multi-language navigation.",
     "p2Tag": "In production",
-    "p2Title": "PrinterMapping, RDS logon script",
-    "p2Desc": "PowerShell script that maps printers to RDS users reading Active Directory attributes.",
+    "p2Title": "Prompt Vault, AI prompt vault",
+    "p2Desc": "Save, organize and share your AI prompts and skills in a personal vault with categories and quick copy.",
     "p3Tag": "Documentation in progress",
     "p3Title": "Personal Proxmox homelab",
-    "p3Desc": "Self-hosted infrastructure: services, 3-2-1 backup policy and HAOS automation."
+    "p3Desc": "Home lab for a smart home: Home Assistant automation, my own VPN, ad blocking and automatic cloud backups."
+  },
+  "project": {
+    "back": "Back to projects",
+    "visit": "Visit project",
+    "next": "Next project",
+    "read": "Read",
+    "readArticle": "Read the story",
+    "home": "Home"
   },
   "contact": {
     "title": "Got a project in mind? Let's talk.",

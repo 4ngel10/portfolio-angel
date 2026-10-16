@@ -61,6 +61,10 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Icon system**: inline SVG stroke 2px, 24x24 viewBox. No instales lucide ni heroicons sin consultar.
 - **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch. **Excepciones aprobadas por Ángel** (se mueven siempre, también con reduced motion): los carruseles (`.carousel-group`, `components/carousel.tsx`: banda de habilidades y banda "Disponible" del footer), sin pausa al hacer hover, y el sello circular giratorio del footer (`.spin-slow`). Son lentos y lineales. También el scroll suave de los enlaces internos (`lib/smooth-scroll.ts`).
 
+## Páginas de proyecto
+
+Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slug]/page.tsx`), una página estática por proyecto. Los datos y el texto del artículo (ES y EN) viven en `lib/projects.ts`. Título, etiqueta y descripción corta salen de `messages/*.json` (`portfolio.p1Title`...), compartidos con la card. Añadir un proyecto: entrada nueva en `PROJECTS` + sus claves en los dos JSON. Las páginas usan `ProjectNav` y `ProjectFooter` porque la nav y el footer de la home enlazan a anclas `#` que solo existen allí.
+
 ## i18n
 
 Añadir una clave: edita **los dos** JSON (`messages/es.json` y `messages/en.json`) y úsala con `t("ruta.anidada")`. El `t()` cae a la ruta si falta la clave.

@@ -1,42 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { TiltCard } from "./tilt-card";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
+import { ProjectCover } from "./project-cover";
 import { useI18n } from "@/lib/i18n";
+import { PROJECTS } from "@/lib/projects";
 
 export function Portfolio() {
   const { t } = useI18n();
-
-  // La portada mezcla el acento con el fondo alternativo, así funciona en claro y oscuro.
-  const projects = [
-    {
-      key: "p1",
-      cover: "WEB",
-      tint: 8,
-      tag: t("portfolio.p1Tag"),
-      title: t("portfolio.p1Title"),
-      desc: t("portfolio.p1Desc"),
-      tech: ["HTML", "CSS", "JavaScript", "Vercel"],
-    },
-    {
-      key: "p2",
-      cover: "PS1",
-      tint: 14,
-      tag: t("portfolio.p2Tag"),
-      title: t("portfolio.p2Title"),
-      desc: t("portfolio.p2Desc"),
-      tech: ["PowerShell", "Active Directory", "Windows Server"],
-    },
-    {
-      key: "p3",
-      cover: "LAB",
-      tint: 20,
-      tag: t("portfolio.p3Tag"),
-      title: t("portfolio.p3Title"),
-      desc: t("portfolio.p3Desc"),
-      tech: ["Proxmox", "Docker", "Home Assistant"],
-    },
-  ];
 
   return (
     <section id="portfolio" className="bg-paper-alt py-24 md:py-28">
@@ -55,61 +27,82 @@ export function Portfolio() {
           stagger={0.08}
           style={{ perspective: "1200px" }}
         >
-          {projects.map((p, idx) => (
-            <RevealItem key={p.key} className="h-full">
-              <TiltCard
-                className="group border-rule h-full overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]"
-                style={{ background: "var(--bg)" }}
-              >
-                <div
-                  className="relative h-52 overflow-hidden"
-                  style={{
-                    background: `color-mix(in oklab, var(--accent) ${p.tint}%, var(--bg-alt))`,
-                  }}
+          {PROJECTS.map((p, idx) => {
+            const title = t(`portfolio.${p.key}Title`);
+            return (
+              <RevealItem key={p.key} className="h-full">
+                {/* Cada card abre la página del proyecto (app/proyectos/[slug]). */}
+                <Link
+                  href={`/proyectos/${p.slug}`}
+                  className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
                 >
-                  <div className="absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-110">
-                    <div
-                      className="absolute inset-[-20%] opacity-60 transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-3 group-hover:translate-x-3"
-                      style={{
-                        backgroundImage:
-                          "radial-gradient(color-mix(in oklab, var(--fg) 14%, transparent) 1px, transparent 1px)",
-                        backgroundSize: "14px 14px",
-                      }}
-                    />
-                    <span className="relative z-10 font-mono text-5xl font-medium tracking-tight transition-colors duration-200 group-hover:text-[var(--accent)]">
-                      {p.cover}
-                    </span>
-                  </div>
-                  <span className="text-muted absolute top-4 left-5 font-mono text-[11px]">
-                    0{idx + 1}
-                  </span>
-                </div>
-                <div className="p-6" style={{ transform: "translateZ(20px)" }}>
-                  <span
-                    className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
-                    style={{ color: "var(--accent)" }}
+                  <TiltCard
+                    className="group border-rule flex h-full flex-col overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]"
+                    style={{ background: "var(--bg)" }}
                   >
-                    {p.tag}
-                  </span>
-                  <h3 className="mb-2 text-[17px] leading-snug font-semibold tracking-tight">
-                    {p.title}
-                  </h3>
-                  <p className="text-muted mb-4 text-[13px] leading-relaxed">{p.desc}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.tech.map((tt) => (
-                      <span
-                        key={tt}
-                        className="rounded px-2 py-0.5 font-mono text-[11px]"
-                        style={{ background: "var(--chip)", color: "var(--muted)" }}
-                      >
-                        {tt}
+                    <ProjectCover
+                      project={p}
+                      alt={title}
+                      sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
+                      className="h-52"
+                    >
+                      <span className="text-muted absolute top-4 left-5 font-mono text-[11px]">
+                        0{idx + 1}
                       </span>
-                    ))}
-                  </div>
-                </div>
-              </TiltCard>
-            </RevealItem>
-          ))}
+                    </ProjectCover>
+                    <div
+                      className="flex flex-1 flex-col p-6"
+                      style={{ transform: "translateZ(20px)" }}
+                    >
+                      <span
+                        className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {t(`portfolio.${p.key}Tag`)}
+                      </span>
+                      {/* En hover el título crece y pasa a negrita: invita a abrir el artículo.
+                          scale en vez de font-size para no recolocar el resto de la card. */}
+                      <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
+                        {title}
+                      </h3>
+                      <p className="text-muted mb-4 text-[13px] leading-relaxed">
+                        {t(`portfolio.${p.key}Desc`)}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {p.tech.map((tt) => (
+                          <span
+                            key={tt}
+                            className="rounded px-2 py-0.5 font-mono text-[11px]"
+                            style={{ background: "var(--chip)", color: "var(--muted)" }}
+                          >
+                            {tt}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-muted mt-auto inline-flex items-center gap-2 self-start pt-5 text-[13px] font-medium transition-colors duration-200 group-hover:text-[var(--accent)]">
+                        {t("project.readArticle")}
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="transition-transform duration-200 group-hover:translate-x-1"
+                          aria-hidden
+                        >
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                          <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                      </span>
+                    </div>
+                  </TiltCard>
+                </Link>
+              </RevealItem>
+            );
+          })}
         </RevealGroup>
       </div>
     </section>
