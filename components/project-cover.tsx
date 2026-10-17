@@ -13,15 +13,25 @@ export function ProjectCover({
   alt,
   sizes,
   className = "",
+  priority = false,
   children,
 }: {
   project: Project;
   alt: string;
   sizes: string;
   className?: string;
+  /** Imagen principal de la página (LCP): se carga ya, sin esperar al scroll. */
+  priority?: boolean;
   children?: React.ReactNode;
 }) {
   const { image, imageDark, cover, tint } = project;
+  // Con una sola imagen se precarga en el <head>. Con versión oscura solo se ve una de las
+  // dos según el tema, así que no se precarga ninguna: las dos se piden pronto y con prioridad.
+  const load = !priority
+    ? {}
+    : imageDark
+      ? { loading: "eager" as const, fetchPriority: "high" as const }
+      : { preload: true };
 
   return (
     <div
@@ -37,6 +47,7 @@ export function ProjectCover({
             alt={alt}
             fill
             sizes={sizes}
+            {...load}
             className={`object-cover transition-transform duration-300 ${EASE} group-hover:scale-105 ${imageDark ? "[.dark_&]:hidden" : ""}`}
           />
           {imageDark && (
@@ -45,6 +56,7 @@ export function ProjectCover({
               alt={alt}
               fill
               sizes={sizes}
+              {...load}
               className={`hidden object-cover transition-transform duration-300 ${EASE} group-hover:scale-105 [.dark_&]:block`}
             />
           )}

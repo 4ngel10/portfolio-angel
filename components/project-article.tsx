@@ -254,6 +254,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
               project={project}
               alt={title}
               sizes="(min-width: 1152px) 1088px, 100vw"
+              priority
               className="aspect-[16/9]"
             />
           </TiltCard>

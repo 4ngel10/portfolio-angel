@@ -1,0 +1,122 @@
+<svg width="100%" viewBox="-33 0 746 420" role="img" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .term-bg { fill: #1e1e2e; }
+  .titlebar { fill: #181825; }
+  .dot-red { fill: #f38ba8; }
+  .dot-yellow { fill: #f9e2af; }
+  .dot-green { fill: #a6e3a1; }
+  .title-text { font-family: monospace; font-size: 12px; fill: #6c7086; }
+  .prompt { font-family: monospace; font-size: 13px; fill: #89b4fa; }
+  .keyword { font-family: monospace; font-size: 13px; fill: #cba6f7; }
+  .string { font-family: monospace; font-size: 13px; fill: #a6e3a1; }
+  .variable { font-family: monospace; font-size: 13px; fill: #89b4fa; }
+  .comment { font-family: monospace; font-size: 13px; fill: #6c7086; }
+  .operator { font-family: monospace; font-size: 13px; fill: #89dceb; }
+  .cmdlet { font-family: monospace; font-size: 13px; fill: #f9e2af; }
+  .text { font-family: monospace; font-size: 13px; fill: #cdd6f4; }
+  .success { font-family: monospace; font-size: 13px; fill: #a6e3a1; }
+  .line-num { font-family: monospace; font-size: 12px; fill: #45475a; }
+  .cursor { fill: #cdd6f4; animation: blink 1.2s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
+  .glow-line { fill: #313244; }
+</style>
+
+<rect x="20" y="10" width="640" height="400" rx="12" class="term-bg"/>
+<rect x="20" y="10" width="640" height="36" rx="12" class="titlebar"/>
+<rect x="20" y="34" width="640" height="12" class="titlebar"/>
+
+<circle cx="46" cy="28" r="6" class="dot-red"/>
+<circle cx="66" cy="28" r="6" class="dot-yellow"/>
+<circle cx="86" cy="28" r="6" class="dot-green"/>
+<text x="340" y="32" text-anchor="middle" class="title-text">PowerShell · PrinterMapping.ps1</text>
+
+<rect x="20" y="136" width="640" height="20" class="glow-line" opacity="0.6"/>
+
+<text x="40" y="74" class="line-num">1</text>
+<text x="40" y="94" class="line-num">2</text>
+<text x="40" y="114" class="line-num">3</text>
+<text x="40" y="134" class="line-num">4</text>
+<text x="40" y="154" class="line-num">5</text>
+<text x="40" y="174" class="line-num">6</text>
+<text x="40" y="194" class="line-num">7</text>
+<text x="40" y="214" class="line-num">8</text>
+<text x="40" y="234" class="line-num">9</text>
+<text x="40" y="254" class="line-num">10</text>
+<text x="40" y="274" class="line-num">11</text>
+<text x="40" y="294" class="line-num">12</text>
+<text x="40" y="314" class="line-num">13</text>
+<text x="40" y="334" class="line-num">14</text>
+<text x="40" y="354" class="line-num">15</text>
+<text x="40" y="374" class="line-num">16</text>
+<text x="40" y="394" class="line-num">17</text>
+
+<text x="62" y="74" class="comment"># PrinterMapping.ps1 v6.0</text>
+<text x="62" y="94" class="comment"># Auto-mapeo de impresoras via AD</text>
+
+<text x="62" y="124">
+  <tspan class="variable">$user</tspan>
+  <tspan class="operator"> = </tspan>
+  <tspan class="cmdlet">Get-ADUser</tspan>
+  <tspan class="text"> $env:USERNAME</tspan>
+  <tspan class="operator"> -Properties </tspan>
+  <tspan class="string">"defaultPrinter"</tspan>
+</text>
+
+<text x="62" y="154">
+  <tspan class="variable">$printers</tspan>
+  <tspan class="operator"> = </tspan>
+  <tspan class="variable">$user</tspan>
+  <tspan class="text">.additionalPrinter</tspan>
+  <tspan class="operator"> -split </tspan>
+  <tspan class="string">";"</tspan>
+</text>
+
+<text x="62" y="184">
+  <tspan class="keyword">foreach</tspan>
+  <tspan class="text"> (</tspan>
+  <tspan class="variable">$printer</tspan>
+  <tspan class="keyword"> in </tspan>
+  <tspan class="variable">$printers</tspan>
+  <tspan class="text">) {</tspan>
+</text>
+
+<text x="82" y="214">
+  <tspan class="cmdlet">Add-Printer</tspan>
+  <tspan class="operator"> -ConnectionName </tspan>
+  <tspan class="variable">$printer</tspan>
+</text>
+
+<text x="82" y="244">
+  <tspan class="cmdlet">Set-PrinterTray</tspan>
+  <tspan class="operator"> -Name </tspan>
+  <tspan class="variable">$printer</tspan>
+  <tspan class="operator"> -Config </tspan>
+  <tspan class="variable">$trayDefaults</tspan>
+</text>
+
+<text x="82" y="274">
+  <tspan class="cmdlet">Write-Log</tspan>
+  <tspan class="string"> "Mapeada: </tspan>
+  <tspan class="variable">$printer</tspan>
+  <tspan class="string">"</tspan>
+  <tspan class="operator"> -Status </tspan>
+  <tspan class="success">OK</tspan>
+</text>
+
+<text x="62" y="304" class="text">}</text>
+
+<text x="62" y="334" class="comment"># Establecer impresora predeterminada</text>
+<text x="62" y="364">
+  <tspan class="cmdlet">Set-DefaultPrinter</tspan>
+  <tspan class="operator"> -Name </tspan>
+  <tspan class="variable">$user</tspan>
+  <tspan class="text">.defaultPrinter</tspan>
+</text>
+
+<text x="62" y="394">
+  <tspan class="success">✓ Configuración completada</tspan>
+</text>
+
+<rect x="287" y="383" width="8" height="16" rx="1" class="cursor"/>
+</svg>

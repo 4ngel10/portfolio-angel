@@ -79,9 +79,9 @@
   "portfolio": {
     "title": "Proyectos recientes.",
     "lead": "Una selección en construcción. Esta sección se irá ampliando con nuevos casos.",
-    "p1Tag": "En desarrollo",
-    "p1Title": "Web corporativa, cliente hotelero",
-    "p1Desc": "Rediseño con foco en rendimiento, reservas y navegación multi-idioma.",
+    "p1Tag": "En producción",
+    "p1Title": "Mapeo automático de impresoras en RDS",
+    "p1Desc": "Script de PowerShell lanzado por GPO que asigna a cada usuario sus impresoras, bandejas y predeterminada leyendo atributos de Active Directory.",
     "p2Tag": "En producción",
     "p2Title": "Prompt Vault, bóveda de prompts IA",
     "p2Desc": "Guarda, organiza y comparte tus prompts y skills de IA en una bóveda personal con categorías y copia rápida.",

@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description,
       type: "article",
       locale: "es_ES",
-      ...(project.image && { images: [project.image] }),
+      ...(project.ogImage && { images: [{ url: project.ogImage, width: 1200, height: 630 }] }),
     },
   };
 }

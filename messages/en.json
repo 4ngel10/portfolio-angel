@@ -79,9 +79,9 @@
   "portfolio": {
     "title": "Recent work.",
     "lead": "A selection in progress. This section will keep growing with new cases.",
-    "p1Tag": "In development",
-    "p1Title": "Corporate site, hospitality client",
-    "p1Desc": "Redesign focused on performance, bookings and multi-language navigation.",
+    "p1Tag": "In production",
+    "p1Title": "Automatic printer mapping on RDS",
+    "p1Desc": "GPO-launched PowerShell script that gives each user their printers, trays and default printer by reading Active Directory attributes.",
     "p2Tag": "In production",
     "p2Title": "Prompt Vault, AI prompt vault",
     "p2Desc": "Save, organize and share your AI prompts and skills in a personal vault with categories and quick copy.",
