@@ -26,12 +26,12 @@ export const SERVICES: ServiceDetail[] = [
     key: "s1",
     intro: {
       es: [
-        "Me encargo de que la base tecnológica de tu empresa funcione sin que tengas que pensar en ella: servidores, red, copias de seguridad, correo y dispositivos.",
-        "Vengo de infraestructuras complejas del sector hotelero, con varios servidores en paralelo y entornos que no se pueden permitir un minuto de parada. Por eso trabajo con documentación, estandarización y continuidad de negocio como pilares.",
+        "Me encargo de que la tecnología de tu empresa funcione sin que tengas que pensar en ella. Servidores, red, copias de seguridad, correo, dispositivos. Que todo esté en su sitio y que si algo falla, se recupere rápido.",
+        "Vengo de infraestructuras en el sector hotelero, con varios servidores en paralelo y entornos donde una caída no es una opción. Eso me enseñó a trabajar con documentación, estandarización y planes de continuidad como base de todo.",
       ],
       en: [
-        "I make sure your company's technical foundation works without you having to think about it: servers, network, backups, email and devices.",
-        "I come from complex hospitality infrastructures, with several servers running in parallel and environments that cannot afford a minute of downtime. That is why documentation, standardization and business continuity are the pillars of how I work.",
+        "I make sure your company's technology works without you having to think about it. Servers, network, backups, email, devices. Everything in its place, and if something fails, it recovers fast.",
+        "I come from hospitality infrastructures, with several servers running in parallel and environments where downtime is not an option. That taught me to build everything on documentation, standardization and continuity plans.",
       ],
     },
     groups: {
@@ -39,10 +39,10 @@ export const SERVICES: ServiceDetail[] = [
         {
           title: "Servidores y virtualización",
           items: [
-            "Despliegue y mantenimiento de Windows Server y Active Directory: usuarios, grupos, permisos y directivas.",
-            "Virtualización con Hyper-V, VMware y Proxmox, y servicios en contenedores con Docker.",
-            "Automatización de tareas repetitivas con PowerShell.",
-            "Servicios en la nube con Azure.",
+            "Despliego y mantengo entornos con Windows Server y Active Directory: usuarios, grupos, permisos y directivas.",
+            "Trabajo con virtualización tanto en Hyper-V como en VMware y Proxmox, y con contenedores Docker para servicios más ligeros.",
+            "Las tareas repetitivas las automatizo con PowerShell.",
+            "También gestiono servicios en Azure.",
           ],
           tools: [
             "Windows Server",
@@ -58,52 +58,50 @@ export const SERVICES: ServiceDetail[] = [
         {
           title: "Redes y seguridad perimetral",
           items: [
-            "Diseño y segmentación de redes con VLANs, para que cada tipo de equipo esté en su sitio.",
-            "Firewalls y seguridad perimetral con Fortinet, pfSense y OPNsense.",
-            "Redes wifi gestionadas con UniFi y Omada (certificación Omada OCNA Wireless).",
-            "VPN para conectarse a la empresa desde fuera de forma segura.",
+            "Diseño redes segmentadas con VLANs para que cada tipo de equipo esté aislado donde le toca.",
+            "Configuro firewalls con Fortinet, pfSense y OPNsense.",
+            "Gestiono redes wifi con UniFi y Omada.",
+            "Para acceso remoto, VPN siempre.",
           ],
           tools: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Omada"],
         },
         {
           title: "Backup y continuidad de negocio",
           items: [
-            "Estrategias de copia 3-2-1: varias copias, en distintos soportes y una fuera de la oficina.",
-            "Copias de servidores y equipos con Veeam y Acronis.",
-            "Pruebas de restauración: una copia que nunca se ha probado no es una copia.",
-            "Planes para volver a funcionar rápido si algo falla.",
+            "Aplico estrategias 3-2-1: varias copias, en distintos soportes y al menos una fuera de la oficina.",
+            "Las herramientas que uso son Veeam y Acronis.",
+            "Y algo que no negocio: pruebas de restauración periódicas. Una copia que nunca se ha probado no es una copia de verdad.",
           ],
           tools: ["Veeam", "Acronis"],
         },
         {
           title: "Microsoft 365 y correo",
           items: [
-            "Administración de Microsoft 365: usuarios, licencias, buzones y permisos.",
-            "Seguridad del correo con Hornetsecurity (certificación Hornetsecurity Engineering): antispam, antiphishing y protección frente a amenazas.",
+            "Administro tenants de Microsoft 365 completos: usuarios, licencias, buzones y permisos.",
+            "La seguridad del correo la gestiono con Hornetsecurity, que cubre antispam, antiphishing y protección frente a amenazas avanzadas.",
           ],
           tools: ["Microsoft 365", "Hornetsecurity"],
         },
         {
           title: "Dispositivos y monitorización",
           items: [
-            "Gestión remota de equipos, inventario y parches con NinjaOne.",
-            "Gestión de móviles y portátiles (MDM) con Intune y SOTI.",
-            "Monitorización de la infraestructura con Zabbix y Grafana, con avisos antes de que el problema llegue al usuario.",
+            "Gestiono equipos en remoto con NinjaOne para inventario, parches y mantenimiento.",
+            "Para móviles y portátiles uso Intune y SOTI como MDM.",
+            "Toda la infraestructura la monitorizo con Zabbix y Grafana, con alertas configuradas para enterarme antes de que el problema llegue al usuario.",
           ],
           tools: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"],
         },
         {
           title: "VoIP y centralitas",
           items: [
-            "Instalación y configuración de centralitas 3CX (certificación 3CX Basic Engineer V20).",
-            "Telefonía IP para oficinas: extensiones, colas y desvíos.",
+            "Instalo y configuro centralitas 3CX para oficinas: extensiones, colas, desvíos y toda la telefonía IP necesaria.",
           ],
           tools: ["3CX"],
         },
         {
           title: "Domótica",
           items: [
-            "Automatización del hogar con Home Assistant: luces, climatización, escenas e integración con asistentes de voz. Lo cuento en mi [homelab personal](/proyectos/homelab-proxmox).",
+            "Automatización del hogar con Home Assistant: luces, climatización, escenas e integración con asistentes de voz. Lo cuento más a fondo en mi [homelab personal](/proyectos/homelab-proxmox).",
           ],
           tools: ["Home Assistant"],
         },
@@ -112,10 +110,10 @@ export const SERVICES: ServiceDetail[] = [
         {
           title: "Servers and virtualization",
           items: [
-            "Deployment and maintenance of Windows Server and Active Directory: users, groups, permissions and policies.",
-            "Virtualization with Hyper-V, VMware and Proxmox, and containerized services with Docker.",
-            "Automating repetitive tasks with PowerShell.",
-            "Cloud services with Azure.",
+            "I deploy and maintain Windows Server and Active Directory environments: users, groups, permissions and policies.",
+            "I work with virtualization on Hyper-V as well as VMware and Proxmox, and with Docker containers for lighter services.",
+            "I automate repetitive tasks with PowerShell.",
+            "I also manage services on Azure.",
           ],
           tools: [
             "Windows Server",
@@ -131,52 +129,50 @@ export const SERVICES: ServiceDetail[] = [
         {
           title: "Networking and perimeter security",
           items: [
-            "Network design and segmentation with VLANs, so every kind of device sits where it belongs.",
-            "Firewalls and perimeter security with Fortinet, pfSense and OPNsense.",
-            "Managed wifi networks with UniFi and Omada (Omada OCNA Wireless certification).",
-            "VPNs to connect to the company securely from outside.",
+            "I design networks segmented with VLANs so every kind of device is isolated where it belongs.",
+            "I configure firewalls with Fortinet, pfSense and OPNsense.",
+            "I manage wifi networks with UniFi and Omada.",
+            "For remote access, always a VPN.",
           ],
           tools: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Omada"],
         },
         {
           title: "Backup and business continuity",
           items: [
-            "3-2-1 backup strategies: several copies, on different media, one of them off-site.",
-            "Server and endpoint backups with Veeam and Acronis.",
-            "Restore tests: a backup that has never been tested is not a backup.",
-            "Plans to get back up and running fast if something fails.",
+            "I apply 3-2-1 strategies: several copies, on different media, and at least one off-site.",
+            "The tools I use are Veeam and Acronis.",
+            "And one thing I do not compromise on: regular restore tests. A backup that has never been tested is not a real backup.",
           ],
           tools: ["Veeam", "Acronis"],
         },
         {
           title: "Microsoft 365 and email",
           items: [
-            "Microsoft 365 administration: users, licenses, mailboxes and permissions.",
-            "Email security with Hornetsecurity (Hornetsecurity Engineering certification): antispam, antiphishing and threat protection.",
+            "I administer complete Microsoft 365 tenants: users, licenses, mailboxes and permissions.",
+            "I handle email security with Hornetsecurity, covering antispam, antiphishing and protection against advanced threats.",
           ],
           tools: ["Microsoft 365", "Hornetsecurity"],
         },
         {
           title: "Devices and monitoring",
           items: [
-            "Remote management, inventory and patching with NinjaOne.",
-            "Mobile and laptop management (MDM) with Intune and SOTI.",
-            "Infrastructure monitoring with Zabbix and Grafana, with alerts before a problem reaches the user.",
+            "I manage devices remotely with NinjaOne for inventory, patching and maintenance.",
+            "For phones and laptops I use Intune and SOTI as MDM.",
+            "I monitor the whole infrastructure with Zabbix and Grafana, with alerts set up so I find out before a problem reaches the user.",
           ],
           tools: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"],
         },
         {
           title: "VoIP and phone systems",
           items: [
-            "Installation and configuration of 3CX phone systems (3CX Basic Engineer V20 certification).",
-            "IP telephony for offices: extensions, queues and call forwarding.",
+            "I install and configure 3CX phone systems for offices: extensions, queues, call forwarding and all the IP telephony needed.",
           ],
           tools: ["3CX"],
         },
         {
           title: "Home automation",
           items: [
-            "Home automation with Home Assistant: lights, climate, scenes and voice assistant integration. I write about it in my [personal homelab](/proyectos/homelab-proxmox).",
+            "Home automation with Home Assistant: lights, climate, scenes and voice assistant integration. I go into more detail in my [personal homelab](/proyectos/homelab-proxmox).",
           ],
           tools: ["Home Assistant"],
         },

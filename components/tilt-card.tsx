@@ -9,16 +9,27 @@ type Props = {
   style?: React.CSSProperties;
   maxTilt?: number;
   perspective?: number;
+  /** Al pasar el ratón o tocar, además se eleva y crece un poco. Con reduced motion no hace nada. */
+  lift?: boolean;
 };
 
 /** Tiempo que la card se queda inclinada tras levantar el dedo, para que se vea el efecto. */
 const TOUCH_HOLD_MS = 450;
 
+const LIFTED = { y: -6, scale: 1.02 };
+
 /**
  * Tilt 3D. Con ratón sigue al cursor. En táctil, al tocar se inclina hacia el
  * punto tocado y vuelve sola al soltar. Con reduced motion no se inclina.
  */
-export function TiltCard({ children, className, style, maxTilt = 7, perspective = 1200 }: Props) {
+export function TiltCard({
+  children,
+  className,
+  style,
+  maxTilt = 7,
+  perspective = 1200,
+  lift = false,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -74,6 +85,10 @@ export function TiltCard({ children, className, style, maxTilt = 7, perspective 
         transformStyle: "preserve-3d",
         willChange: "transform",
       }}
+      // whileHover no salta con el dedo: en táctil la elevación va con whileTap.
+      whileHover={lift ? LIFTED : undefined}
+      whileTap={lift ? LIFTED : undefined}
+      transition={{ type: "spring", stiffness: 300, damping: 24 }}
       className={className}
     >
       {children}

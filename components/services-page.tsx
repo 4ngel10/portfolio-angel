@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
+import { TiltCard } from "./tilt-card";
 import { Inline } from "./project-article";
 import { SERVICE_ICONS } from "./service-icons";
 import { CERTS } from "./about";
@@ -25,6 +26,16 @@ const Arrow = ({ back = false }: { back?: boolean }) => (
     <polyline points="12 5 19 12 12 19" />
   </svg>
 );
+
+// Mismo lenguaje de hover que las cards de la home: borde de acento, sombra y título que crece.
+const CARD =
+  "group border-rule h-full rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]";
+const CARD_BG = { background: "var(--bg)" };
+const TITLE_HOVER =
+  "inline-block origin-left transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold";
+const CHIP =
+  "rounded px-2 py-0.5 font-mono text-[11px] transition-[transform,color,background-color] duration-200 hover:-translate-y-0.5 hover:text-[var(--accent)]";
+const CHIP_STYLE = { background: "var(--chip)", color: "var(--muted)" };
 
 const Check = () => (
   <svg
@@ -66,7 +77,7 @@ export function ServicePage({ id }: { id: string }) {
           </Link>
 
           <div className="mt-10 flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 hover:scale-110 hover:-rotate-6 hover:bg-[var(--accent)] hover:text-white">
               {SERVICE_ICONS[service.key]}
             </div>
             <span
@@ -98,16 +109,10 @@ export function ServicePage({ id }: { id: string }) {
                 {CERTS.map((c) => (
                   <div
                     key={c.title}
-                    className="border-rule flex items-center gap-3 rounded-xl border px-4 py-3"
+                    className="group border-rule flex items-center gap-3 rounded-xl border px-4 py-3 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1 hover:border-[var(--accent)] hover:shadow-[0_16px_30px_-18px_rgba(194,65,12,0.35)]"
                     style={{ background: "var(--bg)" }}
                   >
-                    <span
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                      style={{
-                        background: "color-mix(in oklab, var(--accent) 10%, transparent)",
-                        color: "var(--accent)",
-                      }}
-                    >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-200 group-hover:rotate-12 group-hover:bg-[var(--accent)] group-hover:text-white">
                       <svg
                         width="14"
                         height="14"
@@ -137,37 +142,54 @@ export function ServicePage({ id }: { id: string }) {
 
       <section className="border-rule bg-paper-alt border-t py-20 md:py-28">
         <div className="mx-auto max-w-6xl px-6 md:px-8">
-          <RevealGroup className="grid gap-5 md:grid-cols-2" stagger={0.06}>
-            {service.groups[locale].map((g) => (
-              <RevealItem
-                key={g.title}
-                className="border-rule flex h-full flex-col rounded-2xl border p-7 md:p-8"
-                style={{ background: "var(--bg)" }}
-              >
-                <h2 className="text-[19px] leading-snug font-semibold tracking-tight">{g.title}</h2>
-                <ul className="mt-4 flex flex-col gap-3">
-                  {g.items.map((item, i) => (
-                    <li key={i} className="text-muted flex gap-3 text-[15px] leading-relaxed">
-                      <Check />
-                      <span>
-                        <Inline text={item} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                {g.tools && (
-                  <div className="mt-auto flex flex-wrap gap-1.5 pt-6">
-                    {g.tools.map((tool) => (
-                      <span
-                        key={tool}
-                        className="rounded px-2 py-0.5 font-mono text-[11px]"
-                        style={{ background: "var(--chip)", color: "var(--muted)" }}
+          <RevealGroup
+            className="grid gap-5 md:grid-cols-2"
+            stagger={0.06}
+            style={{ perspective: "1200px" }}
+          >
+            {service.groups[locale].map((g, gi) => (
+              <RevealItem key={g.title} className="h-full">
+                <TiltCard
+                  lift
+                  className={`${CARD} relative flex flex-col p-7 md:p-8`}
+                  style={CARD_BG}
+                >
+                  <span
+                    className="absolute top-6 right-7 font-mono text-3xl font-medium tracking-tight opacity-[0.1] transition-opacity duration-300 group-hover:opacity-40"
+                    style={{ color: "var(--accent)" }}
+                    aria-hidden
+                  >
+                    {String(gi + 1).padStart(2, "0")}
+                  </span>
+                  <h2
+                    className="pr-12 text-[19px] leading-snug font-semibold tracking-tight"
+                    style={{ transform: "translateZ(25px)" }}
+                  >
+                    <span className={TITLE_HOVER}>{g.title}</span>
+                  </h2>
+                  <ul className="mt-4 flex flex-col gap-3">
+                    {g.items.map((item, i) => (
+                      <li
+                        key={i}
+                        className="text-muted flex gap-3 text-[15px] leading-relaxed transition-[transform,color] duration-200 hover:translate-x-1 hover:text-[var(--fg)]"
                       >
-                        {tool}
-                      </span>
+                        <Check />
+                        <span>
+                          <Inline text={item} />
+                        </span>
+                      </li>
                     ))}
-                  </div>
-                )}
+                  </ul>
+                  {g.tools && (
+                    <div className="mt-auto flex flex-wrap gap-1.5 pt-6">
+                      {g.tools.map((tool) => (
+                        <span key={tool} className={CHIP} style={CHIP_STYLE}>
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </TiltCard>
               </RevealItem>
             ))}
           </RevealGroup>
@@ -185,18 +207,25 @@ export function ServicePage({ id }: { id: string }) {
             </p>
           </Reveal>
 
-          <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" stagger={0.07}>
+          <RevealGroup
+            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            stagger={0.07}
+            style={{ perspective: "1200px" }}
+          >
             {PRINCIPLES[locale].map((p, i) => (
-              <RevealItem
-                key={p.title}
-                className="border-rule h-full rounded-2xl border p-6"
-                style={{ background: "var(--bg)" }}
-              >
-                <span className="font-mono text-[11px]" style={{ color: "var(--accent)" }}>
-                  0{i + 1}
-                </span>
-                <h3 className="mt-3 text-[17px] font-semibold tracking-tight">{p.title}</h3>
-                <p className="text-muted mt-2 text-[14px] leading-relaxed">{p.text}</p>
+              <RevealItem key={p.title} className="h-full">
+                <TiltCard lift className={`${CARD} p-6`} style={CARD_BG}>
+                  <span
+                    className="inline-block origin-left font-mono text-[11px] transition-transform duration-300 group-hover:scale-[2]"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    0{i + 1}
+                  </span>
+                  <h3 className="mt-4 text-[17px] font-semibold tracking-tight">
+                    <span className={TITLE_HOVER}>{p.title}</span>
+                  </h3>
+                  <p className="text-muted mt-2 text-[14px] leading-relaxed">{p.text}</p>
+                </TiltCard>
               </RevealItem>
             ))}
           </RevealGroup>
@@ -205,22 +234,31 @@ export function ServicePage({ id }: { id: string }) {
 
       <section className="border-rule bg-paper-alt border-t">
         <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-          <Link
-            href={`/servicios/${other.id}`}
-            className="group flex flex-col gap-3 md:flex-row md:items-end md:justify-between"
-          >
-            <span>
-              <span className="text-muted block text-sm font-medium">
-                {t("servicesPage.other")}
+          <Link href={`/servicios/${other.id}`} className="block" style={{ perspective: "1200px" }}>
+            <TiltCard
+              lift
+              maxTilt={4}
+              className={`${CARD} flex flex-col gap-6 p-7 md:flex-row md:items-center md:justify-between md:p-10`}
+              style={CARD_BG}
+            >
+              <span className="flex items-center gap-5">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 group-hover:-rotate-6 group-hover:bg-[var(--accent)] group-hover:text-white">
+                  {SERVICE_ICONS[other.key]}
+                </span>
+                <span>
+                  <span className="text-muted block text-sm font-medium">
+                    {t("servicesPage.other")}
+                  </span>
+                  <span className="mt-1 block text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[1.05] font-semibold tracking-[-0.035em] transition-colors duration-200 group-hover:text-[var(--accent)]">
+                    {t(`services.${other.key}Title`)}
+                  </span>
+                </span>
               </span>
-              <span className="mt-2 block text-[clamp(1.75rem,4vw,3rem)] leading-[1.05] font-semibold tracking-[-0.035em] transition-colors duration-200 group-hover:text-[var(--accent)]">
-                {t(`services.${other.key}Title`)}
+              <span className="text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200 group-hover:text-[var(--accent)]">
+                {t("servicesPage.more")}
+                <Arrow />
               </span>
-            </span>
-            <span className="inline-flex items-center gap-2 text-sm font-medium">
-              {t("servicesPage.more")}
-              <Arrow />
-            </span>
+            </TiltCard>
           </Link>
         </div>
       </section>
