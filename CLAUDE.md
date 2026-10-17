@@ -59,15 +59,23 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Hover en móvil**: `@variant hover (&:hover)` en `globals.css` hace que `hover:` también se active al tocar (Tailwind v4 lo limita a `(hover: hover)` por defecto). No lo quites: Ángel quiere los mismos efectos en móvil que en PC.
 - **Enlaces externos**: siempre `target="_blank" rel="noopener noreferrer"`. LinkedIn con `www.` para que en móvil abra la app.
 - **Icon system**: inline SVG stroke 2px, 24x24 viewBox. No instales lucide ni heroicons sin consultar.
-- **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch. **Excepciones aprobadas por Ángel** (se mueven siempre, también con reduced motion): los carruseles (`.carousel-group`, `components/carousel.tsx`: banda de habilidades y banda "Disponible" del footer), sin pausa al hacer hover, y el sello circular giratorio del footer (`.spin-slow`). Son lentos y lineales. También el scroll suave de los enlaces internos (`lib/smooth-scroll.ts`).
+- **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch. **Excepciones aprobadas por Ángel** (se mueven siempre, también con reduced motion): los carruseles (`.carousel-group`, `components/carousel.tsx`: banda de habilidades y banda "Disponible" del footer), sin pausa al hacer hover. Son lentos y lineales. También el scroll suave de los enlaces internos (`lib/smooth-scroll.ts`).
 
 ## Páginas de proyecto
 
 Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slug]/page.tsx`), una página estática por proyecto. Los datos y el texto del artículo (ES y EN) viven en `lib/projects.ts`. Título, etiqueta y descripción corta salen de `messages/*.json` (`portfolio.p1Title`...), compartidos con la card. Añadir un proyecto: entrada nueva en `PROJECTS` + sus claves en los dos JSON. Las páginas usan `ProjectNav` y `ProjectFooter` porque la nav y el footer de la home enlazan a anclas `#` que solo existen allí.
 
+**Cada proyecto nuevo sigue la misma estructura que los actuales** (petición de Ángel):
+
+- **Etiqueta (`pXTag`)**: una sola palabra con el área del proyecto, no su estado. Las actuales son "Automatización", "Desarrollo" e "Infraestructura" (EN: Automation, Development, Infrastructure). Reutiliza una si encaja; si no, otra palabra igual de corta. Nada de "En producción" o "En curso".
+- **Card**: título corto (`pXTitle`), descripción de una o dos frases (`pXDesc`) y 3-4 tecnologías en `tech`.
+- **Artículo** (`post` en `lib/projects.ts`, ES y EN): `title` largo, `intro` (primer párrafo, va de entradilla), secciones con H2 y, si hace falta, `{ h3 }`, `{ list }` y `{ ol }`. `date` en AAAA-MM-DD. Si Ángel pasa el texto, se respeta tal cual, solo con correcciones mínimas, y se traduce al inglés.
+- **Portada**: la foto que suba Ángel se convierte a WebP (máx. 2200 px de ancho) en `public/projects/`, más una imagen para redes de 1200x630 en JPG (`ogImage`). Los originales pesados no se dejan en `public/`. Un SVG se puede usar tal cual (revisar que no tenga scripts, em dashes ni animaciones sin `prefers-reduced-motion`).
+- **Orden**: el proyecto nuevo se añade a `PROJECTS`; la card, la página, el "Siguiente proyecto" y el sitemap salen solos.
+
 ## Páginas de servicio
 
-Cada card de Servicios abre su propia página: `/servicios/sistemas` y `/servicios/web` (`app/servicios/[id]/page.tsx`, `components/services-page.tsx`). Las certificaciones solo salen en la de sistemas. El detalle de cada servicio (grupos, herramientas, principios) vive en `lib/services.ts`, en ES y EN, y solo recoge lo que ya figura en la web (stack, áreas, certificaciones). Reutiliza `ProjectNav` y `ProjectFooter`.
+Cada card de Servicios abre su propia página: `/servicios/sistemas` y `/servicios/web` (`app/servicios/[id]/page.tsx`, `components/services-page.tsx`). El detalle de cada servicio (grupos, herramientas, principios) vive en `lib/services.ts`, en ES y EN, y solo recoge lo que ya figura en la web (stack, áreas, proyectos). Reutiliza `ProjectNav` y `ProjectFooter`.
 
 ## i18n
 

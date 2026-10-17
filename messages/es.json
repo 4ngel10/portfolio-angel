@@ -41,11 +41,10 @@
   },
   "about": {
     "title": "Infraestructura como base invisible que permite que todo funcione.",
-    "p1": "Soy Ángel Fernández Garriga, técnico de sistemas y desarrollador web. Entiendo la tecnología como una herramienta al servicio del negocio: cuando una infraestructura está bien pensada, nadie habla de ella: simplemente funciona.",
-    "p2": "He trabajado con infraestructuras complejas del sector hotelero: segmentación VLAN, virtualización, múltiples servidores en paralelo y entornos que no se pueden permitir un minuto de parada. De ahí nace mi forma de trabajar: documentación, estandarización y continuidad de negocio como pilares.",
-    "p3": "En paralelo diseño y desarrollo webs profesionales para empresas y profesionales que quieren una presencia online cuidada, rápida y mantenible, sin plantillas infladas ni letra pequeña.",
+    "p1": "Soy Ángel Fernández, **administrador de sistemas y desarrollador web**. Para mí la tecnología tiene que estar **al servicio del negocio**. Cuando una infraestructura está bien montada, nadie habla de ella. **Simplemente funciona.**",
+    "p2": "Vengo del **sector hotelero**, donde he gestionado entornos con segmentación de redes, virtualización y varios servidores en paralelo. Sitios donde una caída no es una anécdota: **es un problema serio**. Eso me enseñó a trabajar con **documentación, estandarización y continuidad de negocio** como base de todo lo que hago.",
+    "p3": "En paralelo, diseño y desarrollo **webs profesionales** para empresas y profesionales que quieren una presencia online **cuidada, rápida y fácil de mantener**. Sin plantillas infladas ni letra pequeña.",
     "stackLabel": "Stack técnico",
-    "certsLabel": "Certificaciones",
     "catVirt": "Virtualización",
     "catSystems": "Sistemas",
     "catNetwork": "Seguridad y redes",
@@ -78,14 +77,14 @@
   },
   "portfolio": {
     "title": "Proyectos recientes.",
-    "lead": "Una selección en construcción. Esta sección se irá ampliando con nuevos casos.",
-    "p1Tag": "En producción",
+    "lead": "Estos son algunos de los proyectos en los que he estado trabajando y que quiero compartir.",
+    "p1Tag": "Automatización",
     "p1Title": "Mapeo automático de impresoras en RDS",
     "p1Desc": "Script de PowerShell lanzado por GPO que asigna a cada usuario sus impresoras, bandejas y predeterminada leyendo atributos de Active Directory.",
-    "p2Tag": "En producción",
+    "p2Tag": "Desarrollo",
     "p2Title": "Prompt Vault, bóveda de prompts IA",
     "p2Desc": "Guarda, organiza y comparte tus prompts y skills de IA en una bóveda personal con categorías y copia rápida.",
-    "p3Tag": "Documentación en curso",
+    "p3Tag": "Infraestructura",
     "p3Title": "Homelab personal sobre Proxmox",
     "p3Desc": "Homelab casero para la gestión inteligente del hogar: domótica con Home Assistant, VPN propia, bloqueo de anuncios y backups automáticos en la nube."
   },
@@ -116,10 +115,7 @@
   },
   "footer": {
     "year": "2026",
-    "ctaTitle": "¿Empezamos?",
-    "ctaLink": "Escríbeme",
     "available": "Disponible para nuevos proyectos",
-    "circle": "Administrador de Sistemas - Desarrollador Web",
     "backTop": "Volver arriba"
   },
   "a11y": {

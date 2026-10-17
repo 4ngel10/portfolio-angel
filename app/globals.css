@@ -97,9 +97,9 @@
 
   @media (prefers-reduced-motion: reduce) {
     /* Excepciones deliberadas (decisión de Ángel, ver CLAUDE.md): los carruseles
-       (.carousel-group) y el sello circular del footer (.spin-slow) se mueven siempre.
+       (.carousel-group) se mueven siempre.
        Son lentos, lineales y sin parallax. */
-    *:not(.carousel-group):not(.spin-slow), *::before, *::after {
+    *:not(.carousel-group), *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -176,7 +176,6 @@
   .carousel::before { left: 0; background-image: linear-gradient(to right, var(--carousel-fade, var(--bg)), transparent); }
   .carousel::after { right: 0; background-image: linear-gradient(to left, var(--carousel-fade, var(--bg)), transparent); }
 
-  .spin-slow { animation: spin 18s linear infinite; }
 
   .caret { animation: blink 1.1s steps(1) infinite; }
 

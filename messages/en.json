@@ -41,11 +41,10 @@
   },
   "about": {
     "title": "Infrastructure as the invisible base that lets everything run.",
-    "p1": "I'm Ángel Fernández Garriga, systems technician and web developer. I treat technology as a tool at the service of the business: when infrastructure is well thought out, nobody talks about it: it just works.",
-    "p2": "I've run complex hospitality infrastructures: VLAN segmentation, virtualization, multiple servers in parallel and environments that cannot afford a minute of downtime. From there comes my way of working: documentation, standardization and business continuity as pillars.",
-    "p3": "In parallel I design and build professional websites for companies and professionals that want a careful, fast and maintainable online presence, no inflated templates or fine print.",
+    "p1": "I am Ángel Fernández, a **systems administrator and web developer**. To me, technology has to be **at the service of the business**. When infrastructure is well built, nobody talks about it. **It just works.**",
+    "p2": "I come from the **hospitality sector**, where I have managed environments with network segmentation, virtualization and several servers running in parallel. Places where downtime is not an anecdote: **it is a serious problem**. That taught me to build everything I do on **documentation, standardization and business continuity**.",
+    "p3": "Alongside that, I design and build **professional websites** for companies and professionals who want an online presence that is **polished, fast and easy to maintain**. No bloated templates, no fine print.",
     "stackLabel": "Technical stack",
-    "certsLabel": "Certifications",
     "catVirt": "Virtualization",
     "catSystems": "Systems",
     "catNetwork": "Security and networking",
@@ -78,14 +77,14 @@
   },
   "portfolio": {
     "title": "Recent work.",
-    "lead": "A selection in progress. This section will keep growing with new cases.",
-    "p1Tag": "In production",
+    "lead": "These are some of the projects I have been working on and want to share.",
+    "p1Tag": "Automation",
     "p1Title": "Automatic printer mapping on RDS",
     "p1Desc": "GPO-launched PowerShell script that gives each user their printers, trays and default printer by reading Active Directory attributes.",
-    "p2Tag": "In production",
+    "p2Tag": "Development",
     "p2Title": "Prompt Vault, AI prompt vault",
     "p2Desc": "Save, organize and share your AI prompts and skills in a personal vault with categories and quick copy.",
-    "p3Tag": "Documentation in progress",
+    "p3Tag": "Infrastructure",
     "p3Title": "Personal Proxmox homelab",
     "p3Desc": "Home lab for a smart home: Home Assistant automation, my own VPN, ad blocking and automatic cloud backups."
   },
@@ -116,10 +115,7 @@
   },
   "footer": {
     "year": "2026",
-    "ctaTitle": "Shall we start?",
-    "ctaLink": "Write to me",
     "available": "Available for new projects",
-    "circle": "Systems Administrator - Web Developer",
     "backTop": "Back to top"
   },
   "a11y": {

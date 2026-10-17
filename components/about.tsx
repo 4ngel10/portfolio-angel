@@ -2,9 +2,11 @@
 
 import { useI18n } from "@/lib/i18n";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
+// Los párrafos admiten **negrita** (mismo formato que los artículos).
+import { Inline } from "./project-article";
 
 // Mismas herramientas que la fila 1 del carrusel (components/stack-band.tsx), por área.
-// Si añades o quitas una allí, refléjalo aquí. Hornetsecurity va además por su certificación.
+// Si añades o quitas una allí, refléjalo aquí. Hornetsecurity solo está aquí, no en el carrusel.
 const STACK: { labelKey: string; items: string[] }[] = [
   { labelKey: "about.catVirt", items: ["Hyper-V", "VMware", "Proxmox", "Docker"] },
   {
@@ -23,12 +25,6 @@ const STACK: { labelKey: string; items: string[] }[] = [
   },
 ];
 
-export const CERTS = [
-  { title: "Omada OCNA Wireless", meta: "TP-Link · 2026" },
-  { title: "Hornetsecurity Engineering", meta: "Microsoft 365 · 2025" },
-  { title: "3CX Basic Engineer V20", meta: "Comunicaciones · 2025" },
-];
-
 export function About() {
   const { t } = useI18n();
 
@@ -44,13 +40,13 @@ export function About() {
         <div className="mt-14 grid items-start gap-14 md:grid-cols-2 md:gap-20">
           <RevealGroup className="space-y-5" stagger={0.08}>
             <RevealItem as="div">
-              <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p1")}</p>
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]"><Inline text={t("about.p1")} /></p>
             </RevealItem>
             <RevealItem as="div">
-              <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p2")}</p>
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]"><Inline text={t("about.p2")} /></p>
             </RevealItem>
             <RevealItem as="div">
-              <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p3")}</p>
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]"><Inline text={t("about.p3")} /></p>
             </RevealItem>
           </RevealGroup>
 
@@ -72,45 +68,6 @@ export function About() {
                         {it}
                       </span>
                     ))}
-                  </div>
-                </RevealItem>
-              ))}
-            </RevealGroup>
-
-            <h3 className="text-muted mt-10 mb-4 text-xs font-semibold tracking-[0.08em] uppercase">
-              {t("about.certsLabel")}
-            </h3>
-            <RevealGroup className="flex flex-col gap-2.5" stagger={0.06}>
-              {CERTS.map((c) => (
-                <RevealItem
-                  key={c.title}
-                  className="group border-rule flex items-center gap-3 rounded-xl border px-4 py-3 transition-[transform,border-color] duration-200 hover:translate-x-1 hover:border-[var(--accent)]"
-                  style={{ background: "var(--bg)" }}
-                >
-                  <span
-                    className="flex h-8 w-8 items-center justify-center rounded-lg"
-                    style={{
-                      background: "color-mix(in oklab, var(--accent) 10%, transparent)",
-                      color: "var(--accent)",
-                    }}
-                  >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="12" cy="8" r="7" />
-                      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-                    </svg>
-                  </span>
-                  <div className="text-[13px] leading-tight">
-                    <div className="text-ink font-semibold">{c.title}</div>
-                    <div className="text-muted mt-0.5 text-[12px]">{c.meta}</div>
                   </div>
                 </RevealItem>
               ))}

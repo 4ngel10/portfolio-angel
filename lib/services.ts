@@ -3,8 +3,8 @@
  * Cada servicio tiene su página en /servicios/<id> (app/servicios/[id]/page.tsx),
  * a la que enlaza su card de la home (components/services.tsx).
  *
- * Todo sale de lo que ya cuenta la web: stack técnico, áreas de trabajo,
- * certificaciones y proyectos. Si añades una tecnología, añádela aquí también.
+ * Todo sale de lo que ya cuenta la web: stack técnico, áreas de trabajo
+ * y proyectos. Si añades una tecnología, añádela aquí también.
  * En el texto vale **negrita** y [enlace](/ruta). Sin em dashes.
  */
 

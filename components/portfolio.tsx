@@ -27,7 +27,7 @@ export function Portfolio() {
           stagger={0.08}
           style={{ perspective: "1200px" }}
         >
-          {PROJECTS.map((p, idx) => {
+          {PROJECTS.map((p) => {
             const title = t(`portfolio.${p.key}Title`);
             return (
               <RevealItem key={p.key} className="h-full">
@@ -45,11 +45,7 @@ export function Portfolio() {
                       alt={title}
                       sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
                       className="h-52"
-                    >
-                      <span className="text-muted absolute top-4 left-5 font-mono text-[11px]">
-                        0{idx + 1}
-                      </span>
-                    </ProjectCover>
+                    />
                     <div
                       className="flex flex-1 flex-col p-6"
                       style={{ transform: "translateZ(20px)" }}

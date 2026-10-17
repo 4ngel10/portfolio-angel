@@ -1,63 +1,7 @@
 "use client";
 
-import { useId } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Carousel } from "./carousel";
-import { Reveal } from "./reveal";
-
-const EMAIL = "angelfernandezgarriga@gmail.com";
-
-/** Sello circular con texto girando alrededor y una flecha en el centro. */
-function CircleBadge({ text, label }: { text: string; label: string }) {
-  const id = useId();
-  const r = 62;
-  // "A - B" -> "A - B - " con espacios no separables: SVG recorta los espacios del final,
-  // y sin esto la unión del círculo quedaría más pegada que el separador del medio.
-  const SEP = " - ";
-  const ring = text.split(" - ").join(SEP) + SEP;
-  return (
-    <a
-      href="#contact"
-      aria-label={label}
-      className="group relative block h-36 w-36 shrink-0 md:h-44 md:w-44"
-    >
-      <svg viewBox="0 0 160 160" className="spin-slow absolute inset-0 h-full w-full" aria-hidden>
-        <defs>
-          <path
-            id={id}
-            d={`M80,80 m-${r},0 a${r},${r} 0 1,1 ${r * 2},0 a${r},${r} 0 1,1 -${r * 2},0`}
-          />
-        </defs>
-        {/* textLength = circunferencia exacta: el texto (que termina en " - ") reparte el
-            espacio sobrante por igual, así la unión del círculo queda igual que el separador. */}
-        <text className="font-mono uppercase" fontSize="11" fill="currentColor">
-          <textPath href={`#${id}`} textLength={2 * Math.PI * r} lengthAdjust="spacing">
-            {ring}
-          </textPath>
-        </text>
-      </svg>
-      <span
-        className="absolute inset-0 m-auto flex h-14 w-14 items-center justify-center rounded-full text-white transition-transform duration-300 group-hover:scale-110 group-active:scale-[0.97] md:h-16 md:w-16"
-        style={{ background: "var(--accent)" }}
-      >
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="transition-transform duration-300 group-hover:rotate-45"
-        >
-          <line x1="7" y1="17" x2="17" y2="7" />
-          <polyline points="7 7 17 7 17 17" />
-        </svg>
-      </span>
-    </a>
-  );
-}
 
 export function Footer() {
   const { t } = useI18n();
@@ -100,65 +44,7 @@ export function Footer() {
         />
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 py-20 md:px-8 md:py-28">
-        <Reveal className="flex flex-col justify-between gap-12 md:flex-row md:items-end">
-          <div className="min-w-0">
-            <a
-              href={`mailto:${EMAIL}`}
-              className="group block text-[clamp(3rem,9vw,7rem)] leading-[0.9] font-semibold tracking-[-0.05em] text-white"
-            >
-              {t("footer.ctaTitle")}
-            </a>
-            <a
-              href={`mailto:${EMAIL}`}
-              className="group mt-10 inline-flex max-w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] py-3 pr-5 pl-3 transition-[border-color,background-color] duration-300 hover:border-[var(--accent)] hover:bg-white/[0.06]"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_18%,transparent)] text-[var(--accent)] transition-colors duration-300 group-hover:bg-[var(--accent)] group-hover:text-white">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
-                >
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-              </span>
-              <span className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-0.5">
-                <span className="text-base font-medium text-white md:text-lg">
-                  {t("footer.ctaLink")}
-                </span>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="shrink-0 text-slate-500 transition-[transform,color] duration-300 group-hover:translate-x-1 group-hover:text-[var(--accent)]"
-                  aria-hidden
-                >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-                <span className="font-mono text-sm break-all text-slate-300 transition-colors duration-300 group-hover:text-white">
-                  {EMAIL}
-                </span>
-              </span>
-            </a>
-          </div>
-          <CircleBadge text={t("footer.circle")} label={t("footer.ctaLink")} />
-        </Reveal>
-      </div>
-
-      <div className="border-t border-white/10 py-8">
+      <div className="py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 px-6 md:flex-row md:items-center md:px-8">
           <div className="text-[14px] font-medium text-slate-200">
             Ángel Fernández Garriga{" "}

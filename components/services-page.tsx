@@ -5,7 +5,6 @@ import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { TiltCard } from "./tilt-card";
 import { Inline } from "./project-article";
 import { SERVICE_ICONS } from "./service-icons";
-import { CERTS } from "./about";
 import { useI18n } from "@/lib/i18n";
 import { SERVICES, PRINCIPLES, getService } from "@/lib/services";
 
@@ -98,45 +97,6 @@ export function ServicePage({ id }: { id: string }) {
               {p}
             </p>
           ))}
-
-          {/* Las certificaciones son todas de sistemas: solo van en esa página. */}
-          {service.id === "sistemas" && (
-            <div className="mt-10">
-              <h2 className="text-muted mb-3 text-xs font-semibold tracking-[0.08em] uppercase">
-                {t("about.certsLabel")}
-              </h2>
-              <div className="flex flex-wrap gap-2.5">
-                {CERTS.map((c) => (
-                  <div
-                    key={c.title}
-                    className="group border-rule flex items-center gap-3 rounded-xl border px-4 py-3 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1 hover:border-[var(--accent)] hover:shadow-[0_16px_30px_-18px_rgba(194,65,12,0.35)]"
-                    style={{ background: "var(--bg)" }}
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-200 group-hover:rotate-12 group-hover:bg-[var(--accent)] group-hover:text-white">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden
-                      >
-                        <circle cx="12" cy="8" r="7" />
-                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-                      </svg>
-                    </span>
-                    <div className="text-[13px] leading-tight">
-                      <div className="font-semibold">{c.title}</div>
-                      <div className="text-muted mt-0.5 text-[12px]">{c.meta}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </Reveal>
       </header>
 
