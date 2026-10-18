@@ -46,9 +46,9 @@ export const BLOG_POSTS: BlogPost[] = [
       es: {
         title: "Backup 3-2-1: qué es y cómo lo aplico en empresas",
         excerpt:
-          "Tres copias, dos soportes y una fuera de la oficina. Te explico la regla 3-2-1 y cómo la monto con Veeam y Acronis.",
+          "Tres copias, dos soportes y una fuera de la oficina. Te explico la regla 3-2-1 y cómo la monto con Nakivo y Acronis.",
         description:
-          "Qué es la regla de backup 3-2-1 y cómo aplicarla en tu empresa con Veeam y Acronis. Una estrategia de backup sencilla para no perder datos ni días de trabajo.",
+          "Qué es la regla de backup 3-2-1 y cómo aplicarla en tu empresa con Nakivo, Veeam y Acronis. Una estrategia de backup sencilla para no perder datos ni días de trabajo.",
         intro:
           "La regla 3-2-1 cabe en una línea: tres copias de tus datos, en dos soportes distintos y una de ellas fuera de la oficina. Es la base de cualquier estrategia de backup en una empresa. Cuando una copia falla el día que hace falta, casi siempre es porque se saltó uno de esos tres números.",
         sections: [
@@ -75,9 +75,9 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "Cómo lo monto con Veeam",
+            heading: "Cómo lo monto con Nakivo",
             blocks: [
-              "Para servidores y máquinas virtuales uso **Veeam Backup & Replication**. Funciona igual de bien con Hyper-V que con VMware, que son los dos hipervisores que más me encuentro.",
+              "Para servidores y máquinas virtuales, la herramienta que más uso es **Nakivo Backup & Replication**. Trabaja con VMware y Hyper-V, que son los hipervisores que más me encuentro, y también con servidores físicos.",
               "El esquema tiene tres piezas:",
               {
                 ol: [
@@ -86,13 +86,14 @@ export const BLOG_POSTS: BlogPost[] = [
                   "**Copias inmutables.** Configuro el repositorio para que las copias no se puedan borrar ni modificar durante unos días, ni siquiera con una cuenta de administrador. Si entra un ransomware, no puede tocarlas.",
                 ],
               },
-              "Además, Veeam manda un informe por correo cada vez que termina un trabajo. Si una copia falla, me entero esa misma mañana, no el día que hace falta restaurar.",
+              "Además, Nakivo manda un informe por correo cada vez que termina un trabajo. Si una copia falla, me entero esa misma mañana, no el día que hace falta restaurar.",
+              "Si una empresa ya trabaja con **Veeam**, no lo cambio por cambiar. Lo conozco bien y el esquema es el mismo: copia local, copia externa e inmutabilidad.",
             ],
           },
           {
             heading: "Dónde entra Acronis",
             blocks: [
-              "Veeam brilla con servidores. Para los equipos de los usuarios, sobre todo portátiles que entran y salen de la oficina, prefiero **Acronis**.",
+              "Nakivo brilla con servidores. Para los equipos de los usuarios, sobre todo portátiles que entran y salen de la oficina, prefiero **Acronis**.",
               "El agente se instala en cada equipo y copia a la nube aunque el portátil esté fuera de la red de la empresa. Si a alguien le roban el portátil en un viaje, sus archivos siguen a salvo y se recuperan en un equipo nuevo.",
               "También permite copiar el equipo entero o solo carpetas concretas. Para la mayoría de usuarios basta con los documentos y el escritorio, que es donde de verdad está su trabajo.",
             ],
@@ -103,10 +104,10 @@ export const BLOG_POSTS: BlogPost[] = [
               "Para una oficina de 10 a 20 puestos, con un par de servidores virtualizados, el esquema que propongo es este:",
               {
                 list: [
-                  "Copia diaria de las máquinas virtuales con Veeam a un NAS de la oficina, con dos semanas de historial.",
+                  "Copia diaria de las máquinas virtuales con Nakivo a un NAS de la oficina, con dos semanas de historial.",
                   "Copia secundaria cada noche a un almacenamiento en la nube fuera de Baleares, inmutable durante 14 días.",
                   "Acronis en los portátiles, con copia a la nube de documentos y escritorio.",
-                  "Una copia aparte de Microsoft 365, porque si alguien borra un correo, Microsoft solo lo guarda unas semanas.",
+                  "Una copia aparte de Microsoft 365, que Nakivo también cubre, porque si alguien borra un correo, Microsoft solo lo guarda unas semanas.",
                 ],
               },
               "Con eso hay tres copias, en tres soportes, y una fuera de la isla. Cumple la regla con margen.",
@@ -117,7 +118,7 @@ export const BLOG_POSTS: BlogPost[] = [
             heading: "La parte que casi nadie hace: probar",
             blocks: [
               "Una copia que nunca se ha restaurado es una promesa, no una copia. Por eso programo pruebas de restauración periódicas. Recupero una máquina o unos archivos en un entorno aparte y compruebo que todo arranca y se abre bien.",
-              "Veeam lo automatiza con SureBackup, que arranca la copia en un entorno aislado y verifica que el sistema responde. En entornos pequeños lo hago a mano, pero lo hago.",
+              "Nakivo ayuda con esto: arranca la máquina desde la copia y te envía una captura de pantalla del sistema ya iniciado. Así sabes que la copia arranca sin tener que restaurarla entera. Aun así, de vez en cuando hago una restauración completa a mano.",
               "Hay una versión ampliada de la regla que lo resume bien: **3-2-1-1-0**. Una copia inmutable más y cero errores en las verificaciones.",
               "Si no tienes claro si tus copias cumplen la regla 3-2-1, [cuéntamelo](/#contact) y lo revisamos juntos. Aquí puedes ver cómo trabajo en [administración de sistemas](/servicios/sistemas#backup).",
             ],
@@ -127,9 +128,9 @@ export const BLOG_POSTS: BlogPost[] = [
       en: {
         title: "3-2-1 backup: what it is and how I apply it in companies",
         excerpt:
-          "Three copies, two media and one off-site. I explain the 3-2-1 rule and how I set it up with Veeam and Acronis.",
+          "Three copies, two media and one off-site. I explain the 3-2-1 rule and how I set it up with Nakivo and Acronis.",
         description:
-          "What the 3-2-1 backup rule is and how to apply it in your company with Veeam and Acronis. A simple backup strategy so you never lose data or days of work.",
+          "What the 3-2-1 backup rule is and how to apply it in your company with Nakivo, Veeam and Acronis. A simple backup strategy so you never lose data or days of work.",
         intro:
           "The 3-2-1 rule fits in one line: three copies of your data, on two different media, with one of them off-site. It is the foundation of any company backup strategy. When a backup fails on the day you need it, it is almost always because one of those three numbers was skipped.",
         sections: [
@@ -156,9 +157,9 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "How I set it up with Veeam",
+            heading: "How I set it up with Nakivo",
             blocks: [
-              "For servers and virtual machines I use **Veeam Backup & Replication**. It works just as well with Hyper-V as with VMware, the two hypervisors I come across most.",
+              "For servers and virtual machines, the tool I use most is **Nakivo Backup & Replication**. It works with VMware and Hyper-V, the hypervisors I come across most, and with physical servers too.",
               "The setup has three parts:",
               {
                 ol: [
@@ -167,13 +168,14 @@ export const BLOG_POSTS: BlogPost[] = [
                   "**Immutable backups.** I configure the repository so backups cannot be deleted or changed for a number of days, not even with an administrator account. If ransomware gets in, it cannot touch them.",
                 ],
               },
-              "On top of that, Veeam emails a report every time a job finishes. If a backup fails, I know that same morning, not on the day I need to restore.",
+              "On top of that, Nakivo emails a report every time a job finishes. If a backup fails, I know that same morning, not on the day I need to restore.",
+              "If a company already runs **Veeam**, I do not replace it for the sake of it. I know it well and the setup is the same: local copy, off-site copy and immutability.",
             ],
           },
           {
             heading: "Where Acronis comes in",
             blocks: [
-              "Veeam shines with servers. For users' machines, especially laptops that come and go from the office, I prefer **Acronis**.",
+              "Nakivo shines with servers. For users' machines, especially laptops that come and go from the office, I prefer **Acronis**.",
               "The agent runs on each machine and backs up to the cloud even when the laptop is outside the company network. If someone has their laptop stolen on a trip, their files are safe and can be restored to a new machine.",
               "It can back up the whole machine or just specific folders. For most users, documents and desktop are enough, because that is where their work actually lives.",
             ],
@@ -184,10 +186,10 @@ export const BLOG_POSTS: BlogPost[] = [
               "For an office of 10 to 20 workstations with a couple of virtualized servers, this is the setup I propose:",
               {
                 list: [
-                  "Daily backup of the virtual machines with Veeam to a NAS in the office, keeping two weeks of history.",
+                  "Daily backup of the virtual machines with Nakivo to a NAS in the office, keeping two weeks of history.",
                   "A secondary copy every night to cloud storage outside the Balearic Islands, immutable for 14 days.",
                   "Acronis on laptops, backing up documents and desktop to the cloud.",
-                  "A separate backup of Microsoft 365, because if someone deletes an email, Microsoft only keeps it for a few weeks.",
+                  "A separate backup of Microsoft 365, which Nakivo also covers, because if someone deletes an email, Microsoft only keeps it for a few weeks.",
                 ],
               },
               "That gives you three copies, on three media, with one off the island. It meets the rule with room to spare.",
@@ -198,7 +200,7 @@ export const BLOG_POSTS: BlogPost[] = [
             heading: "The part almost nobody does: testing",
             blocks: [
               "A backup that has never been restored is a promise, not a backup. That is why I schedule regular restore tests. I recover a machine or some files in a separate environment and check that everything boots and opens properly.",
-              "Veeam automates this with SureBackup, which starts the backup in an isolated environment and checks that the system responds. In small setups I do it by hand, but I do it.",
+              "Nakivo helps here: it boots the machine from the backup and sends you a screenshot of the running system. That way you know the backup boots without restoring it in full. Even so, every now and then I do a full restore by hand.",
               "There is an extended version of the rule that sums it up well: **3-2-1-1-0**. One more immutable copy and zero errors in verification.",
               "If you are not sure whether your backups meet the 3-2-1 rule, [tell me about it](/#contact) and we will review them together. You can see how I work in [systems administration](/servicios/sistemas#backup).",
             ],

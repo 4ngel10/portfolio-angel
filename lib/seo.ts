@@ -23,7 +23,7 @@ export const HOME_DESCRIPTION =
 /** Meta description de cada página de servicio, por id. */
 export const SERVICE_DESCRIPTIONS: Record<string, string> = {
   sistemas:
-    "Administración de sistemas en Palma de Mallorca: servidores Windows, virtualización, backup Veeam, redes Fortinet y Microsoft 365. Infraestructura IT estable y documentada.",
+    "Administración de sistemas en Palma de Mallorca: servidores Windows, virtualización, backup con Nakivo y Veeam, redes Fortinet y Microsoft 365. Infraestructura IT estable y documentada.",
   web: "Desarrollo web profesional en Palma de Mallorca. Webs corporativas, portfolios y aplicaciones a medida con Next.js. Rápidas, responsive y optimizadas para SEO.",
 };
 
@@ -90,10 +90,13 @@ export function homeJsonLd() {
         "Docker",
         "Fortinet",
         "pfSense",
+        "Nakivo",
         "Veeam",
         "Intune",
         "Next.js",
         "TypeScript",
+        "Shopify",
+        "Google Ads",
       ],
     },
   );

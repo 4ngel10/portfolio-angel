@@ -79,11 +79,11 @@ export const SERVICES: ServiceDetail[] = [
           title: "Backup y continuidad de negocio",
           items: [
             "Aplico estrategias 3-2-1: varias copias, en distintos soportes y al menos una fuera de la oficina.",
-            "Las herramientas que uso son Veeam y Acronis.",
+            "La herramienta que más uso es Nakivo. También trabajo con Veeam y Acronis.",
             "En Baleares hay un detalle más: la copia externa conviene que esté fuera de la isla, para que un problema que afecte a toda la zona no se lleve también las copias. Lo explico a fondo en [Backup 3-2-1](/blog/backup-3-2-1).",
             "Y algo que no negocio: pruebas de restauración periódicas. Una copia que nunca se ha probado no es una copia de verdad.",
           ],
-          tools: ["Veeam", "Acronis"],
+          tools: ["Nakivo", "Veeam", "Acronis"],
         },
         {
           id: "microsoft-365",
@@ -158,11 +158,11 @@ export const SERVICES: ServiceDetail[] = [
           title: "Backup and business continuity",
           items: [
             "I apply 3-2-1 strategies: several copies, on different media, and at least one off-site.",
-            "The tools I use are Veeam and Acronis.",
+            "The tool I use most is Nakivo. I also work with Veeam and Acronis.",
             "In the Balearic Islands there is one more detail: the off-site copy should ideally be off the island, so a problem hitting the whole area does not take the backups with it. I explain it in depth in [3-2-1 backup](/blog/backup-3-2-1).",
             "And one thing I do not compromise on: regular restore tests. A backup that has never been tested is not a real backup.",
           ],
-          tools: ["Veeam", "Acronis"],
+          tools: ["Nakivo", "Veeam", "Acronis"],
         },
         {
           id: "microsoft-365",

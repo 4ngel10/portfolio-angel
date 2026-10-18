@@ -17,11 +17,20 @@ const STACK: { labelKey: string; items: string[] }[] = [
     labelKey: "about.catNetwork",
     items: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Hornetsecurity"],
   },
-  { labelKey: "about.catBackup", items: ["Veeam", "Acronis"] },
+  { labelKey: "about.catBackup", items: ["Nakivo", "Veeam", "Acronis"] },
   { labelKey: "about.catManagement", items: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"] },
   {
     labelKey: "about.catWeb",
-    items: ["Next.js", "TypeScript", "Vercel", "GitLab", "Nginx", "Apache"],
+    items: [
+      "Next.js",
+      "TypeScript",
+      "Vercel",
+      "Shopify",
+      "Google Ads",
+      "GitLab",
+      "Nginx",
+      "Apache",
+    ],
   },
 ];
 
