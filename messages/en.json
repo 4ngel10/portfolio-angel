@@ -139,8 +139,9 @@
   },
   "footer": {
     "year": "2026",
-    "available": "Available for new projects · Reply within 24-48 hours",
-    "backTop": "Back to top"
+    "available": "Available for new projects",
+    "backTop": "Back to top",
+    "reply": "Reply within 24-48 hours"
   },
   "a11y": {
     "toggleTheme": "Toggle theme",

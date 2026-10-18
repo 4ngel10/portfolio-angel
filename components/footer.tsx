@@ -25,12 +25,14 @@ export function Footer() {
         {/* Mismo carrusel que la banda de habilidades: continuo, sin pausa en hover. */}
         <Carousel
           direction="right"
-          speed={9}
-          repeat={10}
+          // Dos frases por vuelta: repeat a la mitad y speed al doble que con una sola frase,
+          // así la banda mide y se mueve igual.
+          speed={18}
+          repeat={5}
           gap="2rem"
           fadeColor="var(--footer-bg)"
-          items={[t("footer.available")]}
-          label={t("footer.available")}
+          items={[t("footer.available"), t("footer.reply")]}
+          label={`${t("footer.available")}. ${t("footer.reply")}`}
           separator={
             <svg
               width="14"
