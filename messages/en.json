@@ -4,7 +4,8 @@
     "services": "Services",
     "portfolio": "Work",
     "contact": "Contact",
-    "ctaContact": "Get in touch"
+    "ctaContact": "Get in touch",
+    "blog": "Blog"
   },
   "hero": {
     "titleStart": "Solid",
@@ -37,13 +38,14 @@
     "area9": "Home automation with Home Assistant",
     "area10": "Web development",
     "area11": "Domains and hosting",
-    "area12": "SEO management"
+    "area12": "SEO management",
+    "areas": "Areas I work in"
   },
   "about": {
     "title": "Infrastructure as the invisible base that lets everything run.",
     "p1": "I am Ángel Fernández, a **systems administrator and web developer**. To me, technology has to be **at the service of the business**. When infrastructure is well built, nobody talks about it. **It just works.**",
     "p2": "I come from the **hospitality sector**, where I have managed environments with network segmentation, virtualization and several servers running in parallel. Places where downtime is not an anecdote: **it is a serious problem**. That taught me to build everything I do on **documentation, standardization and business continuity**.",
-    "p3": "Alongside that, I design and build **professional websites** for companies and professionals who want an online presence that is **polished, fast and easy to maintain**. No bloated templates, no fine print.",
+    "p3": "Alongside that, I design and build **professional websites** for companies and freelancers who want an online presence that is **polished, fast and easy to maintain**. No bloated templates, no fine print.",
     "stackLabel": "Technical stack",
     "catVirt": "Virtualization",
     "catSystems": "Systems",
@@ -88,6 +90,20 @@
     "p3Title": "Personal Proxmox homelab",
     "p3Desc": "Home lab for a smart home: Home Assistant automation, my own VPN, ad blocking and automatic cloud backups."
   },
+  "blog": {
+    "title": "Blog.",
+    "lead": "Articles on systems, web development and automation. What I apply in my work, explained plainly.",
+    "back": "Back to the blog",
+    "home": "Back to home",
+    "read": "Read article",
+    "next": "Next article",
+    "minutes": "min read",
+    "cat": {
+      "sistemas": "Systems",
+      "desarrollo": "Development",
+      "automatizacion": "Automation"
+    }
+  },
   "project": {
     "back": "Back to projects",
     "visit": "Visit project",
@@ -98,7 +114,7 @@
   },
   "contact": {
     "title": "Got a project in mind? Let's talk.",
-    "lead": "Tell me what you need and your timeline. I reply within 24-48 h with a clear proposal, no strings attached.",
+    "lead": "Tell me what you need and your timeline. I reply within 24-48 hours with a clear proposal, no strings attached.",
     "emailLabel": "Email",
     "linkedinLabel": "LinkedIn",
     "githubLabel": "GitHub",
@@ -111,7 +127,13 @@
     "formSubmit": "Send message",
     "formSending": "Sending...",
     "formOk": "Message sent. I'll be in touch soon.",
-    "formErr": "Could not send. Try email instead."
+    "formErr": "Could not send. Try email instead.",
+    "formService": "Which service are you interested in?",
+    "formServicePh": "Choose an option",
+    "formServiceOpt1": "Systems administration",
+    "formServiceOpt2": "Web development",
+    "formServiceOpt3": "Both",
+    "formServiceOpt4": "Other / Not sure"
   },
   "footer": {
     "year": "2026",
@@ -120,6 +142,10 @@
   },
   "a11y": {
     "toggleTheme": "Toggle theme",
-    "toggleMenu": "Open menu"
+    "toggleMenu": "Open menu",
+    "skip": "Skip to main content",
+    "toggleLanguage": "ES / EN: switch language",
+    "mainNav": "Main navigation",
+    "footerNav": "Page sections"
   }
 }

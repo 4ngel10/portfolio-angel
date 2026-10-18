@@ -14,12 +14,18 @@ export function ProjectFooter() {
           Ángel Fernández Garriga{" "}
           <span className="ml-2 font-normal text-slate-500">© {t("footer.year")}</span>
         </div>
-        <nav className="flex flex-wrap gap-5 text-[13px] text-slate-400">
+        <nav
+          aria-label={t("a11y.footerNav")}
+          className="flex flex-wrap gap-5 text-[13px] text-slate-400"
+        >
           <Link href="/" className="transition-colors hover:text-white">
             {t("project.home")}
           </Link>
           <Link href="/#portfolio" className="transition-colors hover:text-white">
             {t("nav.portfolio")}
+          </Link>
+          <Link href="/blog" className="transition-colors hover:text-white">
+            {t("nav.blog")}
           </Link>
           <Link href="/#contact" className="transition-colors hover:text-white">
             {t("nav.contact")}

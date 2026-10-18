@@ -40,13 +40,19 @@ export function About() {
         <div className="mt-14 grid items-start gap-14 md:grid-cols-2 md:gap-20">
           <RevealGroup className="space-y-5" stagger={0.08}>
             <RevealItem as="div">
-              <p className="text-muted text-base leading-[1.75] md:text-[17px]"><Inline text={t("about.p1")} /></p>
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]">
+                <Inline text={t("about.p1")} />
+              </p>
             </RevealItem>
             <RevealItem as="div">
-              <p className="text-muted text-base leading-[1.75] md:text-[17px]"><Inline text={t("about.p2")} /></p>
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]">
+                <Inline text={t("about.p2")} />
+              </p>
             </RevealItem>
             <RevealItem as="div">
-              <p className="text-muted text-base leading-[1.75] md:text-[17px]"><Inline text={t("about.p3")} /></p>
+              <p className="text-muted text-base leading-[1.75] md:text-[17px]">
+                <Inline text={t("about.p3")} />
+              </p>
             </RevealItem>
           </RevealGroup>
 

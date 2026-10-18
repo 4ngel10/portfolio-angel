@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 import { PROJECTS } from "@/lib/projects";
 import { SERVICES } from "@/lib/services";
+import { BLOG_POSTS } from "@/lib/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = SITE_URL;
@@ -23,6 +24,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    {
+      url: `${base}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    ...BLOG_POSTS.map((p) => ({
+      url: `${base}/blog/${p.slug}`,
+      lastModified: new Date(p.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
   ];
 }

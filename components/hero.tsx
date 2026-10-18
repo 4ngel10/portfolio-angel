@@ -17,21 +17,26 @@ function RotatingWord({ words }: { words: string[] }) {
     return () => clearInterval(id);
   }, [words.length]);
 
+  // Los lectores de pantalla leen la lista completa una vez. Sin aria-live: anunciaría
+  // una palabra nueva cada 2,6 s sin fin. La animación queda solo para la vista.
   return (
-    <span className="relative inline-flex overflow-hidden align-bottom" aria-live="polite">
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={words[i]}
-          className="text-ink inline-block"
-          initial={{ y: "60%", opacity: 0, filter: "blur(4px)" }}
-          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-          exit={{ y: "-60%", opacity: 0, filter: "blur(4px)" }}
-          transition={{ duration: 0.28, ease: EASE }}
-        >
-          {words[i]}
-        </motion.span>
-      </AnimatePresence>
-    </span>
+    <>
+      <span className="sr-only">{words.join(", ")}</span>
+      <span className="relative inline-flex overflow-hidden align-bottom" aria-hidden>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={words[i]}
+            className="text-ink inline-block"
+            initial={{ y: "60%", opacity: 0, filter: "blur(4px)" }}
+            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            exit={{ y: "-60%", opacity: 0, filter: "blur(4px)" }}
+            transition={{ duration: 0.28, ease: EASE }}
+          >
+            {words[i]}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </>
   );
 }
 
@@ -104,7 +109,9 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.45 }}
           className="text-muted mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:text-lg"
         >
-          <span style={{ color: "var(--accent)" }}>~/angel $</span>
+          <span style={{ color: "var(--accent)" }} aria-hidden>
+            ~/angel $
+          </span>
           <RotatingWord words={words} />
           <span
             className="caret -mb-[0.15em] inline-block h-[1.1em] w-[0.55em]"
@@ -130,6 +137,7 @@ export function Hero() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                aria-hidden
               >
                 <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0z" />
                 <circle cx="12" cy="10" r="3" />
@@ -149,6 +157,7 @@ export function Hero() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   className="transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden
                 >
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />

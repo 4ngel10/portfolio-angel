@@ -4,7 +4,8 @@
     "services": "Servicios",
     "portfolio": "Portfolio",
     "contact": "Contacto",
-    "ctaContact": "Contactar"
+    "ctaContact": "Contactar",
+    "blog": "Blog"
   },
   "hero": {
     "titleStart": "Infraestructura",
@@ -37,13 +38,14 @@
     "area9": "Domótica con Home Assistant",
     "area10": "Desarrollo web",
     "area11": "Dominio y hosting",
-    "area12": "Gestión de SEO"
+    "area12": "Gestión de SEO",
+    "areas": "Áreas en las que trabajo"
   },
   "about": {
     "title": "Infraestructura como base invisible que permite que todo funcione.",
     "p1": "Soy Ángel Fernández, **administrador de sistemas y desarrollador web**. Para mí la tecnología tiene que estar **al servicio del negocio**. Cuando una infraestructura está bien montada, nadie habla de ella. **Simplemente funciona.**",
     "p2": "Vengo del **sector hotelero**, donde he gestionado entornos con segmentación de redes, virtualización y varios servidores en paralelo. Sitios donde una caída no es una anécdota: **es un problema serio**. Eso me enseñó a trabajar con **documentación, estandarización y continuidad de negocio** como base de todo lo que hago.",
-    "p3": "En paralelo, diseño y desarrollo **webs profesionales** para empresas y profesionales que quieren una presencia online **cuidada, rápida y fácil de mantener**. Sin plantillas infladas ni letra pequeña.",
+    "p3": "En paralelo, diseño y desarrollo **webs profesionales** para empresas y autónomos que quieren una presencia online **cuidada, rápida y fácil de mantener**. Sin plantillas infladas ni letra pequeña.",
     "stackLabel": "Stack técnico",
     "catVirt": "Virtualización",
     "catSystems": "Sistemas",
@@ -88,6 +90,20 @@
     "p3Title": "Homelab personal sobre Proxmox",
     "p3Desc": "Homelab casero para la gestión inteligente del hogar: domótica con Home Assistant, VPN propia, bloqueo de anuncios y backups automáticos en la nube."
   },
+  "blog": {
+    "title": "Blog.",
+    "lead": "Artículos sobre sistemas, desarrollo web y automatización. Lo que aplico en mi trabajo, explicado sin rodeos.",
+    "back": "Volver al blog",
+    "home": "Volver al inicio",
+    "read": "Leer artículo",
+    "next": "Siguiente artículo",
+    "minutes": "min de lectura",
+    "cat": {
+      "sistemas": "Sistemas",
+      "desarrollo": "Desarrollo",
+      "automatizacion": "Automatización"
+    }
+  },
   "project": {
     "back": "Volver a proyectos",
     "visit": "Ver proyecto",
@@ -98,7 +114,7 @@
   },
   "contact": {
     "title": "¿Tienes un proyecto en mente? Hablemos.",
-    "lead": "Cuéntame qué necesitas y en qué plazo. Te respondo en 24-48 h con una propuesta clara, sin compromiso.",
+    "lead": "Cuéntame qué necesitas y en qué plazo. Te respondo en 24-48 horas con una propuesta clara, sin compromiso.",
     "emailLabel": "Email",
     "linkedinLabel": "LinkedIn",
     "githubLabel": "GitHub",
@@ -111,7 +127,13 @@
     "formSubmit": "Enviar mensaje",
     "formSending": "Enviando...",
     "formOk": "Mensaje enviado. Te contesto pronto.",
-    "formErr": "No se ha podido enviar. Prueba por email."
+    "formErr": "No se ha podido enviar. Prueba por email.",
+    "formService": "¿Qué servicio te interesa?",
+    "formServicePh": "Elige una opción",
+    "formServiceOpt1": "Administración de sistemas",
+    "formServiceOpt2": "Desarrollo web",
+    "formServiceOpt3": "Ambos",
+    "formServiceOpt4": "Otro / No estoy seguro"
   },
   "footer": {
     "year": "2026",
@@ -120,6 +142,10 @@
   },
   "a11y": {
     "toggleTheme": "Cambiar tema",
-    "toggleMenu": "Abrir menú"
+    "toggleMenu": "Abrir menú",
+    "skip": "Ir al contenido principal",
+    "toggleLanguage": "ES / EN: cambiar idioma",
+    "mainNav": "Navegación principal",
+    "footerNav": "Secciones de la página"
   }
 }

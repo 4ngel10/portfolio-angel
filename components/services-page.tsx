@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { TiltCard } from "./tilt-card";
@@ -32,6 +33,8 @@ const CARD =
 const CARD_BG = { background: "var(--bg)" };
 const TITLE_HOVER =
   "inline-block origin-left transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold";
+// Tarjeta a la que se ha llegado por ancla: se queda con el aspecto del hover.
+const TARGETED = "shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]";
 const CHIP =
   "rounded px-2 py-0.5 font-mono text-[11px] transition-[transform,color,background-color] duration-200 hover:-translate-y-0.5 hover:text-[var(--accent)]";
 const CHIP_STYLE = { background: "var(--chip)", color: "var(--muted)" };
@@ -54,9 +57,43 @@ const Check = () => (
   </svg>
 );
 
+/** Altura de la nav fija más un poco de aire, para que el apartado no quede debajo. */
+const NAV_OFFSET = 88;
+
 /** Página de un servicio: /servicios/[id]. */
 export function ServicePage({ id }: { id: string }) {
   const { t, locale } = useI18n();
+  // Apartado al que se llega desde un punto de la home (#redes...). No se usa :target porque
+  // la navegación de Next cambia el hash con pushState y el navegador no lo activa.
+  const [target, setTarget] = useState<string | null>(null);
+  useEffect(() => {
+    // El scroll al apartado lo hace la página, no Next: los enlaces de la home van con
+    // scroll={false}. Next podía desplazar antes de montar la página y, al cambiar la altura,
+    // dejar al visitante en otra sección ("Cómo trabajo"). Se repite un instante después
+    // por si algo cambia de tamaño al terminar de cargar (fuentes, idioma).
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const goTo = (anchor: string) => {
+      const el = document.getElementById(anchor);
+      if (!el) return;
+      window.scrollTo({
+        top: el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET,
+        behavior: "instant",
+      });
+    };
+    const read = () => {
+      const anchor = decodeURIComponent(location.hash.slice(1)) || null;
+      setTarget(anchor);
+      if (!anchor) return;
+      requestAnimationFrame(() => goTo(anchor));
+      timers.push(setTimeout(() => goTo(anchor), 350));
+    };
+    read();
+    window.addEventListener("hashchange", read);
+    return () => {
+      window.removeEventListener("hashchange", read);
+      timers.forEach(clearTimeout);
+    };
+  }, []);
   // La ruta ya valida el id (notFound), aquí siempre existe.
   const service = getService(id)!;
   const idx = SERVICES.indexOf(service);
@@ -64,7 +101,7 @@ export function ServicePage({ id }: { id: string }) {
   const [lead, ...rest] = service.intro[locale];
 
   return (
-    <main>
+    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
       <header className="mx-auto max-w-4xl px-6 pt-14 pb-20 md:px-8 md:pt-20 md:pb-24">
         <Reveal>
           <Link
@@ -108,11 +145,14 @@ export function ServicePage({ id }: { id: string }) {
             style={{ perspective: "1200px" }}
           >
             {service.groups[locale].map((g, gi) => (
-              <RevealItem key={g.title} className="h-full">
+              // id = ancla del apartado: los puntos de la home enlazan aquí (/servicios/sistemas#redes).
+              // scroll-mt deja sitio a la nav fija; :target resalta la tarjeta a la que se llega.
+              <RevealItem key={g.id} id={g.id} className="h-full scroll-mt-24">
                 <TiltCard
                   lift
-                  className={`${CARD} relative flex flex-col p-7 md:p-8`}
-                  style={CARD_BG}
+                  className={`${CARD} relative flex flex-col p-7 md:p-8 ${target === g.id ? TARGETED : ""}`}
+                  // El borde va en línea: la clase border-rule de CARD pisaría a una utilidad.
+                  style={target === g.id ? { ...CARD_BG, borderColor: "var(--accent)" } : CARD_BG}
                 >
                   <span
                     className="absolute top-6 right-7 font-mono text-3xl font-medium tracking-tight opacity-[0.1] transition-opacity duration-300 group-hover:opacity-40"
@@ -229,7 +269,7 @@ export function ServicePage({ id }: { id: string }) {
             {t("contact.title")}
           </h2>
           <p className="text-muted mx-auto mt-5 max-w-xl text-[17px] leading-relaxed">
-            {t("contact.lead")}
+            {service.closing[locale]}
           </p>
           <Link href="/#contact" className="btn-primary group mt-10">
             {t("nav.ctaContact")}

@@ -4,7 +4,9 @@ import { ProjectNav } from "@/components/project-nav";
 import { ServicePage } from "@/components/services-page";
 import { ProjectFooter } from "@/components/project-footer";
 import { BackToTop } from "@/components/back-to-top";
+import { JsonLd } from "@/components/json-ld";
 import { SERVICES, getService } from "@/lib/services";
+import { SERVICE_DESCRIPTIONS, serviceJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
 
 type Params = Promise<{ id: string }>;
@@ -21,21 +23,24 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!service) return {};
   const texts = es.services as Record<string, string>;
   const title = texts[`${service.key}Title`];
-  const description = texts[`${service.key}Lead`];
+  const description = SERVICE_DESCRIPTIONS[service.id] ?? texts[`${service.key}Lead`];
   return {
     title: `${title} · Ángel Fernández`,
     description,
     alternates: { canonical: `/servicios/${service.id}` },
-    openGraph: { title, description, type: "website", locale: "es_ES" },
+    openGraph: { title, description, type: "website", locale: "es_ES", alternateLocale: "en_GB" },
+    twitter: { card: "summary", title, description },
   };
 }
 
 export default async function Page({ params }: { params: Params }) {
   const { id } = await params;
-  if (!getService(id)) notFound();
+  const service = getService(id);
+  if (!service) notFound();
 
   return (
     <>
+      <JsonLd data={serviceJsonLd(service)} />
       <ProjectNav />
       <ServicePage id={id} />
       <ProjectFooter />

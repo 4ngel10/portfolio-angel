@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 
@@ -9,11 +9,27 @@ export function Nav() {
   const { theme, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+
+  // Menú móvil: es un desplegable bajo la barra (patrón disclosure), no un modal que tape
+  // la página, así que no atrapa el foco. Escape lo cierra y devuelve el foco al botón.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      menuButton.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   const links = [
     { href: "#about", label: t("nav.about") },
     { href: "#services", label: t("nav.services") },
     { href: "#portfolio", label: t("nav.portfolio") },
+    // Página aparte (no es una sección de la home): el scroll spy no la marca.
+    { href: "/blog", label: t("nav.blog") },
     { href: "#contact", label: t("nav.contact") },
   ];
 
@@ -50,6 +66,7 @@ export function Nav() {
 
   return (
     <nav
+      aria-label={t("a11y.mainNav")}
       className="sticky top-0 z-50 flex h-[72px] items-center border-b backdrop-blur-md"
       style={{
         background: "color-mix(in oklab, var(--bg) 85%, transparent)",
@@ -85,10 +102,12 @@ export function Nav() {
             onClick={() => setLocale(locale === "es" ? "en" : "es")}
             className="text-muted rounded-full border px-2.5 py-1.5 font-mono text-xs transition-colors hover:text-[var(--fg)]"
             style={{ borderColor: "var(--rule)" }}
-            aria-label="Toggle language"
+            aria-label={t("a11y.toggleLanguage")}
           >
             <span className={locale === "es" ? "text-ink font-semibold" : ""}>ES</span>
-            <span className="mx-1 opacity-40">/</span>
+            <span className="mx-1 opacity-40" aria-hidden>
+              /
+            </span>
             <span className={locale === "en" ? "text-ink font-semibold" : ""}>EN</span>
           </button>
 
@@ -109,6 +128,7 @@ export function Nav() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                aria-hidden
               >
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
@@ -122,6 +142,7 @@ export function Nav() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                aria-hidden
               >
                 <circle cx="12" cy="12" r="4" />
                 <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
@@ -129,15 +150,21 @@ export function Nav() {
             )}
           </button>
 
-          <a href="#contact" className="btn-primary hidden !px-4 !py-2.5 !text-sm md:inline-flex">
-            {t("nav.ctaContact")}
-          </a>
+          {/* Solo escritorio. El hidden va en un envoltorio: en el enlace lo pisaba el display
+              de .btn-primary y en móvil no cabía la nav. En móvil está MobileContactCta. */}
+          <span className="hidden md:inline-flex">
+            <a href="#contact" className="btn-primary !px-4 !py-2.5 !text-sm">
+              {t("nav.ctaContact")}
+            </a>
+          </span>
 
           <button
             type="button"
+            ref={menuButton}
             onClick={() => setOpen((v) => !v)}
             aria-label={t("a11y.toggleMenu")}
             aria-expanded={open}
+            aria-controls="mobile-menu"
             className="flex h-9 w-9 items-center justify-center rounded-xl border md:hidden"
             style={{ borderColor: "var(--rule)" }}
           >
@@ -149,6 +176,7 @@ export function Nav() {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
+                aria-hidden
               >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
@@ -161,6 +189,7 @@ export function Nav() {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
+                aria-hidden
               >
                 <line x1="4" y1="7" x2="20" y2="7" />
                 <line x1="4" y1="12" x2="20" y2="12" />
@@ -173,6 +202,7 @@ export function Nav() {
 
       {open && (
         <div
+          id="mobile-menu"
           className="absolute top-[72px] right-0 left-0 flex flex-col gap-4 border-b px-6 py-5 text-base font-medium md:hidden"
           style={{ background: "var(--bg)", borderColor: "var(--rule)" }}
         >

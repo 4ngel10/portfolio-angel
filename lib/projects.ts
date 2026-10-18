@@ -9,15 +9,23 @@
  * - `title` e `intro` son opcionales: si faltan, la cabecera usa el título y la
  *   descripción de la card.
  * - Cada sección es un H2 (opcional: sin `heading` los bloques siguen a la entradilla)
- *   con bloques: un string es un párrafo, `{ h3 }` un subtítulo, `{ list }` una lista
- *   y `{ ol }` una lista numerada.
+ *   con bloques: un string es un párrafo, `{ h3 }` un subtítulo, `{ list }` una lista,
+ *   `{ ol }` una lista numerada e `{ img }` una imagen con pie opcional.
  * - Dentro del texto: **negrita** y [enlace](https://...).
  * - Sin em dashes.
  */
 
 import type { Locale } from "./i18n";
 
-export type PostBlock = string | { h3: string } | { list: string[] } | { ol: string[] };
+/** Imagen dentro del artículo. width y height son los del archivo, para reservar el hueco. */
+export type PostImage = {
+  img: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption?: string;
+};
+export type PostBlock = string | { h3: string } | { list: string[] } | { ol: string[] } | PostImage;
 export type PostSection = { heading?: string; blocks: PostBlock[] };
 export type Post = { title?: string; intro?: string; sections: PostSection[] };
 
@@ -34,6 +42,8 @@ export type Project = {
   url?: string;
   image?: string;
   imageDark?: string;
+  /** Texto alternativo de la portada: qué se ve en la imagen (el título ya va en la card). */
+  coverAlt?: Record<Locale, string>;
   /** Imagen para compartir en redes (Open Graph), 1200x630. */
   ogImage?: string;
   /** Fecha de publicación del artículo, AAAA-MM-DD. */
@@ -49,6 +59,10 @@ export const PROJECTS: Project[] = [
     tint: 8,
     tech: ["PowerShell", "Active Directory", "GPO", "RDS"],
     image: "/projects/powershell-printer-cover.svg",
+    coverAlt: {
+      es: "Ventana de terminal de PowerShell con el script PrinterMapping.ps1: lee del usuario de Active Directory sus impresoras, las conecta una a una y fija la predeterminada.",
+      en: "PowerShell terminal window with the PrinterMapping.ps1 script: it reads the user's printers from Active Directory, connects them one by one and sets the default.",
+    },
     ogImage: "/projects/powershell-printer-og.jpg",
     date: "2026-10-17",
     post: {
@@ -168,6 +182,10 @@ export const PROJECTS: Project[] = [
     tech: ["React", "Supabase", "Tailwind", "PWA"],
     url: "https://prompt-vault-three-xi.vercel.app/",
     image: "/projects/prompt-vault.webp",
+    coverAlt: {
+      es: "Captura de Prompt Vault: buscador, filtros por tipo y categoría, y tarjetas de prompts y skills de IA con sus etiquetas.",
+      en: "Prompt Vault screenshot: search bar, filters by type and category, and cards of AI prompts and skills with their tags.",
+    },
     ogImage: "/projects/prompt-vault-og.jpg",
     imageDark: "/projects/prompt-vault-dark.webp",
     date: "2026-10-16",
@@ -296,7 +314,11 @@ export const PROJECTS: Project[] = [
     cover: "LAB",
     tint: 20,
     tech: ["Proxmox", "Docker", "Home Assistant"],
-    image: "/projects/homelab.webp",
+    image: "/projects/homelab-cover.webp",
+    coverAlt: {
+      es: "Mini rack negro sobre una mesa blanca: arriba un switch TP-Link de 8 puertos con cables de red y abajo un mini PC Dell, el servidor Proxmox.",
+      en: "Black mini rack on a white table: a TP-Link 8-port switch with network cables on top and a Dell mini PC below, the Proxmox server.",
+    },
     ogImage: "/projects/homelab-og.jpg",
     date: "2026-10-16",
     post: {
@@ -374,6 +396,13 @@ export const PROJECTS: Project[] = [
                 ],
               },
               "Hay un detalle curioso. Antes de preguntar a Google Drive qué se ha subido, el script espera unos segundos. Drive tarda un poco en indexar los archivos nuevos, y sin esa pausa el resumen podía salir incompleto.",
+              {
+                img: "/projects/homelab-telegram.webp",
+                alt: "Mensaje del bot de Telegram con el resumen de la copia diaria: copias de Proxmox y subida a Google Drive correctas, con el tamaño de cada máquina.",
+                width: 667,
+                height: 1350,
+                caption: "El resumen que me llega cada mañana.",
+              },
             ],
           },
           {
@@ -471,6 +500,13 @@ export const PROJECTS: Project[] = [
                 ],
               },
               "There is one curious detail. Before asking Google Drive what was uploaded, the script waits a few seconds. Drive takes a moment to index new files, and without that pause the summary could come out incomplete.",
+              {
+                img: "/projects/homelab-telegram.webp",
+                alt: "Telegram bot message with the daily backup summary: Proxmox backups and Google Drive upload both OK, with the size of each machine.",
+                width: 667,
+                height: 1350,
+                caption: "The summary I get every morning.",
+              },
             ],
           },
           {

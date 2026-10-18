@@ -88,6 +88,9 @@
     outline-offset: 3px;
     border-radius: 4px;
   }
+  /* Secciones que reciben el foco al seguir un ancla (lib/smooth-scroll.ts) o el skip link:
+     no son controles, no se les pinta el anillo de foco. */
+  [tabindex="-1"]:focus { outline: none; }
 
   /* iOS Safari solo aplica :hover al tocar si el elemento parece clicable.
      En táctil el cursor no se ve, así que esto no tiene efecto visual. */

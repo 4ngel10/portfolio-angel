@@ -14,6 +14,7 @@ export function ProjectNav() {
 
   return (
     <nav
+      aria-label={t("a11y.mainNav")}
       className="sticky top-0 z-50 flex h-[72px] items-center border-b backdrop-blur-md"
       style={{
         background: "color-mix(in oklab, var(--bg) 85%, transparent)",
@@ -26,15 +27,24 @@ export function ProjectNav() {
         </Link>
 
         <div className="flex items-center gap-2.5">
+          {/* Solo escritorio: en móvil la barra va justa y el blog sigue en el pie. */}
+          <Link
+            href="/blog"
+            className="text-muted mr-3 hidden text-sm font-medium transition-colors hover:text-[var(--fg)] md:inline"
+          >
+            {t("nav.blog")}
+          </Link>
           <button
             type="button"
             onClick={() => setLocale(locale === "es" ? "en" : "es")}
             className="text-muted rounded-full border px-2.5 py-1.5 font-mono text-xs transition-colors hover:text-[var(--fg)]"
             style={{ borderColor: "var(--rule)" }}
-            aria-label="Toggle language"
+            aria-label={t("a11y.toggleLanguage")}
           >
             <span className={locale === "es" ? "text-ink font-semibold" : ""}>ES</span>
-            <span className="mx-1 opacity-40">/</span>
+            <span className="mx-1 opacity-40" aria-hidden>
+              /
+            </span>
             <span className={locale === "en" ? "text-ink font-semibold" : ""}>EN</span>
           </button>
 
@@ -55,6 +65,7 @@ export function ProjectNav() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                aria-hidden
               >
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
@@ -68,6 +79,7 @@ export function ProjectNav() {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                aria-hidden
               >
                 <circle cx="12" cy="12" r="4" />
                 <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />

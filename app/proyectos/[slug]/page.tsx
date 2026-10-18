@@ -4,7 +4,9 @@ import { ProjectNav } from "@/components/project-nav";
 import { ProjectArticle } from "@/components/project-article";
 import { ProjectFooter } from "@/components/project-footer";
 import { BackToTop } from "@/components/back-to-top";
+import { JsonLd } from "@/components/json-ld";
 import { PROJECTS, getProject } from "@/lib/projects";
+import { projectJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
 
 type Params = Promise<{ slug: string }>;
@@ -31,17 +33,27 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description,
       type: "article",
       locale: "es_ES",
+      alternateLocale: "en_GB",
+      ...(project.date && { publishedTime: project.date }),
       ...(project.ogImage && { images: [{ url: project.ogImage, width: 1200, height: 630 }] }),
+    },
+    twitter: {
+      card: project.ogImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(project.ogImage && { images: [project.ogImage] }),
     },
   };
 }
 
 export default async function ProjectPage({ params }: { params: Params }) {
   const { slug } = await params;
-  if (!getProject(slug)) notFound();
+  const project = getProject(slug);
+  if (!project) notFound();
 
   return (
     <>
+      <JsonLd data={projectJsonLd(project)} />
       <ProjectNav />
       <ProjectArticle slug={slug} />
       <ProjectFooter />

@@ -73,7 +73,11 @@ export function ProjectCover({
               backgroundSize: "14px 14px",
             }}
           />
-          <span className="relative z-10 font-mono text-5xl font-medium tracking-tight transition-colors duration-200 group-hover:text-[var(--accent)]">
+          {/* Texto decorativo ("LAB", "AI"): el título del proyecto ya está en la card. */}
+          <span
+            aria-hidden
+            className="relative z-10 font-mono text-5xl font-medium tracking-tight transition-colors duration-200 group-hover:text-[var(--accent)]"
+          >
             {cover}
           </span>
         </div>

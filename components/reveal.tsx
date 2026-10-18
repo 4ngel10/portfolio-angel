@@ -70,15 +70,18 @@ export function RevealItem({
   className,
   as = "div",
   style,
+  id,
 }: {
   children: React.ReactNode;
   className?: string;
   as?: "div" | "li" | "span";
   style?: React.CSSProperties;
+  /** Para anclas (#id) que apuntan a este elemento. */
+  id?: string;
 }) {
   const Comp = as === "li" ? motion.li : as === "span" ? motion.span : motion.div;
   return (
-    <Comp className={className} style={style} variants={itemVariants}>
+    <Comp id={id} className={className} style={style} variants={itemVariants}>
       {children}
     </Comp>
   );

@@ -14,12 +14,16 @@ type Props = {
   repeat?: number;
   /** Color del difuminado de los bordes. Por defecto el fondo de la página (--bg). */
   fadeColor?: string;
+  /** Nombre accesible del carrusel (role="marquee"), en el idioma activo. */
+  label?: string;
 };
 
 /**
  * Carrusel infinito en CSS puro (estilos .carousel en globals.css).
  * Dos grupos idénticos se desplazan su ancho + gap, así el bucle no salta.
- * Solo la primera copia de la lista es legible por lectores de pantalla.
+ * Solo la primera copia de la lista es legible por lectores de pantalla: el segundo
+ * grupo y las repeticiones van con aria-hidden. Los elementos son texto, sin enlaces
+ * ni botones, así que no hay nada que el teclado pueda recorrer dos veces.
  */
 export function Carousel({
   items,
@@ -30,6 +34,7 @@ export function Carousel({
   separator,
   repeat = 1,
   fadeColor,
+  label,
 }: Props) {
   const copies = Array.from({ length: repeat }, (_, i) => i);
 
@@ -53,6 +58,8 @@ export function Carousel({
 
   return (
     <div
+      role="marquee"
+      aria-label={label}
       className={`carousel ${direction === "right" ? "carousel-right" : ""}`}
       style={
         {

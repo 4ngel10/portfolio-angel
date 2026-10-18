@@ -48,15 +48,28 @@ export function smoothScrollTo(targetY: number) {
   frame = requestAnimationFrame(step);
 }
 
+/**
+ * Lleva el foco del teclado al destino, como haría el navegador con un ancla normal
+ * (al cancelar el clic se pierde). Sin esto, quien navega con Tab ve deslizar la página
+ * pero su siguiente Tab sigue en la nav. preventScroll: el desplazamiento ya va animado.
+ */
+export function focusTarget(el: HTMLElement) {
+  if (!el.hasAttribute("tabindex") && el.tabIndex < 0) el.setAttribute("tabindex", "-1");
+  el.focus({ preventScroll: true });
+}
+
 /** Desliza hasta el elemento de un hash (#about, #contact...). "#top" o "#" van al inicio. */
 export function smoothScrollToHash(hash: string) {
   if (hash === "#" || hash === "#top") {
     smoothScrollTo(0);
+    const top = document.getElementById("top") ?? document.getElementById("main");
+    if (top) focusTarget(top);
     return true;
   }
   const el = document.getElementById(decodeURIComponent(hash.slice(1)));
   if (!el) return false;
   smoothScrollTo(el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET);
+  focusTarget(el);
   return true;
 }
 

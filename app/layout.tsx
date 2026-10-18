@@ -4,7 +4,9 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/theme";
 import { I18nProvider } from "@/lib/i18n";
 import { MotionProvider } from "@/lib/motion";
+import { SkipLink } from "@/components/skip-link";
 import { SITE_URL } from "@/lib/site";
+import { HOME_DESCRIPTION, HOME_TITLE } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -21,16 +23,17 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ángel Fernández · Portfolio",
-  description:
-    "Administrador de Sistemas y Desarrollador Web en Palma de Mallorca. Infraestructura IT, seguridad, continuidad de negocio y desarrollo web profesional.",
+  title: HOME_TITLE,
+  description: HOME_DESCRIPTION,
   metadataBase: new URL(SITE_URL),
   openGraph: {
-    title: "Ángel Fernández · Portfolio",
-    description: "Infraestructura IT y desarrollo web profesional en Palma de Mallorca.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     type: "website",
     locale: "es_ES",
+    alternateLocale: "en_GB",
   },
+  twitter: { card: "summary", title: HOME_TITLE, description: HOME_DESCRIPTION },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -53,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body suppressHydrationWarning>
         <ThemeProvider>
           <I18nProvider>
+            <SkipLink />
             <MotionProvider>{children}</MotionProvider>
           </I18nProvider>
         </ThemeProvider>

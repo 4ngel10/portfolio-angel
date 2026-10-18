@@ -8,7 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { PROJECTS } from "@/lib/projects";
 
 export function Portfolio() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <section id="portfolio" className="bg-paper-alt py-24 md:py-28">
@@ -42,7 +42,7 @@ export function Portfolio() {
                   >
                     <ProjectCover
                       project={p}
-                      alt={title}
+                      alt={p.coverAlt?.[locale] ?? title}
                       sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
                       className="h-52"
                     />

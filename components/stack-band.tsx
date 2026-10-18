@@ -50,6 +50,7 @@ export function StackBand() {
         speed={77}
         gap="2.5rem"
         items={TECH}
+        label={t("marquee.stack")}
         separator={
           <svg
             width="14"
@@ -74,6 +75,7 @@ export function StackBand() {
         repeat={2}
         gap="1.25rem"
         items={areas}
+        label={t("marquee.areas")}
         separator={
           <span className="opacity-40" aria-hidden>
             /

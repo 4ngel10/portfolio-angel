@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Reveal } from "./reveal";
@@ -8,7 +9,7 @@ import { ProjectCover } from "./project-cover";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { PROJECTS, getProject, type PostBlock, type PostSection } from "@/lib/projects";
 
-const Arrow = ({ back = false }: { back?: boolean }) => (
+export const Arrow = ({ back = false }: { back?: boolean }) => (
   <svg
     width="16"
     height="16"
@@ -26,7 +27,7 @@ const Arrow = ({ back = false }: { back?: boolean }) => (
   </svg>
 );
 
-function formatDate(date: string, locale: Locale) {
+export function formatDate(date: string, locale: Locale) {
   return new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", {
     day: "numeric",
     month: "short",
@@ -64,11 +65,11 @@ export function Inline({ text }: { text: string }) {
 }
 
 /** Número de un H2 contando solo las secciones con título (la primera puede no tenerlo). */
-function headingNumber(sections: PostSection[], index: number) {
+export function headingNumber(sections: PostSection[], index: number) {
   return sections.slice(0, index + 1).filter((s) => s.heading).length;
 }
 
-function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: boolean }) {
+export function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: boolean }) {
   if (typeof block === "string")
     return (
       <p
@@ -92,6 +93,23 @@ function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: boolean
         />
         {block.h3}
       </h3>
+    );
+  if ("img" in block)
+    return (
+      <figure className="my-10 flex flex-col items-center">
+        {/* Captura de móvil, alta y estrecha: se limita el ancho para que no ocupe media página. */}
+        <Image
+          src={block.img}
+          alt={block.alt}
+          width={block.width}
+          height={block.height}
+          sizes="(min-width: 640px) 320px, 75vw"
+          className="h-auto w-3/4 max-w-[320px] drop-shadow-[0_30px_40px_rgba(0,0,0,0.18)] transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.02]"
+        />
+        {block.caption && (
+          <figcaption className="text-muted mt-5 text-center text-sm">{block.caption}</figcaption>
+        )}
+      </figure>
     );
   // Los puntos de las listas se desplazan y se encienden al pasar el ratón.
   const ITEM =
@@ -130,7 +148,7 @@ function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: boolean
 }
 
 /** Barra de progreso de lectura bajo la nav. Indica posición, no es decorativa. */
-function ReadingProgress() {
+export function ReadingProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, mass: 0.3 });
   return (
@@ -143,7 +161,7 @@ function ReadingProgress() {
 }
 
 /** Título de sección con su número y una línea de acento que se dibuja al aparecer. */
-function SectionHeading({ n, children }: { n: number; children: React.ReactNode }) {
+export function SectionHeading({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <div className="mb-6">
       <div className="mb-3 flex items-center gap-3">
@@ -178,7 +196,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
   const next = PROJECTS[(idx + 1) % PROJECTS.length];
 
   return (
-    <main>
+    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
       <ReadingProgress />
       <header className="mx-auto max-w-4xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
@@ -252,7 +270,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
           >
             <ProjectCover
               project={project}
-              alt={title}
+              alt={project.coverAlt?.[locale] ?? title}
               sizes="(min-width: 1152px) 1088px, 100vw"
               priority
               className="aspect-[16/9]"
@@ -290,7 +308,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
               >
                 <ProjectCover
                   project={next}
-                  alt={t(`portfolio.${next.key}Title`)}
+                  alt={next.coverAlt?.[locale] ?? t(`portfolio.${next.key}Title`)}
                   sizes="(min-width: 768px) 320px, 100vw"
                   className="h-44 shrink-0 md:h-auto md:w-80"
                 />
