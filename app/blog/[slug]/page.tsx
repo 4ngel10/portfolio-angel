@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ProjectNav } from "@/components/project-nav";
+import { Nav } from "@/components/nav";
 import { BlogArticle } from "@/components/blog-article";
-import { ProjectFooter } from "@/components/project-footer";
+import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
+import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { BLOG_POSTS, getBlogPost } from "@/lib/blog";
 import { blogPostJsonLd } from "@/lib/seo";
@@ -47,9 +48,10 @@ export default async function BlogPostPage({ params }: { params: Params }) {
   return (
     <>
       <JsonLd data={blogPostJsonLd(post)} />
-      <ProjectNav />
+      <Nav />
       <BlogArticle slug={slug} />
-      <ProjectFooter />
+      <Footer />
+      <MobileContactCta />
       <BackToTop />
     </>
   );

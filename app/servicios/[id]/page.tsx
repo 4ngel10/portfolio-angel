@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ProjectNav } from "@/components/project-nav";
+import { Nav } from "@/components/nav";
 import { ServicePage } from "@/components/services-page";
-import { ProjectFooter } from "@/components/project-footer";
+import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
+import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { SERVICES, getService } from "@/lib/services";
 import { SERVICE_DESCRIPTIONS, serviceJsonLd } from "@/lib/seo";
@@ -41,9 +42,10 @@ export default async function Page({ params }: { params: Params }) {
   return (
     <>
       <JsonLd data={serviceJsonLd(service)} />
-      <ProjectNav />
+      <Nav />
       <ServicePage id={id} />
-      <ProjectFooter />
+      <Footer />
+      <MobileContactCta />
       <BackToTop />
     </>
   );

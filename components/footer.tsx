@@ -1,18 +1,22 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { Carousel } from "./carousel";
+import { NavLink } from "./nav";
 
+/** Pie de todas las páginas. Fuera de la home, las anclas apuntan a la home (/#about). */
 export function Footer() {
   const { t } = useI18n();
+  const isHome = usePathname() === "/";
+  const home = (hash: string) => (isHome ? hash : `/${hash}`);
 
   const links = [
-    { href: "#about", label: t("nav.about") },
-    { href: "#services", label: t("nav.services") },
-    { href: "#portfolio", label: t("nav.portfolio") },
-    // Página aparte (no es una sección de la home): el scroll spy no la marca.
-    { href: "/blog", label: t("nav.blog") },
-    { href: "#contact", label: t("nav.contact") },
+    { href: home("#about"), label: t("nav.about") },
+    { href: home("#services"), label: t("nav.services") },
+    { href: home("#portfolio"), label: t("nav.portfolio") },
+    { href: home("#blog"), label: t("nav.blog") },
+    { href: home("#contact"), label: t("nav.contact") },
   ];
 
   return (
@@ -58,9 +62,9 @@ export function Footer() {
             className="flex flex-wrap gap-5 text-[13px] text-slate-400"
           >
             {links.map((l) => (
-              <a key={l.href} href={l.href} className="transition-colors hover:text-white">
+              <NavLink key={l.href} href={l.href} className="transition-colors hover:text-white">
                 {l.label}
-              </a>
+              </NavLink>
             ))}
             <a href="#top" className="transition-colors hover:text-white">
               {t("footer.backTop")} <span aria-hidden>↑</span>

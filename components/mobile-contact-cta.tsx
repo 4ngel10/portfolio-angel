@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 
@@ -15,6 +16,8 @@ const EASE = [0.23, 1, 0.32, 1] as const;
 export function MobileContactCta() {
   const { t } = useI18n();
   const [visible, setVisible] = useState(false);
+  // Fuera de la home no hay sección de contacto: el botón lleva a la de la home.
+  const isHome = usePathname() === "/";
 
   useEffect(() => {
     let frame = 0;
@@ -46,7 +49,7 @@ export function MobileContactCta() {
       <AnimatePresence>
         {visible && (
           <motion.a
-            href="#contact"
+            href={isHome ? "#contact" : "/#contact"}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16, transition: { duration: 0.15, ease: EASE } }}

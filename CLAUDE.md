@@ -63,7 +63,7 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 
 ## Páginas de proyecto
 
-Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slug]/page.tsx`), una página estática por proyecto. Los datos y el texto del artículo (ES y EN) viven en `lib/projects.ts`. Título, etiqueta y descripción corta salen de `messages/*.json` (`portfolio.p1Title`...), compartidos con la card. Añadir un proyecto: entrada nueva en `PROJECTS` + sus claves en los dos JSON. Las páginas usan `ProjectNav` y `ProjectFooter` porque la nav y el footer de la home enlazan a anclas `#` que solo existen allí.
+Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slug]/page.tsx`), una página estática por proyecto. Los datos y el texto del artículo (ES y EN) viven en `lib/projects.ts`. Título, etiqueta y descripción corta salen de `messages/*.json` (`portfolio.p1Title`...), compartidos con la card. Añadir un proyecto: entrada nueva en `PROJECTS` + sus claves en los dos JSON. Todas las páginas (home, proyectos, servicios, blog) usan la misma `Nav` y el mismo `Footer`: fuera de la home sus anclas apuntan a la home (`/#about`) y la nav marca el apartado de la página (Servicios, Portfolio o Blog).
 
 **Cada proyecto nuevo sigue la misma estructura que los actuales** (petición de Ángel):
 
@@ -75,7 +75,11 @@ Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slu
 
 ## Páginas de servicio
 
-Cada card de Servicios abre su propia página: `/servicios/sistemas` y `/servicios/web` (`app/servicios/[id]/page.tsx`, `components/services-page.tsx`). El detalle de cada servicio (grupos, herramientas, principios) vive en `lib/services.ts`, en ES y EN, y solo recoge lo que ya figura en la web (stack, áreas, proyectos). Reutiliza `ProjectNav` y `ProjectFooter`.
+Cada card de Servicios abre su propia página: `/servicios/sistemas` y `/servicios/web` (`app/servicios/[id]/page.tsx`, `components/services-page.tsx`). El detalle de cada servicio (grupos, herramientas, principios) vive en `lib/services.ts`, en ES y EN, y solo recoge lo que ya figura en la web (stack, áreas, proyectos).
+
+## Blog
+
+Listado en `/blog` y artículos en `/blog/[slug]`. El contenido (ES y EN) vive en `lib/blog.ts`, con los mismos bloques que los proyectos. Cada artículo lleva su imagen para redes de 1200x630 en `public/blog/`. La home tiene una mención corta (`components/blog-teaser.tsx`, ancla `#blog`) con los dos más recientes.
 
 ## i18n
 

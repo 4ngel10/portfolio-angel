@@ -5,6 +5,7 @@ import { StackBand } from "@/components/stack-band";
 import { About } from "@/components/about";
 import { Services } from "@/components/services";
 import { Portfolio } from "@/components/portfolio";
+import { BlogTeaser } from "@/components/blog-teaser";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
@@ -26,6 +27,7 @@ export default function Page() {
         <About />
         <Services />
         <Portfolio />
+        <BlogTeaser />
         <Contact />
       </main>
       <Footer />

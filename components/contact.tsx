@@ -103,7 +103,7 @@ export function Contact() {
   ];
 
   return (
-    <section id="contact" className="py-24 md:py-28">
+    <section id="contact" className="scroll-mt-[72px] bg-paper-alt py-24 md:py-28">
       <div className="mx-auto max-w-6xl px-6 md:px-8">
         <div className="grid items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <Reveal>

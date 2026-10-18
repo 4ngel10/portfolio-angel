@@ -54,21 +54,32 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent; /* sin destello gris/azul al tocar */
-    -webkit-text-size-adjust: 100%;          /* sin agrandar texto al girar el móvil */
+    -webkit-text-size-adjust: 100%; /* sin agrandar texto al girar el móvil */
   }
 
   /* Sin la espera de ~300ms del doble toque: el clic se dispara al instante. */
-  a, button, [role="button"] { touch-action: manipulation; }
+  a,
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+  }
 
   /* Mantener pulsado un botón no debe seleccionar su texto (el contenido sí se puede copiar). */
-  button, [role="button"], .btn-primary, .btn-secondary {
+  button,
+  [role="button"],
+  .btn-primary,
+  .btn-secondary {
     user-select: none;
     -webkit-user-select: none;
   }
 
   /* iOS hace zoom (y no lo deshace) al enfocar un campo de menos de 16px. */
   @media (pointer: coarse) {
-    input, textarea, select { font-size: 16px; }
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
   }
 
   body {
@@ -77,11 +88,19 @@
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "ss02";
     -webkit-font-smoothing: antialiased;
-    transition: background-color .3s ease, color .3s ease;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
   }
 
-  h1, h2, h3 { text-wrap: balance; }
-  p { text-wrap: pretty; }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
 
   :focus-visible {
     outline: 2px solid var(--accent);
@@ -90,19 +109,27 @@
   }
   /* Secciones que reciben el foco al seguir un ancla (lib/smooth-scroll.ts) o el skip link:
      no son controles, no se les pinta el anillo de foco. */
-  [tabindex="-1"]:focus { outline: none; }
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
 
   /* iOS Safari solo aplica :hover al tocar si el elemento parece clicable.
      En táctil el cursor no se ve, así que esto no tiene efecto visual. */
   @media (hover: none) {
-    .group, .carousel-item, [class*="hover:"] { cursor: pointer; }
+    .group,
+    .carousel-item,
+    [class*="hover:"] {
+      cursor: pointer;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     /* Excepciones deliberadas (decisión de Ángel, ver CLAUDE.md): los carruseles
        (.carousel-group) se mueven siempre.
        Son lentos, lineales y sin parallax. */
-    *:not(.carousel-group), *::before, *::after {
+    *:not(.carousel-group),
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -111,34 +138,65 @@
 }
 
 @layer utilities {
-  .font-mono { font-family: var(--font-mono); letter-spacing: -0.01em; }
-  .text-accent { color: var(--accent); }
-  .bg-paper { background: var(--bg); }
-  .bg-paper-alt { background: var(--bg-alt); }
-  .text-ink { color: var(--fg); }
-  .text-muted { color: var(--muted); }
-  .border-rule { border-color: var(--rule); }
-  .bg-chip { background: var(--chip); }
+  .font-mono {
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+  .text-accent {
+    color: var(--accent);
+  }
+  .bg-paper {
+    background: var(--bg);
+  }
+  .bg-paper-alt {
+    background: var(--bg-alt);
+  }
+  .text-ink {
+    color: var(--fg);
+  }
+  .text-muted {
+    color: var(--muted);
+  }
+  .border-rule {
+    border-color: var(--rule);
+  }
+  .bg-chip {
+    background: var(--chip);
+  }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-[15px];
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-[15px] font-medium;
     background: var(--fg);
     color: var(--bg);
     /* Pulsación: 160ms ease-out. Color en hover: 200ms ease. */
-    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease;
+    transition:
+      transform 160ms var(--ease-out),
+      background-color 200ms ease,
+      color 200ms ease;
   }
-  .btn-primary:hover { background: var(--accent); color: #fff; }
-  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+  }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-[15px] border;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3.5 text-[15px] font-medium;
     border-color: var(--rule);
     color: var(--fg);
     background: transparent;
-    transition: transform 160ms var(--ease-out), border-color 200ms ease;
+    transition:
+      transform 160ms var(--ease-out),
+      border-color 200ms ease;
   }
-  .btn-secondary:hover { border-color: var(--fg); }
-  .btn-secondary:active { transform: scale(0.97); }
+  .btn-secondary:hover {
+    border-color: var(--fg);
+  }
+  .btn-secondary:active {
+    transform: scale(0.97);
+  }
 
   /* Carrusel infinito: dos grupos idénticos que se desplazan su propio ancho + gap */
   .carousel {
@@ -160,12 +218,19 @@
     animation: carousel-scroll var(--carousel-speed) linear infinite;
     will-change: transform;
   }
-  .carousel-right .carousel-group { animation-direction: reverse; }
+  .carousel-right .carousel-group {
+    animation-direction: reverse;
+  }
   .carousel-item {
-    transition: scale 0.3s var(--ease-out), color 0.3s;
+    transition:
+      scale 0.3s var(--ease-out),
+      color 0.3s;
     user-select: none;
   }
-  .carousel-item:hover { scale: 1.1; color: var(--fg); }
+  .carousel-item:hover {
+    scale: 1.1;
+    color: var(--fg);
+  }
   .carousel::before,
   .carousel::after {
     content: "";
@@ -176,22 +241,37 @@
     z-index: 1;
     pointer-events: none;
   }
-  .carousel::before { left: 0; background-image: linear-gradient(to right, var(--carousel-fade, var(--bg)), transparent); }
-  .carousel::after { right: 0; background-image: linear-gradient(to left, var(--carousel-fade, var(--bg)), transparent); }
+  .carousel::before {
+    left: 0;
+    background-image: linear-gradient(to right, var(--carousel-fade, var(--bg)), transparent);
+  }
+  .carousel::after {
+    right: 0;
+    background-image: linear-gradient(to left, var(--carousel-fade, var(--bg)), transparent);
+  }
 
-
-  .caret { animation: blink 1.1s steps(1) infinite; }
+  .caret {
+    animation: blink 1.1s steps(1) infinite;
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    .caret { animation: none !important; }
+    .caret {
+      animation: none !important;
+    }
   }
 }
 
 @keyframes carousel-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-100% - var(--carousel-gap))); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--carousel-gap)));
+  }
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }

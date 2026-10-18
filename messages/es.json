@@ -102,7 +102,9 @@
       "sistemas": "Sistemas",
       "desarrollo": "Desarrollo",
       "automatizacion": "Automatización"
-    }
+    },
+    "homeLead": "Escribo sobre lo que aplico en mi trabajo: sistemas, desarrollo web y automatización.",
+    "all": "Ver todos los artículos"
   },
   "project": {
     "back": "Volver a proyectos",

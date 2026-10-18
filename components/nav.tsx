@@ -1,15 +1,34 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 
+/**
+ * Enlace de la nav: los de ancla (#about) son <a> normales para que los coja el scroll suave
+ * (lib/smooth-scroll.ts); los de ruta (/blog, /#about) van con Link de Next.
+ */
+export function NavLink(props: React.ComponentProps<"a"> & { href: string }) {
+  return props.href.startsWith("#") ? <a {...props} /> : <Link {...props} />;
+}
+
+/**
+ * Barra de navegación de todas las páginas. En la home los enlaces bajan a cada sección
+ * y el scroll spy marca la que se ve. En el resto llevan a la sección de la home y se marca
+ * el apartado al que pertenece la página (Servicios, Portfolio o Blog).
+ */
 export function Nav() {
   const { t, locale, setLocale } = useI18n();
   const { theme, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  // Fuera de la home, las anclas apuntan a la home: /#about.
+  const home = (hash: string) => (isHome ? hash : `/${hash}`);
 
   // Menú móvil: es un desplegable bajo la barra (patrón disclosure), no un modal que tape
   // la página, así que no atrapa el foco. Escape lo cierra y devuelve el foco al botón.
@@ -25,17 +44,26 @@ export function Nav() {
   }, [open]);
 
   const links = [
-    { href: "#about", label: t("nav.about") },
-    { href: "#services", label: t("nav.services") },
-    { href: "#portfolio", label: t("nav.portfolio") },
-    // Página aparte (no es una sección de la home): el scroll spy no la marca.
-    { href: "/blog", label: t("nav.blog") },
-    { href: "#contact", label: t("nav.contact") },
+    { href: home("#about"), spy: "#about", label: t("nav.about") },
+    { href: home("#services"), spy: "#services", section: "/servicios", label: t("nav.services") },
+    {
+      href: home("#portfolio"),
+      spy: "#portfolio",
+      section: "/proyectos",
+      label: t("nav.portfolio"),
+    },
+    // Baja a la mención #blog de la home (desde ahí se entra al blog completo).
+    { href: home("#blog"), spy: "#blog", section: "/blog", label: t("nav.blog") },
+    { href: home("#contact"), spy: "#contact", label: t("nav.contact") },
   ];
+
+  const isCurrent = (l: { spy: string; section?: string }) =>
+    isHome ? active === l.spy : !!l.section && pathname.startsWith(l.section);
 
   // Scroll spy: marca en la nav la sección que ocupa la parte de arriba de la pantalla.
   useEffect(() => {
-    const ids = ["about", "services", "portfolio", "contact"];
+    if (!isHome) return;
+    const ids = ["about", "services", "portfolio", "blog", "contact"];
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -62,7 +90,7 @@ export function Nav() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [isHome]);
 
   return (
     <nav
@@ -74,16 +102,16 @@ export function Nav() {
       }}
     >
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-6 md:px-8">
-        <a href="#top" className="text-[15px] font-semibold tracking-tight">
+        <NavLink href={isHome ? "#top" : "/"} className="text-[15px] font-semibold tracking-tight">
           Ángel Fernández<span style={{ color: "var(--accent)" }}>.</span>
-        </a>
+        </NavLink>
 
         <div className="text-muted hidden items-center gap-9 text-sm font-medium md:flex">
           {links.map((l) => {
-            const current = active === l.href;
+            const current = isCurrent(l);
             return (
               // El ::after invisible reserva el ancho en negrita: al activarse no empuja a los demás.
-              <a
+              <NavLink
                 key={l.href}
                 href={l.href}
                 data-label={l.label}
@@ -91,7 +119,7 @@ export function Nav() {
                 className={`inline-flex flex-col items-center transition-colors after:invisible after:h-0 after:overflow-hidden after:font-semibold after:content-[attr(data-label)] hover:text-[var(--fg)] ${current ? "font-semibold text-[var(--fg)]" : ""}`}
               >
                 {l.label}
-              </a>
+              </NavLink>
             );
           })}
         </div>
@@ -153,9 +181,9 @@ export function Nav() {
           {/* Solo escritorio. El hidden va en un envoltorio: en el enlace lo pisaba el display
               de .btn-primary y en móvil no cabía la nav. En móvil está MobileContactCta. */}
           <span className="hidden md:inline-flex">
-            <a href="#contact" className="btn-primary !px-4 !py-2.5 !text-sm">
+            <NavLink href={home("#contact")} className="btn-primary !px-4 !py-2.5 !text-sm">
               {t("nav.ctaContact")}
-            </a>
+            </NavLink>
           </span>
 
           <button
@@ -207,15 +235,15 @@ export function Nav() {
           style={{ background: "var(--bg)", borderColor: "var(--rule)" }}
         >
           {links.map((l) => (
-            <a
+            <NavLink
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              aria-current={active === l.href ? "location" : undefined}
-              className={active === l.href ? "font-semibold" : ""}
+              aria-current={isCurrent(l) ? "location" : undefined}
+              className={isCurrent(l) ? "font-semibold" : ""}
             >
               {l.label}
-            </a>
+            </NavLink>
           ))}
         </div>
       )}

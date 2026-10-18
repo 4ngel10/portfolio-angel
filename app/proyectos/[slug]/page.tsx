@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ProjectNav } from "@/components/project-nav";
+import { Nav } from "@/components/nav";
 import { ProjectArticle } from "@/components/project-article";
-import { ProjectFooter } from "@/components/project-footer";
+import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
+import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { PROJECTS, getProject } from "@/lib/projects";
 import { projectJsonLd } from "@/lib/seo";
@@ -54,9 +55,10 @@ export default async function ProjectPage({ params }: { params: Params }) {
   return (
     <>
       <JsonLd data={projectJsonLd(project)} />
-      <ProjectNav />
+      <Nav />
       <ProjectArticle slug={slug} />
-      <ProjectFooter />
+      <Footer />
+      <MobileContactCta />
       <BackToTop />
     </>
   );
