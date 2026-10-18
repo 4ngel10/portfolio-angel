@@ -8,9 +8,9 @@ Portfolio personal single-page de Ángel Fernández Garriga (técnico de sistema
 
 ## Stack
 
-- **Next.js 15** App Router, Server Components por defecto. Componentes interactivos marcados con `"use client"`.
+- **Next.js 16** App Router (Turbopack), Server Components por defecto. Componentes interactivos marcados con `"use client"`.
 - **React 19**, **TypeScript strict**.
-- **Tailwind CSS v4** — configuración en `app/globals.css` con `@theme`. No hay `tailwind.config.ts`.
+- **Tailwind CSS v4** (4.0.0-beta.8): configuración en `app/globals.css` con `@theme`. No hay `tailwind.config.ts`. Las variantes propias van con `@variant` (esta beta no admite `@custom-variant`).
 - **Framer Motion 11** para el tilt 3D y entradas de hero.
 - **next/font** (Space Grotesk + JetBrains Mono) self-hosted.
 - i18n cliente propio en `lib/i18n.tsx` (Context + JSON).
@@ -21,27 +21,37 @@ Portfolio personal single-page de Ángel Fernández Garriga (técnico de sistema
 ```bash
 npm run dev        # arranca en http://localhost:3000
 npm run build      # build producción
-npm run lint       # eslint next
+npx eslint app components lib   # lint (`npm run lint` usa `next lint`, que ya no existe en Next 16)
 npm run typecheck  # tsc --noEmit
 npm run format     # prettier --write .
 ```
+
+Antes de subir: `npm run typecheck`, `npx eslint app components lib` y `npm run build`.
 
 ## Estructura
 
 ```
 app/
-  layout.tsx       providers + fuentes + metadata
-  page.tsx         composición de secciones
-  globals.css      tokens @theme + utilidades
-  sitemap.ts       SEO
-  robots.ts        SEO
+  layout.tsx            providers + fuentes + metadata + skip link
+  page.tsx              home: hero, stack, about, services, portfolio, blog-teaser, contact
+  proyectos/[slug]/     página de cada proyecto
+  servicios/[id]/       /servicios/sistemas y /servicios/web
+  blog/ y blog/[slug]/  listado y artículos
+  globals.css           tokens @theme + utilidades
+  sitemap.ts robots.ts  SEO (salen solos de PROJECTS, SERVICES y BLOG_POSTS)
 components/
-  nav / hero / about / services / portfolio / contact / footer
-  tilt-card.tsx    wrapper framer-motion
+  nav / footer          comunes a todas las páginas
+  hero / about / stack-band / services / portfolio / blog-teaser / contact   secciones de la home
+  project-article / services-page / blog-index / blog-article                páginas interiores
+  carousel / tilt-card / reveal / project-cover / json-ld / skip-link / mobile-contact-cta / back-to-top
 lib/
+  projects.ts services.ts blog.ts   contenido (ES y EN)
+  seo.ts                            meta descriptions y JSON-LD
   theme.tsx i18n.tsx motion.tsx smooth-scroll.ts site.ts
 messages/
   es.json en.json
+public/
+  projects/ blog/       portadas WebP e imágenes para redes (1200x630)
 ```
 
 ## Convenciones de diseño
@@ -59,6 +69,9 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Hover en móvil**: `@variant hover (&:hover)` en `globals.css` hace que `hover:` también se active al tocar (Tailwind v4 lo limita a `(hover: hover)` por defecto). No lo quites: Ángel quiere los mismos efectos en móvil que en PC.
 - **Enlaces externos**: siempre `target="_blank" rel="noopener noreferrer"`. LinkedIn con `www.` para que en móvil abra la app.
 - **Icon system**: inline SVG stroke 2px, 24x24 viewBox. No instales lucide ni heroicons sin consultar.
+- **`.btn-primary` pisa a `hidden`/`md:hidden`**: su `display` gana a esas utilidades. Para ocultar un botón según el tamaño, envuélvelo en un `<span>` o `<div>` con la clase `hidden md:inline-flex` (o `md:hidden`).
+- **Fondos de la home alternos**: about (alt), services, portfolio (alt), blog, contact (alt). Una sección nueva mantiene la alternancia. Las secciones con `id` llevan `scroll-mt-[72px]` para no quedar bajo la nav fija.
+- **Accesibilidad**: skip link "Ir al contenido principal" en el layout; cada página tiene `<main id="main">`. Los enlaces internos mueven el foco a su destino (`lib/smooth-scroll.ts`). SVG decorativos con `aria-hidden`. Las portadas llevan `coverAlt` describiendo la imagen.
 - **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch. **Excepciones aprobadas por Ángel** (se mueven siempre, también con reduced motion): los carruseles (`.carousel-group`, `components/carousel.tsx`: banda de habilidades y banda "Disponible" del footer), sin pausa al hacer hover. Son lentos y lineales. También el scroll suave de los enlaces internos (`lib/smooth-scroll.ts`).
 
 ## Páginas de proyecto
@@ -89,9 +102,16 @@ Añadir un idioma: nuevo JSON + extiende el type `Locale` en `lib/i18n.tsx`.
 
 ## Trabajo con el formulario
 
-El formulario (`components/contact.tsx`) envía `name`, `email` y `message` a **Web3Forms** desde el navegador (`https://api.web3forms.com/submit`), que lo reenvía al Gmail de Ángel. No hay endpoint propio ni variables de entorno: el plan gratuito de Web3Forms no admite envíos desde servidor. La clave (`WEB3FORMS_KEY`) es pública por diseño y vive en `lib/site.ts`. Incluye un honeypot `botcheck` antispam. El `<form>` tiene `action`/`method="POST"` a Web3Forms con `access_key` oculto, así funciona aunque no haya cargado el JS.
+El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (select obligatorio "¿Qué servicio te interesa?", valor siempre en español) y `message` a **Web3Forms** desde el navegador (`https://api.web3forms.com/submit`), que lo reenvía al Gmail de Ángel. No hay endpoint propio ni variables de entorno: el plan gratuito de Web3Forms no admite envíos desde servidor. La clave (`WEB3FORMS_KEY`) es pública por diseño y vive en `lib/site.ts`. Incluye un honeypot `botcheck` antispam. El `<form>` tiene `action`/`method="POST"` a Web3Forms con `access_key` oculto, así funciona aunque no haya cargado el JS.
 
 **En el panel de Web3Forms, "Captcha Protection" debe estar en `None`.** Si se activa hCaptcha sin montarlo en el frontend, Web3Forms rechaza todos los envíos ("hCaptcha Token is mandatory"). El motivo de cualquier rechazo sale en la consola del navegador como `[contacto]`.
+
+## SEO
+
+- Meta descriptions de home, servicios y blog en `lib/seo.ts`; las de proyectos y artículos salen de su contenido. `og:description` y `twitter:description` coinciden con la meta.
+- JSON-LD (`components/json-ld.tsx` + helpers de `lib/seo.ts`): home `WebSite` + `Person`; servicios `Service` + `BreadcrumbList`; proyectos `Article` + `BreadcrumbList`; blog `Blog` y `BlogPosting` + `BreadcrumbList`.
+- **Sin hreflang, a propósito** (decisión de Ángel): el inglés se elige en el navegador sobre la misma URL, no hay URLs `/en/`. Un hreflang "en" hacia la página en español sería un error. Si algún día hay rutas `/en/...`, se añade con `alternates.languages`.
+- **Nada de testimonios ni datos inventados** publicados como reales (Ángel aún no tiene clientes freelance). Los textos que hablen de experiencia se basan en lo que figura en la web: sector hotelero, homelab, proyectos.
 
 ## Dominio
 
@@ -109,5 +129,7 @@ El formulario (`components/contact.tsx`) envía `name`, `email` y `message` a **
 ## Deploy
 
 Vercel conectado al repo de GitHub. Push a `main` = deploy producción. PRs = preview deploys automáticos.
+
+Ángel prefiere que, al terminar y verificar cada tarea, se haga commit y push a `main` sin preguntar. Los cambios grandes (rediseños) se enseñan antes.
 
 No hacen falta variables de entorno en Vercel.
