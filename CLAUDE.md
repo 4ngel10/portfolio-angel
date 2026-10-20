@@ -81,7 +81,7 @@ Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slu
 
 **Cada proyecto nuevo sigue la misma estructura que los actuales** (petición de Ángel):
 
-- **Etiqueta (`pXTag`)**: una sola palabra con el área del proyecto, no su estado. Las actuales son "Automatización", "Desarrollo" e "Infraestructura" (EN: Automation, Development, Infrastructure). Reutiliza una si encaja; si no, otra palabra igual de corta. Nada de "En producción" o "En curso".
+- **Etiqueta (`pXTag`)**: una sola palabra con el área del proyecto, no su estado. Las actuales son "Automatización", "Desarrollo web" e "Infraestructura" (EN: Automation, Web development, Infrastructure; "Desarrollo web" son dos palabras por petición de Ángel). Reutiliza una si encaja; si no, otra palabra igual de corta. Nada de "En producción" o "En curso".
 - **Card**: título corto (`pXTitle`), descripción de una o dos frases (`pXDesc`) y 3-4 tecnologías en `tech`.
 - **Artículo** (`post` en `lib/projects.ts`, ES y EN): `title` largo, `intro` (primer párrafo, va de entradilla), secciones con H2 y, si hace falta, `{ h3 }`, `{ list }` y `{ ol }`. `date` en AAAA-MM-DD. Si Ángel pasa el texto, se respeta tal cual, solo con correcciones mínimas, y se traduce al inglés.
 - **Portada**: la foto que suba Ángel se convierte a WebP (máx. 2200 px de ancho) en `public/projects/`, más una imagen para redes de 1200x630 en JPG (`ogImage`). Los originales pesados no se dejan en `public/`. Un SVG se puede usar tal cual (revisar que no tenga scripts, em dashes ni animaciones sin `prefers-reduced-motion`).
