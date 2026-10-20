@@ -53,128 +53,6 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
-    slug: "mapeo-impresoras-rds",
-    key: "p1",
-    cover: "PS1",
-    tint: 8,
-    tech: ["PowerShell", "Active Directory", "GPO", "RDS"],
-    image: "/projects/powershell-printer-cover.svg",
-    coverAlt: {
-      es: "Ventana de terminal de PowerShell con el script PrinterMapping.ps1: lee del usuario de Active Directory sus impresoras, las conecta una a una y fija la predeterminada.",
-      en: "PowerShell terminal window with the PrinterMapping.ps1 script: it reads the user's printers from Active Directory, connects them one by one and sets the default.",
-    },
-    ogImage: "/projects/powershell-printer-og.jpg",
-    date: "2026-10-17",
-    post: {
-      es: {
-        title: "Automatizar el mapeo de impresoras en RDS con PowerShell y Active Directory",
-        intro:
-          "En un cliente con varias sedes y más de 30 impresoras, configurar las impresoras a mano cada vez que un usuario iniciaba sesión era insostenible. Cada alta nueva, cada cambio de puesto, cada “se me han borrado las impresoras” significaba conectarse al equipo y añadirlas una a una. Con bandejas, ajustes predefinidos y todo. Multiplica eso por 90 usuarios y ya te imaginas.",
-        sections: [
-          {
-            blocks: [
-              "Así que decidí automatizarlo con un script de PowerShell que se lanza por GPO en el inicio de sesión.",
-            ],
-          },
-          {
-            heading: "La idea",
-            blocks: [
-              "El planteamiento es sencillo: que sea Active Directory quien sepa qué impresoras necesita cada usuario. Creé dos atributos personalizados en AD: uno para la impresora predeterminada y otro para las adicionales. Cuando el usuario inicia sesión en el servidor RDS, una GPO lanza el script, que lee esos atributos y mapea automáticamente las impresoras que le corresponden.",
-              "¿Por qué AD y no otra cosa? Porque es el sitio natural donde ya gestionas al usuario. Si alguien cambia de sede o de departamento, solo tienes que actualizar sus atributos en AD y la próxima vez que inicie sesión ya tiene sus impresoras nuevas. Sin tocar el equipo, sin conectarte en remoto, sin tickets.",
-            ],
-          },
-          {
-            heading: "Qué hace el script",
-            blocks: [
-              "El script no solo instala las impresoras. También configura las bandejas y los ajustes predefinidos de cada una. Si una impresora tiene la bandeja 2 para papel A3 y la 3 para sobres, el usuario la recibe lista para usar sin tener que tocar nada.",
-              "El proceso es limpio: al arrancar, el script consulta AD, obtiene la lista de impresoras asignadas al usuario, las mapea con su configuración y establece la predeterminada. Todo transparente para el usuario.",
-            ],
-          },
-          {
-            heading: "Logs para dormir tranquilo",
-            blocks: [
-              "Cada ejecución genera un log individual por usuario en una carpeta compartida del servidor. Queda registrado qué impresoras se han mapeado, a qué hora y si ha ido bien o ha fallado algo.",
-              "Esto parece un detalle menor, pero cuando un usuario dice “no me funciona la impresora” y tú puedes mirar su log y ver exactamente qué ha pasado, te ahorras bastante tiempo de diagnóstico.",
-            ],
-          },
-          {
-            heading: "El botón de “arréglame las impresoras”",
-            blocks: [
-              "Uno de los problemas recurrentes era que a veces, por un error o un cambio de configuración, las impresoras del usuario desaparecían. En vez de abrir un ticket y esperar, el script deja un acceso directo en el escritorio que resetea la GPO y vuelve a lanzar el mapeo completo.",
-              "El usuario hace doble clic y en unos segundos tiene todas sus impresoras de vuelta. Esto ha reducido bastante las incidencias relacionadas con impresoras.",
-            ],
-          },
-          {
-            heading: "Números",
-            blocks: [
-              "El script gestiona unos 90 usuarios y entre 30 y 35 impresoras repartidas en varias sedes. Lleva varias versiones de mejoras incrementales y ahora mismo está en la v6.0. Cada iteración ha ido puliendo cosas: mejor gestión de errores, los logs, la configuración de bandejas, el acceso directo de recuperación.",
-            ],
-          },
-          {
-            heading: "Lo que me llevo",
-            blocks: [
-              "Este proyecto me enseñó que la mejor automatización es la que el usuario ni nota. Nadie te da las gracias porque sus impresoras aparezcan solas, pero sí que dejan de llamarte para que se las configures. Y eso, al final, es el objetivo.",
-              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, te animo a explorar este enfoque. La inversión inicial de montar el script merece la pena con creces.",
-            ],
-          },
-        ],
-      },
-      en: {
-        title: "Automating printer mapping on RDS with PowerShell and Active Directory",
-        intro:
-          "At a client with several sites and more than 30 printers, setting up printers by hand every time a user signed in was unsustainable. Every new hire, every desk change, every “my printers are gone” meant connecting to the machine and adding them one by one. Trays, presets and all. Multiply that by 90 users and you get the picture.",
-        sections: [
-          {
-            blocks: [
-              "So I decided to automate it with a PowerShell script launched by GPO at sign-in.",
-            ],
-          },
-          {
-            heading: "The idea",
-            blocks: [
-              "The approach is simple: let Active Directory know which printers each user needs. I created two custom attributes in AD: one for the default printer and another for the additional ones. When the user signs in to the RDS server, a GPO launches the script, which reads those attributes and automatically maps the printers that belong to them.",
-              "Why AD and not something else? Because it is the natural place where you already manage the user. If someone changes site or department, you only update their attributes in AD and the next time they sign in they already have their new printers. No touching the machine, no remote sessions, no tickets.",
-            ],
-          },
-          {
-            heading: "What the script does",
-            blocks: [
-              "The script does not just install the printers. It also configures each one's trays and presets. If a printer has tray 2 for A3 paper and tray 3 for envelopes, the user gets it ready to use without touching anything.",
-              "The process is clean: on start, the script queries AD, gets the list of printers assigned to the user, maps them with their configuration and sets the default one. All transparent to the user.",
-            ],
-          },
-          {
-            heading: "Logs to sleep well",
-            blocks: [
-              "Every run writes an individual log per user to a shared folder on the server. It records which printers were mapped, at what time, and whether everything went fine or something failed.",
-              "It looks like a small detail, but when a user says “my printer doesn't work” and you can open their log and see exactly what happened, you save a lot of troubleshooting time.",
-            ],
-          },
-          {
-            heading: "The “fix my printers” button",
-            blocks: [
-              "A recurring problem was that sometimes, because of an error or a configuration change, a user's printers disappeared. Instead of opening a ticket and waiting, the script leaves a desktop shortcut that resets the GPO and runs the full mapping again.",
-              "The user double-clicks it and in a few seconds all their printers are back. This has noticeably cut down printer-related incidents.",
-            ],
-          },
-          {
-            heading: "Numbers",
-            blocks: [
-              "The script handles around 90 users and 30 to 35 printers spread across several sites. It has gone through several rounds of incremental improvements and is currently at v6.0. Each iteration polished something: better error handling, the logs, tray configuration, the recovery shortcut.",
-            ],
-          },
-          {
-            heading: "What I take away",
-            blocks: [
-              "This project taught me that the best automation is the one the user does not even notice. Nobody thanks you because their printers show up on their own, but they do stop calling you to set them up. And in the end, that is the goal.",
-              "If you work in an environment with lots of printers and lots of users, I encourage you to explore this approach. The initial investment in building the script pays off many times over.",
-            ],
-          },
-        ],
-      },
-    },
-  },
-  {
     slug: "prompt-vault",
     key: "p2",
     cover: "AI",
@@ -594,6 +472,128 @@ export const PROJECTS: Project[] = [
           {
             heading: "Where to see it",
             blocks: ["You can visit it at [flexgrip.site](https://www.flexgrip.site/)."],
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "mapeo-impresoras-rds",
+    key: "p1",
+    cover: "PS1",
+    tint: 8,
+    tech: ["PowerShell", "Active Directory", "GPO", "RDS"],
+    image: "/projects/powershell-printer-cover.svg",
+    coverAlt: {
+      es: "Ventana de terminal de PowerShell con el script PrinterMapping.ps1: lee del usuario de Active Directory sus impresoras, las conecta una a una y fija la predeterminada.",
+      en: "PowerShell terminal window with the PrinterMapping.ps1 script: it reads the user's printers from Active Directory, connects them one by one and sets the default.",
+    },
+    ogImage: "/projects/powershell-printer-og.jpg",
+    date: "2026-10-17",
+    post: {
+      es: {
+        title: "Automatizar el mapeo de impresoras en RDS con PowerShell y Active Directory",
+        intro:
+          "En un cliente con varias sedes y más de 30 impresoras, configurar las impresoras a mano cada vez que un usuario iniciaba sesión era insostenible. Cada alta nueva, cada cambio de puesto, cada “se me han borrado las impresoras” significaba conectarse al equipo y añadirlas una a una. Con bandejas, ajustes predefinidos y todo. Multiplica eso por 90 usuarios y ya te imaginas.",
+        sections: [
+          {
+            blocks: [
+              "Así que decidí automatizarlo con un script de PowerShell que se lanza por GPO en el inicio de sesión.",
+            ],
+          },
+          {
+            heading: "La idea",
+            blocks: [
+              "El planteamiento es sencillo: que sea Active Directory quien sepa qué impresoras necesita cada usuario. Creé dos atributos personalizados en AD: uno para la impresora predeterminada y otro para las adicionales. Cuando el usuario inicia sesión en el servidor RDS, una GPO lanza el script, que lee esos atributos y mapea automáticamente las impresoras que le corresponden.",
+              "¿Por qué AD y no otra cosa? Porque es el sitio natural donde ya gestionas al usuario. Si alguien cambia de sede o de departamento, solo tienes que actualizar sus atributos en AD y la próxima vez que inicie sesión ya tiene sus impresoras nuevas. Sin tocar el equipo, sin conectarte en remoto, sin tickets.",
+            ],
+          },
+          {
+            heading: "Qué hace el script",
+            blocks: [
+              "El script no solo instala las impresoras. También configura las bandejas y los ajustes predefinidos de cada una. Si una impresora tiene la bandeja 2 para papel A3 y la 3 para sobres, el usuario la recibe lista para usar sin tener que tocar nada.",
+              "El proceso es limpio: al arrancar, el script consulta AD, obtiene la lista de impresoras asignadas al usuario, las mapea con su configuración y establece la predeterminada. Todo transparente para el usuario.",
+            ],
+          },
+          {
+            heading: "Logs para dormir tranquilo",
+            blocks: [
+              "Cada ejecución genera un log individual por usuario en una carpeta compartida del servidor. Queda registrado qué impresoras se han mapeado, a qué hora y si ha ido bien o ha fallado algo.",
+              "Esto parece un detalle menor, pero cuando un usuario dice “no me funciona la impresora” y tú puedes mirar su log y ver exactamente qué ha pasado, te ahorras bastante tiempo de diagnóstico.",
+            ],
+          },
+          {
+            heading: "El botón de “arréglame las impresoras”",
+            blocks: [
+              "Uno de los problemas recurrentes era que a veces, por un error o un cambio de configuración, las impresoras del usuario desaparecían. En vez de abrir un ticket y esperar, el script deja un acceso directo en el escritorio que resetea la GPO y vuelve a lanzar el mapeo completo.",
+              "El usuario hace doble clic y en unos segundos tiene todas sus impresoras de vuelta. Esto ha reducido bastante las incidencias relacionadas con impresoras.",
+            ],
+          },
+          {
+            heading: "Números",
+            blocks: [
+              "El script gestiona unos 90 usuarios y entre 30 y 35 impresoras repartidas en varias sedes. Lleva varias versiones de mejoras incrementales y ahora mismo está en la v6.0. Cada iteración ha ido puliendo cosas: mejor gestión de errores, los logs, la configuración de bandejas, el acceso directo de recuperación.",
+            ],
+          },
+          {
+            heading: "Lo que me llevo",
+            blocks: [
+              "Este proyecto me enseñó que la mejor automatización es la que el usuario ni nota. Nadie te da las gracias porque sus impresoras aparezcan solas, pero sí que dejan de llamarte para que se las configures. Y eso, al final, es el objetivo.",
+              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, te animo a explorar este enfoque. La inversión inicial de montar el script merece la pena con creces.",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "Automating printer mapping on RDS with PowerShell and Active Directory",
+        intro:
+          "At a client with several sites and more than 30 printers, setting up printers by hand every time a user signed in was unsustainable. Every new hire, every desk change, every “my printers are gone” meant connecting to the machine and adding them one by one. Trays, presets and all. Multiply that by 90 users and you get the picture.",
+        sections: [
+          {
+            blocks: [
+              "So I decided to automate it with a PowerShell script launched by GPO at sign-in.",
+            ],
+          },
+          {
+            heading: "The idea",
+            blocks: [
+              "The approach is simple: let Active Directory know which printers each user needs. I created two custom attributes in AD: one for the default printer and another for the additional ones. When the user signs in to the RDS server, a GPO launches the script, which reads those attributes and automatically maps the printers that belong to them.",
+              "Why AD and not something else? Because it is the natural place where you already manage the user. If someone changes site or department, you only update their attributes in AD and the next time they sign in they already have their new printers. No touching the machine, no remote sessions, no tickets.",
+            ],
+          },
+          {
+            heading: "What the script does",
+            blocks: [
+              "The script does not just install the printers. It also configures each one's trays and presets. If a printer has tray 2 for A3 paper and tray 3 for envelopes, the user gets it ready to use without touching anything.",
+              "The process is clean: on start, the script queries AD, gets the list of printers assigned to the user, maps them with their configuration and sets the default one. All transparent to the user.",
+            ],
+          },
+          {
+            heading: "Logs to sleep well",
+            blocks: [
+              "Every run writes an individual log per user to a shared folder on the server. It records which printers were mapped, at what time, and whether everything went fine or something failed.",
+              "It looks like a small detail, but when a user says “my printer doesn't work” and you can open their log and see exactly what happened, you save a lot of troubleshooting time.",
+            ],
+          },
+          {
+            heading: "The “fix my printers” button",
+            blocks: [
+              "A recurring problem was that sometimes, because of an error or a configuration change, a user's printers disappeared. Instead of opening a ticket and waiting, the script leaves a desktop shortcut that resets the GPO and runs the full mapping again.",
+              "The user double-clicks it and in a few seconds all their printers are back. This has noticeably cut down printer-related incidents.",
+            ],
+          },
+          {
+            heading: "Numbers",
+            blocks: [
+              "The script handles around 90 users and 30 to 35 printers spread across several sites. It has gone through several rounds of incremental improvements and is currently at v6.0. Each iteration polished something: better error handling, the logs, tray configuration, the recovery shortcut.",
+            ],
+          },
+          {
+            heading: "What I take away",
+            blocks: [
+              "This project taught me that the best automation is the one the user does not even notice. Nobody thanks you because their printers show up on their own, but they do stop calling you to set them up. And in the end, that is the goal.",
+              "If you work in an environment with lots of printers and lots of users, I encourage you to explore this approach. The initial investment in building the script pays off many times over.",
+            ],
           },
         ],
       },

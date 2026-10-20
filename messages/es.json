@@ -91,7 +91,9 @@
     "p3Desc": "Homelab casero para la gestión inteligente del hogar: domótica con Home Assistant, VPN propia, bloqueo de anuncios y backups automáticos en la nube.",
     "p4Tag": "Desarrollo",
     "p4Title": "FlexGrip, tienda de un solo producto",
-    "p4Desc": "Tienda online en español para un kit de fitness con bandas elásticas y handgrip, con pago por Stripe y garantías a la vista."
+    "p4Desc": "Tienda online en español para un kit de fitness con bandas elásticas y handgrip, con pago por Stripe y garantías a la vista.",
+    "prev": "Proyecto anterior",
+    "next": "Proyecto siguiente"
   },
   "blog": {
     "title": "Blog.",

@@ -91,7 +91,9 @@
     "p3Desc": "Home lab for a smart home: Home Assistant automation, my own VPN, ad blocking and automatic cloud backups.",
     "p4Tag": "Development",
     "p4Title": "FlexGrip, single-product store",
-    "p4Desc": "Spanish-language online store for a fitness kit with resistance bands and a hand gripper, with Stripe checkout and guarantees in plain sight."
+    "p4Desc": "Spanish-language online store for a fitness kit with resistance bands and a hand gripper, with Stripe checkout and guarantees in plain sight.",
+    "prev": "Previous project",
+    "next": "Next project"
   },
   "blog": {
     "title": "Blog.",
