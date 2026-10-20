@@ -43,9 +43,9 @@
   },
   "about": {
     "title": "Infrastructure as the invisible base that lets everything run.",
-    "p1": "I am Ángel Fernández, a **systems administrator and web developer**. To me, technology has to be **at the service of the business**. When infrastructure is well built, nobody talks about it. **It just works.**",
-    "p2": "I come from the **hospitality sector**, where I have managed environments with network segmentation, virtualization and several servers running in parallel. Places where downtime is not an anecdote: **it is a serious problem**. That taught me to build everything I do on **documentation, standardization and business continuity**.",
-    "p3": "Alongside that, I design and build **professional websites** for companies and freelancers who want an online presence that is **polished, fast and easy to maintain**. No bloated templates, no fine print.",
+    "p1": "I am a systems technician in Palma de Mallorca, and I make sure your company's technology works without you having to think about it. I look after servers, networks, backups, email, devices and desktop support for the team's day-to-day. The goal is for everything to be in its place and, if something fails, for recovery to be fast.",
+    "p2": "I work on the technical infrastructure of the hospitality sector. I manage environments with several servers running in parallel where going dark is not an option. Every day this teaches me to always work with clear documentation, standardization and continuity plans as the foundation of everything.",
+    "p3": "I apply that same way of working to systems administration and IT support for companies in Mallorca. I like building stable environments that hold no surprises and solving problems before they affect your day-to-day.",
     "stackLabel": "Technical stack",
     "catVirt": "Virtualization",
     "catSystems": "Systems",

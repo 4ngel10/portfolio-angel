@@ -128,7 +128,7 @@ export function ServicePage({ id }: { id: string }) {
           <h1 className="mt-6 text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
             {t(`services.${service.key}Title`)}
           </h1>
-          <p className="text-muted mt-6 max-w-2xl text-[19px] leading-relaxed">{lead}</p>
+          <p className="text-muted mt-6 max-w-2xl text-[17px] leading-[1.75]">{lead}</p>
           {rest.map((p, i) => (
             <p key={i} className="text-muted mt-5 max-w-2xl text-[17px] leading-[1.75]">
               {p}

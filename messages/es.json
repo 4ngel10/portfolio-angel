@@ -43,9 +43,9 @@
   },
   "about": {
     "title": "Infraestructura como base invisible que permite que todo funcione.",
-    "p1": "Soy Ángel Fernández, **administrador de sistemas y desarrollador web**. Para mí la tecnología tiene que estar **al servicio del negocio**. Cuando una infraestructura está bien montada, nadie habla de ella. **Simplemente funciona.**",
-    "p2": "Vengo del **sector hotelero**, donde he gestionado entornos con segmentación de redes, virtualización y varios servidores en paralelo. Sitios donde una caída no es una anécdota: **es un problema serio**. Eso me enseñó a trabajar con **documentación, estandarización y continuidad de negocio** como base de todo lo que hago.",
-    "p3": "En paralelo, diseño y desarrollo **webs profesionales** para empresas y autónomos que quieren una presencia online **cuidada, rápida y fácil de mantener**. Sin plantillas infladas ni letra pequeña.",
+    "p1": "Soy técnico de sistemas en Palma de Mallorca y me encargo de que la tecnología de tu empresa funcione sin que tengas que pensar en ella. Me ocupo de los servidores, las redes, las copias de seguridad, el correo, los dispositivos y el soporte de microinformática para el día a día del equipo. El objetivo es que todo esté en su sitio y que, si algo falla, la recuperación sea rápida.",
+    "p2": "Trabajo en la infraestructura técnica del sector hotelero. Gestiono entornos con varios servidores en paralelo donde quedarse a oscuras no es una opción. Día a día esto me enseña a trabajar siempre con documentación clara, estandarización y planes de continuidad como base de todo.",
+    "p3": "Aplico esta misma forma de trabajar en la administración de sistemas y el soporte IT para empresas en Mallorca. Me gusta construir entornos estables que no den sorpresas y resolver los problemas antes de que afecten a tu día a día.",
     "stackLabel": "Stack técnico",
     "catVirt": "Virtualización",
     "catSystems": "Sistemas",
