@@ -23,7 +23,7 @@ export function Portfolio() {
         </Reveal>
 
         <RevealGroup
-          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-5 sm:grid-cols-2"
           stagger={0.08}
           style={{ perspective: "1200px" }}
         >

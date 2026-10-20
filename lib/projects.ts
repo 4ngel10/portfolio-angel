@@ -532,6 +532,73 @@ export const PROJECTS: Project[] = [
       },
     },
   },
+  {
+    slug: "flexgrip",
+    key: "p4",
+    cover: "FG",
+    tint: 14,
+    tech: ["Astro", "Stripe", "SEO"],
+    url: "https://www.flexgrip.site/",
+    image: "/projects/flexgrip.webp",
+    coverAlt: {
+      es: "Captura de FlexGrip: titular «Entrena en cualquier lugar por solo 14,99 €», botón de compra y un kit con cinco bandas elásticas de colores, un handgrip y una bolsa de malla.",
+      en: "FlexGrip screenshot: headline “Entrena en cualquier lugar por solo 14,99 €”, a buy button and a kit with five colored resistance bands, a hand gripper and a mesh bag.",
+    },
+    ogImage: "/projects/flexgrip-og.jpg",
+    date: "2026-10-20",
+    post: {
+      es: {
+        title: "FlexGrip: una tienda de un solo producto",
+        intro:
+          "FlexGrip es una tienda online con un único producto: un kit de fitness con cinco bandas elásticas, un handgrip regulable y una bolsa de malla. Está pensada para una sola cosa, que quien llega entienda qué se lleva y pueda comprarlo sin dar vueltas.",
+        sections: [
+          {
+            heading: "Qué es",
+            blocks: [
+              "Una web en español con el producto en primer plano: titular claro, precio, botón de compra y las garantías a la vista (30 días de devolución, 3 años de garantía y envío exprés).",
+              "Más abajo se detalla qué incluye el kit, con las bandas de ligera a extra fuerte y el handgrip regulable, y hay una comparativa, opiniones de clientes y preguntas frecuentes.",
+            ],
+          },
+          {
+            heading: "Cómo está hecha",
+            blocks: [
+              "Con Astro, que genera páginas estáticas muy ligeras y rápidas de cargar, justo lo que necesita una tienda donde cada segundo cuenta. El pago se resuelve con enlaces de Stripe, sin montar un carrito propio.",
+              "El diseño es oscuro, con un verde lima como único acento, y está pensado para leerse bien en el móvil, que es desde donde llega la mayoría de la gente.",
+            ],
+          },
+          {
+            heading: "Dónde verla",
+            blocks: ["Puedes visitarla en [flexgrip.site](https://www.flexgrip.site/)."],
+          },
+        ],
+      },
+      en: {
+        title: "FlexGrip: a single-product store",
+        intro:
+          "FlexGrip is an online store with a single product: a fitness kit with five resistance bands, an adjustable hand gripper and a mesh bag. It is built for one thing: whoever lands on it understands what they get and can buy it without detours.",
+        sections: [
+          {
+            heading: "What it is",
+            blocks: [
+              "A Spanish-language site with the product front and center: a clear headline, the price, a buy button and the guarantees in plain sight (30-day returns, a 3-year warranty and express shipping).",
+              "Further down it details what the kit includes, with bands from light to extra heavy and the adjustable gripper, plus a comparison, customer reviews and an FAQ.",
+            ],
+          },
+          {
+            heading: "How it is built",
+            blocks: [
+              "With Astro, which generates very light static pages that load fast, exactly what a store needs when every second counts. Payment is handled with Stripe links, so there is no custom cart to maintain.",
+              "The design is dark with a lime green as the only accent, made to read well on mobile, which is where most people arrive from.",
+            ],
+          },
+          {
+            heading: "Where to see it",
+            blocks: ["You can visit it at [flexgrip.site](https://www.flexgrip.site/)."],
+          },
+        ],
+      },
+    },
+  },
 ];
 
 export function getProject(slug: string) {
