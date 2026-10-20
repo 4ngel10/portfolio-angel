@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Reveal } from "./reveal";
-import { TiltCard } from "./tilt-card";
 import { ProjectCover } from "./project-cover";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { PROJECTS, getProject, type PostBlock, type PostSection } from "@/lib/projects";
@@ -104,7 +103,7 @@ export function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: 
           width={block.width}
           height={block.height}
           sizes="(min-width: 640px) 320px, 75vw"
-          className="h-auto w-3/4 max-w-[320px] drop-shadow-[0_30px_40px_rgba(0,0,0,0.18)] transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.02]"
+          className="h-auto w-3/4 max-w-[320px] drop-shadow-[0_30px_40px_rgba(0,0,0,0.18)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03]"
         />
         {block.caption && (
           <figcaption className="text-muted mt-5 text-center text-sm">{block.caption}</figcaption>
@@ -258,16 +257,10 @@ export function ProjectArticle({ slug }: { slug: string }) {
         </Reveal>
       </header>
 
-      <div
-        className="mx-auto mt-14 max-w-6xl px-6 md:mt-20 md:px-8"
-        style={{ perspective: "1600px" }}
-      >
+      <div className="mx-auto mt-14 max-w-6xl px-6 md:mt-20 md:px-8">
         <Reveal>
-          {/* La portada se inclina con el ratón y la imagen se acerca (group-hover de ProjectCover). */}
-          <TiltCard
-            maxTilt={3}
-            className="group border-rule overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_40px_80px_-35px_rgba(194,65,12,0.35)]"
-          >
+          {/* Al pasar el ratón la imagen hace un zoom discreto (group-hover de ProjectCover). */}
+          <div className="group border-rule overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_40px_80px_-35px_rgba(194,65,12,0.35)]">
             <ProjectCover
               project={project}
               alt={project.coverAlt?.[locale] ?? title}
@@ -275,7 +268,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
               priority
               className="aspect-[16/9]"
             />
-          </TiltCard>
+          </div>
         </Reveal>
       </div>
 
@@ -295,14 +288,8 @@ export function ProjectArticle({ slug }: { slug: string }) {
       {next !== project && (
         <section className="bg-paper-alt border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-            <Link
-              href={`/proyectos/${next.slug}`}
-              className="block"
-              style={{ perspective: "1200px" }}
-            >
-              <TiltCard
-                lift
-                maxTilt={4}
+            <Link href={`/proyectos/${next.slug}`} className="block">
+              <div
                 className="group border-rule flex flex-col overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)] md:flex-row"
                 style={{ background: "var(--bg)" }}
               >
@@ -322,7 +309,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
                     <Arrow />
                   </span>
                 </span>
-              </TiltCard>
+              </div>
             </Link>
           </div>
         </section>

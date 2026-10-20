@@ -65,7 +65,8 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Eyebrows**: cero. Las secciones se abren con su H2.
 - **Radios**: tope en 16px para cards. Nada de 24px+.
 - **Botones**: `.btn-primary` y `.btn-secondary` en `globals.css`. Siempre `scale(0.97)` en `:active`.
-- **Tilt 3D**: gateado por `useReducedMotion`. Con ratón sigue al cursor; en táctil se inclina hacia el punto tocado y vuelve al soltar (decisión de Ángel: mismo efecto en móvil que en PC).
+- **Imágenes (portadas de proyecto)**: al pasar el ratón solo hacen un zoom discreto (`scale-[1.03]`, 500 ms, en `project-cover.tsx`). Sin tilt ni elevación en las cards con portada (home, cabecera del proyecto y "Siguiente proyecto"); decisión de Ángel.
+- **Tilt 3D** (solo cards sin imagen: servicios y blog): gateado por `useReducedMotion`. Con ratón sigue al cursor; en táctil se inclina hacia el punto tocado y vuelve al soltar (decisión de Ángel: mismo efecto en móvil que en PC).
 - **Hover en móvil**: `@variant hover (&:hover)` en `globals.css` hace que `hover:` también se active al tocar (Tailwind v4 lo limita a `(hover: hover)` por defecto). No lo quites: Ángel quiere los mismos efectos en móvil que en PC.
 - **Enlaces externos**: siempre `target="_blank" rel="noopener noreferrer"`. LinkedIn con `www.` para que en móvil abra la app.
 - **Icon system**: inline SVG stroke 2px, 24x24 viewBox. No instales lucide ni heroicons sin consultar.

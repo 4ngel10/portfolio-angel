@@ -48,7 +48,7 @@ export function ProjectCover({
             fill
             sizes={sizes}
             {...load}
-            className={`object-cover transition-transform duration-300 ${EASE} group-hover:scale-105 ${imageDark ? "[.dark_&]:hidden" : ""}`}
+            className={`object-cover transition-transform duration-500 ${EASE} group-hover:scale-[1.03] ${imageDark ? "[.dark_&]:hidden" : ""}`}
           />
           {imageDark && (
             <Image
@@ -57,16 +57,16 @@ export function ProjectCover({
               fill
               sizes={sizes}
               {...load}
-              className={`hidden object-cover transition-transform duration-300 ${EASE} group-hover:scale-105 [.dark_&]:block`}
+              className={`hidden object-cover transition-transform duration-500 ${EASE} group-hover:scale-[1.03] [.dark_&]:block`}
             />
           )}
         </>
       ) : (
         <div
-          className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ${EASE} group-hover:scale-110`}
+          className={`absolute inset-0 flex items-center justify-center transition-transform duration-500 ${EASE} group-hover:scale-[1.03]`}
         >
           <div
-            className={`absolute inset-[-20%] opacity-60 transition-transform duration-300 ${EASE} group-hover:-translate-y-3 group-hover:translate-x-3`}
+            className={`absolute inset-[-20%] opacity-60`}
             style={{
               backgroundImage:
                 "radial-gradient(color-mix(in oklab, var(--fg) 14%, transparent) 1px, transparent 1px)",

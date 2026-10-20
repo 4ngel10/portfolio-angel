@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { TiltCard } from "./tilt-card";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { ProjectCover } from "./project-cover";
 import { useI18n } from "@/lib/i18n";
@@ -62,7 +61,7 @@ export function Portfolio() {
           className="-mx-6 snap-x snap-mandatory overflow-x-auto px-6 py-8 [-ms-overflow-style:none] [scrollbar-width:none] md:-mx-8 md:px-8 [&::-webkit-scrollbar]:hidden"
           style={{ scrollPaddingInline: "1.5rem" }}
         >
-          <RevealGroup className="flex gap-5" stagger={0.08} style={{ perspective: "1200px" }}>
+          <RevealGroup className="flex gap-5" stagger={0.08}>
             {PROJECTS.map((p) => {
               const title = t(`portfolio.${p.key}Title`);
               return (
@@ -75,7 +74,7 @@ export function Portfolio() {
                     href={`/proyectos/${p.slug}`}
                     className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
                   >
-                    <TiltCard
+                    <div
                       className="group border-rule flex h-full flex-col overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]"
                       style={{ background: "var(--bg)" }}
                     >
@@ -85,10 +84,7 @@ export function Portfolio() {
                         sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
                         className="h-52"
                       />
-                      <div
-                        className="flex flex-1 flex-col p-6"
-                        style={{ transform: "translateZ(20px)" }}
-                      >
+                      <div className="flex flex-1 flex-col p-6">
                         <span
                           className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
                           style={{ color: "var(--accent)" }}
@@ -133,7 +129,7 @@ export function Portfolio() {
                           </svg>
                         </span>
                       </div>
-                    </TiltCard>
+                    </div>
                   </Link>
                 </RevealItem>
               );
