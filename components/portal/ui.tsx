@@ -64,9 +64,9 @@ function Badge({ children, tone }: { children: ReactNode; tone: "accent" | "ink"
   const text = tone === "muted" ? "text-muted" : "text-ink";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border border-rule px-2.5 py-0.5 text-xs font-medium transition-colors duration-300 ${text}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border border-rule px-2.5 py-0.5 text-xs font-medium transition-colors duration-200 ${text}`}
     >
-      <span className={`${dot} ${color} transition-colors duration-300`} aria-hidden />
+      <span className={`${dot} ${color} transition-colors duration-200`} aria-hidden />
       {children}
     </span>
   );
@@ -123,9 +123,10 @@ export function ProgressBar({ value, max, label }: { value: number; max: number;
       aria-valuenow={value}
       className="h-1.5 w-full overflow-hidden rounded-full bg-chip"
     >
+      {/* scaleX en vez de width: solo transform, sin recalcular el layout. */}
       <div
-        className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-500"
-        style={{ width: `${pct}%` }}
+        className="h-full w-full origin-left bg-[var(--accent)] transition-transform duration-[250ms] ease-[var(--ease-out)]"
+        style={{ transform: `scaleX(${pct / 100})` }}
       />
     </div>
   );
@@ -135,7 +136,7 @@ export function CheckIcon({ done }: { done: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className={`size-5 shrink-0 ${done ? "text-[var(--accent)]" : "text-muted"}`}
+      className={`size-5 shrink-0 transition-colors duration-200 ${done ? "text-[var(--accent)]" : "text-muted"}`}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"

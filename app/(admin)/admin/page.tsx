@@ -41,7 +41,7 @@ export default async function AdminPage() {
           <Link
             key={c.l}
             href={c.href}
-            className="rounded-xl border border-rule bg-paper-alt p-4 transition-colors hover:border-[var(--fg)] active:scale-[0.98]"
+            className="rounded-xl border border-rule bg-paper-alt p-4 transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.98]"
           >
             <dd className="text-3xl font-semibold tracking-tight">{c.n}</dd>
             <dt className="mt-1 text-sm text-muted">{c.l}</dt>

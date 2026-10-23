@@ -138,6 +138,14 @@
 }
 
 @layer utilities {
+  /* Entrada de los bloques del portal: sube 8px y aparece. 260ms con la curva fuerte del
+     proyecto; el retraso (50ms entre bloques) llega por --aparece-delay. `backwards` aplica el
+     estado inicial solo durante el retraso y no deja ninguna transformación fijada después.
+     Con prefers-reduced-motion la regla global de arriba la deja en un instante. */
+  .aparece {
+    animation: aparece 260ms var(--ease-out) backwards;
+    animation-delay: var(--aparece-delay, 0s);
+  }
   .font-mono {
     font-family: var(--font-mono);
     letter-spacing: -0.01em;
@@ -270,6 +278,12 @@
   }
 }
 
+@keyframes aparece {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
 @keyframes blink {
   50% {
     opacity: 0;

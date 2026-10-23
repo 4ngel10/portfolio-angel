@@ -21,7 +21,7 @@ import {
 } from "./ui";
 
 const botonMini =
-  "rounded-lg border border-rule px-2.5 py-1 text-xs font-medium text-muted transition-colors hover:border-[var(--fg)] hover:text-ink active:scale-[0.97]";
+  "rounded-lg border border-rule px-2.5 py-1 text-xs font-medium text-muted transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] hover:text-ink active:scale-[0.97]";
 
 /** Hitos de un proyecto en orden. En vista admin se pueden completar, reasignar y borrar. */
 export async function HitosLista({ hitos, admin = false }: { hitos: Hito[]; admin?: boolean }) {
@@ -32,7 +32,7 @@ export async function HitosLista({ hitos, admin = false }: { hitos: Hito[]; admi
       {hitos.map((h) => (
         <li
           key={h.id}
-          className={`flex gap-3 rounded-xl border border-rule bg-paper p-4 transition-colors ${h.completado ? "opacity-70" : ""}`}
+          className={`flex gap-3 rounded-xl border border-rule bg-paper p-4 transition-opacity duration-200 ${h.completado ? "opacity-70" : ""}`}
         >
           <CheckIcon done={h.completado} />
           <div className="min-w-0 flex-1">

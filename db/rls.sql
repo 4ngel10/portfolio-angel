@@ -26,11 +26,16 @@ as $$
   select empresa_id from public.usuarios where id = auth.uid()
 $$;
 
+-- is_admin() exige además que la sesión haya pasado el segundo factor (aal2). Sin eso, quien
+-- robara un enlace mágico del admin leería y escribiría todo aunque la web le pida el TOTP.
+-- Con el aal1 el admin sigue pudiendo leer su propia fila (política cliente_select), que es
+-- lo que necesita la web para saber que debe mandarlo a /mfa.
 create or replace function public.is_admin()
 returns boolean
 language sql stable security definer set search_path = ''
 as $$
   select exists (select 1 from public.usuarios where id = auth.uid() and role = 'admin')
+     and coalesce(auth.jwt() ->> 'aal', '') = 'aal2'
 $$;
 
 revoke all on function public.current_empresa_id() from public, anon;

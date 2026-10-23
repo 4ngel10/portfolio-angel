@@ -27,7 +27,7 @@ export function Prefs() {
       <button
         type="button"
         onClick={cambiarIdioma}
-        className="text-muted rounded-full border border-rule px-2.5 py-1.5 font-mono text-xs transition-colors hover:text-[var(--fg)] active:scale-[0.97]"
+        className="text-muted rounded-full border border-rule px-2.5 py-1.5 font-mono text-xs transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:text-[var(--fg)] active:scale-[0.97]"
         aria-label={t("common.toggleLanguage")}
       >
         <span className={locale === "es" ? "text-ink font-semibold" : ""}>ES</span>
@@ -41,7 +41,7 @@ export function Prefs() {
         type="button"
         onClick={toggle}
         aria-label={t("common.toggleTheme")}
-        className="flex size-9 items-center justify-center rounded-xl border border-rule transition-colors hover:border-[var(--fg)] active:scale-[0.97]"
+        className="flex size-9 items-center justify-center rounded-xl border border-rule transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.97]"
       >
         <svg
           width="16"

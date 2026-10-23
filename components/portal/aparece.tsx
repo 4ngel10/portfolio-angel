@@ -1,7 +1,12 @@
 /**
- * Envoltorio de cada bloque del portal. Hoy no anima nada: es el único punto donde se
- * añadirá la entrada con Framer Motion (Paso 10), para no tocar las páginas.
+ * Entrada de cada bloque del portal (ver .aparece en globals.css). `retraso` en segundos:
+ * se usa en pasos de 0,05 para escalonar los bloques de una misma pantalla.
+ * Es CSS puro: no añade JavaScript al cliente y no depende de la hidratación.
  */
-export function Aparece({ children }: { children: React.ReactNode; retraso?: number }) {
-  return <div>{children}</div>;
+export function Aparece({ children, retraso = 0 }: { children: React.ReactNode; retraso?: number }) {
+  return (
+    <div className="aparece" style={{ "--aparece-delay": `${retraso}s` } as React.CSSProperties}>
+      {children}
+    </div>
+  );
 }

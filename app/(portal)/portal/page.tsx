@@ -67,7 +67,7 @@ export default async function PortalPage() {
                       <li key={p.id}>
                         <Link
                           href={`/portal/proyecto/${p.id}`}
-                          className="block rounded-xl border border-rule bg-paper p-4 transition-colors hover:border-[var(--fg)] active:scale-[0.99]"
+                          className="block rounded-xl border border-rule bg-paper p-4 transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.99]"
                         >
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <h3 className="font-semibold">{p.titulo}</h3>
