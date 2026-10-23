@@ -28,6 +28,15 @@ export async function requireCliente(): Promise<Perfil & { empresa_id: string }>
   return perfil as Perfil & { empresa_id: string };
 }
 
+/** Si el cliente aún no ha elegido contraseña (`password_set` en los metadatos de su cuenta). */
+export const sinContrasena = cache(async (): Promise<boolean> => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return !user?.user_metadata?.password_set;
+});
+
 /**
  * Zona de admin: exige sesión, rol "admin" y segundo factor (TOTP) verificado.
  * Sin factor enrolado o sin verificar en esta sesión, manda a /mfa.

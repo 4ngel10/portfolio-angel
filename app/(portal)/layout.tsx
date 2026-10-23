@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { requireCliente } from "@/lib/portal/auth";
+import { redirect } from "next/navigation";
+import { requireCliente, sinContrasena } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
 import { Shell } from "@/components/portal/shell";
 
@@ -11,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const perfil = await requireCliente();
+  if (await sinContrasena()) redirect("/contrasena");
   return (
     <Shell perfil={perfil} vista="cliente">
       {children}

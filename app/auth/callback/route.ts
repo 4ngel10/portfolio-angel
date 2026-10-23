@@ -18,7 +18,12 @@ export async function GET(request: NextRequest) {
         : { data: null };
 
       if (perfil?.role === "admin") return NextResponse.redirect(`${origin}/admin`);
-      if (perfil?.role === "cliente") return NextResponse.redirect(`${origin}/portal`);
+      if (perfil?.role === "cliente") {
+        // Primera vez (aún sin contraseña) o enlace de "contraseña olvidada": a elegirla.
+        const sinPassword = !user?.user_metadata?.password_set;
+        const ruta = sinPassword || searchParams.get("contrasena") === "1" ? "/contrasena" : "/portal";
+        return NextResponse.redirect(`${origin}${ruta}`);
+      }
 
       await supabase.auth.signOut();
       return NextResponse.redirect(`${origin}/login?error=sin-acceso`);
