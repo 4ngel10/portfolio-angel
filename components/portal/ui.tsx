@@ -21,7 +21,7 @@ export function PageHeader({
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">{title}</h1>
-        {intro ? <p className="mt-2 max-w-[60ch] text-muted">{intro}</p> : null}
+        {intro ? <p className="text-muted mt-2 max-w-[60ch]">{intro}</p> : null}
       </div>
       {action}
     </div>
@@ -40,7 +40,7 @@ export function Panel({
   className?: string;
 }) {
   return (
-    <section className={`rounded-2xl border border-rule bg-paper-alt p-5 md:p-6 ${className}`}>
+    <section className={`border-rule bg-paper-alt rounded-2xl border p-5 md:p-6 ${className}`}>
       {title || action ? (
         <div className="mb-4 flex items-center justify-between gap-3">
           {title ? <h2 className="text-lg font-semibold tracking-tight">{title}</h2> : <span />}
@@ -53,18 +53,26 @@ export function Panel({
 }
 
 export function EmptyState({ children }: { children: ReactNode }) {
-  return <p className="rounded-xl border border-dashed border-rule px-4 py-6 text-center text-sm text-muted">{children}</p>;
+  return (
+    <p className="border-rule text-muted rounded-xl border border-dashed px-4 py-6 text-center text-sm">
+      {children}
+    </p>
+  );
 }
 
 const dot = "inline-block size-1.5 shrink-0 rounded-full";
 
 function Badge({ children, tone }: { children: ReactNode; tone: "accent" | "ink" | "muted" }) {
   const color =
-    tone === "accent" ? "bg-[var(--accent)]" : tone === "ink" ? "bg-[var(--fg)]" : "bg-[var(--muted)]";
+    tone === "accent"
+      ? "bg-[var(--accent)]"
+      : tone === "ink"
+        ? "bg-[var(--fg)]"
+        : "bg-[var(--muted)]";
   const text = tone === "muted" ? "text-muted" : "text-ink";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border border-rule px-2.5 py-0.5 text-xs font-medium transition-colors duration-200 ${text}`}
+      className={`border-rule inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors duration-200 ${text}`}
     >
       <span className={`${dot} ${color} transition-colors duration-200`} aria-hidden />
       {children}
@@ -99,7 +107,13 @@ export async function PrioridadBadge({ prioridad }: { prioridad: Prioridad }) {
 }
 
 /** Quién tiene la pelota: el cliente (acción suya) o el equipo. */
-export async function PelotaBadge({ pelota, vista }: { pelota: Pelota; vista: "cliente" | "admin" }) {
+export async function PelotaBadge({
+  pelota,
+  vista,
+}: {
+  pelota: Pelota;
+  vista: "cliente" | "admin";
+}) {
   const { t } = await getI18n();
   const label =
     vista === "cliente"
@@ -121,7 +135,7 @@ export function ProgressBar({ value, max, label }: { value: number; max: number;
       aria-valuemin={0}
       aria-valuemax={max}
       aria-valuenow={value}
-      className="h-1.5 w-full overflow-hidden rounded-full bg-chip"
+      className="bg-chip h-1.5 w-full overflow-hidden rounded-full"
     >
       {/* scaleX en vez de width: solo transform, sin recalcular el layout. */}
       <div
