@@ -17,14 +17,24 @@ type I18nContextValue = {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
+/**
+ * La zona privada (portal y admin) pinta en el servidor y no puede leer localStorage:
+ * lee el idioma de esta cookie, que se mantiene igual que el valor guardado en el navegador.
+ */
+function saveLocaleCookie(l: Locale) {
+  document.cookie = `locale=${l}; path=/; max-age=31536000; samesite=lax`;
+}
+
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("es");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("locale") as Locale | null;
-      if (saved === "es" || saved === "en") setLocaleState(saved);
-      else if (typeof navigator !== "undefined" && navigator.language.startsWith("en")) {
+      if (saved === "es" || saved === "en") {
+        setLocaleState(saved);
+        saveLocaleCookie(saved);
+      } else if (typeof navigator !== "undefined" && navigator.language.startsWith("en")) {
         setLocaleState("en");
       }
     } catch {}
@@ -37,6 +47,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
     try { localStorage.setItem("locale", l); } catch {}
+    saveLocaleCookie(l);
   }, []);
 
   const t = useCallback((path: string) => {

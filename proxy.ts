@@ -1,0 +1,11 @@
+import type { NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/proxy";
+
+// Next 16 renombró middleware.ts a proxy.ts.
+export function proxy(request: NextRequest) {
+  return updateSession(request);
+}
+
+export const config = {
+  matcher: ["/portal/:path*", "/admin/:path*"],
+};

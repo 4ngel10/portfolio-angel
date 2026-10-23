@@ -1,0 +1,6 @@
+{
+  "crons": [
+    { "path": "/api/cron/reset-horas", "schedule": "0 8 1 * *" },
+    { "path": "/api/cron/supabase-keepalive", "schedule": "0 12 * * *" }
+  ]
+}

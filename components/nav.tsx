@@ -180,6 +180,13 @@ export function Nav() {
 
           {/* Solo escritorio. El hidden va en un envoltorio: en el enlace lo pisaba el display
               de .btn-primary y en móvil no cabía la nav. En móvil está MobileContactCta. */}
+          {/* Ruta relativa: vale en localhost y en el dominio de producción. /login manda a cada
+              rol a su zona (admin a /admin, cliente a /portal) y, sin sesión, pide el acceso. */}
+          <span className="hidden lg:inline-flex">
+            <Link href="/login" className="btn-secondary !px-4 !py-2.5 !text-sm">
+              {t("nav.ctaClients")}
+            </Link>
+          </span>
           <span className="hidden md:inline-flex">
             <NavLink href={home("#contact")} className="btn-primary !px-4 !py-2.5 !text-sm">
               {t("nav.ctaContact")}
@@ -245,6 +252,9 @@ export function Nav() {
               {l.label}
             </NavLink>
           ))}
+          <Link href="/login" onClick={() => setOpen(false)} className="font-semibold">
+            {t("nav.ctaClients")}
+          </Link>
         </div>
       )}
     </nav>

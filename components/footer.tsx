@@ -17,6 +17,7 @@ export function Footer() {
     { href: home("#portfolio"), label: t("nav.portfolio") },
     { href: home("#blog"), label: t("nav.blog") },
     { href: home("#contact"), label: t("nav.contact") },
+    { href: "/login", label: t("nav.ctaClients") },
   ];
 
   return (
