@@ -5,8 +5,8 @@
     "portfolio": "Work",
     "contact": "Contact",
     "ctaContact": "Get in touch",
-    "blog": "Blog",
-    "ctaClients": "Client access"
+    "ctaClients": "Client access",
+    "blog": "Blog"
   },
   "hero": {
     "titleStart": "Solid",
@@ -91,7 +91,7 @@
     "p3Title": "Personal Proxmox homelab",
     "p3Desc": "Home lab for a smart home: Home Assistant automation, my own VPN, ad blocking and automatic cloud backups.",
     "p4Tag": "Web development",
-    "p4Title": "FlexGrip, single-product store",
+    "p4Title": "FlexGrip: product landing page and direct sales",
     "p4Desc": "Spanish-language online store for a fitness kit with resistance bands and a hand gripper, with Stripe checkout and guarantees in plain sight.",
     "prev": "Previous project",
     "next": "Next project"

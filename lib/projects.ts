@@ -426,52 +426,60 @@ export const PROJECTS: Project[] = [
     date: "2026-10-20",
     post: {
       es: {
-        title: "FlexGrip: una tienda de un solo producto",
+        title: "FlexGrip: landing de producto y venta directa",
         intro:
-          "FlexGrip es una tienda online con un único producto: un kit de fitness con cinco bandas elásticas, un handgrip regulable y una bolsa de malla. Está pensada para una sola cosa, que quien llega entienda qué se lleva y pueda comprarlo sin dar vueltas.",
+          "FlexGrip es una tienda online enfocada en la venta de un kit de entrenamiento completo compuesto por cinco bandas elásticas, un handgrip regulable y una bolsa de transporte. La idea de partida era muy clara: ofrecer una web directa donde quien entra entiende al instante la propuesta de valor y puede hacer el pedido sin distracciones.",
         sections: [
           {
-            heading: "Qué es",
+            heading: "Qué ofrece la web",
             blocks: [
-              "Una web en español con el producto en primer plano: titular claro, precio, botón de compra y las garantías a la vista (30 días de devolución, 3 años de garantía y envío exprés).",
-              "Más abajo se detalla qué incluye el kit, con las bandas de ligera a extra fuerte y el handgrip regulable, y hay una comparativa, opiniones de clientes y preguntas frecuentes.",
+              "El diseño pone el producto en el centro con un titular directo, el precio destacado, un botón de compra visible y las garantías principales a la vista, como el envío exprés, 30 días de devolución y 3 años de garantía.",
+              "A lo largo de la página se detalla la resistencia de cada banda elástica, el funcionamiento del handgrip regulable, una tabla comparativa con otras alternativas del mercado, opiniones de clientes y una sección de preguntas frecuentes para resolver dudas antes del pago.",
             ],
           },
           {
-            heading: "Cómo está hecha",
+            heading: "Estrategia SEO y presencia en buscadores",
             blocks: [
-              "Con Astro, que genera páginas estáticas muy ligeras y rápidas de cargar, justo lo que necesita una tienda donde cada segundo cuenta. El pago se resuelve con enlaces de Stripe, sin montar un carrito propio.",
-              "El diseño es oscuro, con un verde lima como único acento, y está pensado para leerse bien en el móvil, que es desde donde llega la mayoría de la gente.",
+              "Para que el proyecto fuera visible en buscadores desde el primer día, realizamos un estudio previo de palabras clave centrado en intenciones de búsqueda de compra rápida para equipamiento de entrenamiento en casa.",
+              "Optimizamos todas las etiquetas meta, los datos estructurados de producto para mostrar precios y valoraciones en los resultados de Google, y la estructura de encabezados. Además, dimos de alta la propiedad en Google Search Console, enviamos el sitemap generado automáticamente y verificamos la correcta indexación de la página para supervisar el rendimiento y el tráfico orgánico.",
             ],
           },
           {
-            heading: "Dónde verla",
-            blocks: ["Puedes visitarla en [flexgrip.site](https://www.flexgrip.site/)."],
+            heading: "Cómo está desarrollada",
+            blocks: [
+              "Para el desarrollo elegí Astro, lo que permite generar una página estática extremadamente ligera, rápida y optimizada para la conversión. Para no complicar la infraestructura con un proceso de checkout complejo, la compra se gestiona mediante integraciones directas con Stripe.",
+              "La interfaz utiliza una paleta en tonos oscuros con acentos en verde lima para resaltar las llamadas a la acción, priorizando en todo momento la experiencia y navegación desde el móvil.",
+              "Puedes ver el proyecto funcionando en [flexgrip.site](https://www.flexgrip.site/).",
+            ],
           },
         ],
       },
       en: {
-        title: "FlexGrip: a single-product store",
+        title: "FlexGrip: product landing page and direct sales",
         intro:
-          "FlexGrip is an online store with a single product: a fitness kit with five resistance bands, an adjustable hand gripper and a mesh bag. It is built for one thing: whoever lands on it understands what they get and can buy it without detours.",
+          "FlexGrip is an online store focused on selling a complete training kit made up of five resistance bands, an adjustable hand gripper and a carry bag. The starting idea was very clear: a direct website where whoever lands on it instantly understands the value proposition and can place the order without distractions.",
         sections: [
           {
-            heading: "What it is",
+            heading: "What the site offers",
             blocks: [
-              "A Spanish-language site with the product front and center: a clear headline, the price, a buy button and the guarantees in plain sight (30-day returns, a 3-year warranty and express shipping).",
-              "Further down it details what the kit includes, with bands from light to extra heavy and the adjustable gripper, plus a comparison, customer reviews and an FAQ.",
+              "The design puts the product at the center, with a direct headline, a highlighted price, a visible buy button and the main guarantees in plain sight, such as express shipping, 30-day returns and a 3-year warranty.",
+              "Throughout the page it details the resistance of each band, how the adjustable gripper works, a comparison table against other options on the market, customer reviews and an FAQ section to settle doubts before payment.",
+            ],
+          },
+          {
+            heading: "SEO strategy and search presence",
+            blocks: [
+              "So that the project would be visible in search engines from day one, we carried out a prior keyword study focused on quick-purchase search intent for home training equipment.",
+              "We optimized all the meta tags, the product structured data to show prices and ratings in Google results, and the heading structure. We also registered the property in Google Search Console, submitted the automatically generated sitemap and verified the page was correctly indexed, so we can monitor performance and organic traffic.",
             ],
           },
           {
             heading: "How it is built",
             blocks: [
-              "With Astro, which generates very light static pages that load fast, exactly what a store needs when every second counts. Payment is handled with Stripe links, so there is no custom cart to maintain.",
-              "The design is dark with a lime green as the only accent, made to read well on mobile, which is where most people arrive from.",
+              "For development I chose Astro, which makes it possible to generate an extremely light, fast static page optimized for conversion. To avoid complicating the infrastructure with a complex checkout process, purchases are handled through direct Stripe integrations.",
+              "The interface uses a dark palette with lime green accents to highlight the calls to action, always prioritizing the experience and navigation on mobile.",
+              "You can see the project running at [flexgrip.site](https://www.flexgrip.site/).",
             ],
-          },
-          {
-            heading: "Where to see it",
-            blocks: ["You can visit it at [flexgrip.site](https://www.flexgrip.site/)."],
           },
         ],
       },
