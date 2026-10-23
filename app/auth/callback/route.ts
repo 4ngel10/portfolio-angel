@@ -17,11 +17,16 @@ export async function GET(request: NextRequest) {
         ? await supabase.from("usuarios").select("role").eq("id", user.id).maybeSingle()
         : { data: null };
 
-      if (perfil?.role === "admin") return NextResponse.redirect(`${origin}/admin`);
+      if (perfil?.role === "admin") {
+        // El admin entra solo con contraseña + TOTP: el enlace mágico no basta.
+        await supabase.auth.signOut();
+        return NextResponse.redirect(`${origin}/login?error=sin-acceso`);
+      }
       if (perfil?.role === "cliente") {
         // Primera vez (aún sin contraseña) o enlace de "contraseña olvidada": a elegirla.
         const sinPassword = !user?.user_metadata?.password_set;
-        const ruta = sinPassword || searchParams.get("contrasena") === "1" ? "/contrasena" : "/portal";
+        const ruta =
+          sinPassword || searchParams.get("contrasena") === "1" ? "/contrasena" : "/portal";
         return NextResponse.redirect(`${origin}${ruta}`);
       }
 
