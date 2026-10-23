@@ -23,6 +23,7 @@ export async function Shell({
     ? [
         { href: "/admin", label: t("nav.overview"), exact: true },
         { href: "/admin/clientes", label: t("nav.clients") },
+        { href: "/admin/usuarios", label: t("nav.users") },
         { href: "/admin/proyectos", label: t("nav.projects") },
         { href: "/admin/horas", label: t("nav.hours") },
       ]
@@ -34,20 +35,22 @@ export async function Shell({
 
   return (
     <I18nBoundary>
-      <div className="min-h-dvh bg-paper text-ink">
-        <header className="border-b border-rule bg-paper">
+      <div className="bg-paper text-ink min-h-dvh">
+        <header className="border-rule bg-paper border-b">
           <div
             className={`mx-auto flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 md:px-8 ${admin ? "max-w-[1280px]" : "max-w-[1080px]"}`}
           >
             <Link href={admin ? "/admin" : "/portal"} className="font-semibold tracking-tight">
               Ángel Fernández
-              <span className="ml-2 font-normal text-muted">
+              <span className="text-muted ml-2 font-normal">
                 {admin ? t("common.areaAdmin") : t("common.areaClients")}
               </span>
             </Link>
             <NavLinks items={items} label={t("common.mainNav")} />
             <div className="ml-auto flex items-center gap-3 text-sm">
-              <span className="hidden max-w-[22ch] truncate text-muted lg:inline">{perfil.email}</span>
+              <span className="text-muted hidden max-w-[22ch] truncate lg:inline">
+                {perfil.email}
+              </span>
               <Prefs />
               <form action={signOut}>
                 <button type="submit" className="btn-secondary !px-3.5 !py-2 !text-sm">

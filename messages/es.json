@@ -183,7 +183,8 @@
       "hourBank": "Bolsa de horas",
       "overview": "Resumen",
       "clients": "Clientes",
-      "hours": "Horas"
+      "hours": "Horas",
+      "users": "Usuarios"
     },
     "status": {
       "active": "Activo",
@@ -420,7 +421,24 @@
       "changeContracted": "Cambiar horas contratadas",
       "createBank": "Crear bolsa",
       "contractedPerMonth": "Horas contratadas al mes",
-      "projectTitleDesc": "{company}. {desc}"
+      "projectTitleDesc": "{company}. {desc}",
+      "usersTitle": "Usuarios",
+      "usersIntro": "Edita los datos de las personas con acceso, cambia su contraseña, desactívalas o elimínalas.",
+      "noUsers": "Aún no hay clientes con acceso.",
+      "colName": "Nombre",
+      "colEmail": "Correo",
+      "colAccess": "Acceso",
+      "active": "Activo",
+      "disabled": "Desactivado",
+      "edit": "Editar",
+      "save": "Guardar cambios",
+      "newPassword": "Nueva contraseña",
+      "passwordHint": "Déjala vacía para no cambiarla. Mínimo 8 caracteres.",
+      "disable": "Desactivar",
+      "enable": "Reactivar",
+      "confirmDisable": "¿Desactivar a {name}? No podrá entrar hasta que lo reactives.",
+      "confirmDelete": "¿Eliminar a {name}? Se borra su cuenta y no se puede deshacer.",
+      "deleteUser": "Eliminar usuario"
     },
     "err": {
       "companyName": "Escribe el nombre de la empresa.",
@@ -447,7 +465,10 @@
       "invalidCompany": "Empresa no válida.",
       "hoursNeedInt": "Indica un número entero de horas.",
       "noBank": "Esta empresa no tiene bolsa. Fija primero las horas contratadas.",
-      "hoursFail": "No se pudieron registrar las horas."
+      "hoursFail": "No se pudieron registrar las horas.",
+      "userProtected": "Ese usuario no se puede modificar.",
+      "passwordShort": "La contraseña debe tener entre 8 y 72 caracteres.",
+      "userUpdateFail": "No se pudo guardar el usuario."
     },
     "ok": {
       "companyCreated": "Empresa creada.",
@@ -455,7 +476,8 @@
       "projectCreated": "Proyecto creado.",
       "milestoneAdded": "Hito añadido.",
       "bankSaved": "Bolsa guardada.",
-      "hoursRecorded": "Horas registradas."
+      "hoursRecorded": "Horas registradas.",
+      "userSaved": "Cambios guardados."
     },
     "api": {
       "invalidData": "Datos no válidos.",

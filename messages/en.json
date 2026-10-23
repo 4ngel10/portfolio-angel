@@ -183,7 +183,8 @@
       "hourBank": "Hour bank",
       "overview": "Overview",
       "clients": "Clients",
-      "hours": "Hours"
+      "hours": "Hours",
+      "users": "Users"
     },
     "status": {
       "active": "Active",
@@ -420,7 +421,24 @@
       "changeContracted": "Change contracted hours",
       "createBank": "Create hour bank",
       "contractedPerMonth": "Contracted hours per month",
-      "projectTitleDesc": "{company}. {desc}"
+      "projectTitleDesc": "{company}. {desc}",
+      "usersTitle": "Users",
+      "usersIntro": "Edit the details of people with access, change their password, disable or delete them.",
+      "noUsers": "No clients have access yet.",
+      "colName": "Name",
+      "colEmail": "Email",
+      "colAccess": "Access",
+      "active": "Active",
+      "disabled": "Disabled",
+      "edit": "Edit",
+      "save": "Save changes",
+      "newPassword": "New password",
+      "passwordHint": "Leave empty to keep it. At least 8 characters.",
+      "disable": "Disable",
+      "enable": "Re-enable",
+      "confirmDisable": "Disable {name}? They will not be able to sign in until you re-enable them.",
+      "confirmDelete": "Delete {name}? Their account is removed and this cannot be undone.",
+      "deleteUser": "Delete user"
     },
     "err": {
       "companyName": "Enter the company name.",
@@ -447,7 +465,10 @@
       "invalidCompany": "Invalid company.",
       "hoursNeedInt": "Enter a whole number of hours.",
       "noBank": "This company has no hour bank. Set the contracted hours first.",
-      "hoursFail": "The hours could not be logged."
+      "hoursFail": "The hours could not be logged.",
+      "userProtected": "This user cannot be modified.",
+      "passwordShort": "The password must be 8 to 72 characters long.",
+      "userUpdateFail": "The user could not be saved."
     },
     "ok": {
       "companyCreated": "Company created.",
@@ -455,7 +476,8 @@
       "projectCreated": "Project created.",
       "milestoneAdded": "Milestone added.",
       "bankSaved": "Hour bank saved.",
-      "hoursRecorded": "Hours logged."
+      "hoursRecorded": "Hours logged.",
+      "userSaved": "Changes saved."
     },
     "api": {
       "invalidData": "Invalid data.",

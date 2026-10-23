@@ -186,7 +186,11 @@ export async function eliminarArchivo(fd: FormData) {
   const id = text(fd, "id", 40);
   if (!isUuid(id)) return;
   const supabase = await createClient();
-  const { data } = await supabase.from("archivos").select("storage_path").eq("id", id).maybeSingle();
+  const { data } = await supabase
+    .from("archivos")
+    .select("storage_path")
+    .eq("id", id)
+    .maybeSingle();
   if (!data) return;
   await createAdminClient().storage.from("archivos").remove([data.storage_path]);
   await supabase.from("archivos").delete().eq("id", id);
@@ -250,13 +254,22 @@ export async function guardarBolsa(_: FormState, fd: FormData): Promise<FormStat
   if (!Number.isInteger(horas) || horas < 0 || horas > 10000) return await fallo("hoursInteger");
 
   const supabase = await createClient();
-  const { data: actual } = await supabase.from("bolsa_horas").select("id").eq("empresa_id", empresaId).maybeSingle();
+  const { data: actual } = await supabase
+    .from("bolsa_horas")
+    .select("id")
+    .eq("empresa_id", empresaId)
+    .maybeSingle();
   const { inicio, fin } = mesActual();
   const { error } = actual
     ? await supabase.from("bolsa_horas").update({ horas_contratadas: horas }).eq("id", actual.id)
     : await supabase
         .from("bolsa_horas")
-        .insert({ empresa_id: empresaId, horas_contratadas: horas, periodo_inicio: inicio, periodo_fin: fin });
+        .insert({
+          empresa_id: empresaId,
+          horas_contratadas: horas,
+          periodo_inicio: inicio,
+          periodo_fin: fin,
+        });
   if (error) {
     console.error("[guardarBolsa]", error.message);
     return await fallo("bankFail");
@@ -293,4 +306,81 @@ export async function registrarHoras(_: FormState, fd: FormData): Promise<FormSt
   }
   refrescar();
   return { ok: true, message: (await getI18n()).t("ok.hoursRecorded") };
+}
+
+/* ------------------------------------------------------------------ */
+/* Admin: gestión de usuarios                                          */
+/* ------------------------------------------------------------------ */
+
+/** Duración del bloqueo al desactivar: en la práctica, indefinido hasta que se reactive. */
+const BLOQUEO = "876000h";
+
+/** Perfil de un cliente (nunca de un admin: las cuentas admin no se tocan desde la web). */
+async function clienteObjetivo(id: string) {
+  if (!isUuid(id)) return null;
+  const supabase = await createClient();
+  const { data } = await supabase.from("usuarios").select("id, role").eq("id", id).maybeSingle();
+  return data && data.role === "cliente" ? data : null;
+}
+
+export async function guardarUsuario(_: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  const nombre = text(fd, "nombre", 80);
+  const email = text(fd, "email", 254).toLowerCase();
+  const empresaId = text(fd, "empresa_id", 40);
+  const password = typeof fd.get("password") === "string" ? (fd.get("password") as string) : "";
+
+  if (!(await clienteObjetivo(id))) return await fallo("userProtected");
+  if (nombre.length < 2) return await fallo("personName");
+  if (!isEmail(email)) return await fallo("emailInvalid");
+  if (!isUuid(empresaId)) return await fallo("chooseCompany");
+  if (password && (password.length < 8 || password.length > 72))
+    return await fallo("passwordShort");
+
+  const admin = createAdminClient();
+  const { error: errAuth } = await admin.auth.admin.updateUserById(id, {
+    email,
+    email_confirm: true,
+    // Con contraseña fijada por el admin, el portal deja de pedirle que elija una.
+    ...(password ? { password, user_metadata: { password_set: true } } : {}),
+  });
+  if (errAuth) {
+    console.error("[guardarUsuario]", errAuth.message);
+    return await fallo(errAuth.code === "email_exists" ? "emailExists" : "userUpdateFail");
+  }
+
+  const { error: errPerfil } = await admin
+    .from("usuarios")
+    .update({ nombre, email, empresa_id: empresaId })
+    .eq("id", id);
+  if (errPerfil) {
+    console.error("[guardarUsuario]", errPerfil.message);
+    return await fallo("userUpdateFail");
+  }
+  refrescar();
+  return { ok: true, message: (await getI18n()).t("ok.userSaved") };
+}
+
+/** Desactiva (bloquea el acceso) o reactiva a un cliente. Sus datos no se tocan. */
+export async function alternarUsuario(fd: FormData) {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  const desactivar = text(fd, "desactivar", 5) === "true";
+  if (!(await clienteObjetivo(id))) return;
+  const { error } = await createAdminClient().auth.admin.updateUserById(id, {
+    ban_duration: desactivar ? BLOQUEO : "none",
+  });
+  if (error) console.error("[alternarUsuario]", error.message);
+  refrescar();
+}
+
+/** Borra la cuenta; el perfil cae en cascada y sus mensajes quedan sin autor. */
+export async function eliminarUsuario(fd: FormData) {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  if (!(await clienteObjetivo(id))) return;
+  const { error } = await createAdminClient().auth.admin.deleteUser(id);
+  if (error) console.error("[eliminarUsuario]", error.message);
+  refrescar();
 }
