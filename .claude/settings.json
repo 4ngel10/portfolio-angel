@@ -21,12 +21,18 @@
       "Read(//c/Users/Ángel Fernández/.claude/skills/review-animations/**)",
       "Bash(wc -l STANDARDS.md)",
       "Bash(grep -n -iE \"cubic-bezier|stagger|duration|reduced|hover: hover|starting-style|fade|entrance\" STANDARDS.md)",
-      "Bash(python -c \"import json;json.load\\(open\\('messages/es.json',encoding='utf-8'\\)\\);json.load\\(open\\('messages/en.json',encoding='utf-8'\\)\\)\")"
+      "Bash(python -c \"import json;json.load\\(open\\('messages/es.json',encoding='utf-8'\\)\\);json.load\\(open\\('messages/en.json',encoding='utf-8'\\)\\)\")",
+      "Bash(sed -i 's/\\\\.select\\(\"id, nombre, email, empresa_id, created_at\"\\)/.select\\(\"id, nombre, email, empresa_id\"\\)/; s/alta: u\\\\.created_at ?? cuenta?\\\\.created_at ?? null/alta: cuenta?.created_at ?? null/' \"app/\\(admin\\)/admin/clientes/[id]/page.tsx\" && grep -n \"created_at\\\\|select\\(\" \"app/\\(admin\\)/admin/clientes/[id]/page.tsx\" && npx prettier --check \"app/\\(admin\\)/admin/clientes/[id]/page.tsx\" && npx eslint app components lib 2>&1 | tail -5 && npm run build 2>&1 | grep -iE \"error|fail|usuarios|clientes\" | head; npm run typecheck 2>&1 | tail -4)",
+      "Bash(node - *)"
     ],
     "deny": [
       "Read(/.env*)",
       "Bash(rm -rf:*)"
     ],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "D:\\portfolio-angel\\app\\(admin)\\admin\\clientes\\[id]",
+      "D:\\portfolio-angel\\app\\(admin)\\admin\\proyectos\\[id]"
+    ]
   }
 }
