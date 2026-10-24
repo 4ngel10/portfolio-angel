@@ -7,7 +7,16 @@ import { usePT } from "./i18n-provider";
 
 const MAX_BYTES = 50 * 1024 * 1024;
 
-type Resultado = { nombre: string; error?: string };
+const TIPOS_POR_EXTENSION: Record<string, string> = {
+  heic: "image/heic",
+  heif: "image/heif",
+  tif: "image/tiff",
+  tiff: "image/tiff",
+  mov: "video/quicktime",
+  webm: "video/webm",
+};
+
+type Resultado ={ nombre: string; error?: string };
 
 /**
  * Sube archivos directamente del navegador a Supabase Storage con una URL firmada.
@@ -22,7 +31,8 @@ export function FileUploader({ proyectoId }: { proyectoId: string }) {
 
   async function subir(file: File): Promise<Resultado> {
     if (file.size > MAX_BYTES) return { nombre: file.name, error: t("upload.tooBig") };
-    const contentType = file.type || "application/octet-stream";
+    // Windows no suele conocer el tipo de HEIC ni de MOV y deja file.type vacío.
+    const contentType = file.type || TIPOS_POR_EXTENSION[file.name.split(".").pop()?.toLowerCase() ?? ""] || "application/octet-stream";
 
     const pre = await fetch("/api/storage/presign", {
       method: "POST",

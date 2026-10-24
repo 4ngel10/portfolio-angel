@@ -354,7 +354,7 @@
       "registerFail": "Se subió pero no se pudo registrar.",
       "button": "Subir archivos",
       "uploading": "Subiendo",
-      "hint": "PDF, imágenes, Office, ZIP o MP4. Hasta 50 MB por archivo.",
+      "hint": "PDF, imágenes (también HEIC), Office, ZIP o vídeo (MP4, MOV, WebM). Hasta 50 MB por archivo.",
       "uploadingName": "Subiendo {name}",
       "uploaded": "{name} subido."
     },

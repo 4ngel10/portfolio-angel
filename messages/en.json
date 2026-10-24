@@ -354,7 +354,7 @@
       "registerFail": "It was uploaded but could not be registered.",
       "button": "Upload files",
       "uploading": "Uploading",
-      "hint": "PDF, images, Office, ZIP or MP4. Up to 50 MB per file.",
+      "hint": "PDF, images (HEIC too), Office, ZIP or video (MP4, MOV, WebM). Up to 50 MB per file.",
       "uploadingName": "Uploading {name}",
       "uploaded": "{name} uploaded."
     },
