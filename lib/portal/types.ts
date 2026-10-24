@@ -93,3 +93,33 @@ export type BolsaMes = {
   periodo_inicio: string;
   precio: number | null;
 };
+
+export type EstadoPresupuesto = "borrador" | "enviado" | "aceptado" | "rechazado";
+
+export type Presupuesto = {
+  id: string;
+  empresa_id: string;
+  numero: string;
+  titulo: string;
+  estado: EstadoPresupuesto;
+  fecha_emision: string;
+  valido_hasta: string | null;
+  iva: number;
+  descuento: number;
+  notas: string | null;
+  firma_nombre: string | null;
+  firma_usuario_id: string | null;
+  firma_fecha: string | null;
+  firma_ip: string | null;
+  created_at: string;
+};
+
+export type PresupuestoLinea = {
+  id: string;
+  presupuesto_id: string;
+  orden: number;
+  concepto: string;
+  detalle: string | null;
+  cantidad: number;
+  precio_unitario: number;
+};

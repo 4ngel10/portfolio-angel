@@ -15,6 +15,13 @@
       "when": 1792832569641,
       "tag": "0001_portal_empresa_bolsa",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792848494855,
+      "tag": "0002_presupuestos",
+      "breakpoints": true
     }
   ]
 }

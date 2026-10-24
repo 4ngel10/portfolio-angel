@@ -183,7 +183,8 @@
       "hourBank": "Bolsa de horas",
       "overview": "Resumen",
       "clients": "Clientes",
-      "hours": "Horas"
+      "hours": "Horas",
+      "quotes": "Presupuestos"
     },
     "status": {
       "active": "Activo",
@@ -503,7 +504,16 @@
       "userUpdateFail": "No se pudo guardar el usuario.",
       "webInvalid": "La web debe empezar por http:// o https://.",
       "companyDetailsFail": "No se pudieron guardar los datos de la empresa.",
-      "priceInvalid": "El precio debe ser un número entre 0 y 1.000.000."
+      "priceInvalid": "El precio debe ser un número entre 0 y 1.000.000.",
+      "quoteInvalid": "Presupuesto no válido.",
+      "quoteTitle": "Escribe un título para el presupuesto (mínimo 3 letras).",
+      "quoteVat": "El IVA debe estar entre 0 y 100.",
+      "quoteDiscount": "El descuento debe estar entre 0 y 100.",
+      "quoteLines": "Añade al menos una línea con concepto, cantidad y precio válidos.",
+      "quoteFail": "No se pudo guardar el presupuesto.",
+      "quoteNotPending": "Este presupuesto ya no está pendiente de respuesta.",
+      "signName": "Escribe tu nombre y apellidos para firmar.",
+      "signConfirm": "Marca la casilla para confirmar la aceptación."
     },
     "ok": {
       "companyCreated": "Empresa creada.",
@@ -513,7 +523,9 @@
       "bankSaved": "Bolsa guardada.",
       "hoursRecorded": "Horas registradas.",
       "userSaved": "Cambios guardados.",
-      "companyDetailsSaved": "Datos guardados."
+      "companyDetailsSaved": "Datos guardados.",
+      "quoteSaved": "Presupuesto guardado.",
+      "quoteSigned": "Presupuesto firmado y aceptado. Gracias."
     },
     "api": {
       "invalidData": "Datos no válidos.",
@@ -542,6 +554,118 @@
       "industria": "Industria",
       "servicios": "Servicios profesionales",
       "otro": "Otro"
+    },
+    "quotes": {
+      "adminTitle": "Presupuestos",
+      "adminIntro": "Prepara presupuestos para tus clientes, envíalos y sigue su estado.",
+      "clientTitle": "Presupuestos",
+      "clientIntro": "Aquí ves los presupuestos que te hemos enviado y su estado. Puedes firmarlos para aceptarlos.",
+      "new": "Nuevo presupuesto",
+      "newIntro": "Elige la empresa, añade las líneas y revisa los totales. Se guarda como borrador: el cliente no lo ve hasta que lo marques como enviado.",
+      "all": "Todos los presupuestos",
+      "none": "Todavía no hay presupuestos.",
+      "clientNone": "Todavía no tienes presupuestos.",
+      "number": "Número",
+      "titleLabel": "Título",
+      "issueDate": "Fecha de emisión",
+      "validUntil": "Válido hasta",
+      "days": "{n} días",
+      "linesTitle": "Líneas",
+      "addFromTemplate": "Añadir desde plantilla",
+      "chooseTemplate": "Elegir plantilla",
+      "addLine": "Añadir línea",
+      "concept": "Concepto",
+      "detail": "Detalle (opcional)",
+      "quantity": "Cantidad",
+      "unitPrice": "Precio unidad",
+      "lineTotal": "Importe",
+      "removeLine": "Eliminar la línea {n}",
+      "vat": "IVA",
+      "vatExempt": "Exento (0 %)",
+      "discount": "Descuento (%)",
+      "notes": "Notas y condiciones",
+      "notesPlaceholder": "Forma de pago, plazos de entrega, qué no incluye...",
+      "subtotal": "Subtotal",
+      "discountLine": "Descuento ({pct} %)",
+      "taxBase": "Base imponible",
+      "vatLine": "IVA ({pct} %)",
+      "total": "Total",
+      "create": "Crear presupuesto",
+      "saveChanges": "Guardar cambios",
+      "edit": "Editar presupuesto",
+      "backToList": "Volver a presupuestos",
+      "statusTitle": "Estado",
+      "statusHelp": "El cliente solo ve el presupuesto cuando lo marcas como enviado. Si lo acepta, lo firma desde su área.",
+      "delete": "Eliminar presupuesto",
+      "deleteConfirm": "¿Eliminar el presupuesto {number}? No se puede deshacer.",
+      "status": {
+        "borrador": "Borrador",
+        "enviado": "Enviado",
+        "aceptado": "Aceptado",
+        "rechazado": "Rechazado"
+      },
+      "summary": {
+        "pending": "Pendiente de respuesta",
+        "accepted": "Aceptado",
+        "drafts": "En borrador"
+      },
+      "clientSummary": {
+        "enviado": "Pendientes de tu respuesta",
+        "aceptado": "Aceptados",
+        "rechazado": "Rechazados"
+      },
+      "count": "{n} presupuestos",
+      "signTitle": "Firmar y aceptar",
+      "signIntro": "Para aceptar este presupuesto fírmalo con tu nombre completo. Quedará registrada la fecha y la hora de la firma.",
+      "signName": "Nombre y apellidos",
+      "signConfirm": "Acepto este presupuesto y sus condiciones, y firmo con mi nombre.",
+      "signAndAccept": "Firmar y aceptar",
+      "reject": "Rechazar presupuesto",
+      "rejectConfirm": "¿Rechazar este presupuesto?",
+      "signedTitle": "Firmado por",
+      "signedOn": "Firmado el {date}",
+      "templates": {
+        "web": {
+          "name": "Web corporativa",
+          "detail": "Diseño, desarrollo y puesta en producción."
+        },
+        "landing": {
+          "name": "Landing page",
+          "detail": "Página única orientada a conversión."
+        },
+        "domain": {
+          "name": "Dominio y hosting",
+          "detail": "Registro, configuración y despliegue."
+        },
+        "support": {
+          "name": "Hora de soporte técnico",
+          "detail": "Soporte y resolución de incidencias."
+        },
+        "server": {
+          "name": "Instalación de servidor",
+          "detail": "Instalación, configuración y puesta en marcha."
+        },
+        "backup": {
+          "name": "Copias de seguridad",
+          "detail": "Configuración de copias y comprobación de restauración."
+        },
+        "network": {
+          "name": "Red y comunicaciones",
+          "detail": "Configuración de red, Wi-Fi y seguridad perimetral."
+        },
+        "migration": {
+          "name": "Migración de sistemas",
+          "detail": "Traslado de datos y servicios con mínima interrupción."
+        },
+        "audit": {
+          "name": "Auditoría técnica",
+          "detail": "Revisión de la infraestructura con informe de mejoras."
+        },
+        "hourBank": {
+          "name": "Bolsa de horas",
+          "detail": "Horas de soporte que se descuentan según se usan."
+        }
+      }
     }
   }
 }

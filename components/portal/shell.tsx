@@ -25,11 +25,13 @@ export async function Shell({
         { href: "/admin/clientes", label: t("nav.clients") },
         { href: "/admin/proyectos", label: t("nav.projects") },
         { href: "/admin/horas", label: t("nav.hours") },
+        { href: "/admin/presupuestos", label: t("nav.quotes") },
       ]
     : [
         { href: "/portal", label: t("nav.projects"), exact: true },
         { href: "/portal/incidencias", label: t("nav.incidents") },
         { href: "/portal/horas", label: t("nav.hourBank") },
+        { href: "/portal/presupuestos", label: t("nav.quotes") },
       ];
 
   return (

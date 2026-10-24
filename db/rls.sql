@@ -55,7 +55,8 @@ declare t text;
 begin
   foreach t in array array[
     'empresas','usuarios','proyectos','hitos','archivos',
-    'incidencias','mensajes_incidencia','bolsa_horas','bolsa_historial','documentos'
+    'incidencias','mensajes_incidencia','bolsa_horas','bolsa_historial','documentos',
+    'presupuestos','presupuesto_lineas'
   ] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on public.%I from anon', t);
@@ -162,3 +163,21 @@ drop policy if exists archivos_admin_write on storage.objects;
 create policy archivos_admin_write on storage.objects for all to authenticated
   using (bucket_id = 'archivos' and public.is_admin())
   with check (bucket_id = 'archivos' and public.is_admin());
+
+-- ---------------------------------------------------------------------
+-- 7. Presupuestos: el cliente solo ve los de su empresa que ya no son borrador.
+-- El cambio de estado (aceptar o rechazar) lo hace la web con la clave de servicio tras
+-- comprobar la empresa, así que los clientes no tienen política de escritura.
+-- ---------------------------------------------------------------------
+drop policy if exists cliente_select on public.presupuestos;
+create policy cliente_select on public.presupuestos for select to authenticated
+  using (empresa_id = public.current_empresa_id() and estado <> 'borrador');
+
+drop policy if exists cliente_select on public.presupuesto_lineas;
+create policy cliente_select on public.presupuesto_lineas for select to authenticated
+  using (exists (
+    select 1 from public.presupuestos p
+    where p.id = presupuesto_lineas.presupuesto_id
+      and p.empresa_id = public.current_empresa_id()
+      and p.estado <> 'borrador'
+  ));

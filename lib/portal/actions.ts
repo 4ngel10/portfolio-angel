@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -425,5 +426,227 @@ export async function eliminarUsuario(fd: FormData) {
   if (!(await clienteObjetivo(id))) return;
   const { error } = await createAdminClient().auth.admin.deleteUser(id);
   if (error) console.error("[eliminarUsuario]", error.message);
+  refrescar();
+}
+
+/* ------------------------------------------------------------------ */
+/* Presupuestos                                                        */
+/* ------------------------------------------------------------------ */
+
+type LineaEntrada = {
+  concepto: string;
+  detalle: string | null;
+  cantidad: number;
+  precio_unitario: number;
+};
+
+/** Líneas que llegan del formulario como JSON. Devuelve null si algo no cuadra. */
+function leerLineas(raw: string): LineaEntrada[] | null {
+  let datos: unknown;
+  try {
+    datos = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(datos) || datos.length === 0 || datos.length > 60) return null;
+  const lineas: LineaEntrada[] = [];
+  for (const d of datos) {
+    if (!d || typeof d !== "object") return null;
+    const { concepto, detalle, cantidad, precio_unitario } = d as Record<string, unknown>;
+    const c = typeof concepto === "string" ? concepto.trim().slice(0, 160) : "";
+    const det = typeof detalle === "string" ? detalle.trim().slice(0, 500) : "";
+    const cant = Number(cantidad);
+    const precio = Number(precio_unitario);
+    if (!c || !Number.isFinite(cant) || !Number.isFinite(precio)) return null;
+    if (cant < 0 || cant > 100000 || precio < 0 || precio > 10000000) return null;
+    lineas.push({
+      concepto: c,
+      detalle: det || null,
+      cantidad: Math.round(cant * 100) / 100,
+      precio_unitario: Math.round(precio * 100) / 100,
+    });
+  }
+  return lineas;
+}
+
+const FECHA = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Crea o edita un presupuesto con todas sus líneas. Al crear, lleva a su página. */
+export async function guardarPresupuesto(_: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  const empresaId = text(fd, "empresa_id", 40);
+  const titulo = text(fd, "titulo", 140);
+  const fechaEmision = text(fd, "fecha_emision", 10);
+  const validoHasta = text(fd, "valido_hasta", 10);
+  const iva = Number(text(fd, "iva", 6).replace(",", "."));
+  const descuento = Number(text(fd, "descuento", 6).replace(",", ".") || "0");
+  const lineas = leerLineas(text(fd, "lineas", 60000));
+
+  if (id && !isUuid(id)) return await fallo("quoteInvalid");
+  if (!isUuid(empresaId)) return await fallo("chooseCompany");
+  if (titulo.length < 3) return await fallo("quoteTitle");
+  if (!FECHA.test(fechaEmision) || (validoHasta && !FECHA.test(validoHasta))) {
+    return await fallo("invalidDate");
+  }
+  if (!Number.isFinite(iva) || iva < 0 || iva > 100) return await fallo("quoteVat");
+  if (!Number.isFinite(descuento) || descuento < 0 || descuento > 100) {
+    return await fallo("quoteDiscount");
+  }
+  if (!lineas) return await fallo("quoteLines");
+
+  const supabase = await createClient();
+  const datos = {
+    empresa_id: empresaId,
+    titulo,
+    fecha_emision: fechaEmision,
+    valido_hasta: validoHasta || null,
+    iva,
+    descuento,
+    notas: text(fd, "notas", 3000) || null,
+  };
+
+  let presupuestoId = id;
+  if (id) {
+    const { error } = await supabase.from("presupuestos").update(datos).eq("id", id);
+    if (error) {
+      console.error("[guardarPresupuesto]", error.message);
+      return await fallo("quoteFail");
+    }
+  } else {
+    // Número correlativo por año: P-2026-001. Si dos altas coinciden, el índice único avisa y se reintenta.
+    const prefijo = `P-${fechaEmision.slice(0, 4)}-`;
+    for (let intento = 0; intento < 3 && !presupuestoId; intento++) {
+      const { data: previos } = await supabase
+        .from("presupuestos")
+        .select("numero")
+        .like("numero", `${prefijo}%`);
+      const ultimo = Math.max(
+        0,
+        ...(previos ?? []).map((p) => Number(p.numero.slice(prefijo.length)) || 0),
+      );
+      const { data: creado, error } = await supabase
+        .from("presupuestos")
+        .insert({ ...datos, numero: `${prefijo}${String(ultimo + 1).padStart(3, "0")}` })
+        .select("id")
+        .single();
+      if (creado) presupuestoId = creado.id;
+      else if (error?.code !== "23505") {
+        console.error("[guardarPresupuesto]", error?.message);
+        return await fallo("quoteFail");
+      }
+    }
+    if (!presupuestoId) return await fallo("quoteFail");
+  }
+
+  // Las líneas se sustituyen enteras: es lo más simple y un presupuesto tiene pocas.
+  const { error: errBorrar } = await supabase
+    .from("presupuesto_lineas")
+    .delete()
+    .eq("presupuesto_id", presupuestoId);
+  const { error: errLineas } = errBorrar
+    ? { error: errBorrar }
+    : await supabase
+        .from("presupuesto_lineas")
+        .insert(lineas.map((l, i) => ({ ...l, presupuesto_id: presupuestoId, orden: i + 1 })));
+  if (errLineas) {
+    console.error("[guardarPresupuesto] líneas", errLineas.message);
+    return await fallo("quoteFail");
+  }
+
+  refrescar();
+  if (!id) redirect(`/admin/presupuestos/${presupuestoId}`);
+  return { ok: true, message: (await getI18n()).t("ok.quoteSaved") };
+}
+
+export async function cambiarEstadoPresupuesto(fd: FormData) {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  const estado = oneOf(text(fd, "estado", 20), [
+    "borrador",
+    "enviado",
+    "aceptado",
+    "rechazado",
+  ] as const);
+  if (!isUuid(id) || !estado) return;
+  const supabase = await createClient();
+  // Una firma solo vale para el presupuesto aceptado: al reabrirlo se descarta.
+  const sinFirma =
+    estado === "aceptado"
+      ? {}
+      : { firma_nombre: null, firma_usuario_id: null, firma_fecha: null, firma_ip: null };
+  await supabase
+    .from("presupuestos")
+    .update({ estado, ...sinFirma })
+    .eq("id", id);
+  refrescar();
+}
+
+export async function eliminarPresupuesto(fd: FormData) {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  if (!isUuid(id)) return;
+  const supabase = await createClient();
+  await supabase.from("presupuestos").delete().eq("id", id);
+  refrescar();
+  redirect("/admin/presupuestos");
+}
+
+/** Presupuesto enviado a la empresa de quien llama. RLS solo deja ver los de su empresa. */
+async function presupuestoPendiente(id: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("presupuestos")
+    .select("id")
+    .eq("id", id)
+    .eq("estado", "enviado")
+    .maybeSingle();
+  return !!data;
+}
+
+/**
+ * El cliente acepta el presupuesto firmándolo: escribe su nombre completo y confirma. Se guarda
+ * quién firmó, cuándo y desde qué IP. Es una firma electrónica sencilla, no una cualificada.
+ */
+export async function firmarPresupuesto(_: FormState, fd: FormData): Promise<FormState> {
+  const perfil = await getPerfil();
+  if (!perfil || perfil.role !== "cliente") return await fallo("sessionExpired");
+  const id = text(fd, "id", 40);
+  const nombre = text(fd, "firma", 120).replace(/s+/g, " ");
+  if (!isUuid(id)) return await fallo("quoteInvalid");
+  if (nombre.length < 3 || !nombre.includes(" ")) return await fallo("signName");
+  if (fd.get("acepto") !== "on") return await fallo("signConfirm");
+  if (!(await presupuestoPendiente(id))) return await fallo("quoteNotPending");
+
+  const reenviada = (await headers()).get("x-forwarded-for") ?? "";
+  const { error } = await createAdminClient()
+    .from("presupuestos")
+    .update({
+      estado: "aceptado",
+      firma_nombre: nombre,
+      firma_usuario_id: perfil.id,
+      firma_fecha: new Date().toISOString(),
+      firma_ip: reenviada.split(",")[0].trim().slice(0, 45) || null,
+    })
+    .eq("id", id)
+    .eq("estado", "enviado");
+  if (error) {
+    console.error("[firmarPresupuesto]", error.message);
+    return await fallo("quoteFail");
+  }
+  refrescar();
+  return { ok: true, message: (await getI18n()).t("ok.quoteSigned") };
+}
+
+export async function rechazarPresupuesto(fd: FormData) {
+  const perfil = await getPerfil();
+  if (!perfil || perfil.role !== "cliente") return;
+  const id = text(fd, "id", 40);
+  if (!isUuid(id) || !(await presupuestoPendiente(id))) return;
+  await createAdminClient()
+    .from("presupuestos")
+    .update({ estado: "rechazado" })
+    .eq("id", id)
+    .eq("estado", "enviado");
   refrescar();
 }

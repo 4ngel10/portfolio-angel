@@ -183,7 +183,8 @@
       "hourBank": "Hour bank",
       "overview": "Overview",
       "clients": "Clients",
-      "hours": "Hours"
+      "hours": "Hours",
+      "quotes": "Quotes"
     },
     "status": {
       "active": "Active",
@@ -503,7 +504,16 @@
       "userUpdateFail": "The user could not be saved.",
       "webInvalid": "The website must start with http:// or https://.",
       "companyDetailsFail": "The company details could not be saved.",
-      "priceInvalid": "The price must be a number between 0 and 1,000,000."
+      "priceInvalid": "The price must be a number between 0 and 1,000,000.",
+      "quoteInvalid": "Invalid quote.",
+      "quoteTitle": "Write a title for the quote (at least 3 letters).",
+      "quoteVat": "VAT must be between 0 and 100.",
+      "quoteDiscount": "The discount must be between 0 and 100.",
+      "quoteLines": "Add at least one line with a valid description, quantity and price.",
+      "quoteFail": "The quote could not be saved.",
+      "quoteNotPending": "This quote is no longer awaiting a reply.",
+      "signName": "Write your full name to sign.",
+      "signConfirm": "Tick the box to confirm acceptance."
     },
     "ok": {
       "companyCreated": "Company created.",
@@ -513,7 +523,9 @@
       "bankSaved": "Hour bank saved.",
       "hoursRecorded": "Hours logged.",
       "userSaved": "Changes saved.",
-      "companyDetailsSaved": "Details saved."
+      "companyDetailsSaved": "Details saved.",
+      "quoteSaved": "Quote saved.",
+      "quoteSigned": "Quote signed and accepted. Thank you."
     },
     "api": {
       "invalidData": "Invalid data.",
@@ -542,6 +554,118 @@
       "industria": "Industry",
       "servicios": "Professional services",
       "otro": "Other"
+    },
+    "quotes": {
+      "adminTitle": "Quotes",
+      "adminIntro": "Prepare quotes for your clients, send them and follow their status.",
+      "clientTitle": "Quotes",
+      "clientIntro": "Here you see the quotes we have sent you and their status. You can sign them to accept.",
+      "new": "New quote",
+      "newIntro": "Choose the company, add the lines and check the totals. It is saved as a draft: the client cannot see it until you mark it as sent.",
+      "all": "All quotes",
+      "none": "There are no quotes yet.",
+      "clientNone": "You have no quotes yet.",
+      "number": "Number",
+      "titleLabel": "Title",
+      "issueDate": "Issue date",
+      "validUntil": "Valid until",
+      "days": "{n} days",
+      "linesTitle": "Lines",
+      "addFromTemplate": "Add from template",
+      "chooseTemplate": "Choose template",
+      "addLine": "Add line",
+      "concept": "Item",
+      "detail": "Detail (optional)",
+      "quantity": "Quantity",
+      "unitPrice": "Unit price",
+      "lineTotal": "Amount",
+      "removeLine": "Remove line {n}",
+      "vat": "VAT",
+      "vatExempt": "Exempt (0 %)",
+      "discount": "Discount (%)",
+      "notes": "Notes and terms",
+      "notesPlaceholder": "Payment terms, delivery times, what is not included...",
+      "subtotal": "Subtotal",
+      "discountLine": "Discount ({pct} %)",
+      "taxBase": "Taxable amount",
+      "vatLine": "VAT ({pct} %)",
+      "total": "Total",
+      "create": "Create quote",
+      "saveChanges": "Save changes",
+      "edit": "Edit quote",
+      "backToList": "Back to quotes",
+      "statusTitle": "Status",
+      "statusHelp": "The client only sees the quote once you mark it as sent. If they accept it, they sign it from their area.",
+      "delete": "Delete quote",
+      "deleteConfirm": "Delete quote {number}? This cannot be undone.",
+      "status": {
+        "borrador": "Draft",
+        "enviado": "Sent",
+        "aceptado": "Accepted",
+        "rechazado": "Rejected"
+      },
+      "summary": {
+        "pending": "Awaiting reply",
+        "accepted": "Accepted",
+        "drafts": "Drafts"
+      },
+      "clientSummary": {
+        "enviado": "Awaiting your reply",
+        "aceptado": "Accepted",
+        "rechazado": "Rejected"
+      },
+      "count": "{n} quotes",
+      "signTitle": "Sign and accept",
+      "signIntro": "To accept this quote, sign it with your full name. The date and time of the signature will be recorded.",
+      "signName": "Full name",
+      "signConfirm": "I accept this quote and its terms, and I sign with my name.",
+      "signAndAccept": "Sign and accept",
+      "reject": "Reject quote",
+      "rejectConfirm": "Reject this quote?",
+      "signedTitle": "Signed by",
+      "signedOn": "Signed on {date}",
+      "templates": {
+        "web": {
+          "name": "Corporate website",
+          "detail": "Design, development and go-live."
+        },
+        "landing": {
+          "name": "Landing page",
+          "detail": "Single page focused on conversion."
+        },
+        "domain": {
+          "name": "Domain and hosting",
+          "detail": "Registration, setup and deployment."
+        },
+        "support": {
+          "name": "Technical support hour",
+          "detail": "Support and incident resolution."
+        },
+        "server": {
+          "name": "Server installation",
+          "detail": "Installation, configuration and start-up."
+        },
+        "backup": {
+          "name": "Backups",
+          "detail": "Backup setup and restore testing."
+        },
+        "network": {
+          "name": "Network and communications",
+          "detail": "Network, Wi-Fi and perimeter security setup."
+        },
+        "migration": {
+          "name": "Systems migration",
+          "detail": "Data and service move with minimal downtime."
+        },
+        "audit": {
+          "name": "Technical audit",
+          "detail": "Infrastructure review with an improvement report."
+        },
+        "hourBank": {
+          "name": "Hour bank",
+          "detail": "Support hours deducted as they are used."
+        }
+      }
     }
   }
 }

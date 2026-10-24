@@ -230,3 +230,71 @@ export const documentos = pgTable(
     check("documentos_tipo_check", sql`${t.tipo} in ('presupuesto', 'justificante', 'factura')`),
   ],
 );
+
+/**
+ * Presupuestos que prepara el admin para una empresa. El cliente solo ve los que ya no
+ * están en borrador (ver db/rls.sql). `iva` y `descuento` son porcentajes.
+ */
+export const presupuestos = pgTable(
+  "presupuestos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    empresaId: uuid("empresa_id")
+      .notNull()
+      .references(() => empresas.id, { onDelete: "cascade" }),
+    numero: text("numero").notNull().unique(),
+    titulo: text("titulo").notNull(),
+    estado: text("estado", { enum: ["borrador", "enviado", "aceptado", "rechazado"] })
+      .notNull()
+      .default("borrador"),
+    fechaEmision: date("fecha_emision").notNull(),
+    validoHasta: date("valido_hasta"),
+    iva: numeric("iva", { precision: 5, scale: 2, mode: "number" }).notNull().default(21),
+    descuento: numeric("descuento", { precision: 5, scale: 2, mode: "number" })
+      .notNull()
+      .default(0),
+    notas: text("notas"),
+    // Firma electrónica sencilla al aceptar: nombre escrito, quién la hizo, cuándo y desde qué IP.
+    firmaNombre: text("firma_nombre"),
+    firmaUsuarioId: uuid("firma_usuario_id").references(() => usuarios.id, {
+      onDelete: "set null",
+    }),
+    firmaFecha: timestamp("firma_fecha", { withTimezone: true }),
+    firmaIp: text("firma_ip"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("presupuestos_empresa_idx").on(t.empresaId),
+    check(
+      "presupuestos_estado_check",
+      sql`${t.estado} in ('borrador', 'enviado', 'aceptado', 'rechazado')`,
+    ),
+    check(
+      "presupuestos_porcentajes_check",
+      sql`${t.iva} between 0 and 100 and ${t.descuento} between 0 and 100`,
+    ),
+  ],
+);
+
+export const presupuestoLineas = pgTable(
+  "presupuesto_lineas",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    presupuestoId: uuid("presupuesto_id")
+      .notNull()
+      .references(() => presupuestos.id, { onDelete: "cascade" }),
+    orden: integer("orden").notNull().default(0),
+    concepto: text("concepto").notNull(),
+    detalle: text("detalle"),
+    cantidad: numeric("cantidad", { precision: 10, scale: 2, mode: "number" }).notNull(),
+    precioUnitario: numeric("precio_unitario", {
+      precision: 10,
+      scale: 2,
+      mode: "number",
+    }).notNull(),
+  },
+  (t) => [
+    index("presupuesto_lineas_idx").on(t.presupuestoId, t.orden),
+    check("presupuesto_lineas_no_negativas", sql`${t.cantidad} >= 0 and ${t.precioUnitario} >= 0`),
+  ],
+);

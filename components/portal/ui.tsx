@@ -1,6 +1,12 @@
 import type { ReactNode } from "react";
 import { getI18n } from "@/lib/portal/i18n";
-import type { EstadoIncidencia, EstadoProyecto, Pelota, Prioridad } from "@/lib/portal/types";
+import type {
+  EstadoIncidencia,
+  EstadoPresupuesto,
+  EstadoProyecto,
+  Pelota,
+  Prioridad,
+} from "@/lib/portal/types";
 
 export function fmtTamanio(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -96,6 +102,17 @@ export async function EstadoIncidenciaBadge({ estado }: { estado: EstadoIncidenc
     abierta: [t("status.open"), "accent"],
     en_progreso: [t("status.inProgress"), "ink"],
     resuelta: [t("status.resolved"), "muted"],
+  } as const;
+  return <Badge tone={map[estado][1]}>{map[estado][0]}</Badge>;
+}
+
+export async function EstadoPresupuestoBadge({ estado }: { estado: EstadoPresupuesto }) {
+  const { t } = await getI18n();
+  const map = {
+    borrador: [t("quotes.status.borrador"), "muted"],
+    enviado: [t("quotes.status.enviado"), "accent"],
+    aceptado: [t("quotes.status.aceptado"), "ink"],
+    rechazado: [t("quotes.status.rechazado"), "muted"],
   } as const;
   return <Badge tone={map[estado][1]}>{map[estado][0]}</Badge>;
 }

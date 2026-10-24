@@ -7,6 +7,8 @@ import type {
   Hito,
   Incidencia,
   MensajeIncidencia,
+  Presupuesto,
+  PresupuestoLinea,
   Proyecto,
 } from "./types";
 
@@ -90,4 +92,26 @@ export const mapaTitulos = (proyectos: Proyecto[]) =>
 export function progreso(hitos: Hito[], proyectoId: string) {
   const suyos = hitos.filter((h) => h.proyecto_id === proyectoId);
   return { hechos: suyos.filter((h) => h.completado).length, total: suyos.length };
+}
+
+/** Presupuestos (más recientes primero). El cliente solo recibe los enviados de su empresa. */
+export async function listarPresupuestos(): Promise<Presupuesto[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("presupuestos")
+    .select("*")
+    .order("fecha_emision", { ascending: false })
+    .order("numero", { ascending: false });
+  return (data ?? []) as Presupuesto[];
+}
+
+export async function listarLineasPresupuesto(
+  presupuestoIds?: string[],
+): Promise<PresupuestoLinea[]> {
+  if (presupuestoIds && presupuestoIds.length === 0) return [];
+  const supabase = await createClient();
+  let q = supabase.from("presupuesto_lineas").select("*").order("orden");
+  if (presupuestoIds) q = q.in("presupuesto_id", presupuestoIds);
+  const { data } = await q;
+  return (data ?? []) as PresupuestoLinea[];
 }
