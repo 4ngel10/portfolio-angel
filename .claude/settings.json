@@ -1,4 +1,7 @@
 {
+  "env": {
+    "GATEGUARD_EXEMPT_GLOBS": "app/**,components/**,lib/**,messages/**"
+  },
   "permissions": {
     "allow": [
       "Edit(/app/**)",
@@ -12,12 +15,18 @@
       "Bash(npm run format)",
       "Bash(git status)",
       "Bash(git diff:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(printf -- '- [Estado del portal de clientes]\\(portal-clientes-estado.md\\) — en producción desde 2026-10-23; pendientes: animaciones, FlexGrip sin subir, Resend\\\\n')",
+      "Bash(cat MEMORY.md)",
+      "Read(//c/Users/Ángel Fernández/.claude/skills/review-animations/**)",
+      "Bash(wc -l STANDARDS.md)",
+      "Bash(grep -n -iE \"cubic-bezier|stagger|duration|reduced|hover: hover|starting-style|fade|entrance\" STANDARDS.md)",
+      "Bash(python -c \"import json;json.load\\(open\\('messages/es.json',encoding='utf-8'\\)\\);json.load\\(open\\('messages/en.json',encoding='utf-8'\\)\\)\")"
     ],
-    "ask": [],
-    "deny": ["Read(/.env*)", "Bash(rm -rf:*)"]
-  },
-  "env": {
-    "GATEGUARD_EXEMPT_GLOBS": "app/**,components/**,lib/**,messages/**"
+    "deny": [
+      "Read(/.env*)",
+      "Bash(rm -rf:*)"
+    ],
+    "ask": []
   }
 }
