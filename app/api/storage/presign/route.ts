@@ -78,7 +78,9 @@ export async function POST(request: Request) {
   if (!proyecto) return NextResponse.json({ error: t("api.projectNotFound") }, { status: 404 });
 
   const path = `${proyecto.empresa_id}/${proyecto.id}/${randomUUID()}-${limpiarNombre(fileName)}`;
-  const { data, error } = await createAdminClient().storage.from("archivos").createSignedUploadUrl(path);
+  const { data, error } = await createAdminClient()
+    .storage.from("archivos")
+    .createSignedUploadUrl(path);
   if (error || !data) {
     console.error("[presign]", error?.message);
     return NextResponse.json({ error: t("api.prepFail") }, { status: 500 });

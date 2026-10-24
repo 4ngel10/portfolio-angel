@@ -16,7 +16,7 @@ const TIPOS_POR_EXTENSION: Record<string, string> = {
   webm: "video/webm",
 };
 
-type Resultado ={ nombre: string; error?: string };
+type Resultado = { nombre: string; error?: string };
 
 /**
  * Sube archivos directamente del navegador a Supabase Storage con una URL firmada.
@@ -32,7 +32,10 @@ export function FileUploader({ proyectoId }: { proyectoId: string }) {
   async function subir(file: File): Promise<Resultado> {
     if (file.size > MAX_BYTES) return { nombre: file.name, error: t("upload.tooBig") };
     // Windows no suele conocer el tipo de HEIC ni de MOV y deja file.type vacío.
-    const contentType = file.type || TIPOS_POR_EXTENSION[file.name.split(".").pop()?.toLowerCase() ?? ""] || "application/octet-stream";
+    const contentType =
+      file.type ||
+      TIPOS_POR_EXTENSION[file.name.split(".").pop()?.toLowerCase() ?? ""] ||
+      "application/octet-stream";
 
     const pre = await fetch("/api/storage/presign", {
       method: "POST",
@@ -40,9 +43,12 @@ export function FileUploader({ proyectoId }: { proyectoId: string }) {
       body: JSON.stringify({ fileName: file.name, contentType, size: file.size, proyectoId }),
     }).catch(() => null);
     const firma = await pre?.json().catch(() => null);
-    if (!pre?.ok || !firma?.token) return { nombre: file.name, error: firma?.error ?? t("upload.prepFail") };
+    if (!pre?.ok || !firma?.token)
+      return { nombre: file.name, error: firma?.error ?? t("upload.prepFail") };
 
-    const { error } = await createClient().storage.from("archivos").uploadToSignedUrl(firma.path, firma.token, file, { contentType });
+    const { error } = await createClient()
+      .storage.from("archivos")
+      .uploadToSignedUrl(firma.path, firma.token, file, { contentType });
     if (error) return { nombre: file.name, error: t("upload.uploadFail") };
 
     const conf = await fetch("/api/storage/confirm", {
@@ -71,17 +77,27 @@ export function FileUploader({ proyectoId }: { proyectoId: string }) {
 
   return (
     <div>
-      <input ref={input} id={`subida-${proyectoId}`} type="file" multiple onChange={alElegir} disabled={!!subiendo} className="sr-only" />
+      <input
+        ref={input}
+        id={`subida-${proyectoId}`}
+        type="file"
+        multiple
+        onChange={alElegir}
+        disabled={!!subiendo}
+        className="sr-only"
+      />
       <label
         htmlFor={`subida-${proyectoId}`}
         className={`btn-secondary cursor-pointer focus-within:outline-2 ${subiendo ? "pointer-events-none opacity-60" : ""}`}
       >
         {subiendo ? t("upload.uploading") : t("upload.button")}
       </label>
-      <p className="mt-2 text-xs text-muted">{t("upload.hint")}</p>
+      <p className="text-muted mt-2 text-xs">{t("upload.hint")}</p>
 
       <div role="status" aria-live="polite" className="mt-2 text-sm">
-        {subiendo ? <p className="text-muted">{t("upload.uploadingName", { name: subiendo })}</p> : null}
+        {subiendo ? (
+          <p className="text-muted">{t("upload.uploadingName", { name: subiendo })}</p>
+        ) : null}
         {resultados.map((r, i) => (
           <p key={i} className={r.error ? "text-[var(--accent)]" : "text-muted"}>
             {r.error ? `${r.nombre}: ${r.error}` : t("upload.uploaded", { name: r.nombre })}
