@@ -6,6 +6,7 @@ import { getI18n } from "@/lib/portal/i18n";
 import { listarEmpresas, listarHitos, listarProyectos, progreso } from "@/lib/portal/queries";
 import { crearProyecto } from "@/lib/portal/actions";
 import { oneOf } from "@/lib/portal/validate";
+import { FiltrosProyectos } from "@/components/portal/filtros-proyectos";
 import { ActionForm } from "@/components/portal/action-form";
 import { inputCls, labelCls } from "@/components/portal/styles";
 import { EmptyState, EstadoProyectoBadge, PageHeader, Panel } from "@/components/portal/ui";
@@ -40,72 +41,13 @@ export default async function ProyectosAdminPage({
     (p) => (!sector || sectorDe[p.empresa_id] === sector) && (!estado || p.estado === estado),
   );
   const filtrado = !!sector || !!estado;
-  const estadoTxt = {
-    activo: "status.active",
-    pausado: "status.paused",
-    completado: "status.completed",
-  } as const;
 
   return (
     <>
       <PageHeader title={t("admin.projectsTitle")} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <Panel title={t("admin.allProjects")}>
-          <form
-            method="get"
-            className="mb-4 flex flex-wrap items-end gap-3"
-            role="search"
-            aria-label={t("admin.filterAria")}
-          >
-            <div>
-              <label htmlFor="f-sector" className={labelCls}>
-                {t("admin.filterSector")}
-              </label>
-              <select
-                id="f-sector"
-                name="sector"
-                defaultValue={sector ?? ""}
-                className={`${inputCls} !w-auto`}
-              >
-                <option value="">{t("admin.filterAll")}</option>
-                {SECTORES.map((s) => (
-                  <option key={s} value={s}>
-                    {t(`sectors.${s}`)}
-                  </option>
-                ))}
-                <option value="sin">{t("admin.sectorNone")}</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="f-estado" className={labelCls}>
-                {t("admin.filterStatus")}
-              </label>
-              <select
-                id="f-estado"
-                name="estado"
-                defaultValue={estado ?? ""}
-                className={`${inputCls} !w-auto`}
-              >
-                <option value="">{t("admin.filterAll")}</option>
-                {ESTADOS.map((e) => (
-                  <option key={e} value={e}>
-                    {t(estadoTxt[e])}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="btn-secondary !px-4 !py-2 !text-sm">
-              {t("admin.filter")}
-            </button>
-            {filtrado ? (
-              <Link
-                href="/admin/proyectos"
-                className="text-muted hover:text-ink py-2 text-sm underline underline-offset-4"
-              >
-                {t("admin.clearFilters")}
-              </Link>
-            ) : null}
-          </form>
+          <FiltrosProyectos sector={sector ?? ""} estado={estado ?? ""} />
           {filtrado ? (
             <p role="status" className="text-muted mb-3 text-sm">
               {t("admin.filterCount", { shown: proyectos.length, total: todos.length })}
