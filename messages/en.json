@@ -183,8 +183,7 @@
       "hourBank": "Hour bank",
       "overview": "Overview",
       "clients": "Clients",
-      "hours": "Hours",
-      "users": "Users"
+      "hours": "Hours"
     },
     "status": {
       "active": "Active",
@@ -423,9 +422,13 @@
       "createBank": "Create hour bank",
       "contractedPerMonth": "Contracted hours per month",
       "projectTitleDesc": "{company}. {desc}",
-      "usersTitle": "Users",
-      "usersIntro": "Edit the details of people with access, change their password, disable or delete them.",
-      "noUsers": "No clients have access yet.",
+      "registered": "Registered",
+      "lastAccess": "Last access",
+      "neverAccessed": "Has not signed in yet",
+      "passwordState": "Password",
+      "password_propia": "Chosen by the person",
+      "password_provisional": "Temporary, must be changed",
+      "password_pendiente": "Not chosen yet",
       "colName": "Name",
       "colEmail": "Email",
       "colAccess": "Access",

@@ -23,7 +23,6 @@ export async function Shell({
     ? [
         { href: "/admin", label: t("nav.overview"), exact: true },
         { href: "/admin/clientes", label: t("nav.clients") },
-        { href: "/admin/usuarios", label: t("nav.users") },
         { href: "/admin/proyectos", label: t("nav.projects") },
         { href: "/admin/horas", label: t("nav.hours") },
       ]

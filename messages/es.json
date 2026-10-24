@@ -183,8 +183,7 @@
       "hourBank": "Bolsa de horas",
       "overview": "Resumen",
       "clients": "Clientes",
-      "hours": "Horas",
-      "users": "Usuarios"
+      "hours": "Horas"
     },
     "status": {
       "active": "Activo",
@@ -423,9 +422,13 @@
       "createBank": "Crear bolsa",
       "contractedPerMonth": "Horas contratadas al mes",
       "projectTitleDesc": "{company}. {desc}",
-      "usersTitle": "Usuarios",
-      "usersIntro": "Edita los datos de las personas con acceso, cambia su contraseña, desactívalas o elimínalas.",
-      "noUsers": "Aún no hay clientes con acceso.",
+      "registered": "Alta",
+      "lastAccess": "Último acceso",
+      "neverAccessed": "Aún no ha entrado",
+      "passwordState": "Contraseña",
+      "password_propia": "Elegida por la persona",
+      "password_provisional": "Provisional, debe cambiarla",
+      "password_pendiente": "Aún sin elegir",
       "colName": "Nombre",
       "colEmail": "Correo",
       "colAccess": "Acceso",
