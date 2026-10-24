@@ -8,6 +8,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid } from "@/lib/portal/validate";
 import { listarBolsas, listarEmpresas, listarProyectos } from "@/lib/portal/queries";
 import type { Empresa } from "@/lib/portal/types";
+import { AnadirPersona } from "@/components/portal/anadir-persona";
 import { EmpresaDetalles } from "@/components/portal/empresa-detalles";
 import { PersonaCard, type PersonaInfo } from "@/components/portal/persona-card";
 import {
@@ -91,7 +92,11 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
           <EmpresaDetalles empresa={empresa} />
         </Panel>
 
-        <Panel title={t("admin.people")} className="lg:col-span-2">
+        <Panel
+          title={t("admin.people")}
+          className="lg:col-span-2"
+          action={<AnadirPersona empresaId={empresa.id} empresaNombre={empresa.nombre} />}
+        >
           {personas.length === 0 ? (
             <EmptyState>{t("admin.nobody")}</EmptyState>
           ) : (

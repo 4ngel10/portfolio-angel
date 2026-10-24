@@ -386,7 +386,7 @@
       "back": "Volver a clientes",
       "customerSince": "Cliente desde {date}",
       "people": "Personas",
-      "nobody": "Nadie tiene acceso todavía. Date de alta a alguien desde Clientes.",
+      "nobody": "Todavía no hay nadie con acceso en esta empresa. Añade a la primera persona.",
       "hourBank": "Bolsa de horas",
       "manage": "Gestionar",
       "availOf": "de {total} h disponibles",
@@ -471,7 +471,10 @@
       "noPrice": "Sin precio",
       "totalSpent": "Gastado en total",
       "overMonths": "en {n} meses",
-      "priceLabel": "Precio al mes (€)"
+      "priceLabel": "Precio al mes (€)",
+      "addPerson": "Añadir persona",
+      "addPersonTitle": "Añadir persona a {name}",
+      "cancel": "Cancelar"
     },
     "err": {
       "companyName": "Escribe el nombre de la empresa.",

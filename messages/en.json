@@ -386,7 +386,7 @@
       "back": "Back to clients",
       "customerSince": "Client since {date}",
       "people": "People",
-      "nobody": "Nobody has access yet. Add someone from Clients.",
+      "nobody": "Nobody in this company has access yet. Add the first person.",
       "hourBank": "Hour bank",
       "manage": "Manage",
       "availOf": "of {total} h available",
@@ -471,7 +471,10 @@
       "noPrice": "No price",
       "totalSpent": "Spent in total",
       "overMonths": "over {n} months",
-      "priceLabel": "Price per month (€)"
+      "priceLabel": "Price per month (€)",
+      "addPerson": "Add person",
+      "addPersonTitle": "Add a person to {name}",
+      "cancel": "Cancel"
     },
     "err": {
       "companyName": "Enter the company name.",
