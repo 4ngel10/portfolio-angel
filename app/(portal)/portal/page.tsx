@@ -105,7 +105,7 @@ export default async function PortalPage() {
                     <ProgressBar value={bolsa.horas_consumidas} max={bolsa.horas_contratadas} label={t("home.consumedHours")} />
                   </div>
                   <p className="mt-2 text-xs text-muted">
-                    {t("home.usedThisMonth", { used: bolsa.horas_consumidas, total: bolsa.horas_contratadas })}
+                    {t("home.usedOfTotal", { used: bolsa.horas_consumidas, total: bolsa.horas_contratadas })}
                   </p>
                 </>
               ) : (

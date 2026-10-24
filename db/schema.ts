@@ -174,7 +174,7 @@ export const bolsaHoras = pgTable(
       .references(() => empresas.id, { onDelete: "cascade" }),
     horasContratadas: integer("horas_contratadas").notNull(),
     horasConsumidas: integer("horas_consumidas").notNull().default(0),
-    // Precio mensual de la bolsa en euros. Lo ven el admin y el cliente.
+    // Precio de la bolsa en euros (pago único, no mensual). Lo ven el admin y el cliente.
     precio: numeric("precio", { precision: 10, scale: 2, mode: "number" }),
     periodoInicio: date("periodo_inicio").notNull(),
     periodoFin: date("periodo_fin").notNull(),
@@ -189,8 +189,8 @@ export const bolsaHoras = pgTable(
 );
 
 /**
- * Meses ya cerrados de cada bolsa. Lo escribe el cron del día 1 y solo lo lee el admin:
- * sirve para sumar lo que lleva gastado cada cliente. Sin política de lectura para clientes.
+ * Meses archivados de cuando la bolsa se reiniciaba cada mes (ya no se escribe) y solo lo lee
+ * el admin: sirve para sumar lo que lleva gastado cada cliente. Sin política de lectura para clientes.
  */
 export const bolsaHistorial = pgTable(
   "bolsa_historial",

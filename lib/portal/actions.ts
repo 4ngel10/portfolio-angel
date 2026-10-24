@@ -285,7 +285,7 @@ export async function guardarBolsa(_: FormState, fd: FormData): Promise<FormStat
   const horas = Number(text(fd, "horas_contratadas", 6));
   if (!isUuid(empresaId)) return await fallo("chooseCompany");
   if (!Number.isInteger(horas) || horas < 0 || horas > 10000) return await fallo("hoursInteger");
-  // Precio mensual en euros; vacío = sin precio todavía. Acepta coma decimal.
+  // Precio de la bolsa en euros; vacío = sin precio todavía. Acepta coma decimal.
   const precioTexto = text(fd, "precio", 12).replace(",", ".");
   const precio = precioTexto === "" ? null : Number(precioTexto);
   if (precio !== null && (!Number.isFinite(precio) || precio < 0 || precio > 1000000)) {

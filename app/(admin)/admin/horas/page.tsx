@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HorasAdminPage() {
   await requireAdmin();
-  const { t, fecha, euros } = await getI18n();
+  const { t, euros } = await getI18n();
   const [empresas, bolsas, historial] = await Promise.all([
     listarEmpresas(),
     listarBolsas(),
@@ -31,9 +31,9 @@ export default async function HorasAdminPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {empresas.map((e) => {
             const b = bolsas.find((x) => x.empresa_id === e.id);
-            // Gasto acumulado: los meses ya cerrados más el mes en curso. Solo lo ve el admin.
+            // Gasto acumulado: lo archivado de los meses antiguos (cuando la bolsa se reiniciaba)
+            // más el precio de la bolsa actual. Solo lo ve el admin.
             const cerrados = historial.filter((h) => h.empresa_id === e.id);
-            const meses = cerrados.length + (b ? 1 : 0);
             const acumulado = cerrados.reduce((sum, h) => sum + (h.precio ?? 0), b?.precio ?? 0);
             const restantes = b ? Math.max(0, b.horas_contratadas - b.horas_consumidas) : 0;
             return (
@@ -43,29 +43,19 @@ export default async function HorasAdminPage() {
                     <p className="text-2xl font-semibold tracking-tight">
                       {restantes}
                       <span className="text-muted ml-1 text-sm font-normal">
-                        {t("admin.availableUntil", {
-                          total: b.horas_contratadas,
-                          date: fecha(b.periodo_fin),
-                        })}
+                        {t("admin.availableOf", { total: b.horas_contratadas })}
                       </span>
                     </p>
                     <dl className="mt-3 grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <dt className="text-muted">{t("admin.bankPrice")}</dt>
                         <dd className="font-semibold">
-                          {b.precio !== null
-                            ? t("admin.pricePerMonth", { price: euros(b.precio) })
-                            : t("admin.noPrice")}
+                          {b.precio !== null ? euros(b.precio) : t("admin.noPrice")}
                         </dd>
                       </div>
                       <div>
                         <dt className="text-muted">{t("admin.totalSpent")}</dt>
-                        <dd className="font-semibold">
-                          {euros(acumulado)}
-                          <span className="text-muted ml-1 font-normal">
-                            {t("admin.overMonths", { n: meses })}
-                          </span>
-                        </dd>
+                        <dd className="font-semibold">{euros(acumulado)}</dd>
                       </div>
                     </dl>
                     <div className="mt-3">
@@ -113,7 +103,7 @@ export default async function HorasAdminPage() {
                 >
                   <input type="hidden" name="empresa_id" value={e.id} />
                   <label htmlFor={`c-${e.id}`} className={labelCls}>
-                    {t("admin.contractedPerMonth")}
+                    {t("admin.contractedTotal")}
                   </label>
                   <input
                     id={`c-${e.id}`}

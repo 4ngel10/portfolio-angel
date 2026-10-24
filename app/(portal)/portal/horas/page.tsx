@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HorasPage() {
   await requireCliente();
-  const { t, fecha, euros } = await getI18n();
+  const { t, euros } = await getI18n();
   const bolsa = (await listarBolsas())[0];
 
   return (
@@ -49,18 +49,9 @@ export default async function HorasPage() {
                 {bolsa.precio !== null ? (
                   <div>
                     <dt className="text-muted">{t("hoursPage.price")}</dt>
-                    <dd className="mt-0.5 text-lg font-semibold">
-                      {euros(bolsa.precio)}
-                      <span className="text-muted ml-1 text-sm font-normal">
-                        {t("hoursPage.perMonth")}
-                      </span>
-                    </dd>
+                    <dd className="mt-0.5 text-lg font-semibold">{euros(bolsa.precio)}</dd>
                   </div>
                 ) : null}
-                <div className="col-span-2 sm:col-span-1">
-                  <dt className="text-muted">{t("hoursPage.renews")}</dt>
-                  <dd className="mt-0.5 text-lg font-semibold">{fecha(bolsa.periodo_fin)}</dd>
-                </div>
               </dl>
             </>
           )}
