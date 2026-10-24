@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HorasPage() {
   await requireCliente();
-  const { t, fecha } = await getI18n();
+  const { t, fecha, euros } = await getI18n();
   const bolsa = (await listarBolsas())[0];
 
   return (
@@ -26,10 +26,16 @@ export default async function HorasPage() {
             <>
               <p className="text-5xl font-semibold tracking-tight">
                 {Math.max(0, bolsa.horas_contratadas - bolsa.horas_consumidas)}
-                <span className="ml-2 text-lg font-normal text-muted">{t("hoursPage.available")}</span>
+                <span className="text-muted ml-2 text-lg font-normal">
+                  {t("hoursPage.available")}
+                </span>
               </p>
               <div className="mt-5 max-w-xl">
-                <ProgressBar value={bolsa.horas_consumidas} max={bolsa.horas_contratadas} label={t("home.consumedHours")} />
+                <ProgressBar
+                  value={bolsa.horas_consumidas}
+                  max={bolsa.horas_contratadas}
+                  label={t("home.consumedHours")}
+                />
               </div>
               <dl className="mt-6 grid max-w-xl grid-cols-2 gap-4 text-sm sm:grid-cols-3">
                 <div>
@@ -40,6 +46,17 @@ export default async function HorasPage() {
                   <dt className="text-muted">{t("hoursPage.consumed")}</dt>
                   <dd className="mt-0.5 text-lg font-semibold">{bolsa.horas_consumidas} h</dd>
                 </div>
+                {bolsa.precio !== null ? (
+                  <div>
+                    <dt className="text-muted">{t("hoursPage.price")}</dt>
+                    <dd className="mt-0.5 text-lg font-semibold">
+                      {euros(bolsa.precio)}
+                      <span className="text-muted ml-1 text-sm font-normal">
+                        {t("hoursPage.perMonth")}
+                      </span>
+                    </dd>
+                  </div>
+                ) : null}
                 <div className="col-span-2 sm:col-span-1">
                   <dt className="text-muted">{t("hoursPage.renews")}</dt>
                   <dd className="mt-0.5 text-lg font-semibold">{fecha(bolsa.periodo_fin)}</dd>

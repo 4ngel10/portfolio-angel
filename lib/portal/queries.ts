@@ -1,6 +1,14 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
-import type { BolsaHoras, Empresa, Hito, Incidencia, MensajeIncidencia, Proyecto } from "./types";
+import type {
+  BolsaHoras,
+  BolsaMes,
+  Empresa,
+  Hito,
+  Incidencia,
+  MensajeIncidencia,
+  Proyecto,
+} from "./types";
 
 /**
  * Todas las lecturas usan el cliente del usuario: RLS ya limita qué filas llegan,
@@ -9,7 +17,10 @@ import type { BolsaHoras, Empresa, Hito, Incidencia, MensajeIncidencia, Proyecto
 
 export async function listarProyectos(): Promise<Proyecto[]> {
   const supabase = await createClient();
-  const { data } = await supabase.from("proyectos").select("*").order("created_at", { ascending: false });
+  const { data } = await supabase
+    .from("proyectos")
+    .select("*")
+    .order("created_at", { ascending: false });
   return (data ?? []) as Proyecto[];
 }
 
@@ -34,6 +45,15 @@ export async function listarBolsas(): Promise<BolsaHoras[]> {
   return (data ?? []) as BolsaHoras[];
 }
 
+/** Meses cerrados de todas las bolsas. Solo el admin los lee: RLS no deja pasar a los clientes. */
+export async function listarHistorialBolsas(): Promise<BolsaMes[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("bolsa_historial")
+    .select("empresa_id, periodo_inicio, precio");
+  return (data ?? []) as BolsaMes[];
+}
+
 /** Incidencias (más recientes primero) con sus mensajes y los nombres de quienes escriben. */
 export async function cargarIncidencias(filtro?: { proyectoId?: string; soloAbiertas?: boolean }) {
   const supabase = await createClient();
@@ -44,8 +64,13 @@ export async function cargarIncidencias(filtro?: { proyectoId?: string; soloAbie
 
   const ids = incidencias.map((i) => i.id);
   const mensajes = ids.length
-    ? (((await supabase.from("mensajes_incidencia").select("*").in("incidencia_id", ids).order("created_at")).data ??
-        []) as MensajeIncidencia[])
+    ? (((
+        await supabase
+          .from("mensajes_incidencia")
+          .select("*")
+          .in("incidencia_id", ids)
+          .order("created_at")
+      ).data ?? []) as MensajeIncidencia[])
     : [];
 
   const autorIds = [...new Set(mensajes.map((m) => m.autor_id).filter((x): x is string => !!x))];

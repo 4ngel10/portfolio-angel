@@ -15,7 +15,13 @@ export function oneOf<T extends string>(v: unknown, allowed: readonly T[]): T | 
   return typeof v === "string" && (allowed as readonly string[]).includes(v) ? (v as T) : null;
 }
 
-export type FormState = { ok?: boolean; error?: string; message?: string };
+export type FormState = {
+  ok?: boolean;
+  error?: string;
+  message?: string;
+  /** Empresa recién creada: el formulario la usa para pedir sus datos básicos. */
+  empresa?: { id: string; nombre: string };
+};
 
 export function slugify(s: string): string {
   return s

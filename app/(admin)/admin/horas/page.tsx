@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
-import { listarBolsas, listarEmpresas } from "@/lib/portal/queries";
+import { listarBolsas, listarEmpresas, listarHistorialBolsas } from "@/lib/portal/queries";
 import { guardarBolsa, registrarHoras } from "@/lib/portal/actions";
 import { ActionForm } from "@/components/portal/action-form";
 import { inputCls, labelCls } from "@/components/portal/styles";
@@ -14,8 +14,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HorasAdminPage() {
   await requireAdmin();
-  const { t, fecha } = await getI18n();
-  const [empresas, bolsas] = await Promise.all([listarEmpresas(), listarBolsas()]);
+  const { t, fecha, euros } = await getI18n();
+  const [empresas, bolsas, historial] = await Promise.all([
+    listarEmpresas(),
+    listarBolsas(),
+    listarHistorialBolsas(),
+  ]);
 
   return (
     <>
@@ -27,6 +31,10 @@ export default async function HorasAdminPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {empresas.map((e) => {
             const b = bolsas.find((x) => x.empresa_id === e.id);
+            // Gasto acumulado: los meses ya cerrados más el mes en curso. Solo lo ve el admin.
+            const cerrados = historial.filter((h) => h.empresa_id === e.id);
+            const meses = cerrados.length + (b ? 1 : 0);
+            const acumulado = cerrados.reduce((sum, h) => sum + (h.precio ?? 0), b?.precio ?? 0);
             const restantes = b ? Math.max(0, b.horas_contratadas - b.horas_consumidas) : 0;
             return (
               <Panel key={e.id} title={e.nombre}>
@@ -34,17 +42,50 @@ export default async function HorasAdminPage() {
                   <>
                     <p className="text-2xl font-semibold tracking-tight">
                       {restantes}
-                      <span className="ml-1 text-sm font-normal text-muted">
-                        {t("admin.availableUntil", { total: b.horas_contratadas, date: fecha(b.periodo_fin) })}
+                      <span className="text-muted ml-1 text-sm font-normal">
+                        {t("admin.availableUntil", {
+                          total: b.horas_contratadas,
+                          date: fecha(b.periodo_fin),
+                        })}
                       </span>
                     </p>
+                    <dl className="mt-3 grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <dt className="text-muted">{t("admin.bankPrice")}</dt>
+                        <dd className="font-semibold">
+                          {b.precio !== null
+                            ? t("admin.pricePerMonth", { price: euros(b.precio) })
+                            : t("admin.noPrice")}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted">{t("admin.totalSpent")}</dt>
+                        <dd className="font-semibold">
+                          {euros(acumulado)}
+                          <span className="text-muted ml-1 font-normal">
+                            {t("admin.overMonths", { n: meses })}
+                          </span>
+                        </dd>
+                      </div>
+                    </dl>
                     <div className="mt-3">
-                      <ProgressBar value={b.horas_consumidas} max={b.horas_contratadas} label={`${t("admin.hoursConsumed")}: ${e.nombre}`} />
+                      <ProgressBar
+                        value={b.horas_consumidas}
+                        max={b.horas_contratadas}
+                        label={`${t("admin.hoursConsumed")}: ${e.nombre}`}
+                      />
                     </div>
 
-                    <ActionForm action={registrarHoras} submitLabel={t("admin.record")} pendingLabel={t("admin.saving")} className="mt-5">
+                    <ActionForm
+                      action={registrarHoras}
+                      submitLabel={t("admin.record")}
+                      pendingLabel={t("admin.saving")}
+                      className="mt-5"
+                    >
                       <input type="hidden" name="empresa_id" value={e.id} />
-                      <label htmlFor={`h-${e.id}`} className={labelCls}>{t("admin.hoursConsumed")}</label>
+                      <label htmlFor={`h-${e.id}`} className={labelCls}>
+                        {t("admin.hoursConsumed")}
+                      </label>
                       <input
                         id={`h-${e.id}`}
                         name="horas"
@@ -56,11 +97,11 @@ export default async function HorasAdminPage() {
                         placeholder="2"
                         className={`${inputCls} sm:max-w-[140px]`}
                       />
-                      <p className="mt-1.5 text-xs text-muted">{t("admin.correctionHint")}</p>
+                      <p className="text-muted mt-1.5 text-xs">{t("admin.correctionHint")}</p>
                     </ActionForm>
                   </>
                 ) : (
-                  <p className="mb-3 text-sm text-muted">{t("admin.noContracted")}</p>
+                  <p className="text-muted mb-3 text-sm">{t("admin.noContracted")}</p>
                 )}
 
                 <ActionForm
@@ -68,10 +109,12 @@ export default async function HorasAdminPage() {
                   submitLabel={b ? t("admin.changeContracted") : t("admin.createBank")}
                   pendingLabel={t("admin.saving")}
                   secondary
-                  className="mt-5 border-t border-rule pt-5"
+                  className="border-rule mt-5 border-t pt-5"
                 >
                   <input type="hidden" name="empresa_id" value={e.id} />
-                  <label htmlFor={`c-${e.id}`} className={labelCls}>{t("admin.contractedPerMonth")}</label>
+                  <label htmlFor={`c-${e.id}`} className={labelCls}>
+                    {t("admin.contractedPerMonth")}
+                  </label>
                   <input
                     id={`c-${e.id}`}
                     name="horas_contratadas"
@@ -81,6 +124,19 @@ export default async function HorasAdminPage() {
                     max={10000}
                     required
                     defaultValue={b?.horas_contratadas}
+                    className={`${inputCls} sm:max-w-[140px]`}
+                  />
+                  <label htmlFor={`p-${e.id}`} className={`${labelCls} mt-3`}>
+                    {t("admin.priceLabel")}
+                  </label>
+                  <input
+                    id={`p-${e.id}`}
+                    name="precio"
+                    type="number"
+                    step="0.01"
+                    min={0}
+                    max={1000000}
+                    defaultValue={b?.precio ?? undefined}
                     className={`${inputCls} sm:max-w-[140px]`}
                   />
                 </ActionForm>

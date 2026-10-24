@@ -302,7 +302,9 @@
       "available": "hours available",
       "contracted": "Contracted",
       "consumed": "Used",
-      "renews": "Renews on"
+      "renews": "Renews on",
+      "price": "Bank price",
+      "perMonth": "per month"
     },
     "lists": {
       "noMilestones": "There are no milestones in this project yet.",
@@ -442,7 +444,34 @@
       "enable": "Re-enable",
       "confirmDisable": "Disable {name}? They will not be able to sign in until you re-enable them.",
       "confirmDelete": "Delete {name}? Their account is removed and this cannot be undone.",
-      "deleteUser": "Delete user"
+      "deleteUser": "Delete user",
+      "filterAria": "Filter projects",
+      "filterSector": "Company type",
+      "filterStatus": "Status",
+      "filterAll": "All",
+      "filter": "Filter",
+      "clearFilters": "Clear filters",
+      "filterCount": "Showing {shown} of {total} projects",
+      "noProjectsFiltered": "No project matches those filters.",
+      "sectorNone": "Not set",
+      "sector": "Company type",
+      "location": "Location",
+      "locationPlaceholder": "City or province",
+      "activity": "What they do",
+      "activityPlaceholder": "One or two sentences about their business",
+      "phone": "Phone",
+      "website": "Website",
+      "saveDetails": "Save details",
+      "companyDetails": "Company details",
+      "companyDetailsTitle": "Basic details for {name}",
+      "companyDetailsIntro": "Tell me what they do and where they are. You can skip this and fill it in later from the company page.",
+      "notNow": "Not now",
+      "bankPrice": "Bank price",
+      "pricePerMonth": "{price} per month",
+      "noPrice": "No price",
+      "totalSpent": "Spent in total",
+      "overMonths": "over {n} months",
+      "priceLabel": "Price per month (€)"
     },
     "err": {
       "companyName": "Enter the company name.",
@@ -472,7 +501,10 @@
       "hoursFail": "The hours could not be logged.",
       "userProtected": "This user cannot be modified.",
       "passwordShort": "The password must be 8 to 72 characters long.",
-      "userUpdateFail": "The user could not be saved."
+      "userUpdateFail": "The user could not be saved.",
+      "webInvalid": "The website must start with http:// or https://.",
+      "companyDetailsFail": "The company details could not be saved.",
+      "priceInvalid": "The price must be a number between 0 and 1,000,000."
     },
     "ok": {
       "companyCreated": "Company created.",
@@ -481,7 +513,8 @@
       "milestoneAdded": "Milestone added.",
       "bankSaved": "Hour bank saved.",
       "hoursRecorded": "Hours logged.",
-      "userSaved": "Changes saved."
+      "userSaved": "Changes saved.",
+      "companyDetailsSaved": "Details saved."
     },
     "api": {
       "invalidData": "Invalid data.",
@@ -500,6 +533,16 @@
       "describe": "Describe what is happening.",
       "onlyClients": "Only clients can open issues.",
       "incidentFail": "The issue could not be created."
+    },
+    "sectors": {
+      "hosteleria": "Hospitality",
+      "comercio": "Retail",
+      "salud": "Health",
+      "tecnologia": "Technology",
+      "educacion": "Education",
+      "industria": "Industry",
+      "servicios": "Professional services",
+      "otro": "Other"
     }
   }
 }

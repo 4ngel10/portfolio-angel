@@ -19,6 +19,11 @@ export type Empresa = {
   nombre: string;
   slug: string;
   config_fiscal: boolean;
+  sector: string | null;
+  actividad: string | null;
+  ubicacion: string | null;
+  telefono: string | null;
+  web: string | null;
   created_at: string;
 };
 
@@ -77,6 +82,14 @@ export type BolsaHoras = {
   empresa_id: string;
   horas_contratadas: number;
   horas_consumidas: number;
+  precio: number | null;
   periodo_inicio: string;
   periodo_fin: string;
+};
+
+/** Mes ya cerrado de una bolsa. Solo lo lee el admin. */
+export type BolsaMes = {
+  empresa_id: string;
+  periodo_inicio: string;
+  precio: number | null;
 };

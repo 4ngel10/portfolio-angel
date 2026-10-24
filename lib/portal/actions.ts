@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPerfil, requireAdmin } from "./auth";
 import { getI18n } from "./i18n";
+import { SECTORES } from "./sectores";
 import { isEmail, isUuid, oneOf, slugify, text, type FormState } from "./validate";
 
 /** Las dos zonas leen de las mismas tablas: tras cualquier cambio se refrescan ambas. */
@@ -36,13 +37,45 @@ export async function crearEmpresa(_: FormState, fd: FormData): Promise<FormStat
   if (nombre.length < 2) return await fallo("companyName");
 
   const supabase = await createClient();
-  const { error } = await supabase.from("empresas").insert({ nombre, slug: slugify(nombre) });
-  if (error) {
-    console.error("[crearEmpresa]", error.message);
-    return await fallo(error.code === "23505" ? "companyExists" : "companyFail");
+  const { data: creada, error } = await supabase
+    .from("empresas")
+    .insert({ nombre, slug: slugify(nombre) })
+    .select("id, nombre")
+    .single();
+  if (error || !creada) {
+    console.error("[crearEmpresa]", error?.message);
+    return await fallo(error?.code === "23505" ? "companyExists" : "companyFail");
   }
   refrescar();
-  return { ok: true, message: (await getI18n()).t("ok.companyCreated") };
+  return { ok: true, message: (await getI18n()).t("ok.companyCreated"), empresa: creada };
+}
+
+/** Datos básicos de la empresa (se piden al crearla y se pueden cambiar desde su ficha). */
+export async function guardarDetallesEmpresa(_: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  if (!isUuid(id)) return await fallo("invalidCompany");
+  const sector = oneOf(text(fd, "sector", 20), SECTORES);
+  const web = text(fd, "web", 200);
+  if (web && !/^https?:\/\/\S+\.\S+$/i.test(web)) return await fallo("webInvalid");
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("empresas")
+    .update({
+      sector,
+      actividad: text(fd, "actividad", 300) || null,
+      ubicacion: text(fd, "ubicacion", 120) || null,
+      telefono: text(fd, "telefono", 30) || null,
+      web: web || null,
+    })
+    .eq("id", id);
+  if (error) {
+    console.error("[guardarDetallesEmpresa]", error.message);
+    return await fallo("companyDetailsFail");
+  }
+  refrescar();
+  return { ok: true, message: (await getI18n()).t("ok.companyDetailsSaved") };
 }
 
 export async function invitarCliente(_: FormState, fd: FormData): Promise<FormState> {
@@ -252,6 +285,12 @@ export async function guardarBolsa(_: FormState, fd: FormData): Promise<FormStat
   const horas = Number(text(fd, "horas_contratadas", 6));
   if (!isUuid(empresaId)) return await fallo("chooseCompany");
   if (!Number.isInteger(horas) || horas < 0 || horas > 10000) return await fallo("hoursInteger");
+  // Precio mensual en euros; vacío = sin precio todavía. Acepta coma decimal.
+  const precioTexto = text(fd, "precio", 12).replace(",", ".");
+  const precio = precioTexto === "" ? null : Number(precioTexto);
+  if (precio !== null && (!Number.isFinite(precio) || precio < 0 || precio > 1000000)) {
+    return await fallo("priceInvalid");
+  }
 
   const supabase = await createClient();
   const { data: actual } = await supabase
@@ -261,15 +300,17 @@ export async function guardarBolsa(_: FormState, fd: FormData): Promise<FormStat
     .maybeSingle();
   const { inicio, fin } = mesActual();
   const { error } = actual
-    ? await supabase.from("bolsa_horas").update({ horas_contratadas: horas }).eq("id", actual.id)
-    : await supabase
+    ? await supabase
         .from("bolsa_horas")
-        .insert({
-          empresa_id: empresaId,
-          horas_contratadas: horas,
-          periodo_inicio: inicio,
-          periodo_fin: fin,
-        });
+        .update({ horas_contratadas: horas, precio })
+        .eq("id", actual.id)
+    : await supabase.from("bolsa_horas").insert({
+        empresa_id: empresaId,
+        horas_contratadas: horas,
+        precio,
+        periodo_inicio: inicio,
+        periodo_fin: fin,
+      });
   if (error) {
     console.error("[guardarBolsa]", error.message);
     return await fallo("bankFail");
@@ -343,7 +384,9 @@ export async function guardarUsuario(_: FormState, fd: FormData): Promise<FormSt
     email,
     email_confirm: true,
     // Contraseña provisional: el portal obliga a la persona a elegir la suya al entrar.
-    ...(password ? { password, user_metadata: { password_set: false, password_temporary: true } } : {}),
+    ...(password
+      ? { password, user_metadata: { password_set: false, password_temporary: true } }
+      : {}),
   });
   if (errAuth) {
     console.error("[guardarUsuario]", errAuth.message);

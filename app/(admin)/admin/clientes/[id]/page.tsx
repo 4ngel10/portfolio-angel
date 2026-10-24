@@ -8,6 +8,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid } from "@/lib/portal/validate";
 import { listarBolsas, listarEmpresas, listarProyectos } from "@/lib/portal/queries";
 import type { Empresa } from "@/lib/portal/types";
+import { EmpresaDetalles } from "@/components/portal/empresa-detalles";
 import { PersonaCard, type PersonaInfo } from "@/components/portal/persona-card";
 import {
   EmptyState,
@@ -86,6 +87,10 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
+        <Panel title={t("admin.companyDetails")} className="lg:col-span-2">
+          <EmpresaDetalles empresa={empresa} />
+        </Panel>
+
         <Panel title={t("admin.people")} className="lg:col-span-2">
           {personas.length === 0 ? (
             <EmptyState>{t("admin.nobody")}</EmptyState>

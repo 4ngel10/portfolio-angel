@@ -302,7 +302,9 @@
       "available": "horas disponibles",
       "contracted": "Contratadas",
       "consumed": "Consumidas",
-      "renews": "Se renueva"
+      "renews": "Se renueva",
+      "price": "Precio de la bolsa",
+      "perMonth": "al mes"
     },
     "lists": {
       "noMilestones": "Todavía no hay hitos en este proyecto.",
@@ -442,7 +444,34 @@
       "enable": "Reactivar",
       "confirmDisable": "¿Desactivar a {name}? No podrá entrar hasta que lo reactives.",
       "confirmDelete": "¿Eliminar a {name}? Se borra su cuenta y no se puede deshacer.",
-      "deleteUser": "Eliminar usuario"
+      "deleteUser": "Eliminar usuario",
+      "filterAria": "Filtrar proyectos",
+      "filterSector": "Tipo de empresa",
+      "filterStatus": "Estado",
+      "filterAll": "Todos",
+      "filter": "Filtrar",
+      "clearFilters": "Quitar filtros",
+      "filterCount": "Mostrando {shown} de {total} proyectos",
+      "noProjectsFiltered": "Ningún proyecto coincide con esos filtros.",
+      "sectorNone": "Sin indicar",
+      "sector": "Tipo de empresa",
+      "location": "Ubicación",
+      "locationPlaceholder": "Ciudad o provincia",
+      "activity": "A qué se dedica",
+      "activityPlaceholder": "Una o dos frases sobre su actividad",
+      "phone": "Teléfono",
+      "website": "Web",
+      "saveDetails": "Guardar datos",
+      "companyDetails": "Datos de la empresa",
+      "companyDetailsTitle": "Datos básicos de {name}",
+      "companyDetailsIntro": "Cuéntame a qué se dedica y dónde está. Puedes saltarte este paso y completarlo después desde la ficha de la empresa.",
+      "notNow": "Ahora no",
+      "bankPrice": "Precio de la bolsa",
+      "pricePerMonth": "{price} al mes",
+      "noPrice": "Sin precio",
+      "totalSpent": "Gastado en total",
+      "overMonths": "en {n} meses",
+      "priceLabel": "Precio al mes (€)"
     },
     "err": {
       "companyName": "Escribe el nombre de la empresa.",
@@ -472,7 +501,10 @@
       "hoursFail": "No se pudieron registrar las horas.",
       "userProtected": "Ese usuario no se puede modificar.",
       "passwordShort": "La contraseña debe tener entre 8 y 72 caracteres.",
-      "userUpdateFail": "No se pudo guardar el usuario."
+      "userUpdateFail": "No se pudo guardar el usuario.",
+      "webInvalid": "La web debe empezar por http:// o https://.",
+      "companyDetailsFail": "No se pudieron guardar los datos de la empresa.",
+      "priceInvalid": "El precio debe ser un número entre 0 y 1.000.000."
     },
     "ok": {
       "companyCreated": "Empresa creada.",
@@ -481,7 +513,8 @@
       "milestoneAdded": "Hito añadido.",
       "bankSaved": "Bolsa guardada.",
       "hoursRecorded": "Horas registradas.",
-      "userSaved": "Cambios guardados."
+      "userSaved": "Cambios guardados.",
+      "companyDetailsSaved": "Datos guardados."
     },
     "api": {
       "invalidData": "Datos no válidos.",
@@ -500,6 +533,16 @@
       "describe": "Describe qué ocurre.",
       "onlyClients": "Solo los clientes abren incidencias.",
       "incidentFail": "No se pudo crear la incidencia."
+    },
+    "sectors": {
+      "hosteleria": "Hostelería",
+      "comercio": "Comercio",
+      "salud": "Salud",
+      "tecnologia": "Tecnología",
+      "educacion": "Educación",
+      "industria": "Industria",
+      "servicios": "Servicios profesionales",
+      "otro": "Otro"
     }
   }
 }

@@ -48,13 +48,14 @@ grant execute on function public.is_admin() to authenticated;
 -- Con RLS activo y sin políticas para `anon`, un visitante sin sesión no ve nada.
 -- Además se le retiran los permisos sobre las tablas.
 -- 3. El admin tiene acceso total a cualquier tabla (política admin_all).
+-- bolsa_historial solo tiene esta política: los clientes no ven el gasto acumulado.
 -- ---------------------------------------------------------------------
 do $$
 declare t text;
 begin
   foreach t in array array[
     'empresas','usuarios','proyectos','hitos','archivos',
-    'incidencias','mensajes_incidencia','bolsa_horas','documentos'
+    'incidencias','mensajes_incidencia','bolsa_horas','bolsa_historial','documentos'
   ] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on public.%I from anon', t);

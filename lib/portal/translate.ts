@@ -29,3 +29,24 @@ export function formatDate(iso: string | null | undefined, locale: PortalLocale)
     year: "numeric",
   });
 }
+
+/** Fecha y hora en horario de España: el servidor corre en UTC y sin zona saldría desfasada. */
+export function formatDateTime(iso: string | null | undefined, locale: PortalLocale): string {
+  if (!iso) return "";
+  return new Date(iso).toLocaleString(locale === "es" ? "es-ES" : "en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Madrid",
+  });
+}
+
+export function formatEuros(n: number, locale: PortalLocale): string {
+  return n.toLocaleString(locale === "es" ? "es-ES" : "en-GB", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
+  });
+}

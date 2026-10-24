@@ -2,7 +2,16 @@ import "server-only";
 import { cookies, headers } from "next/headers";
 import es from "@/messages/es.json";
 import en from "@/messages/en.json";
-import { formatDate, isLocale, translate, type PortalLocale, type PortalT, type Vars } from "./translate";
+import {
+  formatDate,
+  formatDateTime,
+  formatEuros,
+  isLocale,
+  translate,
+  type PortalLocale,
+  type PortalT,
+  type Vars,
+} from "./translate";
 
 const dictionaries = { es: es.portal, en: en.portal };
 
@@ -27,5 +36,7 @@ export async function getI18n() {
   const dict = dictionaries[locale];
   const t: PortalT = (path: string, vars?: Vars) => translate(dict, path, vars);
   const fecha = (iso: string | null | undefined) => formatDate(iso, locale);
-  return { locale, t, fecha };
+  const fechaHora = (iso: string | null | undefined) => formatDateTime(iso, locale);
+  const euros = (n: number) => formatEuros(n, locale);
+  return { locale, t, fecha, fechaHora, euros };
 }

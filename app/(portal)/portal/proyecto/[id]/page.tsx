@@ -31,7 +31,11 @@ export default async function ProyectoPage({ params }: { params: Promise<{ id: s
 
   const [{ data: h }, { data: a }, inc] = await Promise.all([
     supabase.from("hitos").select("*").eq("proyecto_id", id).order("orden"),
-    supabase.from("archivos").select("*").eq("proyecto_id", id).order("created_at", { ascending: false }),
+    supabase
+      .from("archivos")
+      .select("*")
+      .eq("proyecto_id", id)
+      .order("created_at", { ascending: false }),
     cargarIncidencias({ proyectoId: id }),
   ]);
   const hitos = (h ?? []) as Hito[];
@@ -41,21 +45,34 @@ export default async function ProyectoPage({ params }: { params: Promise<{ id: s
   return (
     <>
       <p className="mb-4 text-sm">
-        <Link href="/portal" className="text-muted underline-offset-4 hover:text-ink hover:underline">
+        <Link
+          href="/portal"
+          className="text-muted hover:text-ink underline-offset-4 hover:underline"
+        >
           {t("project.back")}
         </Link>
       </p>
-      <PageHeader title={proyecto.titulo} intro={proyecto.descripcion ?? undefined} action={<EstadoProyectoBadge estado={proyecto.estado} />} />
+      <PageHeader
+        title={proyecto.titulo}
+        intro={proyecto.descripcion ?? undefined}
+        action={<EstadoProyectoBadge estado={proyecto.estado} />}
+      />
 
       <div className="grid gap-6">
         <Aparece>
           <Panel title={t("project.progress")}>
             <div className="mb-5 flex items-center gap-3">
               <div className="flex-1">
-                <ProgressBar value={hechos} max={hitos.length} label={t("project.milestonesDone")} />
+                <ProgressBar
+                  value={hechos}
+                  max={hitos.length}
+                  label={t("project.milestonesDone")}
+                />
               </div>
-              <span className="text-sm text-muted">
-                {hitos.length ? t("project.countOf", { done: hechos, total: hitos.length }) : t("project.noMilestonesShort")}
+              <span className="text-muted text-sm">
+                {hitos.length
+                  ? t("project.countOf", { done: hechos, total: hitos.length })
+                  : t("project.noMilestonesShort")}
               </span>
             </div>
             <HitosLista hitos={hitos} />
@@ -63,7 +80,10 @@ export default async function ProyectoPage({ params }: { params: Promise<{ id: s
         </Aparece>
 
         <Aparece retraso={0.05}>
-          <Panel title={t("project.files")} action={<FileUploader proyectoId={proyecto.id} />}>
+          <Panel title={t("project.files")}>
+            <div className="mb-4">
+              <FileUploader proyectoId={proyecto.id} />
+            </div>
             <ArchivosLista archivos={archivos} />
           </Panel>
         </Aparece>
@@ -79,9 +99,12 @@ export default async function ProyectoPage({ params }: { params: Promise<{ id: s
               sinProyecto
               rutaProyecto="/portal/proyecto"
             />
-            <div className="mt-6 border-t border-rule pt-5">
+            <div className="border-rule mt-6 border-t pt-5">
               <h3 className="mb-3 font-semibold">{t("project.openIncident")}</h3>
-              <IncidenciaForm proyectos={[{ id: proyecto.id, titulo: proyecto.titulo }]} proyectoId={proyecto.id} />
+              <IncidenciaForm
+                proyectos={[{ id: proyecto.id, titulo: proyecto.titulo }]}
+                proyectoId={proyecto.id}
+              />
             </div>
           </Panel>
         </Aparece>
