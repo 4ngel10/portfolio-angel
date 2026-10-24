@@ -7,7 +7,7 @@ import { usePT } from "./i18n-provider";
 import { inputCls, labelCls } from "./styles";
 
 /** Primera entrada del cliente (o enlace de "contraseña olvidada"): elige su contraseña. */
-export function PasswordForm() {
+export function PasswordForm({ temporal = false }: { temporal?: boolean }) {
   const router = useRouter();
   const { t } = usePT();
   const [password, setPassword] = useState("");
@@ -23,7 +23,7 @@ export function PasswordForm() {
     setError(null);
     setGuardando(true);
     // `password_set` marca que ya eligió contraseña: el portal deja de pedírsela.
-    const { error } = await createClient().auth.updateUser({ password, data: { password_set: true } });
+    const { error } = await createClient().auth.updateUser({ password, data: { password_set: true, password_temporary: false } });
     if (error) {
       setGuardando(false);
       setError(error.code === "weak_password" ? t("password.tooShort") : t("password.failed"));
@@ -36,7 +36,7 @@ export function PasswordForm() {
   return (
     <form onSubmit={guardar} noValidate>
       <h1 className="text-2xl font-semibold tracking-tight">{t("password.title")}</h1>
-      <p className="mt-3 text-muted">{t("password.intro")}</p>
+      <p className="mt-3 text-muted">{t(temporal ? "password.tempIntro" : "password.intro")}</p>
 
       <label htmlFor="new-password" className={`${labelCls} mt-6`}>
         {t("password.newLabel")}

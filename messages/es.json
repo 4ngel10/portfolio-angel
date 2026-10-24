@@ -235,7 +235,8 @@
       "saving": "Guardando",
       "tooShort": "La contraseña debe tener al menos 8 caracteres.",
       "mismatch": "Las contraseñas no coinciden.",
-      "failed": "No se pudo guardar la contraseña. Inténtalo de nuevo."
+      "failed": "No se pudo guardar la contraseña. Inténtalo de nuevo.",
+      "tempIntro": "Tu contraseña fue restablecida por el administrador. Elige una nueva que solo conozcas tú para seguir entrando."
     },
     "mfa": {
       "metaTitle": "Verificación",
@@ -433,7 +434,7 @@
       "edit": "Editar",
       "save": "Guardar cambios",
       "newPassword": "Nueva contraseña",
-      "passwordHint": "Déjala vacía para no cambiarla. Mínimo 8 caracteres.",
+      "passwordHint": "Déjala vacía para no cambiarla. Mínimo 8 caracteres. La persona tendrá que elegir otra al entrar.",
       "disable": "Desactivar",
       "enable": "Reactivar",
       "confirmDisable": "¿Desactivar a {name}? No podrá entrar hasta que lo reactives.",

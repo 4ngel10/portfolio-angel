@@ -235,7 +235,8 @@
       "saving": "Saving",
       "tooShort": "The password must be at least 8 characters.",
       "mismatch": "The passwords do not match.",
-      "failed": "The password could not be saved. Try again."
+      "failed": "The password could not be saved. Try again.",
+      "tempIntro": "Your password was reset by the administrator. Choose a new one that only you know to keep signing in."
     },
     "mfa": {
       "metaTitle": "Verification",
@@ -433,7 +434,7 @@
       "edit": "Edit",
       "save": "Save changes",
       "newPassword": "New password",
-      "passwordHint": "Leave empty to keep it. At least 8 characters.",
+      "passwordHint": "Leave empty to keep it. At least 8 characters. The person will have to choose another one on next sign-in.",
       "disable": "Disable",
       "enable": "Re-enable",
       "confirmDisable": "Disable {name}? They will not be able to sign in until you re-enable them.",

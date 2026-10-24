@@ -342,8 +342,8 @@ export async function guardarUsuario(_: FormState, fd: FormData): Promise<FormSt
   const { error: errAuth } = await admin.auth.admin.updateUserById(id, {
     email,
     email_confirm: true,
-    // Con contraseña fijada por el admin, el portal deja de pedirle que elija una.
-    ...(password ? { password, user_metadata: { password_set: true } } : {}),
+    // Contraseña provisional: el portal obliga a la persona a elegir la suya al entrar.
+    ...(password ? { password, user_metadata: { password_set: false, password_temporary: true } } : {}),
   });
   if (errAuth) {
     console.error("[guardarUsuario]", errAuth.message);
