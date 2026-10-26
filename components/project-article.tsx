@@ -93,23 +93,29 @@ export function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: 
         {block.h3}
       </h3>
     );
-  if ("img" in block)
+  if ("img" in block) {
+    // Los diagramas apaisados ocupan el ancho de la columna; las capturas de móvil, estrechas.
+    const wide = block.width > block.height;
     return (
       <figure className="my-10 flex flex-col items-center">
-        {/* Captura de móvil, alta y estrecha: se limita el ancho para que no ocupe media página. */}
         <Image
           src={block.img}
           alt={block.alt}
           width={block.width}
           height={block.height}
-          sizes="(min-width: 640px) 320px, 75vw"
-          className="h-auto w-3/4 max-w-[320px] drop-shadow-[0_30px_40px_rgba(0,0,0,0.18)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03]"
+          sizes={wide ? "(min-width: 768px) 720px, 100vw" : "(min-width: 640px) 320px, 75vw"}
+          className={
+            wide
+              ? "border-rule h-auto w-full rounded-2xl border"
+              : "h-auto w-3/4 max-w-[320px] drop-shadow-[0_30px_40px_rgba(0,0,0,0.18)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03]"
+          }
         />
         {block.caption && (
           <figcaption className="text-muted mt-5 text-center text-sm">{block.caption}</figcaption>
         )}
       </figure>
     );
+  }
   // Los puntos de las listas se desplazan y se encienden al pasar el ratón.
   const ITEM =
     "group/item relative rounded-lg transition-[transform,color] duration-200 hover:translate-x-1.5 hover:text-[var(--fg)]";

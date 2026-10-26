@@ -38,6 +38,184 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "web-pyme-que-vende",
+    category: "desarrollo",
+    date: "2026-10-26",
+    ogImage: "/blog/web-pyme-que-vende-og.jpg",
+    post: {
+      es: {
+        title: "Qué debe tener la web de una pyme para conseguir clientes (y qué sobra)",
+        excerpt:
+          "Una web de pyme no necesita más páginas, sino menos fricción: qué haces, cómo contactar y pruebas reales. Te cuento qué incluyo y qué dejo fuera.",
+        description:
+          "Qué debe tener la web de una pyme para conseguir clientes: mensaje claro, contacto visible, velocidad en móvil y SEO local. Y qué elementos sobran en una web de empresa.",
+        intro:
+          "Una web de pyme no consigue clientes por tener más páginas, más animaciones o más texto. Los consigue cuando alguien que busca lo que haces entiende en pocos segundos qué ofreces, si estás cerca y cómo contactar contigo. Todo lo demás es secundario, y buena parte sobra.",
+        sections: [
+          {
+            heading: "Lo que el visitante busca en cinco segundos",
+            blocks: [
+              "Quien llega desde Google o desde el móvil no va a leer la web entera. Mira la primera pantalla y decide si se queda. Por eso lo primero que reviso en cualquier web es si esa primera pantalla responde a tres preguntas: qué hace este negocio, dónde trabaja y cómo le contacto.",
+              {
+                img: "/blog/web-pyme-que-vende/estructura-es.webp",
+                alt: "Esquema con los cuatro bloques de la página de una pyme, de arriba abajo: qué haces y dónde, botón de contacto visible, pruebas reales, servicios y formulario corto. Los dos primeros se ven sin hacer scroll.",
+                width: 1600,
+                height: 800,
+                caption: "Orden de los bloques en la página de una pyme.",
+              },
+              "El botón de contacto tiene que estar a la vista, no escondido en el menú. Llamar, escribir por WhatsApp o pedir presupuesto: da igual cuál, pero que se vea sin buscarlo.",
+            ],
+          },
+          {
+            heading: "Velocidad y móvil: la mayoría llega desde el teléfono",
+            blocks: [
+              "Hoy casi todas las búsquedas locales se hacen desde el móvil, a menudo con prisa y con poca cobertura. Una web que tarda en cargar o que obliga a hacer zoom para leer se abandona antes de ver nada.",
+              "Mi regla es sencilla: se diseña primero para el móvil y luego se adapta al ordenador, no al revés. Además, evito lo que más pesa sin aportar: vídeos de fondo, carruseles enormes, imágenes sin optimizar y librerías que se cargan para una sola animación.",
+              "Por eso trabajo con Next.js, que genera páginas estáticas muy ligeras. Te explico los motivos en [Por qué elijo Next.js para webs de clientes](/blog/por-que-nextjs).",
+            ],
+          },
+          {
+            heading: "Contacto y confianza, sin inventar nada",
+            blocks: [
+              "La confianza se construye con cosas verificables. Lo que suma:",
+              {
+                list: [
+                  "**Fotos propias** de tu local, tu equipo o tus trabajos, mejor que imágenes de banco.",
+                  "**Trabajos reales** descritos con claridad: qué se hizo y cómo. Si todavía no tienes muchos, enseña los que sí tienes.",
+                  "**Datos de contacto completos**: teléfono, correo y zona en la que trabajas.",
+                  "**Un formulario corto**: nombre, forma de contacto y mensaje. Cada campo extra hace que alguien lo deje a medias.",
+                ],
+              },
+              "Lo que resta: testimonios inventados, cifras sin respaldo o sellos que nadie ha concedido. Si algo no es verdad, no se publica.",
+              {
+                img: "/blog/web-pyme-que-vende/camino-contacto-es.webp",
+                alt: "Comparativa de dos webs. La recargada necesita cinco pasos hasta el contacto: inicio, menú, servicios, contacto y formulario largo. La directa llega al botón o formulario desde el inicio en uno o dos pasos.",
+                width: 1600,
+                height: 800,
+                caption: "Cuantos menos pasos hasta contactar, mejor.",
+              },
+            ],
+          },
+          {
+            heading: "SEO local básico",
+            blocks: [
+              "Si tu cliente está en tu zona, tu web tiene que decir dónde estás. Lo esencial es poco y se hace una vez:",
+              {
+                ol: [
+                  "**Un título y una descripción por página** que incluyan lo que haces y la ciudad, por ejemplo: «Reformas en Palma de Mallorca».",
+                  "**Una página por servicio importante**, con texto propio y no copiado de otras webs.",
+                  "**Datos estructurados y sitemap**, que ayudan a Google a entender de qué va la web. Esto se genera de forma automática y es lo que hago en las webs que construyo.",
+                  "**Ficha de Google Business Profile** con los mismos datos que la web: nombre, dirección y teléfono idénticos.",
+                ],
+              },
+              "No hay trucos mágicos. Es una base ordenada, constante y honesta, y suele funcionar mejor que cualquier atajo.",
+            ],
+          },
+          {
+            heading: "Lo que sobra",
+            blocks: [
+              {
+                list: [
+                  "Menús con muchas páginas que casi nadie visita.",
+                  "Animaciones y efectos que retrasan la carga y no ayudan a contactar.",
+                  "Textos largos que dicen mucho y no explican nada.",
+                  "Un blog abandonado con una sola entrada de hace dos años.",
+                ],
+              },
+              "Una web pequeña y clara, bien mantenida, rinde más que una grande y confusa.",
+              "Si quieres que revise la web de tu negocio o crear una desde cero, puedes ver cómo trabajo en [desarrollo web](/servicios/web) o [contarme tu caso](/#contact). Un ejemplo de tienda online sencilla y directa es [FlexGrip](/proyectos/flexgrip).",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "What a small business website needs to win customers (and what it can do without)",
+        excerpt:
+          "A small business website does not need more pages, it needs less friction: what you do, how to get in touch and real proof. Here is what I include and what I leave out.",
+        description:
+          "What a small business website needs to win customers: a clear message, visible contact, mobile speed and local SEO. And which elements a company site can do without.",
+        intro:
+          "A small business website does not win customers by having more pages, more animations or more text. It wins them when someone searching for what you do understands within seconds what you offer, whether you are nearby and how to contact you. Everything else is secondary, and a good part of it is unnecessary.",
+        sections: [
+          {
+            heading: "What visitors look for in five seconds",
+            blocks: [
+              "Someone arriving from Google or from their phone will not read the whole site. They look at the first screen and decide whether to stay. That is why the first thing I check on any site is whether that first screen answers three questions: what this business does, where it works and how to contact it.",
+              {
+                img: "/blog/web-pyme-que-vende/estructura-en.webp",
+                alt: "Diagram with the four blocks of a small business page, from top to bottom: what you do and where, visible contact button, real proof, services and short form. The first two are visible without scrolling.",
+                width: 1600,
+                height: 800,
+                caption: "Order of the blocks on a small business page.",
+              },
+              "The contact button must be in plain sight, not hidden in the menu. Call, WhatsApp or ask for a quote: which one does not matter, as long as it is visible without searching.",
+            ],
+          },
+          {
+            heading: "Speed and mobile: most people arrive from a phone",
+            blocks: [
+              "Today almost all local searches happen on a phone, often in a hurry and with poor coverage. A site that loads slowly or forces you to zoom in to read gets abandoned before anyone sees anything.",
+              "My rule is simple: design for mobile first, then adapt to desktop, not the other way round. I also avoid what weighs the most without adding value: background videos, huge carousels, unoptimised images and libraries loaded for a single animation.",
+              "That is why I work with Next.js, which generates very light static pages. I explain my reasons in [Why I choose Next.js for client websites](/blog/por-que-nextjs).",
+            ],
+          },
+          {
+            heading: "Contact and trust, without making anything up",
+            blocks: [
+              "Trust is built with things that can be verified. What helps:",
+              {
+                list: [
+                  "**Your own photos** of your premises, your team or your work, better than stock images.",
+                  "**Real work** described clearly: what was done and how. If you do not have many yet, show the ones you do have.",
+                  "**Complete contact details**: phone, email and the area you work in.",
+                  "**A short form**: name, way to contact and message. Every extra field makes someone give up halfway.",
+                ],
+              },
+              "What hurts: invented testimonials, unsupported figures or badges nobody awarded. If something is not true, it does not get published.",
+              {
+                img: "/blog/web-pyme-que-vende/camino-contacto-en.webp",
+                alt: "Comparison of two sites. The cluttered one takes five steps to reach contact: home, menu, services, contact and long form. The direct one gets from home to the button or form in one or two steps.",
+                width: 1600,
+                height: 800,
+                caption: "The fewer steps to get in touch, the better.",
+              },
+            ],
+          },
+          {
+            heading: "Basic local SEO",
+            blocks: [
+              "If your customers are in your area, your site has to say where you are. The essentials are few and done once:",
+              {
+                ol: [
+                  "**A title and a description per page** that include what you do and the city, for example: \"Renovations in Palma de Mallorca\".",
+                  "**One page per main service**, with its own text and not copied from other sites.",
+                  "**Structured data and a sitemap**, which help Google understand what the site is about. These are generated automatically, and it is what I do on the sites I build.",
+                  "**A Google Business Profile listing** with the same details as the site: identical name, address and phone.",
+                ],
+              },
+              "There are no magic tricks. It is an orderly, consistent and honest base, and it usually works better than any shortcut.",
+            ],
+          },
+          {
+            heading: "What you can do without",
+            blocks: [
+              {
+                list: [
+                  "Menus with many pages that almost nobody visits.",
+                  "Animations and effects that slow the load and do not help people get in touch.",
+                  "Long texts that say a lot and explain nothing.",
+                  "An abandoned blog with a single post from two years ago.",
+                ],
+              },
+              "A small, clear, well-maintained site performs better than a big, confusing one.",
+              "If you want me to review your business website or build one from scratch, you can see how I work in [web development](/servicios/web) or [tell me about your case](/#contact). A simple, direct online shop example is [FlexGrip](/proyectos/flexgrip).",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
     slug: "backup-3-2-1",
     category: "sistemas",
     date: "2026-10-18",
