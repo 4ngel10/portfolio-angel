@@ -7,7 +7,7 @@ import { BackToTop } from "@/components/back-to-top";
 import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { SERVICES, getService } from "@/lib/services";
-import { SERVICE_DESCRIPTIONS, serviceJsonLd } from "@/lib/seo";
+import { SERVICE_DESCRIPTIONS, alternatesFor, serviceJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
 
 type Params = Promise<{ id: string }>;
@@ -28,8 +28,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     title: `${title} · Ángel Fernández`,
     description,
-    alternates: { canonical: `/servicios/${service.id}` },
-    openGraph: { title, description, type: "website", locale: "es_ES", alternateLocale: "en_GB" },
+    alternates: alternatesFor(`/servicios/${service.id}`),
+    openGraph: { title, description, type: "website", locale: "es_ES" },
     twitter: { card: "summary", title, description },
   };
 }

@@ -5,9 +5,10 @@
  * Todo en español, que es el idioma que reciben los buscadores (el inglés se elige
  * en el navegador sobre la misma URL).
  *
- * Sin hreflang a propósito (decisión de Ángel): no hay una URL que sirva el inglés, y un
- * hreflang "en" hacia la página en español es un error. Si algún día hay rutas /en/...,
- * se añaden con `alternates.languages` en la metadata de cada página.
+ * hreflang: cada página se declara a sí misma como "es" y "x-default" (alternatesFor).
+ * Sin hreflang "en" a propósito (decisión de Ángel): no hay una URL que sirva el inglés, y
+ * un "en" hacia la página en español es un error. Por lo mismo no hay og:locale:alternate.
+ * Si algún día hay rutas /en/..., se añaden aquí.
  */
 
 import { SITE_URL } from "./site";
@@ -17,8 +18,15 @@ import { BLOG_POSTS, type BlogPost } from "./blog";
 import es from "@/messages/es.json";
 
 export const HOME_TITLE = "Ángel Fernández · Portfolio";
+/** Imagen para redes de la home (1200x630). */
+export const HOME_OG_IMAGE = "/og-home.jpg";
 export const HOME_DESCRIPTION =
   "Administrador de sistemas y desarrollador web freelance en Palma de Mallorca. Infraestructura IT segura, backups, redes y webs profesionales a medida para empresas y profesionales.";
+
+/** Canonical + hreflang de una página (ruta relativa a metadataBase). */
+export function alternatesFor(path: string) {
+  return { canonical: path, languages: { es: path, "x-default": path } };
+}
 
 /** Meta description de cada página de servicio, por id. */
 export const SERVICE_DESCRIPTIONS: Record<string, string> = {

@@ -11,10 +11,10 @@ import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
 import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
-import { homeJsonLd } from "@/lib/seo";
+import { alternatesFor, homeJsonLd } from "@/lib/seo";
 
 // Canonical solo en la home: en el layout lo heredarían páginas como el 404.
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = { alternates: alternatesFor("/") };
 
 export default function Page() {
   return (
