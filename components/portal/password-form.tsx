@@ -7,8 +7,16 @@ import { usePT } from "./i18n-provider";
 import { inputCls, labelCls } from "./styles";
 
 /** Primera entrada del cliente (o enlace de "contraseña olvidada"): elige su contraseña. */
-export function PasswordForm({ temporal = false }: { temporal?: boolean }) {
+export function PasswordForm({
+  temporal = false,
+  admin = false,
+}: {
+  temporal?: boolean;
+  /** El admin recupera su contraseña con el mismo formulario: más larga y sin rastro de portal. */
+  admin?: boolean;
+}) {
   const router = useRouter();
+  const minimo = admin ? 12 : 8;
   const { t } = usePT();
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
@@ -17,26 +25,34 @@ export function PasswordForm({ temporal = false }: { temporal?: boolean }) {
 
   async function guardar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (password.length < 8) return setError(t("password.tooShort"));
+    const corta = admin ? t("password.tooShortAdmin") : t("password.tooShort");
+    if (password.length < minimo) return setError(corta);
     if (password !== repeat) return setError(t("password.mismatch"));
 
     setError(null);
     setGuardando(true);
     // `password_set` marca que ya eligió contraseña: el portal deja de pedírsela.
-    const { error } = await createClient().auth.updateUser({ password, data: { password_set: true, password_temporary: false } });
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser(
+      admin ? { password } : { password, data: { password_set: true, password_temporary: false } },
+    );
     if (error) {
       setGuardando(false);
-      setError(error.code === "weak_password" ? t("password.tooShort") : t("password.failed"));
+      setError(error.code === "weak_password" ? corta : t("password.failed"));
       return;
     }
-    router.replace("/portal");
+    // Con la contraseña nueva se cierran las demás sesiones del admin: si alguien la tenía, sale.
+    if (admin) await supabase.auth.signOut({ scope: "others" });
+    router.replace(admin ? "/admin" : "/portal");
     router.refresh();
   }
 
   return (
     <form onSubmit={guardar} noValidate>
       <h1 className="text-2xl font-semibold tracking-tight">{t("password.title")}</h1>
-      <p className="mt-3 text-muted">{t(temporal ? "password.tempIntro" : "password.intro")}</p>
+      <p className="text-muted mt-3">
+        {t(admin ? "password.introAdmin" : temporal ? "password.tempIntro" : "password.intro")}
+      </p>
 
       <label htmlFor="new-password" className={`${labelCls} mt-6`}>
         {t("password.newLabel")}
@@ -46,14 +62,14 @@ export function PasswordForm({ temporal = false }: { temporal?: boolean }) {
         type="password"
         autoComplete="new-password"
         required
-        minLength={8}
+        minLength={minimo}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className={inputCls}
         aria-describedby="password-hint"
       />
-      <p id="password-hint" className="mt-1.5 text-sm text-muted">
-        {t("password.hint")}
+      <p id="password-hint" className="text-muted mt-1.5 text-sm">
+        {t(admin ? "password.hintAdmin" : "password.hint")}
       </p>
 
       <label htmlFor="repeat-password" className={`${labelCls} mt-4`}>
@@ -77,7 +93,11 @@ export function PasswordForm({ temporal = false }: { temporal?: boolean }) {
         </p>
       ) : null}
 
-      <button type="submit" disabled={guardando || !password || !repeat} className="btn-primary mt-5 w-full disabled:opacity-60">
+      <button
+        type="submit"
+        disabled={guardando || !password || !repeat}
+        className="btn-primary mt-5 w-full disabled:opacity-60"
+      >
         {guardando ? t("password.saving") : t("password.submit")}
       </button>
     </form>

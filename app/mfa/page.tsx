@@ -13,24 +13,35 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("mfa.metaTitle"), robots: { index: false, follow: false } };
 }
 
-export default async function MfaPage() {
+export default async function MfaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ siguiente?: string }>;
+}) {
   const perfil = await getPerfil();
   if (!perfil || perfil.role !== "admin") redirect("/login");
 
+  // Tras el TOTP, la recuperación de contraseña sigue a /contrasena; todo lo demás, al panel.
+  const destino = (await searchParams).siguiente === "contrasena" ? "/contrasena" : "/admin";
+
   const supabase = await createClient();
   const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  if (data?.currentLevel === "aal2") redirect("/admin");
+  if (data?.currentLevel === "aal2") redirect(destino);
 
   return (
     <I18nBoundary>
-      <div className="flex min-h-dvh flex-col bg-paper text-ink">
+      <div className="bg-paper text-ink flex min-h-dvh flex-col">
         <header className="flex justify-end px-4 py-5 md:px-8">
           <Prefs />
         </header>
-        <main id="main" tabIndex={-1} className="flex flex-1 items-center justify-center px-4 pb-16">
+        <main
+          id="main"
+          tabIndex={-1}
+          className="flex flex-1 items-center justify-center px-4 pb-16"
+        >
           <Aparece>
-            <div className="w-[min(420px,calc(100vw-2rem))] rounded-2xl border border-rule bg-paper-alt p-6 md:p-8">
-              <MfaPanel />
+            <div className="border-rule bg-paper-alt w-[min(420px,calc(100vw-2rem))] rounded-2xl border p-6 md:p-8">
+              <MfaPanel destino={destino} />
             </div>
           </Aparece>
         </main>

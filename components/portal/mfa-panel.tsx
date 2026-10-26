@@ -12,7 +12,7 @@ type Fase = "cargando" | "enrolar" | "verificar" | "error";
  * Segundo factor (TOTP) del administrador. Primera vez: muestra el QR para la app de
  * autenticación y confirma con un código. Después: pide el código de 6 dígitos en cada sesión.
  */
-export function MfaPanel() {
+export function MfaPanel({ destino = "/admin" }: { destino?: "/admin" | "/contrasena" }) {
   const router = useRouter();
   const { t } = usePT();
   const supabase = createClient();
@@ -41,10 +41,15 @@ export function MfaPanel() {
         return;
       }
       // Limpia intentos de alta anteriores a medias antes de crear uno nuevo.
-      for (const f of data.all.filter((f) => f.factor_type === "totp" && f.status === "unverified")) {
+      for (const f of data.all.filter(
+        (f) => f.factor_type === "totp" && f.status === "unverified",
+      )) {
         await supabase.auth.mfa.unenroll({ factorId: f.id });
       }
-      const alta = await supabase.auth.mfa.enroll({ factorType: "totp", friendlyName: t("mfa.factorName") });
+      const alta = await supabase.auth.mfa.enroll({
+        factorType: "totp",
+        friendlyName: t("mfa.factorName"),
+      });
       if (!vivo) return;
       if (alta.error || !alta.data) {
         setError(t("mfa.enrollError"));
@@ -72,14 +77,18 @@ export function MfaPanel() {
       setError(t("mfa.challengeError"));
       return;
     }
-    const { error: errVerif } = await supabase.auth.mfa.verify({ factorId, challengeId: reto.id, code: codigo.trim() });
+    const { error: errVerif } = await supabase.auth.mfa.verify({
+      factorId,
+      challengeId: reto.id,
+      code: codigo.trim(),
+    });
     if (errVerif) {
       setEnviando(false);
       setCodigo("");
       setError(t("mfa.wrongCode"));
       return;
     }
-    router.replace("/admin");
+    router.replace(destino);
     router.refresh();
   }
 
@@ -100,16 +109,20 @@ export function MfaPanel() {
 
       {fase === "enrolar" ? (
         <>
-          <p className="mt-3 text-muted">{t("mfa.enrollIntro")}</p>
+          <p className="text-muted mt-3">{t("mfa.enrollIntro")}</p>
           {/* Data URL SVG generada por Supabase: next/image no aporta nada aquí. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={qr} alt={t("mfa.qrAlt")} className="mx-auto mt-5 size-44 rounded-xl bg-white p-2" />
-          <p className="mt-3 text-center text-xs text-muted">
-            {t("mfa.manualKey")} <span className="break-all text-ink">{secreto}</span>
+          <img
+            src={qr}
+            alt={t("mfa.qrAlt")}
+            className="mx-auto mt-5 size-44 rounded-xl bg-white p-2"
+          />
+          <p className="text-muted mt-3 text-center text-xs">
+            {t("mfa.manualKey")} <span className="text-ink break-all">{secreto}</span>
           </p>
         </>
       ) : (
-        <p className="mt-3 text-muted">{t("mfa.verifyIntro")}</p>
+        <p className="text-muted mt-3">{t("mfa.verifyIntro")}</p>
       )}
 
       <label htmlFor="codigo" className={`${labelCls} mt-6`}>
@@ -134,8 +147,16 @@ export function MfaPanel() {
         </p>
       ) : null}
 
-      <button type="submit" disabled={enviando || codigo.length !== 6} className="btn-primary mt-5 w-full disabled:opacity-60">
-        {enviando ? t("mfa.checking") : fase === "enrolar" ? t("mfa.submitEnroll") : t("mfa.submitVerify")}
+      <button
+        type="submit"
+        disabled={enviando || codigo.length !== 6}
+        className="btn-primary mt-5 w-full disabled:opacity-60"
+      >
+        {enviando
+          ? t("mfa.checking")
+          : fase === "enrolar"
+            ? t("mfa.submitEnroll")
+            : t("mfa.submitVerify")}
       </button>
     </form>
   );

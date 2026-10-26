@@ -18,7 +18,13 @@ export async function GET(request: NextRequest) {
         : { data: null };
 
       if (perfil?.role === "admin") {
-        // El admin entra solo con contraseña + TOTP: el enlace mágico no basta.
+        // Enlace de "contraseña olvidada": la sesión se queda en aal1, que no abre nada del
+        // admin (RLS y requireAdmin piden aal2). Antes de elegir la contraseña nueva hay que
+        // pasar el TOTP, así que quien solo tenga el correo no llega a cambiarla.
+        if (searchParams.get("contrasena") === "1") {
+          return NextResponse.redirect(`${origin}/mfa?siguiente=contrasena`);
+        }
+        // Para entrar, el admin usa contraseña + TOTP: el enlace mágico no basta.
         await supabase.auth.signOut();
         return NextResponse.redirect(`${origin}/login?error=sin-acceso`);
       }
