@@ -661,7 +661,7 @@ export async function firmarPresupuesto(_: FormState, fd: FormData): Promise<For
   const perfil = await getPerfil();
   if (!perfil || perfil.role !== "cliente") return await fallo("sessionExpired");
   const id = text(fd, "id", 40);
-  const nombre = text(fd, "firma", 120).replace(/s+/g, " ");
+  const nombre = text(fd, "firma", 120).replace(/\s+/g, " ");
   if (!isUuid(id)) return await fallo("quoteInvalid");
   if (nombre.length < 3 || !nombre.includes(" ")) return await fallo("signName");
   if (fd.get("acepto") !== "on") return await fallo("signConfirm");
