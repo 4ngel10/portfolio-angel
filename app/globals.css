@@ -151,6 +151,14 @@
     animation: aparece 260ms var(--ease-out) backwards;
     animation-delay: var(--aparece-delay, 0s);
   }
+  /* Barras del gráfico de Finanzas: crecen desde la base del eje con transform (la altura no se
+     anima). `backwards` aplica el estado inicial solo durante el retraso; --i escalona 30ms por
+     mes. Con prefers-reduced-motion la regla global las deja en un instante. */
+  .barra-y {
+    transform-origin: bottom;
+    animation: barra-crece 250ms var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 30ms);
+  }
   .font-mono {
     font-family: var(--font-mono);
     letter-spacing: -0.01em;
@@ -312,6 +320,11 @@
   from {
     opacity: 0;
     transform: translateY(8px);
+  }
+}
+@keyframes barra-crece {
+  from {
+    transform: scaleY(0);
   }
 }
 @keyframes blink {

@@ -85,7 +85,7 @@ export async function BarrasMensuales({
         </span>
       </figcaption>
       <ol className="grid grid-cols-12 gap-1 sm:gap-2">
-        {serie.map((s) => (
+        {serie.map((s, i) => (
           <li
             key={s.mes}
             role="img"
@@ -97,13 +97,15 @@ export async function BarrasMensuales({
           >
             <div className="border-rule flex h-40 items-end justify-center gap-0.5 border-b">
               <div
-                className="w-full max-w-3 rounded-t-sm bg-[var(--accent)]"
-                style={{ height: `${(s.ingresos / maximo) * 100}%` }}
+                className="barra-y w-full max-w-3 rounded-t-sm bg-[var(--accent)]"
+                style={
+                  { height: `${(s.ingresos / maximo) * 100}%`, "--i": i } as React.CSSProperties
+                }
                 aria-hidden
               />
               <div
-                className="w-full max-w-3 rounded-t-sm bg-[var(--fg)] opacity-30"
-                style={{ height: `${(s.gastos / maximo) * 100}%` }}
+                className="barra-y w-full max-w-3 rounded-t-sm bg-[var(--fg)] opacity-30"
+                style={{ height: `${(s.gastos / maximo) * 100}%`, "--i": i } as React.CSSProperties}
                 aria-hidden
               />
             </div>
