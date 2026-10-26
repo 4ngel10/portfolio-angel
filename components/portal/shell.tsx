@@ -26,6 +26,7 @@ export async function Shell({
         { href: "/admin/proyectos", label: t("nav.projects") },
         { href: "/admin/horas", label: t("nav.hours") },
         { href: "/admin/presupuestos", label: t("nav.quotes") },
+        { href: "/admin/finanzas", label: t("nav.finance") },
       ]
     : [
         { href: "/portal", label: t("nav.projects"), exact: true },

@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { getI18n } from "@/lib/portal/i18n";
 import type {
+  EstadoCobro,
   EstadoIncidencia,
+  OrigenCobro,
   EstadoPresupuesto,
   EstadoProyecto,
   Pelota,
@@ -115,6 +117,25 @@ export async function EstadoPresupuestoBadge({ estado }: { estado: EstadoPresupu
     rechazado: [t("quotes.status.rechazado"), "muted"],
   } as const;
   return <Badge tone={map[estado][1]}>{map[estado][0]}</Badge>;
+}
+
+/** Vencido llama la atención con el acento; lo pendiente va en tinta; lo cerrado, atenuado. */
+export async function EstadoCobroBadge({ estado }: { estado: EstadoCobro }) {
+  const { t } = await getI18n();
+  const map = {
+    pendiente: [t("finance.status.pendiente"), "ink"],
+    parcial: [t("finance.status.parcial"), "ink"],
+    vencido: [t("finance.status.vencido"), "accent"],
+    pagado: [t("finance.status.pagado"), "muted"],
+    anulado: [t("finance.status.anulado"), "muted"],
+  } as const;
+  return <Badge tone={map[estado][1]}>{map[estado][0]}</Badge>;
+}
+
+/** De dónde sale un cobro, o "suscripción" en los gastos que genera el cron. */
+export async function OrigenBadge({ origen }: { origen: OrigenCobro | "suscripcion" }) {
+  const { t } = await getI18n();
+  return <Badge tone="muted">{t(`finance.origin.${origen}`)}</Badge>;
 }
 
 export async function PrioridadBadge({ prioridad }: { prioridad: Prioridad }) {

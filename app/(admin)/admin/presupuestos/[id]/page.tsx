@@ -7,12 +7,14 @@ import { createClient } from "@/lib/supabase/server";
 import { listarEmpresas, listarLineasPresupuesto } from "@/lib/portal/queries";
 import { cambiarEstadoPresupuesto, eliminarPresupuesto } from "@/lib/portal/actions";
 import { isUuid } from "@/lib/portal/validate";
-import { ESTADOS_PRESUPUESTO } from "@/lib/portal/presupuestos";
+import { ESTADOS_PRESUPUESTO, totales } from "@/lib/portal/presupuestos";
+import { cobrosConEstado } from "@/lib/portal/finanzas-queries";
 import type { Presupuesto } from "@/lib/portal/types";
 import { ConfirmSubmit } from "@/components/portal/confirm-submit";
+import { PlanCobros } from "@/components/portal/finanzas-forms";
 import { PresupuestoDocumento } from "@/components/portal/presupuesto-documento";
 import { PresupuestoForm } from "@/components/portal/presupuesto-form";
-import { PageHeader, Panel } from "@/components/portal/ui";
+import { EstadoCobroBadge, PageHeader, Panel } from "@/components/portal/ui";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getI18n();
@@ -25,7 +27,7 @@ export default async function PresupuestoAdminPage({
   params: Promise<{ id: string }>;
 }) {
   await requireAdmin();
-  const { t } = await getI18n();
+  const { t, euros } = await getI18n();
   const { id } = await params;
   if (!isUuid(id)) notFound();
 
@@ -34,7 +36,11 @@ export default async function PresupuestoAdminPage({
   const presupuesto = data as Presupuesto | null;
   if (!presupuesto) notFound();
 
-  const [lineas, empresas] = await Promise.all([listarLineasPresupuesto([id]), listarEmpresas()]);
+  const [lineas, empresas, cobros] = await Promise.all([
+    listarLineasPresupuesto([id]),
+    listarEmpresas(),
+    cobrosConEstado({ presupuestoId: id }),
+  ]);
   const empresa = empresas.find((e) => e.id === presupuesto.empresa_id);
   const hoy = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
   // Un presupuesto ya respondido no se edita: se reabre cambiando su estado.
@@ -72,6 +78,42 @@ export default async function PresupuestoAdminPage({
             ))}
           </div>
         </Panel>
+
+        {presupuesto.estado === "aceptado" ? (
+          <Panel title={t("finance.collections.title")}>
+            {cobros.length === 0 ? (
+              <PlanCobros
+                presupuestoId={id}
+                total={totales(lineas, presupuesto.descuento, presupuesto.iva).total}
+              />
+            ) : (
+              <ul className="divide-y divide-[var(--rule)]">
+                {[...cobros]
+                  .sort((a, b) => a.cobro.numero.localeCompare(b.cobro.numero))
+                  .map(({ cobro, pendiente, estado }) => (
+                    <li
+                      key={cobro.id}
+                      className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+                    >
+                      <Link
+                        href={`/admin/finanzas/cobros/${cobro.id}`}
+                        className="hover:text-accent min-w-0 font-medium underline-offset-4 hover:underline"
+                      >
+                        {cobro.concepto}
+                      </Link>
+                      <span className="flex items-center gap-3 text-sm">
+                        <span className="tabular-nums">{euros(cobro.importe)}</span>
+                        <span className="text-muted tabular-nums">
+                          {t("finance.collections.pendingAmount", { amount: euros(pendiente) })}
+                        </span>
+                        <EstadoCobroBadge estado={estado} />
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </Panel>
+        ) : null}
 
         <PresupuestoDocumento presupuesto={presupuesto} lineas={lineas} empresa={empresa} />
 

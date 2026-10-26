@@ -123,3 +123,93 @@ export type PresupuestoLinea = {
   cantidad: number;
   precio_unitario: number;
 };
+
+export type MetodoPago = "transferencia" | "bizum" | "efectivo" | "tarjeta" | "paypal" | "otro";
+export type CategoriaGasto =
+  | "software"
+  | "hosting"
+  | "dominios"
+  | "hardware"
+  | "formacion"
+  | "marketing"
+  | "oficina"
+  | "transporte"
+  | "servicios_profesionales"
+  | "comisiones"
+  | "otros";
+export type Periodicidad = "mensual" | "trimestral" | "anual";
+export type OrigenCobro = "presupuesto" | "bolsa" | "mantenimiento" | "manual";
+
+/** Se deriva de los pagos y de la fecha, nunca se guarda. */
+export type EstadoCobro = "pendiente" | "parcial" | "pagado" | "vencido" | "anulado";
+
+export type Ajustes = {
+  id: number;
+  config_fiscal: boolean;
+  nombre_comercial: string | null;
+  updated_at: string;
+};
+
+export type Cobro = {
+  id: string;
+  numero: string;
+  empresa_id: string;
+  proyecto_id: string | null;
+  presupuesto_id: string | null;
+  origen: OrigenCobro;
+  concepto: string;
+  importe: number;
+  fecha_emision: string;
+  fecha_vencimiento: string | null;
+  anulado: boolean;
+  notas: string | null;
+  created_at: string;
+};
+
+export type Pago = {
+  id: string;
+  cobro_id: string;
+  fecha: string;
+  importe: number;
+  metodo: MetodoPago;
+  referencia: string | null;
+  notas: string | null;
+  created_at: string;
+};
+
+export type Suscripcion = {
+  id: string;
+  nombre: string;
+  proveedor: string | null;
+  categoria: CategoriaGasto;
+  importe: number;
+  periodicidad: Periodicidad;
+  proxima_renovacion: string;
+  activa: boolean;
+  fecha_alta: string;
+  fecha_baja: string | null;
+  metodo_pago: MetodoPago | null;
+  url_gestion: string | null;
+  aviso_dias: number;
+  iva_pct: number | null;
+  notas: string | null;
+  created_at: string;
+};
+
+export type Gasto = {
+  id: string;
+  fecha: string;
+  concepto: string;
+  proveedor: string | null;
+  categoria: CategoriaGasto;
+  importe: number;
+  metodo_pago: MetodoPago | null;
+  suscripcion_id: string | null;
+  proyecto_id: string | null;
+  empresa_id: string | null;
+  justificante_path: string | null;
+  iva_pct: number | null;
+  deducible: boolean | null;
+  notas: string | null;
+  created_at: string;
+};

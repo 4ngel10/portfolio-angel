@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/server";
 import { cargarIncidencias } from "@/lib/portal/queries";
 import { cambiarEstadoProyecto, crearHito } from "@/lib/portal/actions";
 import { isUuid } from "@/lib/portal/validate";
+import { cobrosConEstado, listarGastos } from "@/lib/portal/finanzas-queries";
+import { redondear } from "@/lib/portal/presupuestos";
 import type { Archivo, Empresa, Hito, Proyecto } from "@/lib/portal/types";
 import { ActionForm } from "@/components/portal/action-form";
 import { ArchivosLista, HitosLista, IncidenciasLista } from "@/components/portal/listas";
@@ -21,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProyectoAdminPage({ params }: { params: Promise<{ id: string }> }) {
   const perfil = await requireAdmin();
-  const { t } = await getI18n();
+  const { t, euros } = await getI18n();
   const { id } = await params;
   if (!isUuid(id)) notFound();
 
@@ -30,7 +32,7 @@ export default async function ProyectoAdminPage({ params }: { params: Promise<{ 
   const proyecto = data as Proyecto | null;
   if (!proyecto) notFound();
 
-  const [{ data: e }, { data: h }, { data: a }, inc] = await Promise.all([
+  const [{ data: e }, { data: h }, { data: a }, inc, cobros, gastos] = await Promise.all([
     supabase.from("empresas").select("*").eq("id", proyecto.empresa_id).maybeSingle(),
     supabase.from("hitos").select("*").eq("proyecto_id", id).order("orden"),
     supabase
@@ -39,7 +41,16 @@ export default async function ProyectoAdminPage({ params }: { params: Promise<{ 
       .eq("proyecto_id", id)
       .order("created_at", { ascending: false }),
     cargarIncidencias({ proyectoId: id }),
+    cobrosConEstado({ proyectoId: id }),
+    listarGastos({ proyectoId: id }),
   ]);
+
+  // Rentabilidad en caja: lo cobrado menos los gastos imputados al proyecto.
+  const vivos = cobros.filter((c) => c.estado !== "anulado");
+  const cobrado = redondear(vivos.reduce((s, c) => s + c.pagado, 0));
+  const pendiente = redondear(vivos.reduce((s, c) => s + c.pendiente, 0));
+  const gastado = redondear(gastos.reduce((s, g) => s + g.importe, 0));
+  const margen = redondear(cobrado - gastado);
   const empresa = e as Empresa | null;
   const hitos = (h ?? []) as Hito[];
   const archivos = (a ?? []) as Archivo[];
@@ -152,6 +163,40 @@ export default async function ProyectoAdminPage({ params }: { params: Promise<{ 
             </div>
             <ArchivosLista archivos={archivos} admin />
           </Panel>
+
+          {cobros.length > 0 || gastos.length > 0 ? (
+            <Panel title={t("finance.project.title")}>
+              <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+                <div>
+                  <dt className="text-muted">{t("finance.cols.collected")}</dt>
+                  <dd className="font-semibold tabular-nums">{euros(cobrado)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">{t("finance.cols.pending")}</dt>
+                  <dd className="font-semibold tabular-nums">{euros(pendiente)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">{t("finance.project.expenses")}</dt>
+                  <dd className="font-semibold tabular-nums">{euros(gastado)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">{t("finance.project.margin")}</dt>
+                  <dd className="font-semibold tabular-nums">
+                    {margen > 0 ? "+" : ""}
+                    {euros(margen)}
+                  </dd>
+                </div>
+              </dl>
+              <p className="mt-4 text-sm">
+                <Link
+                  href={`/admin/finanzas/cobros?cliente=${proyecto.empresa_id}`}
+                  className="hover:text-accent underline underline-offset-4"
+                >
+                  {t("finance.project.viewCollections")}
+                </Link>
+              </p>
+            </Panel>
+          ) : null}
         </div>
 
         <Panel title={t("project.incidents")}>

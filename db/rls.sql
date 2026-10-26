@@ -56,7 +56,8 @@ begin
   foreach t in array array[
     'empresas','usuarios','proyectos','hitos','archivos',
     'incidencias','mensajes_incidencia','bolsa_horas','bolsa_historial','documentos',
-    'presupuestos','presupuesto_lineas'
+    'presupuestos','presupuesto_lineas',
+    'ajustes','cobros','pagos','suscripciones','gastos'
   ] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on public.%I from anon', t);
@@ -181,3 +182,21 @@ create policy cliente_select on public.presupuesto_lineas for select to authenti
       and p.empresa_id = public.current_empresa_id()
       and p.estado <> 'borrador'
   ));
+
+-- ---------------------------------------------------------------------
+-- 8. Finanzas: ajustes, cobros, pagos, suscripciones y gastos.
+-- Solo las toca el admin (política admin_all del apartado 2, que exige aal2). Los clientes
+-- no tienen ninguna política sobre estas tablas, así que no leen ni escriben nada.
+-- Los justificantes van a un bucket privado distinto del de proyectos: 10 MB por archivo
+-- y acceso solo para el admin. Se suben con URL firmada, así que no hace falta insert aparte.
+-- ---------------------------------------------------------------------
+insert into public.ajustes (id) values (1) on conflict do nothing;
+
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('finanzas', 'finanzas', false, 10485760)
+on conflict (id) do update set public = false, file_size_limit = 10485760;
+
+drop policy if exists finanzas_admin on storage.objects;
+create policy finanzas_admin on storage.objects for all to authenticated
+  using (bucket_id = 'finanzas' and public.is_admin())
+  with check (bucket_id = 'finanzas' and public.is_admin());

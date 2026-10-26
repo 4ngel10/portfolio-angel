@@ -182,7 +182,9 @@
       "description": "Descripción",
       "name": "Nombre",
       "email": "Correo",
-      "hoursUnit": "h"
+      "hoursUnit": "h",
+      "cancel": "Cancelar",
+      "saveChanges": "Guardar cambios"
     },
     "nav": {
       "projects": "Proyectos",
@@ -191,7 +193,8 @@
       "overview": "Resumen",
       "clients": "Clientes",
       "hours": "Horas",
-      "quotes": "Presupuestos"
+      "quotes": "Presupuestos",
+      "finance": "Finanzas"
     },
     "status": {
       "active": "Activo",
@@ -243,7 +246,10 @@
       "tooShort": "La contraseña debe tener al menos 8 caracteres.",
       "mismatch": "Las contraseñas no coinciden.",
       "failed": "No se pudo guardar la contraseña. Inténtalo de nuevo.",
-      "tempIntro": "Tu contraseña fue restablecida por el administrador. Elige una nueva que solo conozcas tú para seguir entrando."
+      "tempIntro": "Tu contraseña fue restablecida por el administrador. Elige una nueva que solo conozcas tú para seguir entrando.",
+      "introAdmin": "Elige una contraseña nueva para el panel de administración. Cerraremos tus otras sesiones.",
+      "hintAdmin": "Mínimo 12 caracteres.",
+      "tooShortAdmin": "La contraseña debe tener al menos 12 caracteres."
     },
     "mfa": {
       "metaTitle": "Verificación",
@@ -478,7 +484,9 @@
       "priceLabel": "Precio de la bolsa (€)",
       "addPerson": "Añadir persona",
       "addPersonTitle": "Añadir persona a {name}",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "statPendingCollect": "Pendiente de cobro",
+      "statOverdueCount": "Vencidos: {count}"
     },
     "err": {
       "companyName": "Escribe el nombre de la empresa.",
@@ -520,7 +528,37 @@
       "quoteFail": "No se pudo guardar el presupuesto.",
       "quoteNotPending": "Este presupuesto ya no está pendiente de respuesta.",
       "signName": "Escribe tu nombre y apellidos para firmar.",
-      "signConfirm": "Marca la casilla para confirmar la aceptación."
+      "signConfirm": "Marca la casilla para confirmar la aceptación.",
+      "amountInvalid": "Importe no válido. Escribe un número positivo con hasta 2 decimales.",
+      "categoryInvalid": "Elige una categoría de la lista.",
+      "methodInvalid": "Elige un método de pago de la lista.",
+      "vatInvalid": "El IVA debe ser un porcentaje entre 0 y 100.",
+      "urlInvalid": "El enlace debe empezar por https:// o http://.",
+      "cobroInvalid": "No se encontró el cobro. Recarga la página.",
+      "cobroConcept": "Escribe un concepto de al menos 3 caracteres.",
+      "cobroProject": "Ese proyecto no es de la empresa elegida.",
+      "cobroBelowPaid": "El importe no puede ser menor que lo ya cobrado.",
+      "cobroFail": "No se pudo guardar el cobro. Inténtalo de nuevo.",
+      "payOver": "El pago supera lo pendiente ({amount}). Reduce el importe.",
+      "payCancelled": "El cobro está anulado. Reactívalo para registrar pagos.",
+      "payFail": "No se pudo registrar el pago. Inténtalo de nuevo.",
+      "planInvalid": "No se pudo preparar el plan de cobros. Recarga la página.",
+      "planNotAccepted": "Solo se generan cobros de presupuestos aceptados.",
+      "planExists": "Este presupuesto ya tiene cobros generados.",
+      "planPercent": "Los porcentajes deben sumar 100.",
+      "planZero": "El presupuesto no tiene importe. Revisa sus líneas.",
+      "bankNoPrice": "La bolsa no tiene precio. Fíjalo antes de crear el cobro.",
+      "gastoInvalid": "No se encontró el gasto. Recarga la página.",
+      "gastoConcept": "Escribe un concepto de al menos 2 caracteres.",
+      "gastoFail": "No se pudo guardar el gasto. Inténtalo de nuevo.",
+      "subInvalid": "No se encontró la suscripción. Recarga la página.",
+      "subName": "Escribe un nombre de al menos 2 caracteres.",
+      "subRenewal": "Indica una fecha de renovación válida.",
+      "subNotice": "Los días de aviso deben estar entre 0 y 60.",
+      "subFail": "No se pudo guardar la suscripción. Inténtalo de nuevo.",
+      "settingsFail": "No se pudieron guardar los ajustes. Inténtalo de nuevo.",
+      "receiptInvalid": "El justificante no es válido. Súbelo de nuevo.",
+      "receiptFail": "No se pudo procesar el justificante. Inténtalo de nuevo."
     },
     "ok": {
       "companyCreated": "Empresa creada.",
@@ -532,7 +570,15 @@
       "userSaved": "Cambios guardados.",
       "companyDetailsSaved": "Datos guardados.",
       "quoteSaved": "Presupuesto guardado.",
-      "quoteSigned": "Presupuesto firmado y aceptado. Gracias."
+      "quoteSigned": "Presupuesto firmado y aceptado. Gracias.",
+      "cobroSaved": "Cobro guardado.",
+      "paySaved": "Pago registrado.",
+      "planCreated": "Cobros creados: {count}.",
+      "bankCobro": "Cobro de la bolsa creado.",
+      "bankCobroDup": "Cobro creado. Ya había otro cobro de bolsa en los últimos 30 días: revisa que no esté duplicado.",
+      "gastoSaved": "Gasto guardado.",
+      "subSaved": "Suscripción guardada.",
+      "settingsSaved": "Ajustes guardados."
     },
     "api": {
       "invalidData": "Datos no válidos.",
@@ -550,7 +596,8 @@
       "writeTitle": "Escribe un título.",
       "describe": "Describe qué ocurre.",
       "onlyClients": "Solo los clientes abren incidencias.",
-      "incidentFail": "No se pudo crear la incidencia."
+      "incidentFail": "No se pudo crear la incidencia.",
+      "receiptTooLarge": "El justificante supera los 10 MB."
     },
     "sectors": {
       "hosteleria": "Hostelería",
@@ -672,6 +719,273 @@
           "name": "Bolsa de horas",
           "detail": "Horas de soporte que se descuentan según se usan."
         }
+      }
+    },
+    "finance": {
+      "nav": {
+        "label": "Secciones de Finanzas",
+        "summary": "Resumen",
+        "collections": "Cobros",
+        "expenses": "Gastos",
+        "subscriptions": "Suscripciones",
+        "settings": "Ajustes"
+      },
+      "summary": {
+        "title": "Finanzas",
+        "intro": "Quién te debe dinero, en qué gastas y cómo va el negocio.",
+        "period": "Periodo",
+        "periods": {
+          "mes": "Este mes",
+          "trimestre": "Este trimestre",
+          "anio": "Este año",
+          "ultimos12": "Últimos 12 meses"
+        },
+        "collected": "Cobrado",
+        "spent": "Gastos",
+        "result": "Resultado",
+        "pending": "Pendiente de cobro",
+        "liveHint": "Total actual, sin importar el periodo",
+        "overdue": "Vencido",
+        "fixedCost": "Coste fijo mensual",
+        "chartTitle": "Ingresos y gastos, últimos 12 meses",
+        "income": "Ingresos",
+        "expenses": "Gastos",
+        "scaleMax": "Escala hasta {amount}",
+        "monthAria": "{month}: ingresos {income}, gastos {expenses}",
+        "overdueTitle": "Cobros vencidos",
+        "noOverdue": "No hay cobros vencidos.",
+        "daysOverdue": "Vencido hace {count} d",
+        "renewalsTitle": "Próximas renovaciones (30 días)",
+        "noRenewals": "No hay renovaciones en los próximos 30 días.",
+        "byCategory": "Gastos por categoría",
+        "noExpenses": "Aún no hay gastos en este periodo. Añade el primero o da de alta una suscripción.",
+        "export": "Exportar CSV",
+        "exportHint": "Del {from} al {to}, para tu gestor."
+      },
+      "export": {
+        "csv": "Exportar CSV",
+        "payments": "Pagos",
+        "collections": "Cobros",
+        "expenses": "Gastos",
+        "yes": "Sí",
+        "no": "No"
+      },
+      "status": {
+        "pendiente": "Pendiente",
+        "parcial": "Parcial",
+        "vencido": "Vencido",
+        "pagado": "Pagado",
+        "anulado": "Anulado"
+      },
+      "origin": {
+        "presupuesto": "Presupuesto",
+        "bolsa": "Bolsa de horas",
+        "mantenimiento": "Mantenimiento",
+        "manual": "Manual",
+        "suscripcion": "Suscripción"
+      },
+      "method": {
+        "transferencia": "Transferencia",
+        "bizum": "Bizum",
+        "efectivo": "Efectivo",
+        "tarjeta": "Tarjeta",
+        "paypal": "PayPal",
+        "otro": "Otro"
+      },
+      "category": {
+        "software": "Software",
+        "hosting": "Hosting",
+        "dominios": "Dominios",
+        "hardware": "Hardware",
+        "formacion": "Formación",
+        "marketing": "Marketing",
+        "oficina": "Oficina",
+        "transporte": "Transporte",
+        "servicios_profesionales": "Servicios profesionales",
+        "comisiones": "Comisiones",
+        "otros": "Otros"
+      },
+      "period": {
+        "mensual": "Mensual",
+        "trimestral": "Trimestral",
+        "anual": "Anual"
+      },
+      "periodShort": {
+        "mensual": "mes",
+        "trimestral": "trimestre",
+        "anual": "año"
+      },
+      "filters": {
+        "status": "Estado",
+        "client": "Cliente",
+        "year": "Año",
+        "month": "Mes",
+        "category": "Categoría",
+        "project": "Proyecto",
+        "receipt": "Justificante",
+        "all": "Todos",
+        "allClients": "Todos los clientes",
+        "allYears": "Todos los años",
+        "allMonths": "Todos los meses",
+        "allCategories": "Todas las categorías",
+        "allProjects": "Todos los proyectos",
+        "withReceipt": "Con justificante",
+        "withoutReceipt": "Sin justificante",
+        "apply": "Filtrar",
+        "clear": "Quitar filtros"
+      },
+      "cols": {
+        "number": "Nº",
+        "client": "Cliente",
+        "concept": "Concepto",
+        "project": "Proyecto",
+        "issued": "Emisión",
+        "due": "Vencimiento",
+        "amount": "Importe",
+        "collected": "Cobrado",
+        "pending": "Pendiente",
+        "status": "Estado",
+        "date": "Fecha",
+        "method": "Método",
+        "reference": "Referencia",
+        "provider": "Proveedor",
+        "category": "Categoría",
+        "attributed": "Imputado a",
+        "receipt": "Justificante",
+        "actions": "Acciones",
+        "total": "Total"
+      },
+      "form": {
+        "project": "Proyecto",
+        "noProject": "Sin proyecto",
+        "noClient": "Sin cliente",
+        "noMethod": "Sin indicar",
+        "concept": "Concepto",
+        "amount": "Importe",
+        "amountPaid": "Importe pagado",
+        "amountCharged": "Importe que cobra el banco",
+        "amountHint": "En euros. Admite coma decimal: 1.234,50",
+        "issueDate": "Emisión",
+        "dueDate": "Vencimiento",
+        "date": "Fecha",
+        "method": "Método de pago",
+        "paymentMethod": "Método de pago",
+        "reference": "Referencia",
+        "notes": "Notas",
+        "provider": "Proveedor",
+        "category": "Categoría",
+        "attributeProject": "Imputar al proyecto",
+        "attributeClient": "Imputar al cliente",
+        "vatPct": "IVA (%)",
+        "deductible": "Gasto deducible",
+        "name": "Nombre",
+        "period": "Periodicidad",
+        "nextRenewal": "Próxima renovación",
+        "noticeDays": "Días de aviso",
+        "noticeHint": "Te avisamos por email con estos días de antelación.",
+        "billingUrl": "Enlace de facturación del proveedor"
+      },
+      "collections": {
+        "title": "Cobros",
+        "intro": "Lo que te debe cada cliente. El estado sale de los pagos y de la fecha de vencimiento.",
+        "new": "Nuevo cobro",
+        "create": "Crear cobro",
+        "none": "Aún no hay cobros. Crea el primero o genera los de un presupuesto aceptado.",
+        "noneClient": "Este cliente aún no tiene cobros.",
+        "noneFiltered": "Ningún cobro coincide con los filtros.",
+        "detail": "Detalle del cobro",
+        "ofTotal": "de {total}",
+        "pendingAmount": "Pendiente: {amount}",
+        "progress": "Cobrado del total",
+        "fromQuote": "Presupuesto",
+        "openQuote": "Ver presupuesto",
+        "edit": "Editar cobro",
+        "void": "Anular",
+        "reactivate": "Reactivar",
+        "delete": "Eliminar",
+        "confirmVoid": "¿Anular este cobro? Dejará de contar como pendiente.",
+        "confirmDelete": "¿Eliminar este cobro? No se puede deshacer.",
+        "cantDelete": "Un cobro con pagos no se puede eliminar, solo anular."
+      },
+      "payment": {
+        "title": "Pagos recibidos",
+        "none": "Aún no se ha registrado ningún pago.",
+        "registerTitle": "Registrar pago",
+        "register": "Registrar pago",
+        "delete": "Eliminar pago",
+        "confirmDelete": "¿Eliminar este pago?",
+        "voidedNote": "El cobro está anulado. Reactívalo para registrar pagos.",
+        "paidNote": "El cobro está pagado por completo."
+      },
+      "plan": {
+        "title": "Plan de cobros",
+        "completo": "Pago único",
+        "mitad": "50/50",
+        "tercios": "40/30/30",
+        "custom": "Personalizado",
+        "customLabel": "Porcentajes",
+        "customHint": "Separados por barra y sumando 100. Por ejemplo: 50/30/20",
+        "installment": "Plazo {n} de {count}",
+        "generate": "Generar cobros",
+        "generating": "Generando"
+      },
+      "bank": {
+        "createCollection": "Crear cobro"
+      },
+      "expenses": {
+        "title": "Gastos",
+        "intro": "Lo que gasta el negocio, con su justificante y a qué proyecto o cliente se imputa.",
+        "new": "Nuevo gasto",
+        "create": "Añadir gasto",
+        "edit": "Editar gasto",
+        "delete": "Eliminar",
+        "confirmDelete": "¿Eliminar este gasto y su justificante? No se puede deshacer.",
+        "none": "Aún no hay gastos. Añade el primero o da de alta una suscripción.",
+        "noneFiltered": "Ningún gasto coincide con los filtros."
+      },
+      "receipt": {
+        "attach": "Adjuntar",
+        "replace": "Cambiar",
+        "view": "Ver",
+        "opening": "Abriendo",
+        "hint": "Justificantes en PDF o imagen, de hasta 10 MB.",
+        "tooBig": "El justificante supera los 10 MB."
+      },
+      "subscriptions": {
+        "title": "Suscripciones",
+        "intro": "Hosting, dominios y programas que se renuevan solos. Cada renovación se convierte en un gasto.",
+        "new": "Nueva suscripción",
+        "create": "Añadir suscripción",
+        "edit": "Editar",
+        "active": "Activas",
+        "none": "Aún no hay suscripciones. Añade tu hosting, dominios y programas.",
+        "monthlyCost": "Coste mensual",
+        "annualCost": "Coste anual",
+        "amount": "Importe",
+        "perMonth": "Al mes",
+        "renewal": "Renovación",
+        "manage": "Gestionar en el proveedor",
+        "cancel": "Dar de baja",
+        "confirmCancel": "¿Dar de baja esta suscripción? Su historial de gastos se conserva.",
+        "reactivate": "Reactivar",
+        "cancelled": "De baja ({count})",
+        "endedOn": "baja el {date}"
+      },
+      "settings": {
+        "title": "Ajustes de Finanzas",
+        "intro": "Opciones generales del módulo.",
+        "tradeName": "Nombre comercial",
+        "fiscal": "Mostrar campos fiscales",
+        "fiscalHint": "Actívalo cuando te des de alta como autónomo: muestra el IVA de los gastos y si son deducibles."
+      },
+      "project": {
+        "title": "Rentabilidad",
+        "expenses": "Gastos imputados",
+        "margin": "Margen",
+        "viewCollections": "Ver los cobros del cliente"
+      },
+      "client": {
+        "total": "Total"
       }
     }
   }

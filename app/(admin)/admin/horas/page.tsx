@@ -4,6 +4,7 @@ import { getI18n } from "@/lib/portal/i18n";
 import { listarBolsas, listarEmpresas, listarHistorialBolsas } from "@/lib/portal/queries";
 import { guardarBolsa, registrarHoras } from "@/lib/portal/actions";
 import { ActionForm } from "@/components/portal/action-form";
+import { BotonCobroBolsa } from "@/components/portal/finanzas-forms";
 import { inputCls, labelCls } from "@/components/portal/styles";
 import { EmptyState, PageHeader, Panel, ProgressBar } from "@/components/portal/ui";
 
@@ -65,6 +66,12 @@ export default async function HorasAdminPage() {
                         label={`${t("admin.hoursConsumed")}: ${e.nombre}`}
                       />
                     </div>
+
+                    {b.precio ? (
+                      <div className="mt-4">
+                        <BotonCobroBolsa bolsaId={b.id} />
+                      </div>
+                    ) : null}
 
                     <ActionForm
                       action={registrarHoras}

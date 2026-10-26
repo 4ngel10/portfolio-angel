@@ -182,7 +182,9 @@
       "description": "Description",
       "name": "Name",
       "email": "Email",
-      "hoursUnit": "h"
+      "hoursUnit": "h",
+      "cancel": "Cancel",
+      "saveChanges": "Save changes"
     },
     "nav": {
       "projects": "Projects",
@@ -191,7 +193,8 @@
       "overview": "Overview",
       "clients": "Clients",
       "hours": "Hours",
-      "quotes": "Quotes"
+      "quotes": "Quotes",
+      "finance": "Finance"
     },
     "status": {
       "active": "Active",
@@ -243,7 +246,10 @@
       "tooShort": "The password must be at least 8 characters.",
       "mismatch": "The passwords do not match.",
       "failed": "The password could not be saved. Try again.",
-      "tempIntro": "Your password was reset by the administrator. Choose a new one that only you know to keep signing in."
+      "tempIntro": "Your password was reset by the administrator. Choose a new one that only you know to keep signing in.",
+      "introAdmin": "Choose a new password for the admin panel. Your other sessions will be signed out.",
+      "hintAdmin": "At least 12 characters.",
+      "tooShortAdmin": "The password must be at least 12 characters long."
     },
     "mfa": {
       "metaTitle": "Verification",
@@ -478,7 +484,9 @@
       "priceLabel": "Bank price (€)",
       "addPerson": "Add person",
       "addPersonTitle": "Add a person to {name}",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "statPendingCollect": "Outstanding",
+      "statOverdueCount": "Overdue: {count}"
     },
     "err": {
       "companyName": "Enter the company name.",
@@ -520,7 +528,37 @@
       "quoteFail": "The quote could not be saved.",
       "quoteNotPending": "This quote is no longer awaiting a reply.",
       "signName": "Write your full name to sign.",
-      "signConfirm": "Tick the box to confirm acceptance."
+      "signConfirm": "Tick the box to confirm acceptance.",
+      "amountInvalid": "Invalid amount. Enter a positive number with up to 2 decimals.",
+      "categoryInvalid": "Choose a category from the list.",
+      "methodInvalid": "Choose a payment method from the list.",
+      "vatInvalid": "VAT must be a percentage between 0 and 100.",
+      "urlInvalid": "The link must start with https:// or http://.",
+      "cobroInvalid": "Collection not found. Reload the page.",
+      "cobroConcept": "Enter a description of at least 3 characters.",
+      "cobroProject": "That project doesn't belong to the chosen company.",
+      "cobroBelowPaid": "The amount can't be lower than what has already been collected.",
+      "cobroFail": "Couldn't save the collection. Try again.",
+      "payOver": "The payment is more than the outstanding amount ({amount}). Lower it.",
+      "payCancelled": "This collection is void. Reactivate it to record payments.",
+      "payFail": "Couldn't record the payment. Try again.",
+      "planInvalid": "Couldn't prepare the collection plan. Reload the page.",
+      "planNotAccepted": "Collections can only be generated from accepted quotes.",
+      "planExists": "This quote already has collections.",
+      "planPercent": "The percentages must add up to 100.",
+      "planZero": "The quote has no amount. Check its lines.",
+      "bankNoPrice": "The bank has no price. Set one before creating the collection.",
+      "gastoInvalid": "Expense not found. Reload the page.",
+      "gastoConcept": "Enter a description of at least 2 characters.",
+      "gastoFail": "Couldn't save the expense. Try again.",
+      "subInvalid": "Subscription not found. Reload the page.",
+      "subName": "Enter a name of at least 2 characters.",
+      "subRenewal": "Enter a valid renewal date.",
+      "subNotice": "Notice days must be between 0 and 60.",
+      "subFail": "Couldn't save the subscription. Try again.",
+      "settingsFail": "Couldn't save the settings. Try again.",
+      "receiptInvalid": "The receipt isn't valid. Upload it again.",
+      "receiptFail": "Couldn't process the receipt. Try again."
     },
     "ok": {
       "companyCreated": "Company created.",
@@ -532,7 +570,15 @@
       "userSaved": "Changes saved.",
       "companyDetailsSaved": "Details saved.",
       "quoteSaved": "Quote saved.",
-      "quoteSigned": "Quote signed and accepted. Thank you."
+      "quoteSigned": "Quote signed and accepted. Thank you.",
+      "cobroSaved": "Collection saved.",
+      "paySaved": "Payment recorded.",
+      "planCreated": "Collections created: {count}.",
+      "bankCobro": "Hour bank collection created.",
+      "bankCobroDup": "Collection created. There was already an hour bank collection in the last 30 days: check it isn't a duplicate.",
+      "gastoSaved": "Expense saved.",
+      "subSaved": "Subscription saved.",
+      "settingsSaved": "Settings saved."
     },
     "api": {
       "invalidData": "Invalid data.",
@@ -550,7 +596,8 @@
       "writeTitle": "Enter a title.",
       "describe": "Describe what is happening.",
       "onlyClients": "Only clients can open issues.",
-      "incidentFail": "The issue could not be created."
+      "incidentFail": "The issue could not be created.",
+      "receiptTooLarge": "The receipt is over 10 MB."
     },
     "sectors": {
       "hosteleria": "Hospitality",
@@ -672,6 +719,273 @@
           "name": "Hour bank",
           "detail": "Support hours deducted as they are used."
         }
+      }
+    },
+    "finance": {
+      "nav": {
+        "label": "Finance sections",
+        "summary": "Summary",
+        "collections": "Collections",
+        "expenses": "Expenses",
+        "subscriptions": "Subscriptions",
+        "settings": "Settings"
+      },
+      "summary": {
+        "title": "Finance",
+        "intro": "Who owes you money, what you spend and how the business is doing.",
+        "period": "Period",
+        "periods": {
+          "mes": "This month",
+          "trimestre": "This quarter",
+          "anio": "This year",
+          "ultimos12": "Last 12 months"
+        },
+        "collected": "Collected",
+        "spent": "Expenses",
+        "result": "Result",
+        "pending": "Outstanding",
+        "liveHint": "Current total, whatever the period",
+        "overdue": "Overdue",
+        "fixedCost": "Monthly fixed cost",
+        "chartTitle": "Income and expenses, last 12 months",
+        "income": "Income",
+        "expenses": "Expenses",
+        "scaleMax": "Scale up to {amount}",
+        "monthAria": "{month}: income {income}, expenses {expenses}",
+        "overdueTitle": "Overdue collections",
+        "noOverdue": "No overdue collections.",
+        "daysOverdue": "{count} d overdue",
+        "renewalsTitle": "Upcoming renewals (30 days)",
+        "noRenewals": "No renewals in the next 30 days.",
+        "byCategory": "Expenses by category",
+        "noExpenses": "No expenses in this period yet. Add the first one or set up a subscription.",
+        "export": "Export CSV",
+        "exportHint": "From {from} to {to}, for your accountant."
+      },
+      "export": {
+        "csv": "Export CSV",
+        "payments": "Payments",
+        "collections": "Collections",
+        "expenses": "Expenses",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "status": {
+        "pendiente": "Pending",
+        "parcial": "Partial",
+        "vencido": "Overdue",
+        "pagado": "Paid",
+        "anulado": "Void"
+      },
+      "origin": {
+        "presupuesto": "Quote",
+        "bolsa": "Hour bank",
+        "mantenimiento": "Maintenance",
+        "manual": "Manual",
+        "suscripcion": "Subscription"
+      },
+      "method": {
+        "transferencia": "Bank transfer",
+        "bizum": "Bizum",
+        "efectivo": "Cash",
+        "tarjeta": "Card",
+        "paypal": "PayPal",
+        "otro": "Other"
+      },
+      "category": {
+        "software": "Software",
+        "hosting": "Hosting",
+        "dominios": "Domains",
+        "hardware": "Hardware",
+        "formacion": "Training",
+        "marketing": "Marketing",
+        "oficina": "Office",
+        "transporte": "Travel",
+        "servicios_profesionales": "Professional services",
+        "comisiones": "Fees",
+        "otros": "Other"
+      },
+      "period": {
+        "mensual": "Monthly",
+        "trimestral": "Quarterly",
+        "anual": "Yearly"
+      },
+      "periodShort": {
+        "mensual": "month",
+        "trimestral": "quarter",
+        "anual": "year"
+      },
+      "filters": {
+        "status": "Status",
+        "client": "Client",
+        "year": "Year",
+        "month": "Month",
+        "category": "Category",
+        "project": "Project",
+        "receipt": "Receipt",
+        "all": "All",
+        "allClients": "All clients",
+        "allYears": "All years",
+        "allMonths": "All months",
+        "allCategories": "All categories",
+        "allProjects": "All projects",
+        "withReceipt": "With receipt",
+        "withoutReceipt": "Without receipt",
+        "apply": "Filter",
+        "clear": "Clear filters"
+      },
+      "cols": {
+        "number": "No.",
+        "client": "Client",
+        "concept": "Description",
+        "project": "Project",
+        "issued": "Issued",
+        "due": "Due",
+        "amount": "Amount",
+        "collected": "Collected",
+        "pending": "Outstanding",
+        "status": "Status",
+        "date": "Date",
+        "method": "Method",
+        "reference": "Reference",
+        "provider": "Provider",
+        "category": "Category",
+        "attributed": "Charged to",
+        "receipt": "Receipt",
+        "actions": "Actions",
+        "total": "Total"
+      },
+      "form": {
+        "project": "Project",
+        "noProject": "No project",
+        "noClient": "No client",
+        "noMethod": "Not specified",
+        "concept": "Description",
+        "amount": "Amount",
+        "amountPaid": "Amount paid",
+        "amountCharged": "Amount the bank charges",
+        "amountHint": "In euros. A decimal comma works: 1.234,50",
+        "issueDate": "Issue date",
+        "dueDate": "Due date",
+        "date": "Date",
+        "method": "Payment method",
+        "paymentMethod": "Payment method",
+        "reference": "Reference",
+        "notes": "Notes",
+        "provider": "Provider",
+        "category": "Category",
+        "attributeProject": "Charge to project",
+        "attributeClient": "Charge to client",
+        "vatPct": "VAT (%)",
+        "deductible": "Deductible expense",
+        "name": "Name",
+        "period": "Billing period",
+        "nextRenewal": "Next renewal",
+        "noticeDays": "Notice days",
+        "noticeHint": "You get an email this many days ahead.",
+        "billingUrl": "Provider billing link"
+      },
+      "collections": {
+        "title": "Collections",
+        "intro": "What each client owes you. The status comes from the payments and the due date.",
+        "new": "New collection",
+        "create": "Create collection",
+        "none": "No collections yet. Create the first one or generate them from an accepted quote.",
+        "noneClient": "This client has no collections yet.",
+        "noneFiltered": "No collection matches the filters.",
+        "detail": "Collection details",
+        "ofTotal": "of {total}",
+        "pendingAmount": "Outstanding: {amount}",
+        "progress": "Collected of the total",
+        "fromQuote": "Quote",
+        "openQuote": "View quote",
+        "edit": "Edit collection",
+        "void": "Void",
+        "reactivate": "Reactivate",
+        "delete": "Delete",
+        "confirmVoid": "Void this collection? It will stop counting as outstanding.",
+        "confirmDelete": "Delete this collection? This can't be undone.",
+        "cantDelete": "A collection with payments can't be deleted, only voided."
+      },
+      "payment": {
+        "title": "Payments received",
+        "none": "No payment recorded yet.",
+        "registerTitle": "Record payment",
+        "register": "Record payment",
+        "delete": "Delete payment",
+        "confirmDelete": "Delete this payment?",
+        "voidedNote": "This collection is void. Reactivate it to record payments.",
+        "paidNote": "This collection is fully paid."
+      },
+      "plan": {
+        "title": "Collection plan",
+        "completo": "Single payment",
+        "mitad": "50/50",
+        "tercios": "40/30/30",
+        "custom": "Custom",
+        "customLabel": "Percentages",
+        "customHint": "Separated by a slash and adding up to 100. For example: 50/30/20",
+        "installment": "Instalment {n} of {count}",
+        "generate": "Generate collections",
+        "generating": "Generating"
+      },
+      "bank": {
+        "createCollection": "Create collection"
+      },
+      "expenses": {
+        "title": "Expenses",
+        "intro": "What the business spends, with its receipt and the project or client it is charged to.",
+        "new": "New expense",
+        "create": "Add expense",
+        "edit": "Edit expense",
+        "delete": "Delete",
+        "confirmDelete": "Delete this expense and its receipt? This can't be undone.",
+        "none": "No expenses yet. Add the first one or set up a subscription.",
+        "noneFiltered": "No expense matches the filters."
+      },
+      "receipt": {
+        "attach": "Attach",
+        "replace": "Replace",
+        "view": "View",
+        "opening": "Opening",
+        "hint": "Receipts as PDF or image, up to 10 MB.",
+        "tooBig": "The receipt is over 10 MB."
+      },
+      "subscriptions": {
+        "title": "Subscriptions",
+        "intro": "Hosting, domains and software that renew on their own. Each renewal becomes an expense.",
+        "new": "New subscription",
+        "create": "Add subscription",
+        "edit": "Edit",
+        "active": "Active",
+        "none": "No subscriptions yet. Add your hosting, domains and software.",
+        "monthlyCost": "Monthly cost",
+        "annualCost": "Yearly cost",
+        "amount": "Amount",
+        "perMonth": "Per month",
+        "renewal": "Renewal",
+        "manage": "Manage at the provider",
+        "cancel": "Cancel subscription",
+        "confirmCancel": "Cancel this subscription? Its expense history is kept.",
+        "reactivate": "Reactivate",
+        "cancelled": "Cancelled ({count})",
+        "endedOn": "cancelled on {date}"
+      },
+      "settings": {
+        "title": "Finance settings",
+        "intro": "General options for the module.",
+        "tradeName": "Trade name",
+        "fiscal": "Show tax fields",
+        "fiscalHint": "Turn this on when you register as self-employed: it shows VAT on expenses and whether they are deductible."
+      },
+      "project": {
+        "title": "Profitability",
+        "expenses": "Expenses charged",
+        "margin": "Margin",
+        "viewCollections": "View the client's collections"
+      },
+      "client": {
+        "total": "Total"
       }
     }
   }

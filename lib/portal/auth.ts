@@ -51,3 +51,20 @@ export async function requireAdmin(): Promise<Perfil> {
 
   return perfil;
 }
+
+/**
+ * Misma comprobación que `requireAdmin`, pero para rutas de API: en lugar de redirigir,
+ * devuelve el código HTTP (401 sin sesión o sin segundo factor, 403 si no es admin).
+ */
+export async function comprobarAdmin(): Promise<
+  { ok: true; perfil: Perfil } | { ok: false; status: 401 | 403 }
+> {
+  const perfil = await getPerfil();
+  if (!perfil) return { ok: false, status: 401 };
+  if (perfil.role !== "admin") return { ok: false, status: 403 };
+
+  const supabase = await createClient();
+  const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (data?.currentLevel !== "aal2") return { ok: false, status: 401 };
+  return { ok: true, perfil };
+}

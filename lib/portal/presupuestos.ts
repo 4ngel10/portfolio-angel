@@ -3,7 +3,7 @@
 export const ESTADOS_PRESUPUESTO = ["borrador", "enviado", "aceptado", "rechazado"] as const;
 export const TIPOS_IVA = [21, 10, 4, 0] as const;
 
-const redondear = (n: number) => Math.round(n * 100) / 100;
+export const redondear = (n: number) => Math.round(n * 100) / 100;
 
 export type LineaCalculo = { cantidad: number; precio_unitario: number };
 

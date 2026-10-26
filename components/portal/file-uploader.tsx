@@ -18,45 +18,77 @@ const TIPOS_POR_EXTENSION: Record<string, string> = {
 
 type Resultado = { nombre: string; error?: string };
 
+type Firma = { path: string; token: string };
+
+/** Dónde y cómo se sube: lo que cambia entre archivos de proyecto y justificantes. */
+export type DestinoSubida = {
+  /** Identifica el campo de archivo (tiene que ser único en la página). */
+  id: string;
+  bucket: string;
+  /** Ruta que prepara la URL firmada (paso 1). */
+  presign: string;
+  /** Campos extra del cuerpo del paso 1 (el archivo y su tamaño van siempre). */
+  cuerpo: Record<string, string>;
+  /** Paso 2: registrar el archivo ya subido. Devuelve true si salió bien. */
+  confirmar: (archivo: { path: string; fileName: string; contentType: string }) => Promise<boolean>;
+  maxBytes?: number;
+  multiple?: boolean;
+  accept?: string;
+  /** Claves de `portal.*` para el botón y la ayuda; por defecto las de archivos de proyecto. */
+  claves?: { button: string; hint: string; tooBig: string };
+  /** Para filas de tabla: botón pequeño y sin texto de ayuda. */
+  compacto?: boolean;
+};
+
 /**
  * Sube archivos directamente del navegador a Supabase Storage con una URL firmada.
  * El archivo nunca pasa por Vercel: solo viajan los metadatos (presign y confirm).
  */
-export function FileUploader({ proyectoId }: { proyectoId: string }) {
+export function SubidaArchivos({ destino }: { destino: DestinoSubida }) {
   const router = useRouter();
   const { t } = usePT();
   const input = useRef<HTMLInputElement>(null);
   const [subiendo, setSubiendo] = useState<string | null>(null);
   const [resultados, setResultados] = useState<Resultado[]>([]);
+  const claves = destino.claves ?? {
+    button: "upload.button",
+    hint: "upload.hint",
+    tooBig: "upload.tooBig",
+  };
 
   async function subir(file: File): Promise<Resultado> {
-    if (file.size > MAX_BYTES) return { nombre: file.name, error: t("upload.tooBig") };
+    if (file.size > (destino.maxBytes ?? MAX_BYTES)) {
+      return { nombre: file.name, error: t(claves.tooBig) };
+    }
     // Windows no suele conocer el tipo de HEIC ni de MOV y deja file.type vacío.
     const contentType =
       file.type ||
       TIPOS_POR_EXTENSION[file.name.split(".").pop()?.toLowerCase() ?? ""] ||
       "application/octet-stream";
 
-    const pre = await fetch("/api/storage/presign", {
+    const pre = await fetch(destino.presign, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fileName: file.name, contentType, size: file.size, proyectoId }),
+      body: JSON.stringify({
+        fileName: file.name,
+        contentType,
+        size: file.size,
+        ...destino.cuerpo,
+      }),
     }).catch(() => null);
-    const firma = await pre?.json().catch(() => null);
+    const firma = (await pre?.json().catch(() => null)) as (Firma & { error?: string }) | null;
     if (!pre?.ok || !firma?.token)
       return { nombre: file.name, error: firma?.error ?? t("upload.prepFail") };
 
     const { error } = await createClient()
-      .storage.from("archivos")
+      .storage.from(destino.bucket)
       .uploadToSignedUrl(firma.path, firma.token, file, { contentType });
     if (error) return { nombre: file.name, error: t("upload.uploadFail") };
 
-    const conf = await fetch("/api/storage/confirm", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: firma.path, fileName: file.name, contentType, proyectoId }),
-    }).catch(() => null);
-    if (!conf?.ok) return { nombre: file.name, error: t("upload.registerFail") };
+    const registrado = await destino
+      .confirmar({ path: firma.path, fileName: file.name, contentType })
+      .catch(() => false);
+    if (!registrado) return { nombre: file.name, error: t("upload.registerFail") };
     return { nombre: file.name };
   }
 
@@ -79,20 +111,21 @@ export function FileUploader({ proyectoId }: { proyectoId: string }) {
     <div>
       <input
         ref={input}
-        id={`subida-${proyectoId}`}
+        id={destino.id}
         type="file"
-        multiple
+        multiple={destino.multiple ?? true}
+        accept={destino.accept}
         onChange={alElegir}
         disabled={!!subiendo}
         className="sr-only"
       />
       <label
-        htmlFor={`subida-${proyectoId}`}
-        className={`btn-secondary cursor-pointer focus-within:outline-2 ${subiendo ? "pointer-events-none opacity-60" : ""}`}
+        htmlFor={destino.id}
+        className={`btn-secondary cursor-pointer focus-within:outline-2 ${destino.compacto ? "!px-3 !py-1.5 !text-sm" : ""} ${subiendo ? "pointer-events-none opacity-60" : ""}`}
       >
-        {subiendo ? t("upload.uploading") : t("upload.button")}
+        {subiendo ? t("upload.uploading") : t(claves.button)}
       </label>
-      <p className="text-muted mt-2 text-xs">{t("upload.hint")}</p>
+      {destino.compacto ? null : <p className="text-muted mt-2 text-xs">{t(claves.hint)}</p>}
 
       <div role="status" aria-live="polite" className="mt-2 text-sm">
         {subiendo ? (
@@ -105,5 +138,27 @@ export function FileUploader({ proyectoId }: { proyectoId: string }) {
         ))}
       </div>
     </div>
+  );
+}
+
+/** Archivos de un proyecto (zona de admin y de clientes). */
+export function FileUploader({ proyectoId }: { proyectoId: string }) {
+  return (
+    <SubidaArchivos
+      destino={{
+        id: `subida-${proyectoId}`,
+        bucket: "archivos",
+        presign: "/api/storage/presign",
+        cuerpo: { proyectoId },
+        confirmar: async ({ path, fileName, contentType }) => {
+          const conf = await fetch("/api/storage/confirm", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ path, fileName, contentType, proyectoId }),
+          });
+          return conf.ok;
+        },
+      }}
+    />
   );
 }

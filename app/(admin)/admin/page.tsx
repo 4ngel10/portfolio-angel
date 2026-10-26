@@ -9,6 +9,8 @@ import {
   mapaTitulos,
 } from "@/lib/portal/queries";
 import { requireAdmin } from "@/lib/portal/auth";
+import { cobrosConEstado } from "@/lib/portal/finanzas-queries";
+import { redondear } from "@/lib/portal/presupuestos";
 import {
   EmptyState,
   EstadoIncidenciaBadge,
@@ -24,13 +26,19 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AdminPage() {
   await requireAdmin();
-  const { t, fechaHora } = await getI18n();
-  const [empresas, proyectos, bolsas, { incidencias }] = await Promise.all([
+  const { t, fechaHora, euros } = await getI18n();
+  const [empresas, proyectos, bolsas, { incidencias }, cobros] = await Promise.all([
     listarEmpresas(),
     listarProyectos(),
     listarBolsas(),
     cargarIncidencias({ soloAbiertas: true }),
+    cobrosConEstado(),
   ]);
+
+  // Pendiente de cobro: todo lo que sigue sin pagar y no está anulado, venza cuando venza.
+  const abiertos = cobros.filter((c) => ["pendiente", "parcial", "vencido"].includes(c.estado));
+  const pendienteCobro = redondear(abiertos.reduce((s, c) => s + c.pendiente, 0));
+  const vencidos = abiertos.filter((c) => c.estado === "vencido").length;
 
   const nombreEmpresa = Object.fromEntries(empresas.map((e) => [e.id, e.nombre]));
   const titulos = mapaTitulos(proyectos);
@@ -59,7 +67,7 @@ export default async function AdminPage() {
   return (
     <>
       <PageHeader title={t("admin.overview")} />
-      <dl className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <dl className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
         {cifras.map((c) => (
           <Link
             key={c.l}
@@ -70,6 +78,20 @@ export default async function AdminPage() {
             <dt className="text-muted mt-1 text-sm">{c.l}</dt>
           </Link>
         ))}
+        <Link
+          href="/admin/finanzas/cobros?estado=pendiente"
+          className="border-rule bg-paper-alt col-span-2 rounded-xl border p-4 transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.98] lg:col-span-1"
+        >
+          <dd className="text-3xl font-semibold tracking-tight tabular-nums">
+            {euros(pendienteCobro)}
+          </dd>
+          <dt className="text-muted mt-1 text-sm">{t("admin.statPendingCollect")}</dt>
+          {vencidos > 0 ? (
+            <dd className="mt-1 text-sm font-medium text-[var(--accent)]">
+              {t("admin.statOverdueCount", { count: vencidos })}
+            </dd>
+          ) : null}
+        </Link>
       </dl>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">

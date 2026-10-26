@@ -7,12 +7,15 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid } from "@/lib/portal/validate";
 import { listarBolsas, listarEmpresas, listarProyectos } from "@/lib/portal/queries";
+import { cobrosConEstado } from "@/lib/portal/finanzas-queries";
+import { redondear } from "@/lib/portal/presupuestos";
 import type { Empresa } from "@/lib/portal/types";
 import { AnadirPersona } from "@/components/portal/anadir-persona";
 import { EmpresaDetalles } from "@/components/portal/empresa-detalles";
 import { PersonaCard, type PersonaInfo } from "@/components/portal/persona-card";
 import {
   EmptyState,
+  EstadoCobroBadge,
   EstadoProyectoBadge,
   PageHeader,
   Panel,
@@ -26,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ClientePage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
-  const { t, fecha } = await getI18n();
+  const { t, fecha, euros } = await getI18n();
   const { id } = await params;
   if (!isUuid(id)) notFound();
 
@@ -35,7 +38,7 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
   const empresa = data as Empresa | null;
   if (!empresa) notFound();
 
-  const [{ data: usuarios }, proyectos, bolsas, empresas, auth] = await Promise.all([
+  const [{ data: usuarios }, proyectos, bolsas, empresas, auth, cobros] = await Promise.all([
     supabase
       .from("usuarios")
       .select("id, nombre, email, empresa_id")
@@ -46,7 +49,14 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
     listarBolsas(),
     listarEmpresas(),
     createAdminClient().auth.admin.listUsers({ perPage: 1000 }),
+    cobrosConEstado({ empresaId: id }),
   ]);
+
+  // Los cobros anulados no cuentan en los totales del cliente.
+  const vivos = cobros.filter((c) => c.estado !== "anulado");
+  const totalCobros = redondear(vivos.reduce((s, c) => s + c.cobro.importe, 0));
+  const totalCobrado = redondear(vivos.reduce((s, c) => s + c.pagado, 0));
+  const totalPendiente = redondear(vivos.reduce((s, c) => s + c.pendiente, 0));
 
   const cuentas = new Map((auth.data?.users ?? []).map((u) => [u.id, u]));
   const ahora = Date.now();
@@ -162,6 +172,61 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
                 </li>
               ))}
             </ul>
+          )}
+        </Panel>
+
+        <Panel
+          title={t("finance.collections.title")}
+          className="lg:col-span-2"
+          action={
+            <Link
+              href={`/admin/finanzas/cobros?empresa=${id}#nuevo`}
+              className="hover:text-accent text-sm underline underline-offset-4"
+            >
+              {t("finance.collections.new")}
+            </Link>
+          }
+        >
+          {cobros.length === 0 ? (
+            <EmptyState>{t("finance.collections.noneClient")}</EmptyState>
+          ) : (
+            <>
+              <dl className="mb-4 grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <dt className="text-muted">{t("finance.client.total")}</dt>
+                  <dd className="font-semibold tabular-nums">{euros(totalCobros)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">{t("finance.cols.collected")}</dt>
+                  <dd className="font-semibold tabular-nums">{euros(totalCobrado)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">{t("finance.cols.pending")}</dt>
+                  <dd className="font-semibold tabular-nums">{euros(totalPendiente)}</dd>
+                </div>
+              </dl>
+              <ul className="divide-y divide-[var(--rule)]">
+                {cobros.slice(0, 5).map(({ cobro, pendiente, estado }) => (
+                  <li
+                    key={cobro.id}
+                    className="flex flex-wrap items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
+                  >
+                    <Link
+                      href={`/admin/finanzas/cobros/${cobro.id}`}
+                      className="hover:text-accent min-w-0 font-medium underline-offset-4 hover:underline"
+                    >
+                      {cobro.concepto}
+                    </Link>
+                    <span className="flex items-center gap-3 text-sm">
+                      <span className="text-muted tabular-nums">
+                        {t("finance.collections.pendingAmount", { amount: euros(pendiente) })}
+                      </span>
+                      <EstadoCobroBadge estado={estado} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </Panel>
       </div>

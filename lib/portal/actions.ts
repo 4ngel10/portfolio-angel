@@ -1,27 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fallo, refrescar } from "./action-utils";
 import { getPerfil, requireAdmin } from "./auth";
 import { avisarAdmin } from "./email";
 import { getI18n } from "./i18n";
 import { SECTORES } from "./sectores";
 import { isEmail, isUuid, oneOf, slugify, text, type FormState } from "./validate";
-
-/** Las dos zonas leen de las mismas tablas: tras cualquier cambio se refrescan ambas. */
-function refrescar() {
-  revalidatePath("/admin", "layout");
-  revalidatePath("/portal", "layout");
-}
-
-/** Error de formulario en el idioma de la persona (cookie "locale"). */
-async function fallo(clave: string): Promise<FormState> {
-  const { t } = await getI18n();
-  return { error: t(`err.${clave}`) };
-}
 
 export async function signOut() {
   const supabase = await createClient();

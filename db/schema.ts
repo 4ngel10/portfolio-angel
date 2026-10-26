@@ -20,6 +20,12 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
+import {
+  CATEGORIAS_GASTO,
+  METODOS_PAGO,
+  ORIGENES_COBRO,
+  PERIODICIDADES,
+} from "../lib/portal/finanzas";
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
@@ -296,5 +302,156 @@ export const presupuestoLineas = pgTable(
   (t) => [
     index("presupuesto_lineas_idx").on(t.presupuestoId, t.orden),
     check("presupuesto_lineas_no_negativas", sql`${t.cantidad} >= 0 and ${t.precioUnitario} >= 0`),
+  ],
+);
+
+/**
+ * Finanzas (solo admin, ver db/rls.sql). Todo el dinero va en euros. Sin facturas: un cobro
+ * es lo que debe un cliente y un pago es lo que ya se ha recibido contra ese cobro.
+ */
+const enLista = (columna: unknown, valores: readonly string[]) =>
+  sql`${columna} in (${sql.raw(valores.map((v) => `'${v}'`).join(", "))})`;
+
+const dinero = (nombre: string) => numeric(nombre, { precision: 10, scale: 2, mode: "number" });
+
+/** Fila única (id = 1) con los ajustes del negocio. */
+export const ajustes = pgTable(
+  "ajustes",
+  {
+    id: integer("id").primaryKey().default(1),
+    // Muestra los campos fiscales (IVA, deducible) cuando Ángel se dé de alta como autónomo.
+    configFiscal: boolean("config_fiscal").notNull().default(false),
+    nombreComercial: text("nombre_comercial"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [check("ajustes_fila_unica", sql`${t.id} = 1`)],
+);
+
+export const cobros = pgTable(
+  "cobros",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    numero: text("numero").notNull().unique(),
+    empresaId: uuid("empresa_id")
+      .notNull()
+      .references(() => empresas.id, { onDelete: "cascade" }),
+    proyectoId: uuid("proyecto_id").references(() => proyectos.id, { onDelete: "set null" }),
+    presupuestoId: uuid("presupuesto_id").references(() => presupuestos.id, {
+      onDelete: "set null",
+    }),
+    origen: text("origen", { enum: ORIGENES_COBRO }).notNull().default("manual"),
+    concepto: text("concepto").notNull(),
+    importe: dinero("importe").notNull(),
+    fechaEmision: date("fecha_emision").notNull(),
+    fechaVencimiento: date("fecha_vencimiento"),
+    anulado: boolean("anulado").notNull().default(false),
+    notas: text("notas"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("cobros_empresa_idx").on(t.empresaId),
+    index("cobros_proyecto_idx").on(t.proyectoId),
+    index("cobros_presupuesto_idx").on(t.presupuestoId),
+    index("cobros_vencimiento_idx").on(t.fechaVencimiento),
+    check("cobros_origen_check", enLista(t.origen, ORIGENES_COBRO)),
+    check("cobros_importe_positivo", sql`${t.importe} > 0`),
+  ],
+);
+
+export const pagos = pgTable(
+  "pagos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    cobroId: uuid("cobro_id")
+      .notNull()
+      .references(() => cobros.id, { onDelete: "cascade" }),
+    fecha: date("fecha").notNull(),
+    importe: dinero("importe").notNull(),
+    metodo: text("metodo", { enum: METODOS_PAGO }).notNull().default("transferencia"),
+    referencia: text("referencia"),
+    notas: text("notas"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("pagos_cobro_idx").on(t.cobroId),
+    index("pagos_fecha_idx").on(t.fecha),
+    check("pagos_metodo_check", enLista(t.metodo, METODOS_PAGO)),
+    check("pagos_importe_positivo", sql`${t.importe} > 0`),
+  ],
+);
+
+/** Costes recurrentes del negocio. Cada renovación se convierte en un gasto (cron diario). */
+export const suscripciones = pgTable(
+  "suscripciones",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    nombre: text("nombre").notNull(),
+    proveedor: text("proveedor"),
+    categoria: text("categoria", { enum: CATEGORIAS_GASTO }).notNull().default("software"),
+    importe: dinero("importe").notNull(),
+    periodicidad: text("periodicidad", { enum: PERIODICIDADES }).notNull().default("mensual"),
+    proximaRenovacion: date("proxima_renovacion").notNull(),
+    activa: boolean("activa").notNull().default(true),
+    fechaAlta: date("fecha_alta").notNull(),
+    fechaBaja: date("fecha_baja"),
+    metodoPago: text("metodo_pago", { enum: METODOS_PAGO }),
+    urlGestion: text("url_gestion"),
+    avisoDias: integer("aviso_dias").notNull().default(7),
+    // Fiscal: oculto mientras ajustes.config_fiscal sea false.
+    ivaPct: numeric("iva_pct", { precision: 5, scale: 2, mode: "number" }),
+    notas: text("notas"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("suscripciones_activa_renovacion_idx").on(t.activa, t.proximaRenovacion),
+    check("suscripciones_categoria_check", enLista(t.categoria, CATEGORIAS_GASTO)),
+    check("suscripciones_periodicidad_check", enLista(t.periodicidad, PERIODICIDADES)),
+    check(
+      "suscripciones_metodo_check",
+      sql`${t.metodoPago} is null or ${enLista(t.metodoPago, METODOS_PAGO)}`,
+    ),
+    check("suscripciones_importe_check", sql`${t.importe} >= 0`),
+    check("suscripciones_aviso_check", sql`${t.avisoDias} between 0 and 60`),
+  ],
+);
+
+/** Gastos puntuales, incluidos los que genera el cron a partir de una suscripción. */
+export const gastos = pgTable(
+  "gastos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    fecha: date("fecha").notNull(),
+    concepto: text("concepto").notNull(),
+    proveedor: text("proveedor"),
+    categoria: text("categoria", { enum: CATEGORIAS_GASTO }).notNull().default("otros"),
+    importe: dinero("importe").notNull(),
+    metodoPago: text("metodo_pago", { enum: METODOS_PAGO }),
+    suscripcionId: uuid("suscripcion_id").references(() => suscripciones.id, {
+      onDelete: "set null",
+    }),
+    // Imputación opcional del coste a un proyecto o a un cliente.
+    proyectoId: uuid("proyecto_id").references(() => proyectos.id, { onDelete: "set null" }),
+    empresaId: uuid("empresa_id").references(() => empresas.id, { onDelete: "set null" }),
+    // Ruta en el bucket privado "finanzas".
+    justificantePath: text("justificante_path"),
+    // Fiscal: oculto mientras ajustes.config_fiscal sea false.
+    ivaPct: numeric("iva_pct", { precision: 5, scale: 2, mode: "number" }),
+    deducible: boolean("deducible"),
+    notas: text("notas"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("gastos_fecha_idx").on(t.fecha),
+    index("gastos_categoria_idx").on(t.categoria),
+    index("gastos_proyecto_idx").on(t.proyectoId),
+    index("gastos_empresa_idx").on(t.empresaId),
+    // Hace idempotente el cron de renovaciones: una renovación, un gasto.
+    unique("gastos_suscripcion_fecha").on(t.suscripcionId, t.fecha),
+    check("gastos_categoria_check", enLista(t.categoria, CATEGORIAS_GASTO)),
+    check(
+      "gastos_metodo_check",
+      sql`${t.metodoPago} is null or ${enLista(t.metodoPago, METODOS_PAGO)}`,
+    ),
+    check("gastos_importe_positivo", sql`${t.importe} > 0`),
   ],
 );
