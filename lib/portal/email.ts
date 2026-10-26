@@ -4,7 +4,10 @@ import { SITE_URL } from "@/lib/site";
 import type { Prioridad } from "./types";
 
 const escapeHtml = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  s.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!,
+  );
 
 type Aviso = {
   asunto: string;
@@ -33,7 +36,7 @@ export async function avisarAdmin(a: Aviso): Promise<boolean> {
   const from = process.env.RESEND_FROM ?? "Portfolio <onboarding@resend.dev>";
 
   try {
-    const { error } = await new Resend(apiKey).emails.send({
+    const { data, error } = await new Resend(apiKey).emails.send({
       from,
       to,
       subject: a.asunto.slice(0, 200),
@@ -48,6 +51,7 @@ export async function avisarAdmin(a: Aviso): Promise<boolean> {
       console.error("[aviso] Resend rechazó el aviso:", error.message);
       return false;
     }
+    console.info(`[aviso] Enviado a Resend (id ${data?.id}): ${a.asunto}`);
     return true;
   } catch (e) {
     console.error("[aviso] No se pudo enviar el aviso:", e);
@@ -67,7 +71,11 @@ type NuevaIncidencia = {
 export function avisarNuevaIncidencia(i: NuevaIncidencia) {
   return avisarAdmin({
     asunto: `[Nueva incidencia] ${i.titulo} · ${i.empresaNombre}`,
-    datos: [`Empresa: ${i.empresaNombre}`, `Proyecto: ${i.proyectoTitulo}`, `Prioridad: ${i.prioridad}`],
+    datos: [
+      `Empresa: ${i.empresaNombre}`,
+      `Proyecto: ${i.proyectoTitulo}`,
+      `Prioridad: ${i.prioridad}`,
+    ],
     cuerpo: i.descripcion,
     ruta: `/admin/proyectos/${i.proyectoId}`,
     etiqueta: "Abrir el proyecto",
