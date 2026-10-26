@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPerfil, requireAdmin } from "./auth";
+import { avisarAdmin } from "./email";
 import { getI18n } from "./i18n";
 import { SECTORES } from "./sectores";
 import { isEmail, isUuid, oneOf, slugify, text, type FormState } from "./validate";
@@ -265,11 +266,32 @@ export async function enviarMensaje(_: FormState, fd: FormData): Promise<FormSta
     return await fallo("messageFail");
   }
   refrescar();
+
+  if (perfil.role === "cliente") {
+    const { data: inc } = await supabase
+      .from("incidencias")
+      .select("titulo, proyecto_id, proyectos(titulo), empresas(nombre)")
+      .eq("id", incidenciaId)
+      .maybeSingle();
+    const proyecto = Array.isArray(inc?.proyectos) ? inc.proyectos[0] : inc?.proyectos;
+    const empresa = Array.isArray(inc?.empresas) ? inc.empresas[0] : inc?.empresas;
+    await avisarAdmin({
+      asunto: `[Mensaje en incidencia] ${inc?.titulo ?? ""} · ${empresa?.nombre ?? perfil.nombre}`,
+      datos: [
+        `Empresa: ${empresa?.nombre ?? "Sin empresa"}`,
+        `Proyecto: ${proyecto?.titulo ?? ""}`,
+        `De: ${perfil.nombre}`,
+      ],
+      cuerpo: contenido,
+      ruta: inc?.proyecto_id ? `/admin/proyectos/${inc.proyecto_id}` : "/admin",
+      etiqueta: "Abrir el proyecto",
+    });
+  }
   return { ok: true };
 }
 
 /* ------------------------------------------------------------------ */
-/* Admin: bolsa de horas                                               */
+/* Admin: bolsa de horas                                            */
 /* ------------------------------------------------------------------ */
 
 function mesActual() {
@@ -592,6 +614,33 @@ export async function eliminarPresupuesto(fd: FormData) {
   redirect("/admin/presupuestos");
 }
 
+/** Correo al admin cuando un cliente acepta (firmando) o rechaza un presupuesto. */
+async function avisarPresupuesto(
+  id: string,
+  resultado: "aceptado" | "rechazado",
+  persona: string,
+  firma?: string,
+) {
+  const { data } = await createAdminClient()
+    .from("presupuestos")
+    .select("numero, titulo, empresas(nombre)")
+    .eq("id", id)
+    .maybeSingle();
+  if (!data) return;
+  const empresa = (Array.isArray(data.empresas) ? data.empresas[0] : data.empresas)?.nombre;
+  await avisarAdmin({
+    asunto: `[Presupuesto ${resultado}] ${data.numero} · ${empresa ?? persona}`,
+    datos: [
+      `Empresa: ${empresa ?? "Sin empresa"}`,
+      `Presupuesto: ${data.numero} ${data.titulo}`,
+      `Cliente: ${persona}`,
+      ...(firma ? [`Firmado como: ${firma}`] : []),
+    ],
+    ruta: `/admin/presupuestos/${id}`,
+    etiqueta: "Abrir el presupuesto",
+  });
+}
+
 /** Presupuesto enviado a la empresa de quien llama. RLS solo deja ver los de su empresa. */
 async function presupuestoPendiente(id: string) {
   const supabase = await createClient();
@@ -635,6 +684,7 @@ export async function firmarPresupuesto(_: FormState, fd: FormData): Promise<For
     return await fallo("quoteFail");
   }
   refrescar();
+  await avisarPresupuesto(id, "aceptado", perfil.nombre, nombre);
   return { ok: true, message: (await getI18n()).t("ok.quoteSigned") };
 }
 
@@ -649,4 +699,5 @@ export async function rechazarPresupuesto(fd: FormData) {
     .eq("id", id)
     .eq("estado", "enviado");
   refrescar();
+  await avisarPresupuesto(id, "rechazado", perfil.nombre);
 }

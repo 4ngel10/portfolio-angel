@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { avisarAdmin } from "@/lib/portal/email";
 import { getI18n } from "@/lib/portal/i18n";
 import { isUuid } from "@/lib/portal/validate";
 
@@ -58,6 +59,23 @@ export async function POST(request: Request) {
   if (error) {
     console.error("[confirm]", error.message);
     return NextResponse.json({ error: t("api.registerFail") }, { status: 500 });
+  }
+
+  // Solo avisa si sube un cliente; los archivos que sube el propio admin no necesitan correo.
+  const { data: perfil } = await supabase.from("usuarios").select("role, nombre").eq("id", user.id).maybeSingle();
+  if (perfil?.role === "cliente") {
+    const { data: info } = await supabase
+      .from("proyectos")
+      .select("titulo, empresas(nombre)")
+      .eq("id", proyecto.id)
+      .maybeSingle();
+    const empresa = (Array.isArray(info?.empresas) ? info.empresas[0] : info?.empresas)?.nombre;
+    await avisarAdmin({
+      asunto: `[Archivo subido] ${fileName} · ${empresa ?? perfil.nombre}`,
+      datos: [`Empresa: ${empresa ?? "Sin empresa"}`, `Proyecto: ${info?.titulo ?? ""}`, `De: ${perfil.nombre}`],
+      ruta: `/admin/proyectos/${proyecto.id}`,
+      etiqueta: "Abrir el proyecto",
+    });
   }
 
   revalidatePath("/portal", "layout");
