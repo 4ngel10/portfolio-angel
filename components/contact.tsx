@@ -103,7 +103,7 @@ export function Contact() {
   ];
 
   return (
-    <section id="contact" className="scroll-mt-[72px] bg-paper-alt py-24 md:py-28">
+    <section id="contact" className="bg-paper-alt scroll-mt-[72px] py-24 md:py-28">
       <div className="mx-auto max-w-6xl px-6 md:px-8">
         <div className="grid items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <Reveal>
@@ -186,7 +186,7 @@ export function Contact() {
                   autoComplete="name"
                   required
                   placeholder={t("contact.formNamePh")}
-                  className="border-rule w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
                 />
               </div>
               <div className="mb-4">
@@ -202,7 +202,7 @@ export function Contact() {
                   autoCorrect="off"
                   required
                   placeholder={t("contact.formEmailPh")}
-                  className="border-rule w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
                 />
               </div>
               <div className="mb-4">
@@ -218,7 +218,7 @@ export function Contact() {
                     name="service"
                     required
                     defaultValue=""
-                    className="border-rule w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm transition-colors outline-none invalid:text-[var(--muted)] focus:border-[var(--accent)]"
+                    className="border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm transition-colors outline-none invalid:text-[var(--muted)] focus:border-[var(--accent)]"
                   >
                     <option value="" disabled className={OPTION}>
                       {t("contact.formServicePh")}
@@ -255,7 +255,7 @@ export function Contact() {
                   rows={5}
                   required
                   placeholder={t("contact.formMessagePh")}
-                  className="border-rule min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
                 />
               </div>
               <button

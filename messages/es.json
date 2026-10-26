@@ -96,6 +96,13 @@
     "prev": "Proyecto anterior",
     "next": "Proyecto siguiente"
   },
+  "notFound": {
+    "code": "Error 404",
+    "title": "Esta página no existe.",
+    "lead": "Puede que el enlace esté roto o que la página se haya movido. Desde el inicio llegas a todo lo demás.",
+    "home": "Volver al inicio",
+    "projects": "Ver proyectos"
+  },
   "blog": {
     "title": "Blog.",
     "lead": "Artículos sobre sistemas, desarrollo web y automatización. Lo que aplico en mi trabajo, explicado sin rodeos.",

@@ -16,10 +16,11 @@ type Props = {
   y?: number;
 };
 
-/** Fade-up al entrar en viewport. */
+/** Fade-up al entrar en viewport. data-reveal: sin JS se muestra igual (noscript del layout). */
 export function Reveal({ children, className, delay = 0, y = 24 }: Props) {
   return (
     <motion.div
+      data-reveal
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -81,7 +82,7 @@ export function RevealItem({
 }) {
   const Comp = as === "li" ? motion.li : as === "span" ? motion.span : motion.div;
   return (
-    <Comp id={id} className={className} style={style} variants={itemVariants}>
+    <Comp data-reveal id={id} className={className} style={style} variants={itemVariants}>
       {children}
     </Comp>
   );

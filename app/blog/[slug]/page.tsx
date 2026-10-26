@@ -7,7 +7,7 @@ import { BackToTop } from "@/components/back-to-top";
 import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { BLOG_POSTS, getBlogPost } from "@/lib/blog";
-import { blogPostJsonLd } from "@/lib/seo";
+import { alternatesFor, blogPostJsonLd } from "@/lib/seo";
 
 type Params = Promise<{ slug: string }>;
 
@@ -25,13 +25,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     title: `${title} · Ángel Fernández`,
     description,
-    alternates: { canonical: `/blog/${post.slug}` },
+    alternates: alternatesFor(`/blog/${post.slug}`),
     openGraph: {
       title,
       description,
       type: "article",
       locale: "es_ES",
-      alternateLocale: "en_GB",
       publishedTime: post.date,
       authors: ["Ángel Fernández Garriga"],
       images: [{ url: post.ogImage, width: 1200, height: 630 }],

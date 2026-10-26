@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
-import { Carousel } from "./carousel";
 import { NavLink } from "./nav";
 
 /** Pie de todas las páginas. Fuera de la home, las anclas apuntan a la home (/#about). */
@@ -22,36 +21,20 @@ export function Footer() {
 
   return (
     <footer className="relative overflow-hidden bg-[var(--footer-bg)] text-slate-300 [--footer-bg:#0f172a] dark:border-t dark:border-slate-800 dark:[--footer-bg:#050506]">
-      <div className="border-b border-white/10 py-4">
-        {/* Mismo carrusel que la banda de habilidades: continuo, sin pausa en hover. */}
-        <Carousel
-          direction="right"
-          // Dos frases por vuelta: repeat a la mitad y speed al doble que con una sola frase,
-          // así la banda mide y se mueve igual.
-          speed={18}
-          repeat={5}
-          gap="2rem"
-          fadeColor="var(--footer-bg)"
-          items={[t("footer.available"), t("footer.reply")]}
-          label={`${t("footer.available")}. ${t("footer.reply")}`}
-          separator={
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              className="shrink-0"
-              style={{ color: "var(--accent)" }}
+      {/* Franja fija. Antes era otro carrusel igual que la banda de habilidades de la home
+          y la página repetía el mismo recurso arriba y abajo. */}
+      <div className="border-b border-white/10 py-6">
+        <p className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-6 text-lg font-medium tracking-[-0.02em] text-slate-200 md:px-8 md:text-2xl">
+          <span className="flex items-center gap-3">
+            <span
+              className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+              style={{ background: "var(--accent)" }}
               aria-hidden
-            >
-              <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93 4.93 19.07" />
-            </svg>
-          }
-          itemClassName="text-lg md:text-2xl font-medium tracking-[-0.02em] text-slate-200"
-        />
+            />
+            {t("footer.available")}.
+          </span>
+          <span className="text-slate-400">{t("footer.reply")}.</span>
+        </p>
       </div>
 
       <div className="py-8">

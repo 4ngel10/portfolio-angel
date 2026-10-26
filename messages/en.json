@@ -96,6 +96,13 @@
     "prev": "Previous project",
     "next": "Next project"
   },
+  "notFound": {
+    "code": "Error 404",
+    "title": "This page doesn't exist.",
+    "lead": "The link may be broken or the page may have moved. From the home page you can reach everything else.",
+    "home": "Back to home",
+    "projects": "See projects"
+  },
   "blog": {
     "title": "Blog.",
     "lead": "Articles on systems, web development and automation. What I apply in my work, explained plainly.",

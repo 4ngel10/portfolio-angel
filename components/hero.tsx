@@ -8,14 +8,20 @@ const EASE = [0.23, 1, 0.32, 1] as const;
 
 // Reduced motion: lo resuelve <MotionConfig reducedMotion="user"> (lib/motion.tsx).
 // No ramificar initial/animate con useReducedMotion: en SSR vale null y rompe la hidratación.
+// La entrada del hero (H1, subtítulo, texto y "Desliza") va en CSS (.hero-rise y .hero-fade
+// en globals.css): se pinta con el HTML, sin esperar al JS, y no retrasa el LCP.
 
 function RotatingWord({ words }: { words: string[] }) {
   const [i, setI] = useState(0);
+  const reduced = useReducedMotion();
 
+  // Con reduced motion la palabra no rota. Se decide en el efecto (solo en cliente),
+  // así el HTML del servidor y el primer render del cliente coinciden.
   useEffect(() => {
+    if (reduced) return;
     const id = setInterval(() => setI((v) => (v + 1) % words.length), 2600);
     return () => clearInterval(id);
-  }, [words.length]);
+  }, [words.length, reduced]);
 
   // Los lectores de pantalla leen la lista completa una vez. Sin aria-live: anunciaría
   // una palabra nueva cada 2,6 s sin fin. La animación queda solo para la vista.
@@ -40,18 +46,13 @@ function RotatingWord({ words }: { words: string[] }) {
   );
 }
 
-/** Línea del H1 que sube desde detrás de una máscara. */
+/** Línea del H1 que sube desde detrás de una máscara (animación CSS .hero-rise). */
 function Line({ children, delay }: { children: React.ReactNode; delay: number }) {
   return (
     <span className="block overflow-hidden pb-[0.08em]">
-      <motion.span
-        className="block"
-        initial={{ y: "105%" }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.9, delay, ease: EASE }}
-      >
+      <span className="hero-rise block" style={{ animationDelay: `${delay}s` }}>
         {children}
-      </motion.span>
+      </span>
     </span>
   );
 }
@@ -103,11 +104,9 @@ export function Hero() {
           </Line>
         </h1>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.45 }}
-          className="text-muted mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:text-lg"
+        <div
+          style={{ animationDelay: "0.45s" }}
+          className="hero-fade text-muted mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:text-lg"
         >
           <span style={{ color: "var(--accent)" }} aria-hidden>
             ~/angel $
@@ -118,14 +117,10 @@ export function Hero() {
             style={{ background: "var(--accent)" }}
             aria-hidden
           />
-        </motion.div>
+        </div>
 
-        <div className="mt-10 grid items-end gap-10 md:grid-cols-[1fr_auto]">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55, ease: EASE }}
-          >
+        <div className="mt-10">
+          <div className="hero-fade" style={{ animationDelay: "0.55s" }}>
             <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
             <div className="text-muted mt-4 flex items-center gap-2 text-sm">
               <svg
@@ -167,30 +162,30 @@ export function Hero() {
                 {t("hero.ctaSecondary")}
               </a>
             </div>
-          </motion.div>
-
-          <motion.a
-            href="#about"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            className="text-muted flex origin-top flex-col items-center gap-3 justify-self-center rounded-xl px-4 py-2 font-mono text-[11px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-115 hover:text-[var(--fg)] active:scale-105 md:justify-self-auto"
-          >
-            {t("hero.scroll")}
-            <span
-              className="relative block h-14 w-px overflow-hidden"
-              style={{ background: "var(--rule)" }}
-            >
-              <motion.span
-                className="absolute top-0 left-0 h-1/2 w-px"
-                style={{ background: "var(--accent)" }}
-                animate={{ y: ["-100%", "200%"] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </span>
-          </motion.a>
+          </div>
         </div>
       </div>
+
+      {/* Solo en escritorio, centrado al pie del hero. En móvil ocupaba mucho alto y los
+          botones de arriba ya llevan a las secciones. */}
+      <a
+        href="#about"
+        style={{ animationDelay: "0.9s" }}
+        className="hero-fade text-muted absolute bottom-6 left-1/2 hidden origin-top -translate-x-1/2 flex-col items-center gap-2.5 rounded-xl px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-110 hover:text-[var(--fg)] active:scale-105 md:flex"
+      >
+        {t("hero.scroll")}
+        <span
+          className="relative block h-10 w-px overflow-hidden"
+          style={{ background: "var(--rule)" }}
+        >
+          <motion.span
+            className="absolute top-0 left-0 h-1/2 w-px"
+            style={{ background: "var(--accent)" }}
+            animate={{ y: ["-100%", "200%"] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </span>
+      </a>
     </section>
   );
 }
