@@ -21,20 +21,52 @@ export function Footer() {
 
   return (
     <footer className="relative overflow-hidden bg-[var(--footer-bg)] text-slate-300 [--footer-bg:#0f172a] dark:border-t dark:border-slate-800 dark:[--footer-bg:#050506]">
-      {/* Franja fija. Antes era otro carrusel igual que la banda de habilidades de la home
-          y la página repetía el mismo recurso arriba y abajo. */}
-      <div className="border-b border-white/10 py-6">
-        <p className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-6 text-lg font-medium tracking-[-0.02em] text-slate-200 md:px-8 md:text-2xl">
-          <span className="flex items-center gap-3">
-            <span
-              className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
-              style={{ background: "var(--accent)" }}
+      {/* Franja de disponibilidad (fija: el carrusel ya está en la banda de habilidades). */}
+      <div className="border-b border-white/10 py-10 md:py-12">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 md:flex-row md:items-center md:px-8">
+          <div>
+            <p className="flex items-start gap-3 text-2xl font-semibold tracking-[-0.03em] text-white md:text-3xl">
+              <span
+                className="relative mt-[11px] flex h-2.5 w-2.5 shrink-0 md:mt-[13px]"
+                aria-hidden
+              >
+                <span
+                  className="absolute inset-[-4px] rounded-full opacity-25"
+                  style={{ background: "var(--accent)" }}
+                />
+                <span
+                  className="relative h-2.5 w-2.5 rounded-full"
+                  style={{ background: "var(--accent)" }}
+                />
+              </span>
+              {t("footer.available")}
+            </p>
+            <p className="mt-2 pl-[22px] font-mono text-[13px] text-slate-400">
+              {t("footer.reply")}
+            </p>
+          </div>
+          <NavLink
+            href={home("#contact")}
+            className="group inline-flex items-center gap-2 rounded-xl border border-white/15 px-5 py-3 text-[15px] font-medium text-white transition-[border-color,background-color,transform] duration-200 hover:border-[var(--accent)] hover:bg-[var(--accent)] active:scale-[0.97]"
+          >
+            {t("nav.ctaContact")}
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="transition-transform duration-200 group-hover:translate-x-1"
               aria-hidden
-            />
-            {t("footer.available")}.
-          </span>
-          <span className="text-slate-400">{t("footer.reply")}.</span>
-        </p>
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </NavLink>
+        </div>
       </div>
 
       <div className="py-8">
