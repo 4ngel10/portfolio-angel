@@ -88,6 +88,10 @@ Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slu
 - **Portada**: la foto que suba Ángel se convierte a WebP (máx. 2200 px de ancho) en `public/projects/`, más una imagen para redes de 1200x630 en JPG (`ogImage`). Los originales pesados no se dejan en `public/`. Un SVG se puede usar tal cual (revisar que no tenga scripts, em dashes ni animaciones sin `prefers-reduced-motion`).
 - **Orden**: el proyecto nuevo se añade a `PROJECTS`; la card, la página, el "Siguiente proyecto" y el sitemap salen solos.
 
+## Páginas legales
+
+`/aviso-legal`, `/privacidad` y `/cookies` (`components/legal-page.tsx`). El texto en ES y EN vive en `lib/legal.ts`; los datos del titular salen de `LEGAL` en `lib/site.ts`. **Pendiente: rellenar `nif` y `domicilio` de `LEGAL`** (mientras estén vacíos no se muestran). No hay banner de cookies porque solo hay cookies técnicas (idioma, tema, sesión de Supabase): si se añade analítica u otro servicio con cookies no esenciales, hace falta banner con "Rechazar" y actualizar `/cookies` y `/privacidad`. El formulario de contacto enlaza a la política de privacidad. Los enlaces legales van en el footer.
+
 ## Páginas de servicio
 
 Cada card de Servicios abre su propia página: `/servicios/sistemas` y `/servicios/web` (`app/servicios/[id]/page.tsx`, `components/services-page.tsx`). El detalle de cada servicio (grupos, herramientas, principios) vive en `lib/services.ts`, en ES y EN, y solo recoge lo que ya figura en la web (stack, áreas, proyectos).

@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const title = project.post.es.title ?? portfolio[`${project.key}Title`];
   const description = portfolio[`${project.key}Desc`];
   return {
-    title: `${title} · Ángel Fernández`,
+    title: `${project.post.es.seoTitle ?? title} · Ángel Fernández`,
     description,
     alternates: alternatesFor(`/proyectos/${project.slug}`),
     openGraph: {

@@ -27,7 +27,7 @@ export type PostImage = {
 };
 export type PostBlock = string | { h3: string } | { list: string[] } | { ol: string[] } | PostImage;
 export type PostSection = { heading?: string; blocks: PostBlock[] };
-export type Post = { title?: string; intro?: string; sections: PostSection[] };
+export type Post = { title?: string; seoTitle?: string; intro?: string; sections: PostSection[] };
 
 export type Project = {
   slug: string;
@@ -70,6 +70,7 @@ export const PROJECTS: Project[] = [
     post: {
       es: {
         title: "Prompt Vault: mi bóveda personal de prompts",
+        seoTitle: "Prompt Vault: bóveda personal de prompts",
         intro:
           "Si usas modelos de IA con cierta frecuencia, acabas con prompts buenos repartidos por todas partes. Unos en notas del móvil. Otros en un documento de Google que abriste una vez. Los mejores, claro, perdidos en algún chat antiguo. Yo me hartaba de perder cinco minutos buscando entre capturas y mensajes cada vez que necesitaba uno. Así que me hice una app para tenerlos todos en un sitio.",
         sections: [
@@ -427,6 +428,7 @@ export const PROJECTS: Project[] = [
     post: {
       es: {
         title: "FlexGrip: landing de producto y venta directa",
+        seoTitle: "FlexGrip: landing y venta directa",
         intro:
           "FlexGrip es una tienda online enfocada en la venta de un kit de entrenamiento completo compuesto por cinco bandas elásticas, un handgrip regulable y una bolsa de transporte. La idea de partida era muy clara: ofrecer una web directa donde quien entra entiende al instante la propuesta de valor y puede hacer el pedido sin distracciones.",
         sections: [
@@ -501,6 +503,7 @@ export const PROJECTS: Project[] = [
     post: {
       es: {
         title: "Automatizar el mapeo de impresoras en RDS con PowerShell y Active Directory",
+        seoTitle: "Mapeo de impresoras en RDS con PowerShell",
         intro:
           "En un cliente con varias sedes y más de 30 impresoras, configurar las impresoras a mano cada vez que un usuario iniciaba sesión era insostenible. Cada alta nueva, cada cambio de puesto, cada “se me han borrado las impresoras” significaba conectarse al equipo y añadirlas una a una. Con bandejas, ajustes predefinidos y todo. Multiplica eso por 90 usuarios y ya te imaginas.",
         sections: [

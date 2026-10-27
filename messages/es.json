@@ -86,7 +86,7 @@
     "p1Desc": "Script de PowerShell lanzado por GPO que asigna a cada usuario sus impresoras, bandejas y predeterminada leyendo atributos de Active Directory.",
     "p2Tag": "Desarrollo web",
     "p2Title": "Prompt Vault, bóveda de prompts IA",
-    "p2Desc": "Guarda, organiza y comparte tus prompts y skills de IA en una bóveda personal con categorías y copia rápida.",
+    "p2Desc": "Guarda, organiza y comparte tus prompts y skills de IA en una bóveda personal con categorías, copia rápida, papelera y modo PWA.",
     "p3Tag": "Infraestructura",
     "p3Title": "Homelab personal sobre Proxmox",
     "p3Desc": "Homelab casero para la gestión inteligente del hogar: domótica con Home Assistant, VPN propia, bloqueo de anuncios y backups automáticos en la nube.",
@@ -143,6 +143,9 @@
     "formSending": "Enviando...",
     "formOk": "Mensaje enviado. Te contesto pronto.",
     "formErr": "No se ha podido enviar. Prueba por email.",
+    "formConsentPre": "Al enviar el mensaje aceptas la ",
+    "formConsentLink": "política de privacidad",
+    "formConsentPost": ". Usaré tus datos solo para responderte.",
     "formService": "¿Qué servicio te interesa?",
     "formServicePh": "Elige una opción",
     "formServiceOpt1": "Administración de sistemas",
@@ -154,7 +157,14 @@
     "year": "2026",
     "available": "Disponible para nuevos proyectos",
     "backTop": "Volver arriba",
-    "reply": "Respuesta en 24-48 horas"
+    "reply": "Respuesta en 24-48 horas",
+    "legalNav": "Información legal",
+    "legal": "Aviso legal",
+    "privacy": "Privacidad",
+    "cookies": "Cookies"
+  },
+  "legal": {
+    "updated": "Última revisión:"
   },
   "a11y": {
     "toggleTheme": "Cambiar tema",

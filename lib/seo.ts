@@ -11,17 +11,17 @@
  * Si algún día hay rutas /en/..., se añaden aquí.
  */
 
-import { SITE_URL } from "./site";
+import { LEGAL, SITE_URL } from "./site";
 import type { Project } from "./projects";
 import type { ServiceDetail as Service } from "./services";
 import { BLOG_POSTS, type BlogPost } from "./blog";
 import es from "@/messages/es.json";
 
-export const HOME_TITLE = "Ángel Fernández · Portfolio";
+export const HOME_TITLE = "Ángel Fernández · Sistemas y desarrollo web en Mallorca";
 /** Imagen para redes de la home (1200x630). */
 export const HOME_OG_IMAGE = "/og-home.jpg";
 export const HOME_DESCRIPTION =
-  "Administrador de sistemas y desarrollador web freelance en Palma de Mallorca. Infraestructura IT segura, backups, redes y webs profesionales a medida para empresas y profesionales.";
+  "Administrador de sistemas y desarrollador web freelance en Palma de Mallorca. Infraestructura IT segura, backups, redes y webs a medida para empresas.";
 
 /** Canonical + hreflang de una página (ruta relativa a metadataBase). */
 export function alternatesFor(path: string) {
@@ -31,11 +31,12 @@ export function alternatesFor(path: string) {
 /** Meta description de cada página de servicio, por id. */
 export const SERVICE_DESCRIPTIONS: Record<string, string> = {
   sistemas:
-    "Administración de sistemas en Palma de Mallorca: servidores Windows, virtualización, backup con Nakivo y Veeam, redes Fortinet y Microsoft 365. Infraestructura IT estable y documentada.",
+    "Administración de sistemas en Palma de Mallorca: servidores Windows, virtualización, backup con Nakivo y Veeam, redes Fortinet y Microsoft 365.",
   web: "Desarrollo web profesional en Palma de Mallorca. Webs corporativas, portfolios y aplicaciones a medida con Next.js. Rápidas, responsive y optimizadas para SEO.",
 };
 
 const PERSON_ID = `${SITE_URL}/#person`;
+const BUSINESS_ID = `${SITE_URL}/#business`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 const PERSON_NAME = "Ángel Fernández Garriga";
 
@@ -73,11 +74,30 @@ export function homeJsonLd() {
       publisher: { "@id": PERSON_ID },
     },
     {
+      "@type": "ProfessionalService",
+      "@id": BUSINESS_ID,
+      name: PERSON_NAME,
+      description: HOME_DESCRIPTION,
+      url: SITE_URL,
+      email: LEGAL.email,
+      image: `${SITE_URL}${HOME_OG_IMAGE}`,
+      founder: { "@id": PERSON_ID },
+      areaServed: { "@type": "City", name: "Palma de Mallorca" },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Palma de Mallorca",
+        addressRegion: "Islas Baleares",
+        addressCountry: "ES",
+      },
+      sameAs: ["https://www.linkedin.com/in/angelfernandezgarriga", "https://github.com/4ngel10"],
+    },
+    {
       "@type": "Person",
       "@id": PERSON_ID,
       name: PERSON_NAME,
       jobTitle: ["Administrador de Sistemas", "Desarrollador Web"],
       url: SITE_URL,
+      email: LEGAL.email,
       sameAs: ["https://www.linkedin.com/in/angelfernandezgarriga", "https://github.com/4ngel10"],
       address: {
         "@type": "PostalAddress",
@@ -122,7 +142,7 @@ export function serviceJsonLd(service: Service) {
       serviceType: name,
       description: SERVICE_DESCRIPTIONS[service.id],
       url: `${SITE_URL}${path}`,
-      provider: personRef,
+      provider: { "@id": BUSINESS_ID },
       areaServed: { "@type": "City", name: "Palma de Mallorca" },
     },
     // "Servicios" y "Proyectos" no tienen página propia: apuntan a su sección de la home.

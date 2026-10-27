@@ -21,9 +21,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const post = getBlogPost((await params).slug);
   if (!post) return {};
-  const { title, description } = post.post.es;
+  const { title, seoTitle, description } = post.post.es;
   return {
-    title: `${title} · Ángel Fernández`,
+    title: `${seoTitle ?? title} · Ángel Fernández`,
     description,
     alternates: alternatesFor(`/blog/${post.slug}`),
     openGraph: {

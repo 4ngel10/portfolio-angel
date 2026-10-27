@@ -143,7 +143,7 @@ export function Nav() {
             type="button"
             onClick={toggle}
             aria-label={t("a11y.toggleTheme")}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border transition-colors"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border transition-colors"
             style={{ borderColor: "var(--rule)" }}
           >
             {theme === "dark" ? (
@@ -200,7 +200,7 @@ export function Nav() {
             aria-label={t("a11y.toggleMenu")}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border md:hidden"
             style={{ borderColor: "var(--rule)" }}
           >
             {open ? (

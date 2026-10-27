@@ -113,7 +113,7 @@ export function ServicePage({ id }: { id: string }) {
           </Link>
 
           <div className="mt-10 flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 hover:scale-110 hover:-rotate-6 hover:bg-[var(--accent)] hover:text-white">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 hover:scale-110 hover:-rotate-6 hover:bg-[var(--accent)] hover:text-white dark:hover:text-[#0a0f1c]">
               {SERVICE_ICONS[service.key]}
             </div>
             <span
@@ -242,7 +242,7 @@ export function ServicePage({ id }: { id: string }) {
               style={CARD_BG}
             >
               <span className="flex items-center gap-5">
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 group-hover:-rotate-6 group-hover:bg-[var(--accent)] group-hover:text-white">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 group-hover:-rotate-6 group-hover:bg-[var(--accent)] group-hover:text-white dark:group-hover:text-[#0a0f1c]">
                   {SERVICE_ICONS[other.key]}
                 </span>
                 <span>

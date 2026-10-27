@@ -202,6 +202,10 @@
     background: var(--accent);
     color: #fff;
   }
+  /* Blanco sobre el acento claro (#fb923c) da 2,3:1; tinta oscura da 8:1. */
+  .dark .btn-primary:hover {
+    color: #0a0f1c;
+  }
   .btn-primary:active {
     transform: scale(0.97);
   }

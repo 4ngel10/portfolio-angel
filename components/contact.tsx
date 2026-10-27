@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { WEB3FORMS_KEY } from "@/lib/site";
@@ -125,7 +126,7 @@ export function Contact() {
                     className="group border-rule flex items-center gap-3.5 rounded-xl border p-4 transition-[border-color,transform] duration-200 hover:translate-x-1 hover:border-[var(--accent)]"
                     style={{ background: "var(--bg)" }}
                   >
-                    <span className="bg-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors duration-200 group-hover:bg-[var(--accent)] group-hover:text-white">
+                    <span className="bg-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors duration-200 group-hover:bg-[var(--accent)] group-hover:text-white dark:group-hover:text-[#0a0f1c]">
                       {l.icon}
                     </span>
                     <span className="min-w-0 flex-1">
@@ -281,14 +282,21 @@ export function Contact() {
                   </svg>
                 )}
               </button>
+              <p className="text-muted mt-3 text-[12px] leading-relaxed">
+                {t("contact.formConsentPre")}
+                <Link href="/privacidad" className="underline underline-offset-2 hover:text-[var(--fg)]">
+                  {t("contact.formConsentLink")}
+                </Link>
+                {t("contact.formConsentPost")}
+              </p>
               {/* Región viva siempre presente: así el lector de pantalla anuncia el resultado
                   del envío cuando aparece el texto. */}
               <div role="status" aria-live="polite">
                 {status === "ok" && (
-                  <p className="mt-3 text-[13px] text-emerald-600">{t("contact.formOk")}</p>
+                  <p className="mt-3 text-[13px] text-emerald-700 dark:text-emerald-400">{t("contact.formOk")}</p>
                 )}
                 {status === "err" && (
-                  <p className="mt-3 text-[13px] text-red-600">{t("contact.formErr")}</p>
+                  <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">{t("contact.formErr")}</p>
                 )}
               </div>
             </form>

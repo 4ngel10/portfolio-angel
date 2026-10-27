@@ -86,7 +86,7 @@
     "p1Desc": "GPO-launched PowerShell script that gives each user their printers, trays and default printer by reading Active Directory attributes.",
     "p2Tag": "Web development",
     "p2Title": "Prompt Vault, AI prompt vault",
-    "p2Desc": "Save, organize and share your AI prompts and skills in a personal vault with categories and quick copy.",
+    "p2Desc": "Save, organize and share your AI prompts and skills in a personal vault with categories, quick copy, trash and PWA mode.",
     "p3Tag": "Infrastructure",
     "p3Title": "Personal Proxmox homelab",
     "p3Desc": "Home lab for a smart home: Home Assistant automation, my own VPN, ad blocking and automatic cloud backups.",
@@ -143,6 +143,9 @@
     "formSending": "Sending...",
     "formOk": "Message sent. I'll be in touch soon.",
     "formErr": "Could not send. Try email instead.",
+    "formConsentPre": "By sending the message you accept the ",
+    "formConsentLink": "privacy policy",
+    "formConsentPost": ". I will only use your data to reply to you.",
     "formService": "Which service are you interested in?",
     "formServicePh": "Choose an option",
     "formServiceOpt1": "Systems administration",
@@ -154,7 +157,14 @@
     "year": "2026",
     "available": "Available for new projects",
     "backTop": "Back to top",
-    "reply": "Reply within 24-48 hours"
+    "reply": "Reply within 24-48 hours",
+    "legalNav": "Legal information",
+    "legal": "Legal notice",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
+  },
+  "legal": {
+    "updated": "Last reviewed:"
   },
   "a11y": {
     "toggleTheme": "Toggle theme",

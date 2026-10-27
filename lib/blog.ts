@@ -21,6 +21,8 @@ export type BlogCategory = "sistemas" | "desarrollo" | "automatizacion";
 
 export type BlogPostContent = {
   title: string;
+  /** Título corto para <title> (≤ 42 caracteres + sufijo). Opcional. */
+  seoTitle?: string;
   excerpt: string;
   description: string;
   intro: string;
@@ -45,6 +47,7 @@ export const BLOG_POSTS: BlogPost[] = [
     post: {
       es: {
         title: "Qué debe tener la web de una pyme para conseguir clientes (y qué sobra)",
+        seoTitle: "La web de una pyme que consigue clientes",
         excerpt:
           "Una web de pyme no necesita más páginas, sino menos fricción: qué haces, cómo contactar y pruebas reales. Te cuento qué incluyo y qué dejo fuera.",
         description:
@@ -223,6 +226,7 @@ export const BLOG_POSTS: BlogPost[] = [
     post: {
       es: {
         title: "Backup 3-2-1: qué es y cómo lo aplico en empresas",
+        seoTitle: "Backup 3-2-1: qué es y cómo aplicarlo",
         excerpt:
           "Tres copias, dos soportes y una fuera de la oficina. Te explico la regla 3-2-1 y cómo la monto con Nakivo y Acronis.",
         description:
@@ -395,6 +399,7 @@ export const BLOG_POSTS: BlogPost[] = [
     post: {
       es: {
         title: "Por qué elijo Next.js para webs de clientes",
+        seoTitle: "Por qué uso Next.js en webs de clientes",
         excerpt:
           "Más rápida, más segura y más fácil de mantener que un WordPress con plantilla. Te cuento por qué Next.js es mi opción por defecto.",
         description:

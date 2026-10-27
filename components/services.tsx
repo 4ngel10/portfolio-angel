@@ -67,7 +67,7 @@ export function Services() {
                   0{idx + 1}
                 </span>
                 <div
-                  className="pointer-events-none relative mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color] duration-300 group-hover:bg-[var(--accent)] group-hover:text-white"
+                  className="pointer-events-none relative mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color] duration-300 group-hover:bg-[var(--accent)] group-hover:text-white dark:group-hover:text-[#0a0f1c]"
                   style={{ transform: "translateZ(30px)" }}
                 >
                   <span className="transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6">
