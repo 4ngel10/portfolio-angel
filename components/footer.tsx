@@ -48,7 +48,7 @@ export function Footer() {
           </div>
           <NavLink
             href={home("#contact")}
-            className="group inline-flex items-center gap-2 rounded-xl border border-white/15 px-5 py-3 text-[15px] font-medium text-white transition-[border-color,background-color,transform] duration-200 hover:border-[var(--accent)] hover:bg-[var(--accent)] dark:hover:text-[#0a0f1c] active:scale-[0.97]"
+            className="group inline-flex items-center gap-2 rounded-xl border border-white/15 px-5 py-3 text-[15px] font-medium text-white transition-[border-color,background-color,transform] duration-200 hover:border-[var(--accent)] hover:bg-[var(--accent)] active:scale-[0.97] dark:hover:text-[#0a0f1c]"
           >
             {t("nav.ctaContact")}
             <svg

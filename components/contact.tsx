@@ -284,7 +284,10 @@ export function Contact() {
               </button>
               <p className="text-muted mt-3 text-[12px] leading-relaxed">
                 {t("contact.formConsentPre")}
-                <Link href="/privacidad" className="underline underline-offset-2 hover:text-[var(--fg)]">
+                <Link
+                  href="/privacidad"
+                  className="underline underline-offset-2 hover:text-[var(--fg)]"
+                >
                   {t("contact.formConsentLink")}
                 </Link>
                 {t("contact.formConsentPost")}
@@ -293,10 +296,14 @@ export function Contact() {
                   del envío cuando aparece el texto. */}
               <div role="status" aria-live="polite">
                 {status === "ok" && (
-                  <p className="mt-3 text-[13px] text-emerald-700 dark:text-emerald-400">{t("contact.formOk")}</p>
+                  <p className="mt-3 text-[13px] text-emerald-700 dark:text-emerald-400">
+                    {t("contact.formOk")}
+                  </p>
                 )}
                 {status === "err" && (
-                  <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">{t("contact.formErr")}</p>
+                  <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">
+                    {t("contact.formErr")}
+                  </p>
                 )}
               </div>
             </form>

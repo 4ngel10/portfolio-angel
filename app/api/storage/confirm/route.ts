@@ -40,10 +40,12 @@ export async function POST(request: Request) {
 
   // El tamaño real lo da Storage, no el cliente.
   const nombreEnStorage = path.slice(carpeta.length);
-  const { data: objetos } = await createAdminClient().storage.from("archivos").list(carpeta.slice(0, -1), {
-    search: nombreEnStorage,
-    limit: 1,
-  });
+  const { data: objetos } = await createAdminClient()
+    .storage.from("archivos")
+    .list(carpeta.slice(0, -1), {
+      search: nombreEnStorage,
+      limit: 1,
+    });
   const objeto = objetos?.find((o) => o.name === nombreEnStorage);
   if (!objeto) return NextResponse.json({ error: t("api.neverUploaded") }, { status: 409 });
 
@@ -62,7 +64,11 @@ export async function POST(request: Request) {
   }
 
   // Solo avisa si sube un cliente; los archivos que sube el propio admin no necesitan correo.
-  const { data: perfil } = await supabase.from("usuarios").select("role, nombre").eq("id", user.id).maybeSingle();
+  const { data: perfil } = await supabase
+    .from("usuarios")
+    .select("role, nombre")
+    .eq("id", user.id)
+    .maybeSingle();
   if (perfil?.role === "cliente") {
     const { data: info } = await supabase
       .from("proyectos")
@@ -72,7 +78,11 @@ export async function POST(request: Request) {
     const empresa = (Array.isArray(info?.empresas) ? info.empresas[0] : info?.empresas)?.nombre;
     await avisarAdmin({
       asunto: `[Archivo subido] ${fileName} · ${empresa ?? perfil.nombre}`,
-      datos: [`Empresa: ${empresa ?? "Sin empresa"}`, `Proyecto: ${info?.titulo ?? ""}`, `De: ${perfil.nombre}`],
+      datos: [
+        `Empresa: ${empresa ?? "Sin empresa"}`,
+        `Proyecto: ${info?.titulo ?? ""}`,
+        `De: ${perfil.nombre}`,
+      ],
       ruta: `/admin/proyectos/${proyecto.id}`,
       etiqueta: "Abrir el proyecto",
     });
