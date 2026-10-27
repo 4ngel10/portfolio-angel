@@ -12,7 +12,7 @@ export function NavLinks({
 }) {
   const pathname = usePathname();
   return (
-    <nav aria-label={label} className="flex flex-wrap gap-1">
+    <nav aria-label={label} className="flex flex-wrap gap-1 whitespace-nowrap lg:flex-nowrap">
       {items.map((it) => {
         const activo = it.exact ? pathname === it.href : pathname.startsWith(it.href);
         return (

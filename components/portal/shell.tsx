@@ -44,18 +44,23 @@ export async function Shell({
           >
             <Link href={admin ? "/admin" : "/portal"} className="font-semibold tracking-tight">
               Ángel Fernández
-              <span className="text-muted ml-2 font-normal">
+              <span className="text-muted ml-2 hidden font-normal sm:inline">
                 {admin ? t("common.areaAdmin") : t("common.areaClients")}
               </span>
             </Link>
-            <NavLinks items={items} label={t("common.mainNav")} />
-            <div className="ml-auto flex items-center gap-3 text-sm">
-              <span className="text-muted hidden max-w-[22ch] truncate lg:inline">
-                {perfil.email}
-              </span>
+            {/* Por debajo de lg la navegación baja a su propia fila, completa; a partir de lg
+                comparte fila con la marca y las preferencias. */}
+            <div className="order-last w-full lg:order-none lg:w-auto">
+              <NavLinks items={items} label={t("common.mainNav")} />
+            </div>
+            <div className="ml-auto flex items-center gap-3 text-sm whitespace-nowrap">
               <Prefs />
               <form action={signOut}>
-                <button type="submit" className="btn-secondary !px-3.5 !py-2 !text-sm">
+                <button
+                  type="submit"
+                  title={perfil.email}
+                  className="btn-secondary !px-3.5 !py-2 !text-sm"
+                >
                   {t("common.signOut")}
                 </button>
               </form>
