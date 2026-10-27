@@ -128,7 +128,7 @@ export function Nav() {
           <button
             type="button"
             onClick={() => setLocale(locale === "es" ? "en" : "es")}
-            className="text-muted rounded-full border px-2.5 py-1.5 font-mono text-xs transition-colors hover:text-[var(--fg)]"
+            className="text-muted rounded-full border px-3 py-3 font-mono text-xs transition-colors hover:text-[var(--fg)]"
             style={{ borderColor: "var(--rule)" }}
             aria-label={t("a11y.toggleLanguage")}
           >
@@ -183,12 +183,12 @@ export function Nav() {
           {/* Ruta relativa: vale en localhost y en el dominio de producción. /login manda a cada
               rol a su zona (admin a /admin, cliente a /portal) y, sin sesión, pide el acceso. */}
           <span className="hidden lg:inline-flex">
-            <Link href="/login" className="btn-secondary !px-4 !py-2.5 !text-sm">
+            <Link href="/login" className="btn-secondary !px-4 !py-3 !text-sm">
               {t("nav.ctaClients")}
             </Link>
           </span>
           <span className="hidden md:inline-flex">
-            <NavLink href={home("#contact")} className="btn-primary !px-4 !py-2.5 !text-sm">
+            <NavLink href={home("#contact")} className="btn-primary !px-4 !py-3 !text-sm">
               {t("nav.ctaContact")}
             </NavLink>
           </span>
