@@ -14,7 +14,7 @@ export const SITE_URL = "https://portfolio-angel-vert.vercel.app";
 export const WEB3FORMS_KEY = "cbbda3f8-e741-4a3e-b07f-5a74db4663fa";
 
 /**
- * Datos del titular para el aviso legal (LSSI art. 10). Rellena `nif` y `domicilio` antes de
+ * Datos del titular para el aviso legal (LSSI art. 10). Rellena `nif` antes de
  * publicar: mientras estén vacíos, la página no muestra esas líneas.
  */
 export const LEGAL = {
@@ -22,5 +22,5 @@ export const LEGAL = {
   email: "angelfernandezgarriga@gmail.com",
   localidad: "Palma de Mallorca, Islas Baleares, España",
   nif: "",
-  domicilio: "",
+  domicilio: "Palma de Mallorca, Islas Baleares, España",
 };

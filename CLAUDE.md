@@ -90,7 +90,7 @@ Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slu
 
 ## Páginas legales
 
-`/aviso-legal`, `/privacidad` y `/cookies` (`components/legal-page.tsx`). El texto en ES y EN vive en `lib/legal.ts`; los datos del titular salen de `LEGAL` en `lib/site.ts`. **Pendiente: rellenar `nif` y `domicilio` de `LEGAL`** (mientras estén vacíos no se muestran). No hay banner de cookies porque solo hay cookies técnicas (idioma, tema, sesión de Supabase): si se añade analítica u otro servicio con cookies no esenciales, hace falta banner con "Rechazar" y actualizar `/cookies` y `/privacidad`. El formulario de contacto enlaza a la política de privacidad. Los enlaces legales van en el footer.
+`/aviso-legal`, `/privacidad` y `/cookies` (`components/legal-page.tsx`). El texto en ES y EN vive en `lib/legal.ts`; los datos del titular salen de `LEGAL` en `lib/site.ts`. **Pendiente: rellenar `nif` de `LEGAL`** (mientras estén vacíos no se muestran). No hay banner de cookies porque solo hay cookies técnicas (idioma, tema, sesión de Supabase): si se añade analítica u otro servicio con cookies no esenciales, hace falta banner con "Rechazar" y actualizar `/cookies` y `/privacidad`. El formulario de contacto enlaza a la política de privacidad. Los enlaces legales van en el footer.
 
 ## Páginas de servicio
 

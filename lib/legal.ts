@@ -29,7 +29,9 @@ const UPDATED = "2026-10-27";
 const holderEs = [
   `**Titular:** ${LEGAL.nombre}`,
   ...(LEGAL.nif ? [`**NIF:** ${LEGAL.nif}`] : []),
-  ...(LEGAL.domicilio ? [`**Domicilio:** ${LEGAL.domicilio}`] : [`**Localidad:** ${LEGAL.localidad}`]),
+  ...(LEGAL.domicilio
+    ? [`**Domicilio:** ${LEGAL.domicilio}`]
+    : [`**Localidad:** ${LEGAL.localidad}`]),
   `**Correo electrónico:** ${LEGAL.email}`,
 ];
 const holderEn = [
