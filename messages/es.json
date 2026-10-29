@@ -658,6 +658,7 @@
       "saveChanges": "Guardar cambios",
       "edit": "Editar presupuesto",
       "backToList": "Volver a presupuestos",
+      "downloadPdf": "Descargar PDF",
       "statusTitle": "Estado",
       "statusHelp": "El cliente solo ve el presupuesto cuando lo marcas como enviado. Si lo acepta, lo firma desde su área.",
       "delete": "Eliminar presupuesto",

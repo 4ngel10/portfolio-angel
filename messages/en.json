@@ -658,6 +658,7 @@
       "saveChanges": "Save changes",
       "edit": "Edit quote",
       "backToList": "Back to quotes",
+      "downloadPdf": "Download PDF",
       "statusTitle": "Status",
       "statusHelp": "The client only sees the quote once you mark it as sent. If they accept it, they sign it from their area.",
       "delete": "Delete quote",

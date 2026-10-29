@@ -8,10 +8,12 @@ export async function PresupuestoDocumento({
   presupuesto,
   lineas,
   empresa,
+  pdfHref,
 }: {
   presupuesto: Presupuesto;
   lineas: PresupuestoLinea[];
   empresa?: Empresa;
+  pdfHref: string;
 }) {
   const { t, fecha, fechaHora, euros } = await getI18n();
   const calculo = totales(lineas, presupuesto.descuento, presupuesto.iva);
@@ -24,7 +26,25 @@ export async function PresupuestoDocumento({
           <h2 className="mt-1 text-xl font-semibold tracking-tight">{presupuesto.titulo}</h2>
           {empresa ? <p className="text-muted mt-1 text-sm">{empresa.nombre}</p> : null}
         </div>
-        <EstadoPresupuestoBadge estado={presupuesto.estado} />
+        <div className="flex flex-wrap items-center gap-3">
+          <EstadoPresupuestoBadge estado={presupuesto.estado} />
+          <a href={pdfHref} download className="btn-secondary !px-4 !py-2 !text-sm">
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+            </svg>
+            {t("quotes.downloadPdf")}
+          </a>
+        </div>
       </div>
 
       <dl className="mt-5 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">

@@ -41,7 +41,11 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
       </p>
       <PageHeader title={t("quotes.clientTitle")} />
       <div className="grid gap-6">
-        <PresupuestoDocumento presupuesto={presupuesto} lineas={lineas} />
+        <PresupuestoDocumento
+          presupuesto={presupuesto}
+          lineas={lineas}
+          pdfHref={`/portal/presupuestos/${id}/pdf`}
+        />
         {presupuesto.estado === "enviado" ? <FirmarPresupuesto id={id} /> : null}
       </div>
     </>

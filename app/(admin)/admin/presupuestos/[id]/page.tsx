@@ -115,7 +115,12 @@ export default async function PresupuestoAdminPage({
           </Panel>
         ) : null}
 
-        <PresupuestoDocumento presupuesto={presupuesto} lineas={lineas} empresa={empresa} />
+        <PresupuestoDocumento
+          presupuesto={presupuesto}
+          lineas={lineas}
+          empresa={empresa}
+          pdfHref={`/admin/presupuestos/${id}/pdf`}
+        />
 
         {editable ? (
           <Panel title={t("quotes.edit")}>
