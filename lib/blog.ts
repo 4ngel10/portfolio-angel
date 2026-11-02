@@ -40,6 +40,156 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "vpn-pyme-acceso-remoto",
+    category: "sistemas",
+    date: "2026-11-02",
+    ogImage: "/blog/vpn-pyme-acceso-remoto-og.jpg",
+    post: {
+      es: {
+        title: "VPN para pymes: acceder a la oficina desde fuera sin abrir puertos en el router",
+        seoTitle: "VPN para pymes: acceso remoto seguro",
+        excerpt:
+          "Abrir puertos en el router para trabajar desde casa es cómodo y peligroso. Te explico cómo funciona una VPN y qué necesita una pyme para usarla bien.",
+        description:
+          "VPN para pymes: cómo acceder a la red de la oficina desde fuera sin abrir puertos en el router, cómo funciona en la práctica y qué errores evitar al montarla.",
+        intro:
+          "Cuando alguien necesita entrar al servidor o al escritorio de la oficina desde casa, lo primero que se suele hacer es abrir un puerto en el router. Funciona, pero deja un servicio de tu red visible para cualquiera en Internet. Una VPN resuelve lo mismo con mucho menos riesgo, y no hace falta ser una gran empresa para tenerla.",
+        sections: [
+          {
+            heading: "Por qué no conviene abrir puertos en el router",
+            blocks: [
+              "Un puerto abierto es una puerta al exterior. En cuanto existe, hay escáneres automáticos que lo encuentran y empiezan a probar contraseñas, versiones antiguas y fallos conocidos. No hace falta que seas un objetivo: basta con que la puerta esté ahí.",
+              "Además, cada servicio expuesto es algo más que actualizar y vigilar. Con varios puertos abiertos, el riesgo crece sin que nadie lo note, sobre todo si el equipo no tiene a alguien dedicado a sistemas.",
+              {
+                img: "/blog/vpn-pyme-acceso-remoto/puerto-vs-vpn-es.webp",
+                alt: "Comparativa de dos formas de entrar a la red de la oficina. Con puerto abierto, Internet llega al servidor a través del router y lo ven los escáneres. Con VPN, solo el puerto de la VPN está abierto en el router y entra únicamente quien tiene credencial.",
+                width: 1600,
+                height: 800,
+                caption: "Puerto abierto frente a VPN.",
+              },
+            ],
+          },
+          {
+            heading: "Cómo funciona una VPN en la práctica",
+            blocks: [
+              "Una VPN crea un túnel cifrado entre el dispositivo de la persona (portátil, móvil o tablet) y la red de la oficina. Mientras está conectada, el equipo se comporta como si estuviera dentro: ve el servidor, las carpetas compartidas, las impresoras y puede abrir el escritorio remoto.",
+              "Lo importante es lo que no pasa: los servicios internos ya no se publican en Internet. Solo queda abierto un puerto, el de la propia VPN, y no responde a quien no lleva una clave válida.",
+              "En mi homelab uso WireGuard, una VPN moderna, rápida y muy ligera. Cuando estoy fuera me conecto y el móvil se comporta como si estuviera en casa. Lo cuento en el proyecto [Homelab personal sobre Proxmox](/proyectos/homelab-proxmox). Es el mismo principio que aplicaría a una oficina pequeña.",
+              {
+                img: "/blog/vpn-pyme-acceso-remoto/flujo-vpn-es.webp",
+                alt: "Flujo de acceso con VPN: un portátil o móvil con la app VPN activa se conecta por un túnel cifrado a través de Internet, atraviesa el router por un solo puerto y llega a la red de la oficina, con escritorio remoto, archivos e impresoras.",
+                width: 1600,
+                height: 800,
+                caption: "Recorrido de una conexión desde fuera de la oficina.",
+              },
+            ],
+          },
+          {
+            heading: "Qué necesita una pyme para montarla",
+            blocks: [
+              "No es un proyecto enorme. Estas son las piezas que reviso antes de empezar:",
+              {
+                ol: [
+                  "**Dónde vive la VPN:** el propio router si lo permite, un pequeño servidor o un contenedor en una máquina que ya esté encendida.",
+                  "**Quién necesita entrar:** una lista corta de personas y dispositivos. Cada uno con su propia clave, no una compartida.",
+                  "**A qué debe llegar cada uno:** no todo el mundo necesita ver todo. Se limita el acceso a lo que cada persona usa.",
+                  "**Cómo se da de baja a alguien:** si un portátil se pierde o alguien deja la empresa, se retira su clave y el resto sigue funcionando.",
+                  "**Cómo se conecta el usuario:** una app instalada y configurada una vez, con un solo botón para activar o desactivar.",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "Errores comunes",
+            blocks: [
+              {
+                list: [
+                  "**Compartir una sola clave** entre varias personas: nadie sabe quién se conecta y no se puede retirar a uno sin afectar a todos.",
+                  "**Dejar el escritorio remoto abierto además de la VPN:** se pierde justo lo que se quería ganar.",
+                  "**No actualizar el servidor VPN ni el router.** Que sea seguro no significa que se pueda olvidar.",
+                  "**Dar acceso a toda la red a todos** en lugar de solo a lo necesario.",
+                  "**No tener una copia de la configuración.** Si falla el equipo, hay que volver a repartir las claves. Lo trato en [la regla de copias 3-2-1](/blog/backup-3-2-1).",
+                ],
+              },
+              "Si en tu negocio alguien accede hoy desde fuera con un puerto abierto, es de las primeras cosas que revisaría. Puedes ver qué hago en [sistemas](/servicios/sistemas) o [contarme tu caso](/#contact).",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "VPN for small businesses: reaching the office from outside without opening router ports",
+        seoTitle: "VPN for small businesses: secure remote access",
+        excerpt:
+          "Opening ports on the router to work from home is convenient and risky. Here is how a VPN works and what a small business needs to use it well.",
+        description:
+          "VPN for small businesses: how to reach the office network from outside without opening router ports, how it works in practice and which mistakes to avoid when setting it up.",
+        intro:
+          "When someone needs to reach the office server or desktop from home, the first thing people usually do is open a port on the router. It works, but it leaves a service on your network visible to anyone on the Internet. A VPN does the same job with far less risk, and you do not need to be a big company to have one.",
+        sections: [
+          {
+            heading: "Why you should not open ports on the router",
+            blocks: [
+              "An open port is a door to the outside. As soon as it exists, automated scanners find it and start trying passwords, old versions and known flaws. You do not have to be a target: the door just has to be there.",
+              "On top of that, every exposed service is one more thing to update and watch. With several open ports the risk grows without anyone noticing, especially if the team has nobody dedicated to systems.",
+              {
+                img: "/blog/vpn-pyme-acceso-remoto/puerto-vs-vpn-en.webp",
+                alt: "Comparison of two ways into the office network. With an open port, the Internet reaches the server through the router and scanners can see it. With a VPN, only the VPN port is open on the router and only people with credentials get in.",
+                width: 1600,
+                height: 800,
+                caption: "Open port versus VPN.",
+              },
+            ],
+          },
+          {
+            heading: "How a VPN works in practice",
+            blocks: [
+              "A VPN creates an encrypted tunnel between the person's device (laptop, phone or tablet) and the office network. While it is connected, the device behaves as if it were inside: it sees the server, shared folders and printers, and it can open remote desktop.",
+              "What matters is what no longer happens: internal services are not published on the Internet. Only one port stays open, the VPN's own, and it does not answer anyone without a valid key.",
+              "In my homelab I use WireGuard, a modern, fast and very light VPN. When I am away I connect and my phone behaves as if it were at home. I describe it in the project [Personal homelab on Proxmox](/proyectos/homelab-proxmox). It is the same principle I would apply to a small office.",
+              {
+                img: "/blog/vpn-pyme-acceso-remoto/flujo-vpn-en.webp",
+                alt: "Access flow with a VPN: a laptop or phone with the VPN app on connects through an encrypted tunnel over the Internet, passes the router through a single port and reaches the office network, with remote desktop, files and printers.",
+                width: 1600,
+                height: 800,
+                caption: "Path of a connection from outside the office.",
+              },
+            ],
+          },
+          {
+            heading: "What a small business needs to set it up",
+            blocks: [
+              "It is not a huge project. These are the pieces I check before starting:",
+              {
+                ol: [
+                  "**Where the VPN lives:** the router itself if it allows it, a small server or a container on a machine that is already on.",
+                  "**Who needs to get in:** a short list of people and devices. Each with their own key, not a shared one.",
+                  "**What each person should reach:** not everyone needs to see everything. Access is limited to what each person uses.",
+                  "**How someone is removed:** if a laptop is lost or someone leaves the company, their key is revoked and everyone else keeps working.",
+                  "**How the user connects:** an app installed and set up once, with a single button to turn it on or off.",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "Common mistakes",
+            blocks: [
+              {
+                list: [
+                  "**Sharing a single key** between several people: nobody knows who is connected and you cannot remove one person without affecting everyone.",
+                  "**Leaving remote desktop open as well as the VPN:** you lose exactly what you wanted to gain.",
+                  "**Not updating the VPN server or the router.** Being secure does not mean it can be forgotten.",
+                  "**Giving everyone access to the whole network** instead of only what they need.",
+                  "**Not keeping a copy of the configuration.** If the machine fails, the keys have to be handed out again. I cover this in [the 3-2-1 backup rule](/blog/backup-3-2-1).",
+                ],
+              },
+              "If someone at your business reaches the office from outside through an open port today, it is one of the first things I would review. You can see what I do in [systems](/servicios/sistemas) or [tell me about your case](/#contact).",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
     slug: "web-pyme-que-vende",
     category: "desarrollo",
     date: "2026-10-26",
