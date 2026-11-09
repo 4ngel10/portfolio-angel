@@ -32,7 +32,7 @@ export function alternatesFor(path: string) {
 export const SERVICE_DESCRIPTIONS: Record<string, string> = {
   sistemas:
     "Administración de sistemas en Palma de Mallorca. Copias de seguridad, Microsoft 365, redes, equipos, servidores y soporte IT para autónomos y pymes.",
-  web: "Desarrollo web profesional en Palma de Mallorca. Webs corporativas, portfolios y aplicaciones a medida con Next.js. Rápidas, responsive y optimizadas para SEO.",
+  web: "Desarrollo web a medida para autónomos y pymes, en remoto y en Palma de Mallorca. Webs rápidas y optimizadas para SEO, con dominio, hosting y mantenimiento.",
 };
 
 const PERSON_ID = `${SITE_URL}/#person`;

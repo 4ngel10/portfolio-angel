@@ -15,6 +15,9 @@ const VIEWPORT = { once: true, margin: "0px 0px -10% 0px" } as const;
 /** Lo que tarda en dibujarse la línea de acento (s). */
 const DRAW = 1.2;
 const STEPS = [1, 2, 3, 4, 5, 6];
+
+/** Servicio cuya página muestra el proceso: decide el ejemplo de la maqueta del área de clientes. */
+export type ProcessService = "sistemas" | "web";
 const CLIENT_ITEMS = [1, 2, 3, 4, 5];
 
 const Icon = ({ children }: { children: React.ReactNode }) => (
@@ -40,20 +43,20 @@ const ICONS: Record<number, React.ReactNode> = {
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
     </Icon>
   ),
-  // Documento
+  // Candado
   2: (
+    <Icon>
+      <rect x="3" y="11" width="18" height="11" rx="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </Icon>
+  ),
+  // Documento
+  3: (
     <Icon>
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
       <polyline points="14 2 14 8 20 8" />
       <line x1="16" y1="13" x2="8" y2="13" />
       <line x1="16" y1="17" x2="8" y2="17" />
-    </Icon>
-  ),
-  // Candado
-  3: (
-    <Icon>
-      <rect x="3" y="11" width="18" height="11" rx="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </Icon>
   ),
   // Bandera
@@ -84,7 +87,7 @@ const ICONS: Record<number, React.ReactNode> = {
 };
 
 /** Maqueta decorativa de una tarjeta del área de clientes, con los tokens de la web. */
-function PortalMock() {
+function PortalMock({ service }: { service: ProcessService }) {
   const { t } = useI18n();
   return (
     <div
@@ -95,7 +98,9 @@ function PortalMock() {
       <span className="text-muted absolute top-4 right-5 text-[11px]">
         {t("process.mockSample")}
       </span>
-      <p className="pr-24 text-[17px] font-semibold tracking-tight">{t("process.mockProject")}</p>
+      <p className="pr-24 text-[17px] font-semibold tracking-tight">
+        {t(`process.mock.${service}.project`)}
+      </p>
 
       <div className="mt-5">
         <div className="h-2 w-full rounded-full" style={{ background: "var(--rule)" }}>
@@ -124,7 +129,7 @@ function PortalMock() {
         >
           {t("portal.status.yourTurn")}
         </span>
-        <span className="text-sm">{t("process.mockTask")}</span>
+        <span className="text-sm">{t(`process.mock.${service}.task`)}</span>
       </div>
 
       <div className="border-rule mt-5 flex items-center justify-between gap-4 border-t pt-5 text-sm">
@@ -140,7 +145,7 @@ function PortalMock() {
  * del área de clientes. Desde lg, línea de tiempo horizontal con los 6 pasos en una fila; por
  * debajo, vertical con los nodos a la izquierda. La línea de acento se dibuja una vez al entrar.
  */
-export function Process() {
+export function Process({ service }: { service: ProcessService }) {
   const { t } = useI18n();
 
   return (
@@ -256,7 +261,7 @@ export function Process() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <PortalMock />
+          <PortalMock service={service} />
           <p className="sr-only">{t("process.mockSr")}</p>
         </Reveal>
       </div>

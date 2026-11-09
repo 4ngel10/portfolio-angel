@@ -66,20 +66,20 @@
     "s1b4": "Equipos, servidores y soporte",
     "s2Title": "Desarrollo Web",
     "s2Lead": "Una web sencilla, lista en una semana. Dominio, hosting y mantenimiento de mi cuenta, y base de datos si la necesitas.",
-    "s2b1": "Diseño y desarrollo de páginas profesionales",
-    "s2b2": "Webs corporativas, portfolios y landing pages",
-    "s2b3": "Responsive y optimizado en rendimiento",
-    "s2b4": "Mantenimiento y actualización continua"
+    "s2b1": "Diseño y desarrollo a medida",
+    "s2b2": "Rendimiento y SEO",
+    "s2b3": "Dominio, hosting y despliegue",
+    "s2b4": "Mantenimiento"
   },
   "process": {
     "title": "Cómo trabajo.",
     "lead": "De la primera llamada a la entrega, sabes siempre en qué punto estamos.",
     "s1Title": "Llamada de 15 minutos",
     "s1Text": "Gratis y sin compromiso. Me cuentas qué necesitas y vemos si encajamos.",
-    "s2Title": "Propuesta y presupuesto",
-    "s2Text": "Te envío qué voy a hacer, en qué plazo y cuánto cuesta. Lo aceptas con tu firma desde el área de clientes.",
-    "s3Title": "Tu área de clientes",
-    "s3Text": "Recibes acceso a tu propio espacio, con el proyecto, los archivos y lo que necesito de ti.",
+    "s2Title": "Tu área de clientes",
+    "s2Text": "Te doy acceso a tu propio espacio. Ahí recibes la propuesta y, después, sigues el proyecto, los archivos y lo que necesito de ti.",
+    "s3Title": "Propuesta y presupuesto",
+    "s3Text": "Ves qué voy a hacer, en qué plazo y cuánto cuesta. Si te encaja, lo aceptas con tu firma online.",
     "s4Title": "Trabajo por hitos",
     "s4Text": "Avanzo por etapas y ves en cada momento en qué punto está el proyecto.",
     "s5Title": "Entrega documentada",
@@ -94,19 +94,30 @@
     "client5": "Tu bolsa de horas, siempre al día",
     "signIn": "¿Ya eres cliente? Entra en tu área",
     "mockSample": "Vista de ejemplo",
-    "mockProject": "Migración del correo",
     "mockProgress": "3 de 5 hitos",
-    "mockTask": "Revisar el plan de copias",
     "mockHours": "Bolsa de horas",
     "mockHoursValue": "12 h disponibles",
-    "mockSr": "Ejemplo del área de clientes con el avance de un proyecto, una tarea pendiente y la bolsa de horas."
+    "mockSr": "Ejemplo del área de clientes con el avance de un proyecto, una tarea pendiente y la bolsa de horas.",
+    "mock": {
+      "sistemas": {
+        "project": "Migración del correo",
+        "task": "Revisar el plan de copias"
+      },
+      "web": {
+        "project": "Web de tu negocio",
+        "task": "Revisar los textos de la portada"
+      }
+    }
   },
   "servicesPage": {
     "back": "Volver a servicios",
     "more": "Más información",
     "other": "Otro servicio",
     "callNote": "Empezamos con una llamada gratuita de 15 minutos.",
-    "casesTitle": "Casos reales."
+    "casesTitle": "Casos reales.",
+    "projectsTitle": "Proyectos reales.",
+    "thisSiteTitle": "Esta misma web",
+    "thisSiteText": "Bilingüe, con modo claro y oscuro, y un área de clientes con presupuestos que se firman online."
   },
   "portfolio": {
     "title": "Proyectos.",

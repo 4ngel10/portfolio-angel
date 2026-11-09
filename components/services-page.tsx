@@ -8,6 +8,7 @@ import { TiltCard } from "./tilt-card";
 import { Inline } from "./project-article";
 import { Process } from "./process";
 import { RealCases } from "./real-cases";
+import { RealProjects } from "./real-projects";
 import { SERVICE_ICONS } from "./service-icons";
 import { useI18n } from "@/lib/i18n";
 import { SERVICES, getService } from "@/lib/services";
@@ -187,6 +188,14 @@ export function ServicePage({ id }: { id: string }) {
         </section>
       )}
 
+      {service.projects && (
+        <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
+          <div className="mx-auto max-w-6xl px-6 md:px-8">
+            <RealProjects title={t("servicesPage.projectsTitle")} items={service.projects} />
+          </div>
+        </section>
+      )}
+
       {modes && (
         <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
           <div className="mx-auto max-w-6xl px-6 md:px-8">
@@ -222,7 +231,7 @@ export function ServicePage({ id }: { id: string }) {
       )}
 
       <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
-        <Process />
+        <Process service={service.id === "web" ? "web" : "sistemas"} />
       </section>
 
       {faq && (

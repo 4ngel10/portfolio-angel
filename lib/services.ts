@@ -33,6 +33,8 @@ export type ServiceDetail = {
   groups: Record<Locale, ServiceGroup[]>;
   /** Secciones opcionales, de momento solo en sistemas: casos reales, modalidades y preguntas. */
   showCases?: boolean;
+  /** Proyectos reales: slugs de PROJECTS, y "self" para la card de esta misma web. */
+  projects?: string[];
   modes?: Record<Locale, { title: string; lead: string; note: string; items: ServiceMode[] }>;
   faq?: Record<Locale, { title: string; items: ServiceFaq[] }>;
 };
@@ -348,75 +350,81 @@ export const SERVICES: ServiceDetail[] = [
     key: "s2",
     intro: {
       es: [
-        "Diseño y desarrollo webs profesionales para empresas y autónomos que buscan una presencia online cuidada, rápida y fácil de mantener, sin plantillas infladas ni letra pequeña.",
-        "Trabajo como desarrollador web freelance, lo que significa que tratas de forma directa y sin intermediarios con la misma persona. Me ocupo de todo el proceso, desde el diseño inicial hasta la gestión del dominio, el despliegue y el mantenimiento posterior. Al venir del mundo de los sistemas, garantizo que la infraestructura técnica y la seguridad que no se ven también quedan perfectamente resueltas, trabajes desde donde trabajes.",
+        "Diseño y desarrollo webs a medida para autónomos, pymes y negocios que empiezan. Una web sencilla puede estar lista en una semana, y me encargo del dominio, el hosting y el mantenimiento.",
+        "Tratas siempre con la misma persona, de la primera idea a la publicación. Y como también soy administrador de sistemas, la parte que no se ve, el servidor, la seguridad y las copias, queda igual de bien resuelta.",
       ],
       en: [
-        "I design and build professional websites for companies and freelancers looking for a polished, fast and easy-to-maintain online presence, with no bloated templates and no fine print.",
-        "I work as a freelance web developer, which means you deal directly, with no middlemen, with the same person. I take care of the whole process, from the initial design to domain management, deployment and ongoing maintenance. Coming from the world of systems, I make sure the technical infrastructure and the security you do not see are also perfectly taken care of, wherever you work from.",
+        "I design and build custom websites for freelancers, small businesses and new ventures. A simple site can be ready in a week, and I take care of the domain, hosting and maintenance.",
+        "You always deal with the same person, from the first idea to launch. And since I'm also a systems administrator, the part you don't see, the server, security and backups, is just as well looked after.",
       ],
     },
     closing: {
-      es: "¿Quieres crear la página web de tu empresa en Mallorca o renovar la que tienes? Cuéntame qué necesitas y te respondo en 24 a 48 horas con una propuesta clara, sin compromiso.",
-      en: "Want to build your company website in Mallorca or refresh the one you have? Tell me what you need and I will reply within 24 to 48 hours with a clear proposal, no strings attached.",
+      es: "¿Quieres crear la web de tu negocio o renovar la que tienes? Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
+      en: "Want to build your business website or refresh the one you have? We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
     },
     groups: {
       es: [
         {
           id: "diseno",
           title: "Diseño y desarrollo a medida",
+          lead: "Una web propia, pensada para tu negocio y para que te contacten.",
           items: [
-            "Webs corporativas, portfolios, landing pages, tiendas o webs para restaurantes adaptadas a cada tipo de negocio.",
-            "Diseño propio para cada proyecto, sin plantillas genéricas ni elementos innecesarios.",
-            "Desarrollo con código moderno utilizando tecnologías como Next.js, Astro y TypeScript para conseguir una web rápida, fácil de mantener y lista para crecer. Te cuento [por qué lo elijo](/blog/por-que-nextjs).",
+            "Webs corporativas, landing pages, tiendas online o webs para restaurantes.",
+            "Diseño propio para cada proyecto, sin plantillas genéricas.",
+            "Hecha con Next.js y TypeScript, rápida y fácil de mantener. Te cuento [por qué lo elijo](/blog/por-que-nextjs).",
           ],
           tools: ["Next.js", "TypeScript", "React", "Tailwind CSS"],
         },
         {
-          id: "aplicaciones",
-          title: "Aplicaciones web",
-          items: [
-            "Apps con inicio de sesión, base de datos y datos sincronizados en la nube.",
-            "Aplicaciones instalables en el móvil (PWA) que funcionan como una app nativa.",
-            "Un ejemplo real: [Prompt Vault](/proyectos/prompt-vault), mi bóveda de prompts con React y Supabase.",
-          ],
-          tools: ["React", "Supabase", "PWA"],
-        },
-        {
           id: "rendimiento",
           title: "Rendimiento y SEO",
+          lead: "Rápida en el móvil y lista para que te encuentren en Google.",
           items: [
-            "Webs responsive que se ven bien en móvil, tablet y escritorio.",
-            "Optimizadas para cargar rápido.",
-            "SEO técnico: títulos y descripciones, sitemap, y vistas previas cuidadas al compartir en redes.",
+            "Se ve bien en móvil, tablet y escritorio.",
+            "Carga rápida, que también cuenta para Google.",
+            "Títulos, descripciones, sitemap y vistas previas cuidadas al compartir en redes.",
           ],
         },
         {
           id: "despliegue",
           title: "Dominio, hosting y despliegue",
+          lead: "Tú no te preocupas de la parte técnica, me encargo yo.",
           items: [
-            "Gestión completa del dominio con configuración de DNS y certificados SSL para garantizar conexiones seguras.",
-            "Despliegue en plataformas como Vercel o servidores VPS propios con Nginx o Apache según la escala del proyecto.",
-            "Configuración de despliegue continuo mediante control de versiones, permitiendo actualizar la web automáticamente en producción a cada cambio.",
+            "Registro del dominio, DNS y certificado SSL para una conexión segura.",
+            "Publicación en Vercel o en un servidor propio, según lo que necesite el proyecto.",
+            "Cada cambio se publica solo, sin tocar nada a mano en producción.",
           ],
           tools: ["Vercel", "Nginx", "Apache", "GitLab"],
         },
         {
-          id: "detalles",
-          title: "Detalles que marcan la diferencia",
+          id: "mantenimiento",
+          title: "Mantenimiento",
+          lead: "Tu web siempre al día, con alguien que la conoce y responde rápido.",
           items: [
-            "Desarrollo webs multiidioma preparadas para llegar a cualquier público de forma clara.",
-            "Integración de modo claro y oscuro adaptado a las preferencias del usuario o de su sistema.",
-            "Accesibilidad garantizada cuidando el contraste de color, la navegación por teclado y el respeto por el rendimiento visual.",
+            "Cambios de textos, fotos y contenido cuando lo necesites.",
+            "Actualizaciones y mejoras periódicas.",
+            "Un contacto directo que conoce el proyecto a fondo.",
           ],
         },
         {
-          id: "mantenimiento",
-          title: "Mantenimiento",
+          id: "aplicaciones",
+          title: "Aplicaciones web",
+          lead: "Cuando necesitas algo más que una web, con usuarios y datos.",
           items: [
-            "Actualizaciones continuas, ajustes de contenido y mejoras periódicas para mantener la web siempre al día.",
-            "Renovación y optimización de imágenes, fotografías y vídeos corporativos según las necesidades de la empresa.",
-            "Un contacto directo que conoce a fondo el proyecto y responde rápido cuando necesitas cualquier cambio.",
+            "Apps con inicio de sesión y base de datos, y me encargo también del servidor.",
+            "Instalables en el móvil (PWA), como una app normal.",
+            "Un ejemplo real es [Prompt Vault](/proyectos/prompt-vault), hecho con React y Supabase.",
+          ],
+          tools: ["React", "Supabase", "PWA"],
+        },
+        {
+          id: "detalles",
+          title: "Detalles que marcan la diferencia",
+          lead: "Lo que muchas webs olvidan y tus clientes notan.",
+          items: [
+            "Web en varios idiomas para llegar a más clientes.",
+            "Modo claro y oscuro según la preferencia de cada visitante.",
+            "Accesible, con buen contraste y navegable con teclado.",
           ],
         },
       ],
@@ -424,61 +432,184 @@ export const SERVICES: ServiceDetail[] = [
         {
           id: "diseno",
           title: "Custom design and development",
+          lead: "A website of your own, built for your business and to get you contacted.",
           items: [
-            "Corporate websites, portfolios, landing pages, online stores or restaurant websites adapted to each type of business.",
-            "A design of its own for each project, with no generic templates or unnecessary elements.",
-            "Development with modern code using technologies such as Next.js, Astro and TypeScript to deliver a website that is fast, easy to maintain and ready to grow. Here is [why I choose it](/blog/por-que-nextjs).",
+            "Company sites, landing pages, online stores or restaurant websites.",
+            "An original design for each project, no generic templates.",
+            "Built with Next.js and TypeScript, fast and easy to maintain. Here's [why I choose it](/blog/por-que-nextjs).",
           ],
           tools: ["Next.js", "TypeScript", "React", "Tailwind CSS"],
         },
         {
-          id: "aplicaciones",
-          title: "Web applications",
-          items: [
-            "Apps with sign-in, a database and data synced to the cloud.",
-            "Installable mobile apps (PWA) that behave like native apps.",
-            "A real example: [Prompt Vault](/proyectos/prompt-vault), my prompt vault built with React and Supabase.",
-          ],
-          tools: ["React", "Supabase", "PWA"],
-        },
-        {
           id: "rendimiento",
           title: "Performance and SEO",
+          lead: "Fast on mobile and ready to be found on Google.",
           items: [
-            "Responsive websites that look right on phone, tablet and desktop.",
-            "Optimized to load fast.",
-            "Technical SEO: titles and descriptions, sitemap, and polished previews when shared on social media.",
+            "Looks right on phone, tablet and desktop.",
+            "Loads fast, which Google rewards too.",
+            "Titles, descriptions, sitemap and polished previews when shared on social media.",
           ],
         },
         {
           id: "despliegue",
           title: "Domain, hosting and deployment",
+          lead: "You don't worry about the technical side, I handle it.",
           items: [
-            "Full domain management with DNS configuration and SSL certificates to guarantee secure connections.",
-            "Deployment on platforms such as Vercel or your own VPS servers with Nginx or Apache, depending on the scale of the project.",
-            "Continuous deployment set up through version control, so the website updates automatically in production with every change.",
+            "Domain registration, DNS and SSL certificate for a secure connection.",
+            "Hosted on Vercel or your own server, depending on what the project needs.",
+            "Every change goes live automatically, with no manual steps in production.",
           ],
           tools: ["Vercel", "Nginx", "Apache", "GitLab"],
         },
         {
-          id: "detalles",
-          title: "Details that make the difference",
+          id: "mantenimiento",
+          title: "Maintenance",
+          lead: "Your website always up to date, with someone who knows it and replies fast.",
           items: [
-            "I build multi-language websites ready to reach any audience clearly.",
-            "Integration of light and dark mode adapted to the preferences of the user or their system.",
-            "Guaranteed accessibility, with care for color contrast, keyboard navigation and respect for visual performance.",
+            "Text, photo and content changes whenever you need them.",
+            "Regular updates and improvements.",
+            "A direct contact who knows the project inside out.",
           ],
         },
         {
-          id: "mantenimiento",
-          title: "Maintenance",
+          id: "aplicaciones",
+          title: "Web applications",
+          lead: "When you need more than a website, with users and data.",
           items: [
-            "Continuous updates, content adjustments and regular improvements to keep the website always up to date.",
-            "Renewal and optimization of images, photographs and corporate videos according to the company's needs.",
-            "A direct contact who knows the project in depth and responds quickly whenever you need any change.",
+            "Apps with sign-in and a database, and I look after the server too.",
+            "Installable on your phone (PWA), just like a regular app.",
+            "A real example is [Prompt Vault](/proyectos/prompt-vault), built with React and Supabase.",
+          ],
+          tools: ["React", "Supabase", "PWA"],
+        },
+        {
+          id: "detalles",
+          title: "Details that make the difference",
+          lead: "What many websites forget and your customers notice.",
+          items: [
+            "Multilingual site to reach more customers.",
+            "Light and dark mode based on each visitor's preference.",
+            "Accessible, with good contrast and full keyboard navigation.",
           ],
         },
       ],
+    },
+    projects: ["flexgrip", "prompt-vault", "self"],
+    modes: {
+      es: {
+        title: "Cómo podemos trabajar.",
+        lead: "Me adapto a lo que necesites. Estas son las formas más habituales.",
+        note: "En remoto desde el primer día. Presencial en Mallorca y en cualquier otro lugar, con el desplazamiento por cuenta del cliente.",
+        items: [
+          {
+            title: "Web nueva",
+            text: "Diseño y desarrollo desde cero, con presupuesto antes de empezar.",
+          },
+          {
+            title: "Renovación",
+            text: "Rehago tu web actual para que se vea mejor, cargue más rápido y se encuentre en Google.",
+          },
+          {
+            title: "Landing page",
+            text: "Una página única para un producto, un servicio o una campaña, pensada para que te contacten.",
+          },
+          {
+            title: "Tienda online",
+            text: "Venta online con pago seguro por Stripe, como en FlexGrip.",
+          },
+          {
+            title: "Mantenimiento",
+            text: "Cambios y mejoras cuando los necesites, también con bolsa de horas.",
+          },
+          {
+            title: "Aplicación a medida",
+            text: "Primero estudiamos si es viable y qué necesitas, y después la desarrollo.",
+          },
+        ],
+      },
+      en: {
+        title: "How we can work together.",
+        lead: "I adapt to what you need. These are the most common options.",
+        note: "Remote from day one. On site in Mallorca and anywhere else, with travel costs covered by the client.",
+        items: [
+          {
+            title: "New website",
+            text: "Designed and built from scratch, quoted before we start.",
+          },
+          {
+            title: "Redesign",
+            text: "I rebuild your current site so it looks better, loads faster and gets found on Google.",
+          },
+          {
+            title: "Landing page",
+            text: "A single page for a product, service or campaign, built to get you contacted.",
+          },
+          {
+            title: "Online store",
+            text: "Online sales with secure Stripe checkout, like FlexGrip.",
+          },
+          {
+            title: "Maintenance",
+            text: "Changes and improvements whenever you need them, also with an hour bank.",
+          },
+          {
+            title: "Custom application",
+            text: "First we look at whether it's feasible and what you need, then I build it.",
+          },
+        ],
+      },
+    },
+    faq: {
+      es: {
+        title: "Preguntas frecuentes.",
+        items: [
+          {
+            q: "¿Cuánto tardas en hacer una web?",
+            a: "Una web sencilla, alrededor de una semana. Si es más grande, te doy el plazo en el presupuesto.",
+          },
+          {
+            q: "¿Cuánto cuesta?",
+            a: "Depende de lo que necesites. Tras la llamada gratuita de 15 minutos te envío un presupuesto, sin compromiso.",
+          },
+          {
+            q: "¿Te encargas del dominio y el hosting?",
+            a: "Sí. Lo registro, lo configuro y lo mantengo, para que no tengas que preocuparte de nada.",
+          },
+          {
+            q: "¿Qué pasa después de publicarla?",
+            a: "Puedo encargarme del mantenimiento, con cambios y mejoras cuando los necesites o con una bolsa de horas.",
+          },
+          {
+            q: "¿Puedes renovar mi web actual?",
+            a: "Sí. Reviso la que tienes y te propongo qué mantener y qué mejorar.",
+          },
+        ],
+      },
+      en: {
+        title: "FAQ.",
+        items: [
+          {
+            q: "How long does a website take?",
+            a: "A simple site takes about a week. For bigger projects, the timeline comes with the quote.",
+          },
+          {
+            q: "How much does it cost?",
+            a: "It depends on what you need. After the free 15-minute call I send you a quote, with no obligation.",
+          },
+          {
+            q: "Do you handle the domain and hosting?",
+            a: "Yes. I register it, set it up and maintain it, so you don't have to worry about a thing.",
+          },
+          {
+            q: "What happens after launch?",
+            a: "I can take care of maintenance, with changes and improvements when you need them or with an hour bank.",
+          },
+          {
+            q: "Can you redesign my current website?",
+            a: "Yes. I review what you have and suggest what to keep and what to improve.",
+          },
+        ],
+      },
     },
   },
 ];
