@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { CountUp } from "./count-up";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
@@ -105,19 +104,6 @@ export function About() {
             <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p2")}</p>
           </RevealItem>
         </RevealGroup>
-
-        <Reveal className="mt-6 max-w-3xl">
-          <p className="text-muted text-[15px]">
-            {t("about.alsoPre")}
-            <Link
-              href="/proyectos/mapeo-impresoras-rds"
-              className="text-ink underline decoration-[var(--accent)] underline-offset-4 transition-colors hover:text-[var(--accent)]"
-            >
-              {t("about.alsoLink")}
-            </Link>
-            {t("about.alsoPost")}
-          </p>
-        </Reveal>
 
         <div className="mt-16">
           <Reveal>
