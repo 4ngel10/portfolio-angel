@@ -16,6 +16,7 @@ import {
   hoyMadrid,
   porCategoria,
   rangoPeriodo,
+  resumenCaja,
   serieMensual,
   sumarDias,
 } from "@/lib/portal/finanzas";
@@ -55,15 +56,10 @@ export default async function ResumenFinanzasPage({
   ]);
   const nombre = Object.fromEntries(empresas.map((e) => [e.id, e.nombre]));
 
-  const enPeriodo = <T extends { fecha: string }>(filas: T[]) =>
-    filas.filter((f) => f.fecha >= desde && f.fecha <= hasta);
-  const pagosPeriodo = enPeriodo(pagos);
-  const gastosPeriodo = enPeriodo(gastos);
+  const gastosPeriodo = gastos.filter((g) => g.fecha >= desde && g.fecha <= hasta);
 
   // Caja: el ingreso cuenta cuando se cobra; lo pendiente es siempre el total vivo.
-  const cobrado = redondear(pagosPeriodo.reduce((s, p) => s + p.importe, 0));
-  const gastado = redondear(gastosPeriodo.reduce((s, g) => s + g.importe, 0));
-  const resultado = redondear(cobrado - gastado);
+  const { cobrado, gastado, resultado } = resumenCaja(pagos, gastos, desde, hasta);
   const abiertos = cobros.filter((c) => ["pendiente", "parcial", "vencido"].includes(c.estado));
   const pendiente = redondear(abiertos.reduce((s, c) => s + c.pendiente, 0));
   const vencidos = abiertos
@@ -93,7 +89,12 @@ export default async function ResumenFinanzasPage({
       <dl className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
         <KpiTile label={t("finance.summary.collected")} value={euros(cobrado)} />
         <KpiTile label={t("finance.summary.spent")} value={euros(gastado)} />
-        <KpiTile label={t("finance.summary.result")} value={`${signo}${euros(resultado)}`} />
+        <KpiTile
+          label={t("finance.summary.result")}
+          value={`${signo}${euros(resultado)}`}
+          positivo={resultado > 0}
+          aviso={resultado < 0}
+        />
         <KpiTile
           label={t("finance.summary.pending")}
           value={euros(pendiente)}

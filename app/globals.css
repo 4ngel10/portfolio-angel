@@ -18,6 +18,8 @@
   --color-field: #8c867c;
   --color-chip: #efece6;
   --color-accent: #c2410c;
+  /* Verde suave para cifras positivas (resultado). AA sobre paper y paper-alt. */
+  --color-positive: #166534;
 
   --color-paper-dark: #0a0f1c;
   --color-paper-alt-dark: #0f1629;
@@ -27,6 +29,7 @@
   --color-field-dark: #64748b;
   --color-chip-dark: #0a0f1c;
   --color-accent-dark: #fb923c;
+  --color-positive-dark: #4ade80;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -42,6 +45,7 @@
     --field: var(--color-field);
     --chip: var(--color-chip);
     --accent: var(--color-accent);
+    --positive: var(--color-positive);
   }
 
   :root.dark {
@@ -54,6 +58,7 @@
     --field: var(--color-field-dark);
     --chip: var(--color-chip-dark);
     --accent: var(--color-accent-dark);
+    --positive: var(--color-positive-dark);
   }
 
   html {

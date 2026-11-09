@@ -6,6 +6,9 @@ import {
   formatDate,
   formatDateTime,
   formatEuros,
+  formatHoras,
+  formatMes,
+  formatNumero,
   isLocale,
   translate,
   type PortalLocale,
@@ -38,5 +41,8 @@ export async function getI18n() {
   const fecha = (iso: string | null | undefined) => formatDate(iso, locale);
   const fechaHora = (iso: string | null | undefined) => formatDateTime(iso, locale);
   const euros = (n: number) => formatEuros(n, locale);
-  return { locale, t, fecha, fechaHora, euros };
+  const num = (n: number) => formatNumero(n, locale);
+  const horas = (n: number) => formatHoras(n, locale);
+  const mes = (m: string) => formatMes(m, locale);
+  return { locale, t, fecha, fechaHora, euros, num, horas, mes };
 }
