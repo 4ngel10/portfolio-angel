@@ -57,7 +57,7 @@ export default async function CobroPage({
   const editando = (await searchParams).editar === "1";
   const hoy = hoyMadrid();
   const { pagado, pendiente, estado } = resumenCobro(cobro, pagos, hoy);
-  const [empresas, proyectos] = await Promise.all([listarEmpresas(), listarProyectos()]);
+  const [empresas, proyectos] = await Promise.all([listarEmpresas({ todas: true }), listarProyectos()]);
   const empresa = empresas.find((e) => e.id === cobro.empresa_id);
   const proyecto = proyectos.find((p) => p.id === cobro.proyecto_id);
 
@@ -206,7 +206,7 @@ export default async function CobroPage({
       {editando ? (
         <Panel title={t("finance.collections.edit")} className="mb-6">
           <FormCobro
-            empresas={empresas.map((e) => ({ id: e.id, nombre: e.nombre }))}
+            empresas={empresas.filter((e) => !e.archivada_at || e.id === cobro.empresa_id).map((e) => ({ id: e.id, nombre: e.nombre }))}
             proyectos={proyectos.map((p) => ({
               id: p.id,
               nombre: p.titulo,

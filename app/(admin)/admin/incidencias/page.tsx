@@ -36,12 +36,14 @@ export default async function IncidenciasAdminPage({
     listarProyectos(),
   ]);
   const empresa = isUuid(q.empresa) && empresas.some((e) => e.id === q.empresa) ? q.empresa : "";
+  const activas = new Set(empresas.map((e) => e.id));
   const titulos = Object.fromEntries(proyectos.map((p) => [p.id, p.titulo]));
 
   // Las abiertas primero, luego las demás; dentro de cada grupo, por prioridad y antigüedad.
   const filtradas = incidencias
     .filter(
       (i) =>
+        activas.has(i.empresa_id) &&
         (!estado || i.estado === estado) &&
         (!prioridad || i.prioridad === prioridad) &&
         (!empresa || i.empresa_id === empresa),

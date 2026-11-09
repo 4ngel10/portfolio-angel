@@ -24,6 +24,10 @@ export type Empresa = {
   ubicacion: string | null;
   telefono: string | null;
   web: string | null;
+  /** Cliente archivado: nulo = activo. */
+  archivada_at: string | null;
+  /** Personas que se desactivaron al archivar, para restaurar solo esas. */
+  archivo_desactivadas: string[] | null;
   created_at: string;
 };
 

@@ -50,6 +50,13 @@
       "when": 1794233145258,
       "tag": "0006_usuario_idioma",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794259252230,
+      "tag": "0007_empresa_archivada",
+      "breakpoints": true
     }
   ]
 }

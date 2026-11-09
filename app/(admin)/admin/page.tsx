@@ -52,12 +52,12 @@ export default async function AdminPage() {
 
   const [
     empresas,
-    proyectos,
-    bolsas,
-    { incidencias },
+    todosProyectos,
+    todasBolsas,
+    { incidencias: todasIncidencias },
     cobros,
-    presupuestos,
-    sinRespuesta,
+    todosPresupuestos,
+    todasSinRespuesta,
     pagos,
     gastos,
   ] = await Promise.all([
@@ -72,11 +72,20 @@ export default async function AdminPage() {
     listarGastos(),
   ]);
 
+  // Los clientes archivados no salen en el Resumen ni en "Pendiente de ti". Sus cobros y pagos
+  // pasados siguen contando en la línea "Este mes" y en Finanzas.
+  const activas = new Set(empresas.map((e) => e.id));
+  const proyectos = todosProyectos.filter((p) => activas.has(p.empresa_id));
+  const bolsas = todasBolsas.filter((b) => activas.has(b.empresa_id));
+  const incidencias = todasIncidencias.filter((i) => activas.has(i.empresa_id));
+  const presupuestos = todosPresupuestos.filter((p) => activas.has(p.empresa_id));
+  const sinRespuesta = todasSinRespuesta.filter((s) => activas.has(s.incidencia.empresa_id));
+
   // Pendiente de cobro: todo lo que sigue sin pagar y no está anulado, venza cuando venza.
   const abiertos = cobros.filter((c) => ["pendiente", "parcial", "vencido"].includes(c.estado));
   const pendienteCobro = redondear(abiertos.reduce((s, c) => s + c.pendiente, 0));
   const vencidos = abiertos
-    .filter((c) => c.estado === "vencido")
+    .filter((c) => c.estado === "vencido" && activas.has(c.cobro.empresa_id))
     .map((c) => ({ ...c, dias: diasEntre(c.cobro.fecha_vencimiento!, hoy) }))
     .sort((a, b) => b.dias - a.dias);
 

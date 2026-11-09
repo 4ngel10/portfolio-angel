@@ -39,7 +39,7 @@ export default async function ProyectosAdminPage({
   const { t, fecha } = await getI18n();
   const [todos, empresas, hitos, libres] = await Promise.all([
     listarProyectos(),
-    listarEmpresas(),
+    listarEmpresas({ todas: true }),
     listarHitos(),
     presupuestosSinProyecto(),
   ]);
@@ -134,7 +134,7 @@ export default async function ProyectosAdminPage({
             >
               <div className="grid gap-3">
                 <EmpresaPresupuesto
-                  empresas={empresas.map((e) => ({ id: e.id, nombre: e.nombre }))}
+                  empresas={empresas.filter((e) => !e.archivada_at).map((e) => ({ id: e.id, nombre: e.nombre }))}
                   presupuestos={libres.map((p) => ({
                     id: p.id,
                     empresa_id: p.empresa_id,

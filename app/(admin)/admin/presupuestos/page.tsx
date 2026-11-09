@@ -17,7 +17,7 @@ export default async function PresupuestosAdminPage() {
   const [presupuestos, lineas, empresas] = await Promise.all([
     listarPresupuestos(),
     listarLineasPresupuesto(),
-    listarEmpresas(),
+    listarEmpresas({ todas: true }),
   ]);
   const nombre = Object.fromEntries(empresas.map((e) => [e.id, e.nombre]));
   const totalDe = (p: (typeof presupuestos)[number]) =>

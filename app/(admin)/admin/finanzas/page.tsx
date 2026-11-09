@@ -52,7 +52,7 @@ export default async function ResumenFinanzasPage({
     listarPagos(),
     listarGastos(),
     listarSuscripciones(),
-    listarEmpresas(),
+    listarEmpresas({ todas: true }),
   ]);
   const nombre = Object.fromEntries(empresas.map((e) => [e.id, e.nombre]));
 

@@ -34,7 +34,7 @@ export async function GET(request: Request) {
   const rango = { desde: desdeParam || undefined, hasta: hastaParam || undefined };
 
   const { t } = await getI18n();
-  const [empresas, proyectos] = await Promise.all([listarEmpresas(), listarProyectos()]);
+  const [empresas, proyectos] = await Promise.all([listarEmpresas({ todas: true }), listarProyectos()]);
   const cliente = Object.fromEntries(empresas.map((e) => [e.id, e.nombre]));
   const proyecto = Object.fromEntries(proyectos.map((p) => [p.id, p.titulo]));
   const col = (clave: string, titulo: string): ColumnaCsv => ({ clave, titulo });

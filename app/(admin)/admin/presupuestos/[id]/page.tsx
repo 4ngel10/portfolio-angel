@@ -38,7 +38,7 @@ export default async function PresupuestoAdminPage({
 
   const [lineas, empresas, cobros, { data: proyectoQ }] = await Promise.all([
     listarLineasPresupuesto([id]),
-    listarEmpresas(),
+    listarEmpresas({ todas: true }),
     cobrosConEstado({ presupuestoId: id }),
     supabase.from("proyectos").select("id, titulo").eq("presupuesto_id", id).maybeSingle(),
   ]);
@@ -137,7 +137,7 @@ export default async function PresupuestoAdminPage({
         {editable ? (
           <Panel title={t("quotes.edit")}>
             <PresupuestoForm
-              empresas={empresas.map((e) => ({ id: e.id, nombre: e.nombre }))}
+              empresas={empresas.filter((e) => !e.archivada_at || e.id === presupuesto.empresa_id).map((e) => ({ id: e.id, nombre: e.nombre }))}
               hoy={hoy}
               inicial={{
                 id,

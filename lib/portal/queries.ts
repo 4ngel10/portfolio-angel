@@ -37,9 +37,15 @@ export async function listarHitos(proyectoIds?: string[]): Promise<Hito[]> {
   return (data ?? []) as Hito[];
 }
 
-export async function listarEmpresas(): Promise<Empresa[]> {
+/**
+ * Empresas activas (listas, selectores, Resumen). Con `todas` también las archivadas: hace
+ * falta para poner nombre a los cobros, presupuestos y proyectos que conservan.
+ */
+export async function listarEmpresas(opciones?: { todas?: boolean }): Promise<Empresa[]> {
   const supabase = await createClient();
-  const { data } = await supabase.from("empresas").select("*").order("nombre");
+  let q = supabase.from("empresas").select("*").order("nombre");
+  if (!opciones?.todas) q = q.is("archivada_at", null);
+  const { data } = await q;
   return (data ?? []) as Empresa[];
 }
 
@@ -189,4 +195,61 @@ export async function listarLineasPresupuesto(
   if (presupuestoIds) q = q.in("presupuesto_id", presupuestoIds);
   const { data } = await q;
   return (data ?? []) as PresupuestoLinea[];
+}
+
+/** Lo que se borraría al eliminar una empresa (para el aviso de confirmación) y si tiene pagos. */
+export async function contarDatosEmpresa(empresaId: string) {
+  const supabase = await createClient();
+  const contar = async (tabla: string) => {
+    const { count } = await supabase
+      .from(tabla)
+      .select("id", { count: "exact", head: true })
+      .eq("empresa_id", empresaId);
+    return count ?? 0;
+  };
+  const [
+    proyectos,
+    incidencias,
+    presupuestos,
+    movimientos,
+    cobros,
+    archivos,
+    documentos,
+    personas,
+  ] = await Promise.all([
+    contar("proyectos"),
+    contar("incidencias"),
+    contar("presupuestos"),
+    contar("bolsa_movimientos"),
+    contar("cobros"),
+    contar("archivos"),
+    contar("documentos"),
+    supabase
+      .from("usuarios")
+      .select("id", { count: "exact", head: true })
+      .eq("empresa_id", empresaId)
+      .eq("role", "cliente")
+      .then((r) => r.count ?? 0),
+  ]);
+
+  let conPagos = false;
+  if (cobros > 0) {
+    const { data } = await supabase.from("cobros").select("id").eq("empresa_id", empresaId);
+    const ids = (data ?? []).map((c) => c.id as string);
+    const { count } = await supabase
+      .from("pagos")
+      .select("id", { count: "exact", head: true })
+      .in("cobro_id", ids);
+    conPagos = (count ?? 0) > 0;
+  }
+  return {
+    proyectos,
+    incidencias,
+    presupuestos,
+    movimientos,
+    cobros,
+    personas,
+    ficheros: archivos + documentos,
+    conPagos,
+  };
 }

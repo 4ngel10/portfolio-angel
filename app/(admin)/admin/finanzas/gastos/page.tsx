@@ -43,7 +43,7 @@ export default async function GastosPage({ searchParams }: { searchParams: Promi
   const [todos, ajustes, empresas, proyectos] = await Promise.all([
     listarGastos(),
     cargarAjustes(),
-    listarEmpresas(),
+    listarEmpresas({ todas: true }),
     listarProyectos(),
   ]);
   const titulo = Object.fromEntries(proyectos.map((p) => [p.id, p.titulo]));
@@ -320,7 +320,7 @@ export default async function GastosPage({ searchParams }: { searchParams: Promi
           <FormGasto
             key={editando?.id ?? "nuevo"}
             proyectos={proyectos.map((p) => ({ id: p.id, nombre: p.titulo }))}
-            empresas={empresas.map((e) => ({ id: e.id, nombre: e.nombre }))}
+            empresas={empresas.filter((e) => !e.archivada_at || e.id === editando?.empresa_id).map((e) => ({ id: e.id, nombre: e.nombre }))}
             hoy={hoy}
             fiscal={ajustes.config_fiscal}
             inicial={editando}

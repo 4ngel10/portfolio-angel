@@ -36,7 +36,7 @@ export default async function CobrosPage({
 
   const [todos, empresas, proyectos] = await Promise.all([
     cobrosConEstado(),
-    listarEmpresas(),
+    listarEmpresas({ todas: true }),
     listarProyectos(),
   ]);
   const nombre = Object.fromEntries(empresas.map((e) => [e.id, e.nombre]));
@@ -278,7 +278,7 @@ export default async function CobrosPage({
       <div id="nuevo" className="scroll-mt-4">
         <Panel title={t("finance.collections.new")}>
           <FormCobro
-            empresas={empresas.map((e) => ({ id: e.id, nombre: e.nombre }))}
+            empresas={empresas.filter((e) => !e.archivada_at).map((e) => ({ id: e.id, nombre: e.nombre }))}
             proyectos={proyectos.map((p) => ({
               id: p.id,
               nombre: p.titulo,

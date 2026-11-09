@@ -17,6 +17,7 @@ export function ActionForm({
   secondary = false,
   messageTimeout,
   onSuccess,
+  submitDisabled = false,
 }: {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
   submitLabel: string;
@@ -27,6 +28,8 @@ export function ActionForm({
   messageTimeout?: number;
   /** Se llama una vez por cada envío correcto, con el estado devuelto por la acción. */
   onSuccess?: (state: FormState) => void;
+  /** Mantiene desactivado el botón de envío (p. ej. hasta que se escriba una confirmación). */
+  submitDisabled?: boolean;
 }) {
   const [state, formAction, pending] = useActionState(action, {} as FormState);
   const ref = useRef<HTMLFormElement>(null);
@@ -56,7 +59,7 @@ export function ActionForm({
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || submitDisabled}
           className={`${secondary ? "btn-secondary" : "btn-primary"} disabled:opacity-60`}
         >
           {pending ? pendingLabel : submitLabel}

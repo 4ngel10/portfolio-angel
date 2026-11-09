@@ -17,21 +17,24 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ClientesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ nuevo?: string }>;
+  searchParams: Promise<{ nuevo?: string; archivados?: string; eliminado?: string }>;
 }) {
   await requireAdmin();
   const { t, fecha, euros, num } = await getI18n();
-  const { nuevo } = await searchParams;
+  const { nuevo, archivados, eliminado } = await searchParams;
+  const verArchivados = archivados === "1";
   const supabase = await createClient();
-  const [empresas, proyectos, bolsas, cobros, { data: usuarios }] = await Promise.all([
-    listarEmpresas(),
+  const [todas, proyectos, bolsas, cobros, { data: usuarios }] = await Promise.all([
+    listarEmpresas({ todas: true }),
     listarProyectos(),
     listarBolsas(),
     cobrosConEstado(),
     supabase.from("usuarios").select("id, empresa_id").eq("role", "cliente"),
   ]);
 
-  const filas = empresas.map((e) => {
+  const empresas = todas.filter((e) => !e.archivada_at);
+  const archivadas = todas.filter((e) => e.archivada_at);
+  const filas = (verArchivados ? archivadas : empresas).map((e) => {
     const bolsa = bolsas.find((b) => b.empresa_id === e.id);
     const abiertos = cobros.filter(
       (c) => c.cobro.empresa_id === e.id && ["pendiente", "parcial", "vencido"].includes(c.estado),
@@ -86,8 +89,42 @@ export default async function ClientesPage({
         }
       />
 
+      {eliminado === "1" ? (
+        <p
+          role="status"
+          className="border-rule bg-paper-alt mb-5 rounded-xl border px-4 py-3 text-sm"
+        >
+          {t("ok.clientDeleted")}
+        </p>
+      ) : null}
+
+      {/* Activos o archivados. Los archivados no salen en el resto del panel. */}
+      {archivadas.length > 0 || verArchivados ? (
+        <nav aria-label={t("admin.clientsFilter")} className="mb-5 flex gap-1 text-sm">
+          {[
+            { href: "/admin/clientes", activo: !verArchivados, label: t("admin.filterActive") },
+            {
+              href: "/admin/clientes?archivados=1",
+              activo: verArchivados,
+              label: t("admin.filterArchived", { n: archivadas.length }),
+            },
+          ].map((f) => (
+            <Link
+              key={f.href}
+              href={f.href}
+              aria-current={f.activo ? "page" : undefined}
+              className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
+                f.activo ? "bg-chip text-ink" : "text-muted hover:text-ink"
+              }`}
+            >
+              {f.label}
+            </Link>
+          ))}
+        </nav>
+      ) : null}
+
       {filas.length === 0 ? (
-        <EmptyState>{t("admin.noCompanies")}</EmptyState>
+        <EmptyState>{verArchivados ? t("admin.noArchived") : t("admin.noCompanies")}</EmptyState>
       ) : (
         <>
           {/* Escritorio: tabla a todo el ancho. Cada fila entera es el enlace a la ficha. */}

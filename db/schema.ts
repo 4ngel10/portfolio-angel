@@ -42,6 +42,10 @@ export const empresas = pgTable("empresas", {
   ubicacion: text("ubicacion"),
   telefono: text("telefono"),
   web: text("web"),
+  // Cliente archivado: nulo = activo. Sale de las listas y sus personas no pueden entrar.
+  archivadaAt: timestamp("archivada_at", { withTimezone: true }),
+  // Personas que se desactivaron al archivar (para restaurar solo esas).
+  archivoDesactivadas: uuid("archivo_desactivadas").array(),
   createdAt: createdAt(),
 });
 

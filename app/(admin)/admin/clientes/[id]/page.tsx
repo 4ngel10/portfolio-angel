@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid } from "@/lib/portal/validate";
 import {
+  contarDatosEmpresa,
   listarBolsas,
   listarEmpresas,
   listarHitos,
@@ -20,6 +21,11 @@ import type { Empresa } from "@/lib/portal/types";
 import { inputCls, labelCls } from "@/components/portal/styles";
 import { ColumnaFija } from "@/components/portal/columna-fija";
 import { AnadirPersona } from "@/components/portal/anadir-persona";
+import {
+  ArchivarCliente,
+  EliminarCliente,
+  RestaurarCliente,
+} from "@/components/portal/archivo-cliente";
 import { EmpresaDatos } from "@/components/portal/empresa-datos";
 import { MovimientosPorMes } from "@/components/portal/movimientos";
 import { PersonaCard, type PersonaInfo } from "@/components/portal/persona-card";
@@ -104,6 +110,9 @@ export default async function ClientePage({
             : "pendiente",
     };
   });
+  const archivada = !!empresa.archivada_at;
+  // El recuento de lo que se borraría solo hace falta en un cliente archivado.
+  const conteo = archivada ? await contarDatosEmpresa(id) : null;
   const suyos = proyectos.filter((p) => p.empresa_id === id);
   const hitosSuyos = hitos.filter((h) => suyos.some((p) => p.id === h.proyecto_id));
   const bolsa = bolsas.find((b) => b.empresa_id === id);
@@ -152,7 +161,12 @@ export default async function ClientePage({
             >
               {t("admin.viewAsClient")}
             </Link>
-            <AnadirPersona empresaId={empresa.id} empresaNombre={empresa.nombre} />
+            {archivada ? null : (
+              <>
+                <AnadirPersona empresaId={empresa.id} empresaNombre={empresa.nombre} />
+                <ArchivarCliente empresaId={empresa.id} nombre={empresa.nombre} />
+              </>
+            )}
           </div>
         </div>
         <p className="text-muted mt-2">
@@ -162,6 +176,19 @@ export default async function ClientePage({
 
       {/* Misma rejilla de 3 columnas y mismo gap que los paneles de debajo: la tercera cifra queda
           justo encima de la columna lateral. */}
+      {archivada ? (
+        <div
+          role="status"
+          className="border-rule bg-paper-alt mb-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-2xl border px-5 py-3.5"
+        >
+          <p className="font-medium">
+            {t("admin.archivedBanner", { date: fecha(empresa.archivada_at) })}
+            <span className="text-muted ml-2 text-sm font-normal">{t("admin.archivedHelp")}</span>
+          </p>
+          <RestaurarCliente empresaId={empresa.id} />
+        </div>
+      ) : null}
+
       <dl className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-6">
         {cifras.map((c) => (
           <Link key={c.href} href={c.href} className={tile}>
@@ -392,6 +419,12 @@ export default async function ClientePage({
           </div>
         </ColumnaFija>
       </div>
+
+      {conteo ? (
+        <div className="mt-10 flex justify-end">
+          <EliminarCliente empresaId={empresa.id} nombre={empresa.nombre} conteo={conteo} />
+        </div>
+      ) : null}
     </>
   );
 }
