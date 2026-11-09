@@ -1,4 +1,9 @@
-import { alternarUsuario, eliminarUsuario, guardarUsuario } from "@/lib/portal/actions";
+import {
+  alternarUsuario,
+  eliminarUsuario,
+  guardarUsuario,
+  reenviarInvitacion,
+} from "@/lib/portal/actions";
 import type { PortalT } from "@/lib/portal/translate";
 import { ActionForm } from "./action-form";
 import { ConfirmSubmit } from "./confirm-submit";
@@ -137,6 +142,21 @@ export function PersonaCard({
             </div>
           </ActionForm>
         </div>
+
+        {p.desactivada ? null : (
+          <div className="border-rule mt-5 border-t pt-4">
+            <ActionForm
+              action={reenviarInvitacion}
+              submitLabel={t("admin.resendInvite")}
+              pendingLabel={t("admin.sending")}
+              secondary
+              messageTimeout={4000}
+            >
+              <input type="hidden" name="id" value={p.id} />
+              <p className="text-muted max-w-[60ch] text-sm">{t("admin.resendInviteHelp")}</p>
+            </ActionForm>
+          </div>
+        )}
 
         <div className="border-rule mt-5 flex flex-wrap gap-3 border-t pt-4">
           <form action={alternarUsuario}>

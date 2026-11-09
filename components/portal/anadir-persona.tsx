@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { invitarCliente } from "@/lib/portal/actions";
 import { ActionForm } from "./action-form";
 import { usePT } from "./i18n-provider";
+import { InvitarCasilla } from "./invitar-casilla";
 import { inputCls, labelCls } from "./styles";
 
 /** Botón y ventana para dar de alta a una persona directamente en una empresa. */
@@ -80,9 +81,9 @@ export function AnadirPersona({
                 className={inputCls}
               />
             </div>
+            <InvitarCasilla />
           </div>
         </ActionForm>
-        <p className="text-muted mt-3 text-xs">{t("admin.registerHint")}</p>
       </dialog>
     </>
   );

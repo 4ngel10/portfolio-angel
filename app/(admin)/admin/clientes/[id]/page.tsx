@@ -6,12 +6,19 @@ import { getI18n } from "@/lib/portal/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid } from "@/lib/portal/validate";
-import { listarBolsas, listarEmpresas, listarProyectos } from "@/lib/portal/queries";
+import {
+  listarBolsas,
+  listarEmpresas,
+  listarMovimientos,
+  listarProyectos,
+} from "@/lib/portal/queries";
 import { cobrosConEstado } from "@/lib/portal/finanzas-queries";
 import { redondear } from "@/lib/portal/presupuestos";
 import type { Empresa } from "@/lib/portal/types";
+import { inputCls, labelCls } from "@/components/portal/styles";
 import { AnadirPersona } from "@/components/portal/anadir-persona";
 import { EmpresaDetalles } from "@/components/portal/empresa-detalles";
+import { MovimientosPorMes } from "@/components/portal/movimientos";
 import { PersonaCard, type PersonaInfo } from "@/components/portal/persona-card";
 import {
   EmptyState,
@@ -27,10 +34,17 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("admin.clientsTitle") };
 }
 
-export default async function ClientePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ClientePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ mes?: string }>;
+}) {
   await requireAdmin();
-  const { t, fecha, euros } = await getI18n();
+  const { t, fecha, euros, horas, num, mes: mesLabel } = await getI18n();
   const { id } = await params;
+  const { mes } = await searchParams;
   if (!isUuid(id)) notFound();
 
   const supabase = await createClient();
@@ -38,19 +52,27 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
   const empresa = data as Empresa | null;
   if (!empresa) notFound();
 
-  const [{ data: usuarios }, proyectos, bolsas, empresas, auth, cobros] = await Promise.all([
-    supabase
-      .from("usuarios")
-      .select("id, nombre, email, empresa_id")
-      .eq("role", "cliente")
-      .eq("empresa_id", id)
-      .order("nombre"),
-    listarProyectos(),
-    listarBolsas(),
-    listarEmpresas(),
-    createAdminClient().auth.admin.listUsers({ perPage: 1000 }),
-    cobrosConEstado({ empresaId: id }),
-  ]);
+  const [{ data: usuarios }, proyectos, bolsas, empresas, auth, cobros, movimientos] =
+    await Promise.all([
+      supabase
+        .from("usuarios")
+        .select("id, nombre, email, empresa_id")
+        .eq("role", "cliente")
+        .eq("empresa_id", id)
+        .order("nombre"),
+      listarProyectos(),
+      listarBolsas(),
+      listarEmpresas(),
+      createAdminClient().auth.admin.listUsers({ perPage: 1000 }),
+      cobrosConEstado({ empresaId: id }),
+      listarMovimientos({ empresaId: id }),
+    ]);
+  const meses = [...new Set(movimientos.map((m) => m.fecha.slice(0, 7)))];
+  const mesElegido = mes && meses.includes(mes) ? mes : "";
+  const visibles = mesElegido
+    ? movimientos.filter((m) => m.fecha.startsWith(mesElegido))
+    : movimientos;
+  const titulos = Object.fromEntries(proyectos.map((p) => [p.id, p.titulo]));
 
   // Los cobros anulados no cuentan en los totales del cliente.
   const vivos = cobros.filter((c) => c.estado !== "anulado");
@@ -95,6 +117,11 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
       <PageHeader
         title={empresa.nombre}
         intro={t("admin.customerSince", { date: fecha(empresa.created_at) })}
+        action={
+          <Link href={`/admin/clientes/${id}/vista`} className="btn-secondary !px-4 !py-2 !text-sm">
+            {t("admin.viewAsClient")}
+          </Link>
+        }
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -134,9 +161,14 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
           {bolsa ? (
             <>
               <p className="text-2xl font-semibold">
-                {Math.max(0, bolsa.horas_contratadas - bolsa.horas_consumidas)}
+                {num(
+                  Math.max(
+                    0,
+                    Math.round((bolsa.horas_contratadas - bolsa.horas_consumidas) * 100) / 100,
+                  ),
+                )}
                 <span className="text-muted ml-1 text-sm font-normal">
-                  {t("admin.availOf", { total: bolsa.horas_contratadas })}
+                  {t("admin.availOf", { total: num(bolsa.horas_contratadas) })}
                 </span>
               </p>
               <div className="mt-3">
@@ -151,6 +183,48 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
             <EmptyState>{t("admin.noBank")}</EmptyState>
           )}
         </Panel>
+
+        {bolsa ? (
+          <Panel title={t("admin.movementsTitle")} className="lg:col-span-2">
+            {movimientos.length === 0 ? (
+              <EmptyState>{t("admin.noMovements")}</EmptyState>
+            ) : (
+              <>
+                <form method="get" className="mb-5 flex flex-wrap items-end gap-3">
+                  <div>
+                    <label htmlFor="mes" className={labelCls}>
+                      {t("admin.monthLabel")}
+                    </label>
+                    <select
+                      id="mes"
+                      name="mes"
+                      defaultValue={mesElegido}
+                      className={`${inputCls} sm:min-w-[220px]`}
+                    >
+                      <option value="">{t("admin.allMonths")}</option>
+                      {meses.map((m) => (
+                        <option key={m} value={m}>
+                          {mesLabel(m)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <button type="submit" className="btn-secondary">
+                    {t("admin.filter")}
+                  </button>
+                </form>
+                <MovimientosPorMes
+                  movimientos={visibles}
+                  proyectos={titulos}
+                  mesLabel={mesLabel}
+                  t={t}
+                  fecha={fecha}
+                  horas={horas}
+                />
+              </>
+            )}
+          </Panel>
+        ) : null}
 
         <Panel title={t("admin.projectsTitle")}>
           {suyos.length === 0 ? (

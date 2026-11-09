@@ -150,6 +150,8 @@ type IncidenciasProps = {
   proyectos: Record<string, string>;
   perfilId: string;
   admin?: boolean;
+  /** Vista del admin como cliente: se ve el hilo, pero sin botones ni formulario de respuesta. */
+  soloLectura?: boolean;
   /** Ocultar el nombre del proyecto cuando ya se está dentro de él. */
   sinProyecto?: boolean;
   /** Prefijo de enlace al proyecto: /portal/proyecto o /admin/proyectos. */
@@ -163,6 +165,7 @@ export async function IncidenciasLista({
   proyectos,
   perfilId,
   admin = false,
+  soloLectura = false,
   sinProyecto = false,
   rutaProyecto,
 }: IncidenciasProps) {
@@ -193,7 +196,7 @@ export async function IncidenciasLista({
             )}
             <p className="text-muted mt-2 text-sm whitespace-pre-wrap">{i.descripcion}</p>
 
-            {admin ? (
+            {admin && !soloLectura ? (
               <div
                 className="mt-3 flex flex-wrap gap-2"
                 role="group"
@@ -217,48 +220,52 @@ export async function IncidenciasLista({
               </div>
             ) : null}
 
-            <details className="group border-rule mt-4 border-t pt-3">
-              <summary className="text-muted hover:text-ink cursor-pointer text-sm font-medium transition-colors">
-                {hilo.length === 0 ? t("lists.reply") : t("lists.thread", { n: hilo.length })}
-              </summary>
-              <ul className="mt-3 grid gap-2">
-                {hilo.map((m) => (
-                  <li
-                    key={m.id}
-                    className={`rounded-xl px-3.5 py-2.5 text-sm ${m.autor_id === perfilId ? "bg-chip" : "border-rule border"}`}
+            {soloLectura && hilo.length === 0 ? null : (
+              <details className="group border-rule mt-4 border-t pt-3">
+                <summary className="text-muted hover:text-ink cursor-pointer text-sm font-medium transition-colors">
+                  {hilo.length === 0 ? t("lists.reply") : t("lists.thread", { n: hilo.length })}
+                </summary>
+                <ul className="mt-3 grid gap-2">
+                  {hilo.map((m) => (
+                    <li
+                      key={m.id}
+                      className={`rounded-xl px-3.5 py-2.5 text-sm ${m.autor_id === perfilId ? "bg-chip" : "border-rule border"}`}
+                    >
+                      <p className="text-muted text-xs">
+                        {m.autor_id === perfilId
+                          ? t("lists.you")
+                          : (m.autor_id && autores[m.autor_id]) || t("lists.team")}{" "}
+                        · {fechaHora(m.created_at)}
+                      </p>
+                      <p className="mt-1 whitespace-pre-wrap">{m.contenido}</p>
+                    </li>
+                  ))}
+                </ul>
+                {soloLectura ? null : (
+                  <ActionForm
+                    action={enviarMensaje}
+                    submitLabel={t("lists.send")}
+                    pendingLabel={t("lists.sending")}
+                    secondary
+                    className="mt-3"
                   >
-                    <p className="text-muted text-xs">
-                      {m.autor_id === perfilId
-                        ? t("lists.you")
-                        : (m.autor_id && autores[m.autor_id]) || t("lists.team")}{" "}
-                      · {fechaHora(m.created_at)}
-                    </p>
-                    <p className="mt-1 whitespace-pre-wrap">{m.contenido}</p>
-                  </li>
-                ))}
-              </ul>
-              <ActionForm
-                action={enviarMensaje}
-                submitLabel={t("lists.send")}
-                pendingLabel={t("lists.sending")}
-                secondary
-                className="mt-3"
-              >
-                <input type="hidden" name="incidencia_id" value={i.id} />
-                <label htmlFor={`msg-${i.id}`} className="sr-only">
-                  {t("lists.message")}
-                </label>
-                <textarea
-                  id={`msg-${i.id}`}
-                  name="contenido"
-                  required
-                  rows={3}
-                  maxLength={4000}
-                  className={inputCls}
-                  placeholder={t("lists.messagePlaceholder")}
-                />
-              </ActionForm>
-            </details>
+                    <input type="hidden" name="incidencia_id" value={i.id} />
+                    <label htmlFor={`msg-${i.id}`} className="sr-only">
+                      {t("lists.message")}
+                    </label>
+                    <textarea
+                      id={`msg-${i.id}`}
+                      name="contenido"
+                      required
+                      rows={3}
+                      maxLength={4000}
+                      className={inputCls}
+                      placeholder={t("lists.messagePlaceholder")}
+                    />
+                  </ActionForm>
+                )}
+              </details>
+            )}
           </li>
         );
       })}
