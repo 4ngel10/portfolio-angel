@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { requireCliente } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
-import { listarBolsas } from "@/lib/portal/queries";
+import { listarBolsas, listarMovimientos, listarProyectos } from "@/lib/portal/queries";
+import { MovimientosPorMes } from "@/components/portal/movimientos";
 import { EmptyState, PageHeader, Panel, ProgressBar } from "@/components/portal/ui";
 import { Aparece } from "@/components/portal/aparece";
 
@@ -12,8 +13,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HorasPage() {
   await requireCliente();
-  const { t, euros } = await getI18n();
-  const bolsa = (await listarBolsas())[0];
+  const { t, euros, fecha, horas, num, mes } = await getI18n();
+  const [bolsas, movimientos, proyectos] = await Promise.all([
+    listarBolsas(),
+    listarMovimientos(),
+    listarProyectos(),
+  ]);
+  const bolsa = bolsas[0];
+  const titulos = Object.fromEntries(proyectos.map((p) => [p.id, p.titulo]));
 
   return (
     <>
@@ -25,7 +32,12 @@ export default async function HorasPage() {
           ) : (
             <>
               <p className="text-5xl font-semibold tracking-tight">
-                {Math.max(0, bolsa.horas_contratadas - bolsa.horas_consumidas)}
+                {num(
+                  Math.max(
+                    0,
+                    Math.round((bolsa.horas_contratadas - bolsa.horas_consumidas) * 100) / 100,
+                  ),
+                )}
                 <span className="text-muted ml-2 text-lg font-normal">
                   {t("hoursPage.available")}
                 </span>
@@ -40,11 +52,11 @@ export default async function HorasPage() {
               <dl className="mt-6 grid max-w-xl grid-cols-2 gap-4 text-sm sm:grid-cols-3">
                 <div>
                   <dt className="text-muted">{t("hoursPage.contracted")}</dt>
-                  <dd className="mt-0.5 text-lg font-semibold">{bolsa.horas_contratadas} h</dd>
+                  <dd className="mt-0.5 text-lg font-semibold">{horas(bolsa.horas_contratadas)}</dd>
                 </div>
                 <div>
                   <dt className="text-muted">{t("hoursPage.consumed")}</dt>
-                  <dd className="mt-0.5 text-lg font-semibold">{bolsa.horas_consumidas} h</dd>
+                  <dd className="mt-0.5 text-lg font-semibold">{horas(bolsa.horas_consumidas)}</dd>
                 </div>
                 {bolsa.precio !== null ? (
                   <div>
@@ -57,6 +69,25 @@ export default async function HorasPage() {
           )}
         </Panel>
       </Aparece>
+
+      {bolsa ? (
+        <Aparece>
+          <Panel title={t("hoursPage.movements")} className="mt-6">
+            {movimientos.length === 0 ? (
+              <EmptyState>{t("hoursPage.noMovements")}</EmptyState>
+            ) : (
+              <MovimientosPorMes
+                movimientos={movimientos}
+                proyectos={titulos}
+                mesLabel={mes}
+                t={t}
+                fecha={fecha}
+                horas={horas}
+              />
+            )}
+          </Panel>
+        </Aparece>
+      ) : null}
     </>
   );
 }

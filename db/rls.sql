@@ -49,13 +49,14 @@ grant execute on function public.is_admin() to authenticated;
 -- Además se le retiran los permisos sobre las tablas.
 -- 3. El admin tiene acceso total a cualquier tabla (política admin_all).
 -- bolsa_historial solo tiene esta política: los clientes no ven el gasto acumulado.
+-- bolsa_movimientos: el cliente solo lee los de su empresa (apartado 4) y no escribe nunca.
 -- ---------------------------------------------------------------------
 do $$
 declare t text;
 begin
   foreach t in array array[
     'empresas','usuarios','proyectos','hitos','archivos',
-    'incidencias','mensajes_incidencia','bolsa_horas','bolsa_historial','documentos',
+    'incidencias','mensajes_incidencia','bolsa_horas','bolsa_historial','bolsa_movimientos','documentos',
     'presupuestos','presupuesto_lineas',
     'ajustes','cobros','pagos','suscripciones','gastos'
   ] loop
@@ -76,7 +77,7 @@ end $$;
 do $$
 declare t text;
 begin
-  foreach t in array array['proyectos','archivos','incidencias','bolsa_horas','documentos'] loop
+  foreach t in array array['proyectos','archivos','incidencias','bolsa_horas','bolsa_movimientos','documentos'] loop
     execute format('drop policy if exists cliente_select on public.%I', t);
     execute format(
       'create policy cliente_select on public.%I for select to authenticated
@@ -200,3 +201,62 @@ drop policy if exists finanzas_admin on storage.objects;
 create policy finanzas_admin on storage.objects for all to authenticated
   using (bucket_id = 'finanzas' and public.is_admin())
   with check (bucket_id = 'finanzas' and public.is_admin());
+
+-- ---------------------------------------------------------------------
+-- 9. Bolsa de horas: apunte atómico.
+-- Inserta el movimiento y suma las horas consumidas en la misma transacción (con la fila de la
+-- bolsa bloqueada, así dos apuntes a la vez no se pisan). SECURITY DEFINER pero exige is_admin()
+-- (admin con aal2), así que un cliente que la llame recibe 'forbidden'. No deja la bolsa por
+-- debajo de 0 ni apuntar a un proyecto de otra empresa.
+-- ---------------------------------------------------------------------
+create or replace function public.registrar_horas(
+  p_empresa uuid,
+  p_fecha date,
+  p_horas numeric,
+  p_proyecto uuid,
+  p_concepto text
+)
+returns table (horas_contratadas numeric, horas_consumidas numeric, ultimo_aviso_bajo timestamptz)
+language plpgsql security definer set search_path = ''
+as $$
+declare
+  v_bolsa public.bolsa_horas%rowtype;
+  v_nuevo numeric;
+  v_concepto text := btrim(coalesce(p_concepto, ''));
+begin
+  if not public.is_admin() then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+  if p_horas is null or p_horas = 0 or abs(p_horas) > 1000 then
+    raise exception 'invalid_hours' using errcode = '22023';
+  end if;
+  if char_length(v_concepto) not between 1 and 200 then
+    raise exception 'invalid_concept' using errcode = '22023';
+  end if;
+
+  select * into v_bolsa from public.bolsa_horas where empresa_id = p_empresa for update;
+  if not found then
+    raise exception 'no_bank' using errcode = 'P0002';
+  end if;
+
+  if p_proyecto is not null and not exists (
+    select 1 from public.proyectos where id = p_proyecto and empresa_id = p_empresa
+  ) then
+    raise exception 'invalid_project' using errcode = '22023';
+  end if;
+
+  v_nuevo := v_bolsa.horas_consumidas + p_horas;
+  if v_nuevo < 0 then
+    raise exception 'below_zero' using errcode = '22023';
+  end if;
+
+  insert into public.bolsa_movimientos (empresa_id, bolsa_id, proyecto_id, fecha, horas, concepto, created_by)
+  values (p_empresa, v_bolsa.id, p_proyecto, coalesce(p_fecha, current_date), p_horas, v_concepto, auth.uid());
+
+  update public.bolsa_horas set horas_consumidas = v_nuevo where id = v_bolsa.id;
+
+  return query select v_bolsa.horas_contratadas, v_nuevo, v_bolsa.ultimo_aviso_bajo;
+end $$;
+
+revoke all on function public.registrar_horas(uuid, date, numeric, uuid, text) from public, anon;
+grant execute on function public.registrar_horas(uuid, date, numeric, uuid, text) to authenticated;

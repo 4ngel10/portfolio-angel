@@ -351,7 +351,7 @@ export async function generarCobroBolsa(_: FormState, fd: FormData): Promise<For
       numero,
       empresa_id: bolsa.empresa_id,
       origen: "bolsa",
-      concepto: `Bolsa de horas ${bolsa.horas_contratadas} h`,
+      concepto: `Bolsa de horas ${Number(bolsa.horas_contratadas)} h`,
       importe: bolsa.precio,
       fecha_emision: hoy,
     });
