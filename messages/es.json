@@ -625,6 +625,8 @@
       "website": "Web",
       "saveDetails": "Guardar datos",
       "companyDetails": "Datos de la empresa",
+      "noDetailsYet": "Sin datos todavía",
+      "statHoursLeft": "Horas restantes",
       "companyDetailsTitle": "Datos básicos de {name}",
       "companyDetailsIntro": "Cuéntame a qué se dedica y dónde está. Puedes saltarte este paso y completarlo después desde la ficha de la empresa.",
       "notNow": "Ahora no",

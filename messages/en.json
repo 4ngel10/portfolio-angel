@@ -625,6 +625,8 @@
       "website": "Website",
       "saveDetails": "Save details",
       "companyDetails": "Company details",
+      "noDetailsYet": "No details yet",
+      "statHoursLeft": "Hours left",
       "companyDetailsTitle": "Basic details for {name}",
       "companyDetailsIntro": "Tell me what they do and where they are. You can skip this and fill it in later from the company page.",
       "notNow": "Not now",
