@@ -18,6 +18,7 @@ import { cobrosConEstado } from "@/lib/portal/finanzas-queries";
 import { redondear } from "@/lib/portal/presupuestos";
 import type { Empresa } from "@/lib/portal/types";
 import { inputCls, labelCls } from "@/components/portal/styles";
+import { ColumnaFija } from "@/components/portal/columna-fija";
 import { AnadirPersona } from "@/components/portal/anadir-persona";
 import { EmpresaDatos } from "@/components/portal/empresa-datos";
 import { MovimientosPorMes } from "@/components/portal/movimientos";
@@ -315,7 +316,7 @@ export default async function ClientePage({
           </div>
         </div>
 
-        <div className="contents lg:grid lg:content-start lg:gap-6">
+        <ColumnaFija className="contents lg:grid lg:content-start lg:gap-6 lg:self-start">
           <div id="horas" className="order-1 scroll-mt-4">
             <Panel
               title={t("admin.hourBank")}
@@ -389,7 +390,7 @@ export default async function ClientePage({
           <div id="datos" className="order-6 scroll-mt-4">
             <EmpresaDatos empresa={empresa} />
           </div>
-        </div>
+        </ColumnaFija>
       </div>
     </>
   );
