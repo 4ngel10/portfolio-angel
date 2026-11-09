@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { Bullet } from "./bullet";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { TiltCard } from "./tilt-card";
 import { Inline } from "./project-article";
+import { Process } from "./process";
+import { RealCases } from "./real-cases";
 import { SERVICE_ICONS } from "./service-icons";
 import { useI18n } from "@/lib/i18n";
-import { SERVICES, PRINCIPLES, getService } from "@/lib/services";
+import { SERVICES, getService } from "@/lib/services";
 
 const Arrow = ({ back = false }: { back?: boolean }) => (
   <svg
@@ -36,10 +38,6 @@ const TITLE_HOVER =
   "inline-block origin-left transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold";
 // Tarjeta a la que se ha llegado por ancla: se queda con el aspecto del hover.
 const TARGETED = "shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]";
-const CHIP =
-  "rounded px-2 py-0.5 font-mono text-[11px] transition-[transform,color,background-color] duration-200 hover:-translate-y-0.5 hover:text-[var(--accent)]";
-const CHIP_STYLE = { background: "var(--chip)", color: "var(--muted)" };
-
 /** Altura de la nav fija más un poco de aire, para que el apartado no quede debajo. */
 const NAV_OFFSET = 88;
 
@@ -82,10 +80,15 @@ export function ServicePage({ id }: { id: string }) {
   const idx = SERVICES.indexOf(service);
   const other = SERVICES[(idx + 1) % SERVICES.length];
   const [lead, ...rest] = service.intro[locale];
+  const modes = service.modes?.[locale];
+  const faq = service.faq?.[locale];
+  // Los fondos alternan según el orden en que se pintan las secciones (la cabecera no lleva).
+  let sections = 0;
+  const bg = () => (++sections % 2 === 1 ? "bg-paper-alt" : "");
 
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
-      <header className="mx-auto max-w-4xl px-6 pt-14 pb-20 md:px-8 md:pt-20 md:pb-24">
+      <header className="mx-auto max-w-6xl px-6 pt-14 pb-20 md:px-8 md:pt-20 md:pb-24">
         <Reveal>
           <Link
             href="/#services"
@@ -95,39 +98,37 @@ export function ServicePage({ id }: { id: string }) {
             {t("servicesPage.back")}
           </Link>
 
-          <div className="mt-10 flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 hover:scale-110 hover:-rotate-6 hover:bg-[var(--accent)] hover:text-white dark:hover:text-[#0a0f1c]">
-              {SERVICE_ICONS[service.key]}
-            </div>
-            <span
-              className="font-mono text-4xl font-medium tracking-tight opacity-25"
-              style={{ color: "var(--accent)" }}
-              aria-hidden
-            >
-              0{idx + 1}
-            </span>
+          <div className="mt-10 flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 hover:scale-110 hover:-rotate-6 hover:bg-[var(--accent)] hover:text-white dark:hover:text-[#0a0f1c]">
+            {SERVICE_ICONS[service.key]}
           </div>
 
           <h1 className="mt-6 text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
             {t(`services.${service.key}Title`)}
           </h1>
-          <p className="text-muted mt-6 max-w-2xl text-[17px] leading-[1.75]">{lead}</p>
+          <p className="text-muted mt-6 max-w-[65ch] text-[17px] leading-[1.75]">{lead}</p>
           {rest.map((p, i) => (
-            <p key={i} className="text-muted mt-5 max-w-2xl text-[17px] leading-[1.75]">
+            <p key={i} className="text-muted mt-5 max-w-[65ch] text-[17px] leading-[1.75]">
               {p}
             </p>
           ))}
+          <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
+            <Link href="/#contact" className="btn-primary group self-start">
+              {t("nav.ctaContact")}
+              <Arrow />
+            </Link>
+            <p className="text-muted text-sm">{t("servicesPage.callNote")}</p>
+          </div>
         </Reveal>
       </header>
 
-      <section className="border-rule bg-paper-alt border-t py-20 md:py-28">
+      <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
         <div className="mx-auto max-w-6xl px-6 md:px-8">
           <RevealGroup
             className="grid gap-5 md:grid-cols-2"
             stagger={0.06}
             style={{ perspective: "1200px" }}
           >
-            {service.groups[locale].map((g, gi) => (
+            {service.groups[locale].map((g) => (
               // id = ancla del apartado: los puntos de la home enlazan aquí (/servicios/sistemas#redes).
               // scroll-mt deja sitio a la nav fija; :target resalta la tarjeta a la que se llega.
               <RevealItem key={g.id} id={g.id} className="h-full scroll-mt-24">
@@ -137,16 +138,12 @@ export function ServicePage({ id }: { id: string }) {
                   // El borde va en línea: la clase border-rule de CARD pisaría a una utilidad.
                   style={target === g.id ? { ...CARD_BG, borderColor: "var(--accent)" } : CARD_BG}
                 >
-                  <span
-                    className="absolute top-6 right-7 font-mono text-3xl font-medium tracking-tight opacity-[0.1] transition-opacity duration-300 group-hover:opacity-40"
-                    style={{ color: "var(--accent)" }}
-                    aria-hidden
-                  >
-                    {String(gi + 1).padStart(2, "0")}
-                  </span>
-                  <h2 className="pr-12 text-[19px] leading-snug font-semibold tracking-tight">
+                  <h2 className="text-[19px] leading-snug font-semibold tracking-tight">
                     <span className={TITLE_HOVER}>{g.title}</span>
                   </h2>
+                  {g.lead && (
+                    <p className="text-muted mt-2 text-[15px] leading-relaxed">{g.lead}</p>
+                  )}
                   <ul className="mt-4 flex flex-col gap-3">
                     {g.items.map((item, i) => (
                       <li
@@ -161,13 +158,19 @@ export function ServicePage({ id }: { id: string }) {
                     ))}
                   </ul>
                   {g.tools && (
-                    <div className="mt-auto flex flex-wrap gap-1.5 pt-6">
-                      {g.tools.map((tool) => (
-                        <span key={tool} className={CHIP} style={CHIP_STYLE}>
-                          {tool}
-                        </span>
+                    <p className="text-muted mt-auto pt-6 font-mono text-[11px] leading-relaxed">
+                      {g.tools.map((tool, i) => (
+                        // El separador va pegado a su tecnología (span sin saltos) y el espacio
+                        // queda fuera: el salto de línea cae después del punto, nunca antes.
+                        <Fragment key={tool}>
+                          <span className="whitespace-nowrap">
+                            {tool}
+                            {i < g.tools!.length - 1 ? " ·" : ""}
+                          </span>
+                          {i < g.tools!.length - 1 ? " " : ""}
+                        </Fragment>
                       ))}
-                    </div>
+                    </p>
                   )}
                 </TiltCard>
               </RevealItem>
@@ -176,43 +179,91 @@ export function ServicePage({ id }: { id: string }) {
         </div>
       </section>
 
-      <section className="border-rule border-t py-20 md:py-28">
-        <div className="mx-auto max-w-6xl px-6 md:px-8">
-          <Reveal>
-            <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.08] font-semibold tracking-[-0.035em]">
-              {t("servicesPage.howTitle")}
-            </h2>
-            <p className="text-muted mt-5 max-w-xl text-[17px] leading-relaxed">
-              {t("servicesPage.howLead")}
-            </p>
-          </Reveal>
+      {service.showCases && (
+        <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
+          <div className="mx-auto max-w-6xl px-6 md:px-8">
+            <RealCases title={t("servicesPage.casesTitle")} level={2} />
+          </div>
+        </section>
+      )}
 
-          <RevealGroup
-            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
-            stagger={0.07}
-            style={{ perspective: "1200px" }}
-          >
-            {PRINCIPLES[locale].map((p, i) => (
-              <RevealItem key={p.title} className="h-full">
-                <TiltCard lift className={`${CARD} p-6`} style={CARD_BG}>
-                  <span
-                    className="inline-block origin-left font-mono text-[11px] transition-transform duration-300 group-hover:scale-[2]"
-                    style={{ color: "var(--accent)" }}
-                  >
-                    0{i + 1}
-                  </span>
-                  <h3 className="mt-4 text-[17px] font-semibold tracking-tight">
-                    <span className={TITLE_HOVER}>{p.title}</span>
-                  </h3>
-                  <p className="text-muted mt-2 text-[14px] leading-relaxed">{p.text}</p>
-                </TiltCard>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
+      {modes && (
+        <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
+          <div className="mx-auto max-w-6xl px-6 md:px-8">
+            <Reveal>
+              <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.08] font-semibold tracking-[-0.035em]">
+                {modes.title}
+              </h2>
+              <p className="text-muted mt-5 max-w-[65ch] text-[17px] leading-relaxed">
+                {modes.lead}
+              </p>
+            </Reveal>
+            <RevealGroup
+              className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+              stagger={0.07}
+              style={{ perspective: "1200px" }}
+            >
+              {modes.items.map((m) => (
+                <RevealItem key={m.title} className="h-full">
+                  <TiltCard lift className={`${CARD} p-6`} style={CARD_BG}>
+                    <h3 className="text-[17px] font-semibold tracking-tight">
+                      <span className={TITLE_HOVER}>{m.title}</span>
+                    </h3>
+                    <p className="text-muted mt-2 text-[14px] leading-relaxed">{m.text}</p>
+                  </TiltCard>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+            <Reveal>
+              <p className="text-muted mt-8 max-w-[65ch] text-sm leading-relaxed">{modes.note}</p>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
+        <Process />
       </section>
 
-      <section className="border-rule bg-paper-alt border-t">
+      {faq && (
+        <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
+          <div className="mx-auto max-w-6xl px-6 md:px-8">
+            <Reveal>
+              <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.08] font-semibold tracking-[-0.035em]">
+                {faq.title}
+              </h2>
+            </Reveal>
+            <Reveal>
+              <div className="border-rule mt-10 max-w-3xl border-t">
+                {faq.items.map((it) => (
+                  <details key={it.q} className="group border-rule border-b">
+                    <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-4 text-[17px] font-semibold tracking-tight transition-colors hover:text-[var(--accent)] [&::-webkit-details-marker]:hidden">
+                      {it.q}
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-muted shrink-0 motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-open:rotate-180"
+                        aria-hidden
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </summary>
+                    <p className="text-muted pb-5 text-[15px] leading-relaxed">{it.a}</p>
+                  </details>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      <section className={`border-rule ${bg()} border-t`}>
         <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
           <Link href={`/servicios/${other.id}`} className="block" style={{ perspective: "1200px" }}>
             <TiltCard
@@ -243,7 +294,7 @@ export function ServicePage({ id }: { id: string }) {
         </div>
       </section>
 
-      <section className="border-rule border-t py-20 md:py-28">
+      <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
         <Reveal className="mx-auto max-w-4xl px-6 text-center md:px-8">
           <h2 className="text-[clamp(1.75rem,4vw,3rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
             {t("contact.title")}

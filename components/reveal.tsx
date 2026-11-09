@@ -43,10 +43,10 @@ export function RevealGroup({
   children: React.ReactNode;
   className?: string;
   stagger?: number;
-  as?: "div" | "ul";
+  as?: "div" | "ul" | "ol";
   style?: React.CSSProperties;
 }) {
-  const Comp = as === "ul" ? motion.ul : motion.div;
+  const Comp = as === "ul" ? motion.ul : as === "ol" ? motion.ol : motion.div;
   return (
     <Comp
       className={className}

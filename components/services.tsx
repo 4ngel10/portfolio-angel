@@ -10,7 +10,7 @@ import { SERVICES } from "@/lib/services";
 
 // Apartado de la página de servicio al que lleva cada punto de la card (ids en lib/services.ts).
 const BULLET_ANCHORS: Record<string, string[]> = {
-  s1: ["servidores", "redes", "backup", "dispositivos"],
+  s1: ["backup", "microsoft-365", "redes", "dispositivos"],
   s2: ["diseno", "diseno", "rendimiento", "mantenimiento"],
 };
 

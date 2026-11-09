@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { CountUp } from "./count-up";
+import { RealCases } from "./real-cases";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 // Stack completo por área. La banda de components/stack-band.tsx solo muestra una selección
@@ -37,7 +38,6 @@ const STACK: { labelKey: string; items: string[] }[] = [
 
 // Cifras de experiencia (las dio Ángel el 2026-11-08). Textos en about.stat{n}Value / Label.
 const STATS = [1, 2, 3, 4];
-const CASES = [1, 2];
 
 function StackCategory({ cat }: { cat: (typeof STACK)[number] }) {
   const { t } = useI18n();
@@ -107,29 +107,8 @@ export function About() {
           </RevealItem>
         </RevealGroup>
 
-        {/* Casos reales: sin nombres ni relación con el grupo hotelero. Una línea vertical en
-            el acento, a modo de cita, y nada más de color. */}
         <div className="mt-16">
-          <Reveal>
-            <h3 className="text-xl font-semibold tracking-tight">{t("about.casesTitle")}</h3>
-          </Reveal>
-          <RevealGroup className="mt-6 grid gap-10 md:grid-cols-2 md:gap-14" stagger={0.08}>
-            {CASES.map((n) => (
-              <RevealItem key={n} as="div">
-                <div className="border-l-2 pl-5" style={{ borderColor: "var(--accent)" }}>
-                  <h4 className="text-lg font-semibold tracking-tight">
-                    {t(`about.case${n}Title`)}
-                  </h4>
-                  <p className="text-muted mt-2 text-[15px] leading-relaxed">
-                    {t(`about.case${n}Text`)}
-                  </p>
-                  <p className="text-muted mt-4 font-mono text-xs leading-relaxed">
-                    {t(`about.case${n}Result`)}
-                  </p>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
+          <RealCases title={t("about.casesTitle")} level={3} />
           <Reveal>
             <p className="text-muted mt-8 text-[15px]">
               {t("about.alsoPre")}

@@ -11,7 +11,17 @@
 import type { Locale } from "./i18n";
 
 /** `id` es el ancla del apartado (/servicios/sistemas#redes); igual en los dos idiomas. */
-export type ServiceGroup = { id: string; title: string; items: string[]; tools?: string[] };
+export type ServiceGroup = {
+  id: string;
+  title: string;
+  /** Una frase con el problema que resuelve; se muestra bajo el título. */
+  lead?: string;
+  items: string[];
+  tools?: string[];
+};
+
+export type ServiceMode = { title: string; text: string };
+export type ServiceFaq = { q: string; a: string };
 
 export type ServiceDetail = {
   id: string;
@@ -21,6 +31,10 @@ export type ServiceDetail = {
   /** Texto del bloque final, antes del botón de contacto. */
   closing: Record<Locale, string>;
   groups: Record<Locale, ServiceGroup[]>;
+  /** Secciones opcionales, de momento solo en sistemas: casos reales, modalidades y preguntas. */
+  showCases?: boolean;
+  modes?: Record<Locale, { title: string; lead: string; note: string; items: ServiceMode[] }>;
+  faq?: Record<Locale, { title: string; items: ServiceFaq[] }>;
 };
 
 export const SERVICES: ServiceDetail[] = [
@@ -29,71 +43,39 @@ export const SERVICES: ServiceDetail[] = [
     key: "s1",
     intro: {
       es: [
-        "Soy técnico de sistemas en Palma de Mallorca y me encargo de que la tecnología de tu empresa funcione sin que tengas que pensar en ella. Servidores, red, copias de seguridad, correo, dispositivos. Que todo esté en su sitio y que si algo falla, se recupere rápido.",
-        "Vengo de infraestructuras en el sector hotelero, con varios servidores en paralelo y entornos donde una caída no es una opción. Eso me enseñó a trabajar con documentación, estandarización y planes de continuidad como base de todo. Hoy llevo esa misma forma de trabajar a la administración de sistemas y el soporte IT de empresas en Mallorca.",
+        "Me ocupo de la informática de tu empresa, desde las copias de seguridad y el correo hasta la red, los equipos y los servidores. Para autónomos, pymes y negocios que empiezan, en remoto o presencial.",
+        "Desde hace 3 años formo parte del equipo de sistemas de una empresa de servicios IT, con más de 60 hoteles, 120 servidores y 1.000 usuarios a cargo. Llevo esa misma forma de trabajar a tu negocio, con documentación, copias probadas y cambios planificados.",
       ],
       en: [
-        "I am a systems technician based in Palma de Mallorca, and I make sure your company's technology works without you having to think about it. Servers, network, backups, email, devices. Everything in its place, and if something fails, it recovers fast.",
-        "I come from hospitality infrastructures, with several servers running in parallel and environments where downtime is not an option. That taught me to build everything on documentation, standardization and continuity plans. Today I bring that same way of working to systems administration and IT support for businesses in Mallorca.",
+        "I look after your company's IT, from backups and email to the network, devices and servers. For freelancers, small businesses and new ventures, remotely or on site.",
+        "For the past 3 years I've been part of the systems team at an IT services company, looking after more than 60 hotels, 120 servers and 1,000 users. I bring that same way of working to your business, with documentation, tested backups and planned changes.",
       ],
     },
     closing: {
-      es: "¿Buscas soporte IT para tu empresa en Mallorca? Cuéntame qué tienes montado y qué te preocupa. Te respondo en 24 a 48 horas con una propuesta clara, sin compromiso.",
-      en: "Looking for IT support for your business in Mallorca? Tell me what you have in place and what worries you. I reply within 24 to 48 hours with a clear proposal, no strings attached.",
+      es: "Cuéntame qué tienes montado y qué te preocupa. Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
+      en: "Tell me what you have in place and what worries you. We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
     },
     groups: {
       es: [
         {
-          id: "servidores",
-          title: "Servidores y virtualización",
-          items: [
-            "Despliego y mantengo entornos con Windows Server y Active Directory: usuarios, grupos, permisos y directivas.",
-            "Trabajo con virtualización tanto en Hyper-V como en VMware y Proxmox, y con contenedores Docker para servicios más ligeros.",
-            "Las tareas repetitivas las automatizo con PowerShell.",
-            "También gestiono servicios en Azure.",
-          ],
-          tools: [
-            "Windows Server",
-            "Active Directory",
-            "Hyper-V",
-            "VMware",
-            "Proxmox",
-            "Docker",
-            "PowerShell",
-            "Azure",
-          ],
-        },
-        {
-          id: "redes",
-          title: "Redes y seguridad perimetral",
-          items: [
-            "Diseño redes segmentadas con VLANs para que cada tipo de equipo esté aislado donde le toca.",
-            "Configuro firewalls con Fortinet, pfSense y OPNsense.",
-            "Gestiono redes wifi con UniFi y Omada.",
-            "Para acceso remoto, VPN e IPsec.",
-          ],
-          tools: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Omada"],
-        },
-        {
           id: "backup",
-          title: "Backup y continuidad de negocio",
+          title: "Copias de seguridad y continuidad",
+          lead: "Que un fallo o un ataque no te haga perder datos ni días de trabajo.",
           items: [
-            "Aplico estrategias 3-2-1 con varias copias, en distintos soportes y siempre una fuera de la oficina. Lo explico a fondo en [Backup 3-2-1](/blog/backup-3-2-1).",
-            "Trabajo principalmente con Nakivo, Veeam y Acronis según las necesidades del entorno.",
-            "Monitorizo las copias a diario para reaccionar de inmediato si falla cualquier tarea.",
-            "Realizo pruebas de restauración periódicas, porque una copia que nunca se ha probado no es una copia de verdad.",
+            "Copias automáticas con la regla [3-2-1](/blog/backup-3-2-1), siempre con una copia fuera de la oficina.",
+            "Reviso cada día que se han hecho y pruebo a restaurarlas cada cierto tiempo.",
+            "Un plan claro para volver a trabajar rápido si algo falla.",
           ],
-          tools: ["Nakivo", "Veeam", "Acronis"],
+          tools: ["Veeam", "Nakivo", "Acronis"],
         },
         {
           id: "microsoft-365",
           title: "Microsoft 365 y correo",
+          lead: "Correo, archivos y equipo de trabajo ordenados y protegidos.",
           items: [
-            "Administro tenants de Microsoft 365 completos con gestión de usuarios, licencias, buzones y asignación de permisos.",
-            "Configuro políticas de acceso condicional e integración con Azure para reforzar la seguridad de la identidad corporativa.",
-            "Organizo y gestiono la estructura de documentos y permisos en SharePoint para facilitar el trabajo en equipo.",
-            "Implemento sistemas de filtrado de correo que protegen la bandeja de entrada frente a spam, phishing y amenazas avanzadas.",
-            "Realizo copias de seguridad de Microsoft 365 para mantener a salvo el correo, SharePoint y toda la información de la empresa.",
+            "Altas, bajas, licencias y permisos de tu equipo.",
+            "Filtro de correo contra spam, phishing y suplantaciones.",
+            "SharePoint y OneDrive organizados, con copia de seguridad.",
           ],
           tools: [
             "Microsoft 365",
@@ -105,46 +87,35 @@ export const SERVICES: ServiceDetail[] = [
           ],
         },
         {
-          id: "dispositivos",
-          title: "Dispositivos y monitorización",
+          id: "redes",
+          title: "Redes, wifi y seguridad",
+          lead: "Una red rápida y segura, con cada cosa en su sitio.",
           items: [
-            "Gestiono y mantengo equipos y portátiles en remoto a través de herramientas de gestión como NinjaOne o Syncro.",
-            "Despliego y configuro Microsoft Intune para el control centralizado de los equipos informáticos de la empresa.",
-            "Superviso y gestiono la flota de dispositivos móviles con SOTI MobiControl para asegurar el cumplimiento de políticas de seguridad.",
-            "Monitorizo la infraestructura con Zabbix y Grafana con alertas configuradas para detectar incidencias antes de que afecten a los usuarios.",
+            "Wifi estable en toda la oficina o el local, también para clientes.",
+            "Firewall y red separada por tipos de equipo, para que un problema no se extienda.",
+            "Acceso remoto seguro por VPN para trabajar desde fuera.",
+          ],
+          tools: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Omada"],
+        },
+        {
+          id: "dispositivos",
+          title: "Equipos y soporte",
+          lead: "Ordenadores y móviles al día, y alguien que responde cuando algo falla.",
+          items: [
+            "Soporte remoto a tu equipo, sin esperar a que vaya nadie.",
+            "Actualizaciones, antivirus y control de los equipos desde un panel central.",
+            "Aviso automático si un equipo o servidor da problemas, antes de que lo notes.",
           ],
           tools: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"],
         },
         {
-          id: "voip",
-          title: "VoIP y centralitas",
-          items: [
-            "Instalo y configuro centralitas 3CX para oficinas con gestión de extensiones, colas de llamada y reglas de desvío.",
-            "Integro líneas SIP trunk con proveedores IP para optimizar los costes de telefonía y mejorar la calidad de las llamadas.",
-            "Configuro la app móvil de 3CX para que los empleados puedan atender sus extensiones corporativas desde cualquier sitio.",
-            "Monitorizo y mantengo el estado de la centralita para garantizar un servicio de voz estable y sin interrupciones.",
-          ],
-          tools: ["3CX"],
-        },
-        {
-          id: "domotica",
-          title: "Domótica",
-          items: [
-            "Diseño e integro sistemas domóticos basados en Home Assistant para el control centralizado de iluminación, climatización y persianas.",
-            "Configuro automatizaciones, escenas personalizadas e integración fluida con asistentes de voz para facilitar el día a día. Lo cuento más a fondo en mi [homelab personal](/proyectos/homelab-proxmox).",
-          ],
-          tools: ["Home Assistant"],
-        },
-      ],
-      en: [
-        {
           id: "servidores",
-          title: "Servers and virtualization",
+          title: "Servidores y virtualización",
+          lead: "Servidores en la oficina o en la nube, estables y documentados.",
           items: [
-            "I deploy and maintain Windows Server and Active Directory environments: users, groups, permissions and policies.",
-            "I work with virtualization on Hyper-V as well as VMware and Proxmox, and with Docker containers for lighter services.",
-            "I automate repetitive tasks with PowerShell.",
-            "I also manage services on Azure.",
+            "Instalación y mantenimiento de Windows Server y Active Directory.",
+            "Virtualización con Hyper-V, VMware o Proxmox para aprovechar mejor el hardware.",
+            "Tareas repetitivas automatizadas con PowerShell.",
           ],
           tools: [
             "Windows Server",
@@ -158,36 +129,37 @@ export const SERVICES: ServiceDetail[] = [
           ],
         },
         {
-          id: "redes",
-          title: "Networking and perimeter security",
+          id: "voip",
+          title: "Centralita y telefonía",
+          lead: "Teléfonos que funcionan en la oficina y en el móvil.",
           items: [
-            "I design networks segmented with VLANs so every kind of device is isolated where it belongs.",
-            "I configure firewalls with Fortinet, pfSense and OPNsense.",
-            "I manage wifi networks with UniFi and Omada.",
-            "For remote access, VPN and IPsec.",
+            "Centralita 3CX con extensiones, colas y desvíos.",
+            "Líneas SIP para pagar menos en telefonía.",
+            "App en el móvil para atender las llamadas desde fuera.",
           ],
-          tools: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Omada"],
+          tools: ["3CX"],
         },
+      ],
+      en: [
         {
           id: "backup",
-          title: "Backup and business continuity",
+          title: "Backups and business continuity",
+          lead: "So a failure or an attack doesn't cost you data or days of work.",
           items: [
-            "I apply 3-2-1 strategies with several copies, on different media, and always one outside the office. I explain it in depth in [3-2-1 backup](/blog/backup-3-2-1).",
-            "I mainly work with Nakivo, Veeam and Acronis, depending on the needs of the environment.",
-            "I monitor the backups daily so I can react immediately if any job fails.",
-            "I run regular restore tests, because a backup that has never been tested is not a real backup.",
+            "Automatic backups following the [3-2-1](/blog/backup-3-2-1) rule, always with a copy off site.",
+            "I check every day that they ran, and test restoring them regularly.",
+            "A clear plan to get back to work fast if something breaks.",
           ],
-          tools: ["Nakivo", "Veeam", "Acronis"],
+          tools: ["Veeam", "Nakivo", "Acronis"],
         },
         {
           id: "microsoft-365",
           title: "Microsoft 365 and email",
+          lead: "Email, files and your team's workspace, organised and protected.",
           items: [
-            "I administer complete Microsoft 365 tenants, including user management, licenses, mailboxes and permission assignment.",
-            "I configure conditional access policies and Azure integration to strengthen corporate identity security.",
-            "I organize and manage the document and permission structure in SharePoint to make teamwork easier.",
-            "I implement email filtering systems that protect the inbox from spam, phishing and advanced threats.",
-            "I back up Microsoft 365 to keep email, SharePoint and all of the company's information safe.",
+            "New starters, leavers, licences and permissions.",
+            "Email filtering against spam, phishing and impersonation.",
+            "SharePoint and OneDrive organised and backed up.",
           ],
           tools: [
             "Microsoft 365",
@@ -199,37 +171,176 @@ export const SERVICES: ServiceDetail[] = [
           ],
         },
         {
-          id: "dispositivos",
-          title: "Devices and monitoring",
+          id: "redes",
+          title: "Networks, wifi and security",
+          lead: "A fast, secure network with everything in its place.",
           items: [
-            "I manage and maintain computers and laptops remotely through management tools such as NinjaOne or Syncro.",
-            "I deploy and configure Microsoft Intune for centralized control of the company's computers.",
-            "I supervise and manage the fleet of mobile devices with SOTI MobiControl to ensure compliance with security policies.",
-            "I monitor the infrastructure with Zabbix and Grafana, with alerts set up to detect incidents before they affect users.",
+            "Reliable wifi across the office or shop, guests included.",
+            "Firewall and a network split by device type, so one problem doesn't spread.",
+            "Secure remote access over VPN to work from anywhere.",
+          ],
+          tools: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Omada"],
+        },
+        {
+          id: "dispositivos",
+          title: "Devices and support",
+          lead: "Computers and phones kept up to date, and someone who answers when something breaks.",
+          items: [
+            "Remote support for your team, without waiting for a visit.",
+            "Updates, antivirus and device control from a central dashboard.",
+            "Automatic alerts if a computer or server has problems, before you notice.",
           ],
           tools: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"],
         },
         {
-          id: "voip",
-          title: "VoIP and phone systems",
+          id: "servidores",
+          title: "Servers and virtualisation",
+          lead: "Servers on site or in the cloud, stable and documented.",
           items: [
-            "I install and configure 3CX phone systems for offices, with management of extensions, call queues and forwarding rules.",
-            "I integrate SIP trunk lines with IP providers to optimize telephony costs and improve call quality.",
-            "I set up the 3CX mobile app so employees can answer their corporate extensions from anywhere.",
-            "I monitor and maintain the state of the phone system to guarantee a stable, uninterrupted voice service.",
+            "Windows Server and Active Directory setup and maintenance.",
+            "Virtualisation with Hyper-V, VMware or Proxmox to get more out of your hardware.",
+            "Repetitive tasks automated with PowerShell.",
+          ],
+          tools: [
+            "Windows Server",
+            "Active Directory",
+            "Hyper-V",
+            "VMware",
+            "Proxmox",
+            "Docker",
+            "PowerShell",
+            "Azure",
+          ],
+        },
+        {
+          id: "voip",
+          title: "Phone system",
+          lead: "Phones that work in the office and on your mobile.",
+          items: [
+            "3CX phone system with extensions, queues and call forwarding.",
+            "SIP lines to cut your phone bill.",
+            "A mobile app to take calls from anywhere.",
           ],
           tools: ["3CX"],
         },
-        {
-          id: "domotica",
-          title: "Home automation",
-          items: [
-            "I design and integrate home automation systems based on Home Assistant for centralized control of lighting, climate and blinds.",
-            "I set up automations, custom scenes and seamless voice assistant integration to make everyday life easier. I go into more detail in my [personal homelab](/proyectos/homelab-proxmox).",
-          ],
-          tools: ["Home Assistant"],
-        },
       ],
+    },
+    showCases: true,
+    modes: {
+      es: {
+        title: "Cómo podemos trabajar.",
+        lead: "Me adapto a lo que necesites. Estas son las formas más habituales.",
+        note: "En remoto desde el primer día. Presencial en Mallorca y en cualquier otro lugar, con el desplazamiento por cuenta del cliente.",
+        items: [
+          {
+            title: "Proyecto puntual",
+            text: "Una instalación, una migración o un cambio concreto, con presupuesto antes de empezar.",
+          },
+          {
+            title: "Bolsa de horas",
+            text: "Horas de soporte que se descuentan según se usan y no caducan. Las ves en tu área de clientes.",
+          },
+          {
+            title: "Mantenimiento continuo",
+            text: "Reviso cada mes que todo siga en orden, con actualizaciones y copias comprobadas.",
+          },
+          {
+            title: "Auditoría y mejoras",
+            text: "Reviso tu infraestructura y te entrego un informe con lo que funciona, lo que falla y qué mejorar primero.",
+          },
+          {
+            title: "Estudio de viabilidad",
+            text: "Antes de invertir, analizo si una solución encaja en tu negocio y qué necesitarías.",
+          },
+          {
+            title: "Urgencias",
+            text: "Si algo crítico se cae, lo atiendo también fuera de horario.",
+          },
+        ],
+      },
+      en: {
+        title: "How we can work together.",
+        lead: "I adapt to what you need. These are the most common options.",
+        note: "Remote from day one. On site in Mallorca and anywhere else, with travel costs covered by the client.",
+        items: [
+          {
+            title: "One-off project",
+            text: "An installation, a migration or a specific change, quoted before we start.",
+          },
+          {
+            title: "Hour bank",
+            text: "Support hours used as you need them, with no expiry. You can track them in your client area.",
+          },
+          {
+            title: "Ongoing maintenance",
+            text: "Every month I check everything is in order, with updates and verified backups.",
+          },
+          {
+            title: "Audit and improvements",
+            text: "I review your infrastructure and give you a report on what works, what doesn't and what to fix first.",
+          },
+          {
+            title: "Feasibility study",
+            text: "Before you invest, I check whether a solution fits your business and what it would take.",
+          },
+          {
+            title: "Emergencies",
+            text: "If something critical goes down, I handle it outside business hours too.",
+          },
+        ],
+      },
+    },
+    faq: {
+      es: {
+        title: "Preguntas frecuentes.",
+        items: [
+          {
+            q: "¿Trabajas en remoto?",
+            a: "Sí. La mayoría del soporte se hace en remoto, que es más rápido. Si hace falta, voy en persona.",
+          },
+          {
+            q: "¿Atiendes urgencias fuera de horario?",
+            a: "Sí. Si algo crítico deja de funcionar, avísame y lo atiendo aunque sea fuera de horario.",
+          },
+          {
+            q: "¿Cuánto cuesta?",
+            a: "Depende de lo que necesites. Tras la llamada gratuita de 15 minutos te envío un presupuesto, sin compromiso.",
+          },
+          {
+            q: "¿Trabajas con empresas pequeñas?",
+            a: "Sí, con autónomos, pymes y negocios que empiezan. No hace falta tener un servidor para necesitar ayuda con la informática.",
+          },
+          {
+            q: "¿Y si ya tengo un informático o un proveedor?",
+            a: "Puedo encargarme de una parte concreta, como las copias o la red, o hacer una auditoría para ver qué mejorar.",
+          },
+        ],
+      },
+      en: {
+        title: "FAQ.",
+        items: [
+          {
+            q: "Do you work remotely?",
+            a: "Yes. Most support is done remotely, which is faster. If needed, I come on site.",
+          },
+          {
+            q: "Do you handle emergencies outside business hours?",
+            a: "Yes. If something critical stops working, let me know and I'll handle it even outside business hours.",
+          },
+          {
+            q: "How much does it cost?",
+            a: "It depends on what you need. After the free 15-minute call I send you a quote, with no obligation.",
+          },
+          {
+            q: "Do you work with small businesses?",
+            a: "Yes, with freelancers, small businesses and new ventures. You don't need a server to need help with IT.",
+          },
+          {
+            q: "What if I already have an IT person or provider?",
+            a: "I can take on a specific part, like backups or the network, or run an audit to see what to improve.",
+          },
+        ],
+      },
     },
   },
   {
@@ -371,46 +482,6 @@ export const SERVICES: ServiceDetail[] = [
     },
   },
 ];
-
-/** Cómo trabajo: los principios comunes a los dos servicios. */
-export const PRINCIPLES: Record<Locale, { title: string; text: string }[]> = {
-  es: [
-    {
-      title: "Documentación",
-      text: "Todo lo que monto queda documentado. Si mañana lo gestiona otra persona, sabrá qué hay y por qué.",
-    },
-    {
-      title: "Estandarización",
-      text: "Mismas configuraciones y mismos procesos en todos los equipos. Menos sorpresas y menos errores.",
-    },
-    {
-      title: "Continuidad de negocio",
-      text: "Pienso primero en qué pasa si algo falla, y en cómo volver a funcionar lo antes posible.",
-    },
-    {
-      title: "Comunicación clara",
-      text: "Te respondo en 24 a 48 h con una propuesta concreta, sin tecnicismos innecesarios ni letra pequeña.",
-    },
-  ],
-  en: [
-    {
-      title: "Documentation",
-      text: "Everything I set up gets documented. If someone else manages it tomorrow, they will know what is there and why.",
-    },
-    {
-      title: "Standardization",
-      text: "Same configurations and same processes across every device. Fewer surprises, fewer mistakes.",
-    },
-    {
-      title: "Business continuity",
-      text: "I think first about what happens if something fails, and how to get back up as fast as possible.",
-    },
-    {
-      title: "Clear communication",
-      text: "I reply within 24 to 48 h with a concrete proposal, without needless jargon or fine print.",
-    },
-  ],
-};
 
 export function getService(id: string) {
   return SERVICES.find((s) => s.id === id);

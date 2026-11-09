@@ -31,7 +31,7 @@ export function alternatesFor(path: string) {
 /** Meta description de cada página de servicio, por id. */
 export const SERVICE_DESCRIPTIONS: Record<string, string> = {
   sistemas:
-    "Administración de sistemas en Palma de Mallorca: servidores Windows, virtualización, backup con Nakivo y Veeam, redes Fortinet y Microsoft 365.",
+    "Administración de sistemas en Palma de Mallorca. Copias de seguridad, Microsoft 365, redes, equipos, servidores y soporte IT para autónomos y pymes.",
   web: "Desarrollo web profesional en Palma de Mallorca. Webs corporativas, portfolios y aplicaciones a medida con Next.js. Rápidas, responsive y optimizadas para SEO.",
 };
 
@@ -146,6 +146,19 @@ export function serviceJsonLd(service: Service) {
       provider: { "@id": BUSINESS_ID },
       areaServed: { "@type": "City", name: "Palma de Mallorca" },
     },
+    ...(service.faq
+      ? [
+          {
+            "@type": "FAQPage",
+            "@id": `${SITE_URL}${path}#faq`,
+            mainEntity: service.faq.es.items.map((it) => ({
+              "@type": "Question",
+              name: it.q,
+              acceptedAnswer: { "@type": "Answer", text: it.a },
+            })),
+          },
+        ]
+      : []),
     // "Servicios" y "Proyectos" no tienen página propia: apuntan a su sección de la home.
     breadcrumb([
       { name: "Inicio", path: "/" },
