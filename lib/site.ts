@@ -2,9 +2,9 @@
  * Datos del sitio en un solo sitio.
  *
  * SITE_URL: dirección pública de la web. La usan metadata (vistas previas al compartir),
- * sitemap.xml y robots.txt. Cuando haya dominio propio, cambiar solo esta línea.
+ * sitemap.xml y robots.txt. Si cambia el dominio, cambiar solo esta línea.
  */
-export const SITE_URL = "https://portfolio-angel-vert.vercel.app";
+export const SITE_URL = "https://www.angel-fernandez.es";
 
 /**
  * Clave de acceso de Web3Forms (formulario de contacto -> Gmail de Ángel).
