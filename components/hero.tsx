@@ -93,15 +93,27 @@ export function Hero() {
           className="hero-fade hidden lg:col-span-4 lg:block"
           style={{ animationDelay: "0.55s" }}
         >
-          <Image
-            src="/angel-portrait.webp"
-            alt={t("photo.alt")}
-            width={800}
-            height={1000}
-            priority
-            sizes="(min-width: 1024px) 360px, 0px"
-            className="hero-photo border-rule ml-auto h-auto w-full max-w-[360px] rounded-2xl border object-cover transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03]"
-          />
+          {/* Foto recortada sin fondo sobre un brillo estático del acento. Sin card ni borde. */}
+          <div className="relative ml-auto w-fit">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute"
+              style={{
+                inset: "8% -10% 0 -10%",
+                background:
+                  "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 22%, transparent), transparent)",
+              }}
+            />
+            <Image
+              src="/angel-cutout.webp"
+              alt={t("photo.alt")}
+              width={520}
+              height={920}
+              priority
+              sizes="(min-width: 1024px) 280px, 0px"
+              className="hero-photo relative h-[470px] w-auto transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] xl:h-[520px]"
+            />
+          </div>
         </div>
       </div>
 
