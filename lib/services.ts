@@ -31,8 +31,7 @@ export type ServiceDetail = {
   /** Texto del bloque final, antes del botón de contacto. */
   closing: Record<Locale, string>;
   groups: Record<Locale, ServiceGroup[]>;
-  /** Secciones opcionales, de momento solo en sistemas: casos reales, modalidades y preguntas. */
-  showCases?: boolean;
+  /** Secciones opcionales, de momento solo en sistemas: modalidades y preguntas. */
   /** Proyectos reales: slugs de PROJECTS, y "self" para la card de esta misma web. */
   projects?: string[];
   modes?: Record<Locale, { title: string; lead: string; note: string; items: ServiceMode[] }>;
@@ -227,7 +226,6 @@ export const SERVICES: ServiceDetail[] = [
         },
       ],
     },
-    showCases: true,
     modes: {
       es: {
         title: "Cómo podemos trabajar.",
