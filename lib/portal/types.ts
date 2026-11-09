@@ -33,6 +33,8 @@ export type Proyecto = {
   titulo: string;
   descripcion: string | null;
   estado: EstadoProyecto;
+  /** Presupuesto aceptado del que nace el proyecto (opcional, único). */
+  presupuesto_id: string | null;
   created_at: string;
 };
 
@@ -85,6 +87,20 @@ export type BolsaHoras = {
   precio: number | null;
   periodo_inicio: string;
   periodo_fin: string;
+  /** Cuándo se avisó al cliente de bolsa baja; null si no hay aviso vigente. */
+  ultimo_aviso_bajo: string | null;
+};
+
+/** Apunte de horas de una bolsa. Negativo = corrección. */
+export type BolsaMovimiento = {
+  id: string;
+  empresa_id: string;
+  bolsa_id: string;
+  proyecto_id: string | null;
+  fecha: string;
+  horas: number;
+  concepto: string;
+  created_at: string;
 };
 
 /** Mes ya cerrado de una bolsa. Solo lo lee el admin. */

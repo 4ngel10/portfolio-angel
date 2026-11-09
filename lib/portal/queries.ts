@@ -2,6 +2,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import type {
   BolsaHoras,
+  BolsaMovimiento,
   BolsaMes,
   Empresa,
   Hito,
@@ -47,6 +48,32 @@ export async function listarBolsas(): Promise<BolsaHoras[]> {
   return (data ?? []) as BolsaHoras[];
 }
 
+/**
+ * Apuntes de horas, los más recientes primero. RLS deja al cliente solo los de su empresa.
+ * `mes` es "AAAA-MM".
+ */
+export async function listarMovimientos(f?: {
+  empresaId?: string;
+  limit?: number;
+  mes?: string;
+}): Promise<BolsaMovimiento[]> {
+  const supabase = await createClient();
+  let q = supabase
+    .from("bolsa_movimientos")
+    .select("*")
+    .order("fecha", { ascending: false })
+    .order("created_at", { ascending: false });
+  if (f?.empresaId) q = q.eq("empresa_id", f.empresaId);
+  if (f?.mes && /^d{4}-(0[1-9]|1[0-2])$/.test(f.mes)) {
+    const [y, m] = f.mes.split("-").map(Number);
+    const fin = new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10);
+    q = q.gte("fecha", `${f.mes}-01`).lte("fecha", fin);
+  }
+  if (f?.limit) q = q.limit(f.limit);
+  const { data } = await q;
+  return (data ?? []) as BolsaMovimiento[];
+}
+
 /** Meses cerrados de todas las bolsas. Solo el admin los lee: RLS no deja pasar a los clientes. */
 export async function listarHistorialBolsas(): Promise<BolsaMes[]> {
   const supabase = await createClient();
@@ -83,6 +110,53 @@ export async function cargarIncidencias(filtro?: { proyectoId?: string; soloAbie
   }
 
   return { incidencias, mensajes, autores };
+}
+
+/**
+ * Incidencias abiertas a las que el admin no ha contestado: la espera cuenta desde el primer
+ * mensaje del cliente posterior a la última respuesta del admin (o desde que se abrió).
+ */
+export async function incidenciasSinRespuesta(): Promise<
+  { incidencia: Incidencia; desde: string }[]
+> {
+  const { incidencias, mensajes } = await cargarIncidencias({ soloAbiertas: true });
+  if (incidencias.length === 0) return [];
+  const supabase = await createClient();
+  const { data } = await supabase.from("usuarios").select("id").eq("role", "admin");
+  const admins = new Set((data ?? []).map((u) => u.id as string));
+
+  const pendientes: { incidencia: Incidencia; desde: string }[] = [];
+  for (const incidencia of incidencias) {
+    const suyos = mensajes.filter((m) => m.incidencia_id === incidencia.id);
+    const ultimaAdmin = suyos
+      .filter((m) => m.autor_id && admins.has(m.autor_id))
+      .reduce((max, m) => (m.created_at > max ? m.created_at : max), "");
+    const esperando = [
+      incidencia.created_at,
+      ...suyos.filter((m) => !m.autor_id || !admins.has(m.autor_id)).map((m) => m.created_at),
+    ].filter((c) => c > ultimaAdmin);
+    if (esperando.length === 0) continue;
+    pendientes.push({ incidencia, desde: esperando.reduce((min, c) => (c < min ? c : min)) });
+  }
+  return pendientes;
+}
+
+/**
+ * Presupuestos aceptados que aún no tienen proyecto (solo admin). Con `incluir` se añade ese
+ * presupuesto aunque ya esté enlazado, para que el selector de la ficha del proyecto lo muestre.
+ */
+export async function presupuestosSinProyecto(incluir?: string | null): Promise<Presupuesto[]> {
+  const supabase = await createClient();
+  const [{ data: aceptados }, { data: enlazados }] = await Promise.all([
+    supabase
+      .from("presupuestos")
+      .select("*")
+      .eq("estado", "aceptado")
+      .order("fecha_emision", { ascending: false }),
+    supabase.from("proyectos").select("presupuesto_id").not("presupuesto_id", "is", null),
+  ]);
+  const usados = new Set((enlazados ?? []).map((p) => p.presupuesto_id as string));
+  return ((aceptados ?? []) as Presupuesto[]).filter((p) => !usados.has(p.id) || p.id === incluir);
 }
 
 export const mapaTitulos = (proyectos: Proyecto[]) =>

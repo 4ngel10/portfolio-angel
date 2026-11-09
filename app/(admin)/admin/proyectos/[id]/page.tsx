@@ -4,8 +4,8 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
 import { createClient } from "@/lib/supabase/server";
-import { cargarIncidencias } from "@/lib/portal/queries";
-import { cambiarEstadoProyecto, crearHito } from "@/lib/portal/actions";
+import { cargarIncidencias, presupuestosSinProyecto } from "@/lib/portal/queries";
+import { cambiarEstadoProyecto, crearHito, vincularPresupuesto } from "@/lib/portal/actions";
 import { isUuid } from "@/lib/portal/validate";
 import { cobrosConEstado, listarGastos } from "@/lib/portal/finanzas-queries";
 import { redondear } from "@/lib/portal/presupuestos";
@@ -32,18 +32,30 @@ export default async function ProyectoAdminPage({ params }: { params: Promise<{ 
   const proyecto = data as Proyecto | null;
   if (!proyecto) notFound();
 
-  const [{ data: e }, { data: h }, { data: a }, inc, cobros, gastos] = await Promise.all([
-    supabase.from("empresas").select("*").eq("id", proyecto.empresa_id).maybeSingle(),
-    supabase.from("hitos").select("*").eq("proyecto_id", id).order("orden"),
-    supabase
-      .from("archivos")
-      .select("*")
-      .eq("proyecto_id", id)
-      .order("created_at", { ascending: false }),
-    cargarIncidencias({ proyectoId: id }),
-    cobrosConEstado({ proyectoId: id }),
-    listarGastos({ proyectoId: id }),
-  ]);
+  const [{ data: e }, { data: h }, { data: a }, inc, cobros, gastos, libres, { data: actualQ }] =
+    await Promise.all([
+      supabase.from("empresas").select("*").eq("id", proyecto.empresa_id).maybeSingle(),
+      supabase.from("hitos").select("*").eq("proyecto_id", id).order("orden"),
+      supabase
+        .from("archivos")
+        .select("*")
+        .eq("proyecto_id", id)
+        .order("created_at", { ascending: false }),
+      cargarIncidencias({ proyectoId: id }),
+      cobrosConEstado({ proyectoId: id }),
+      listarGastos({ proyectoId: id }),
+      presupuestosSinProyecto(proyecto.presupuesto_id),
+      proyecto.presupuesto_id
+        ? supabase
+            .from("presupuestos")
+            .select("id, numero, titulo")
+            .eq("id", proyecto.presupuesto_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
+  const actual = actualQ as { id: string; numero: string; titulo: string } | null;
+  // Solo los aceptados de esta empresa, más el que ya tiene (aunque ya no esté aceptado).
+  const opciones = libres.filter((p) => p.empresa_id === proyecto.empresa_id);
 
   // Rentabilidad en caja: lo cobrado menos los gastos imputados al proyecto.
   const vivos = cobros.filter((c) => c.estado !== "anulado");
@@ -101,6 +113,55 @@ export default async function ProyectoAdminPage({ params }: { params: Promise<{ 
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <div className="grid content-start gap-6">
+          <Panel title={t("admin.quoteField")}>
+            {actual ? (
+              <p className="mb-4 text-sm">
+                <Link
+                  href={`/admin/presupuestos/${actual.id}`}
+                  className="hover:text-accent font-medium underline underline-offset-4"
+                >
+                  {t("admin.quoteOpen", { numero: actual.numero })}
+                </Link>
+              </p>
+            ) : null}
+            {/* key: al guardar, el formulario se vuelve a montar con el valor nuevo. */}
+            <ActionForm
+              key={proyecto.presupuesto_id ?? "ninguno"}
+              action={vincularPresupuesto}
+              submitLabel={t("admin.quoteLink")}
+              pendingLabel={t("admin.saving")}
+              secondary
+              messageTimeout={2000}
+            >
+              <input type="hidden" name="proyecto_id" value={proyecto.id} />
+              <label htmlFor="p-presupuesto" className={labelCls}>
+                {t("admin.quoteField")}
+              </label>
+              <select
+                id="p-presupuesto"
+                name="presupuesto_id"
+                defaultValue={proyecto.presupuesto_id ?? ""}
+                aria-describedby="p-presupuesto-ayuda"
+                className={inputCls}
+              >
+                <option value="">{t("admin.quoteNone")}</option>
+                {opciones.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.numero} {"·"} {p.titulo}
+                  </option>
+                ))}
+                {actual && !opciones.some((p) => p.id === actual.id) ? (
+                  <option value={actual.id}>
+                    {actual.numero} {"·"} {actual.titulo}
+                  </option>
+                ) : null}
+              </select>
+              <p id="p-presupuesto-ayuda" className="text-muted mt-1.5 text-xs">
+                {t("admin.quoteHint")}
+              </p>
+            </ActionForm>
+          </Panel>
+
           <Panel title={t("admin.milestones")}>
             <HitosLista hitos={hitos} admin />
             <div className="border-rule mt-6 border-t pt-5">

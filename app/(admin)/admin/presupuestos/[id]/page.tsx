@@ -36,11 +36,13 @@ export default async function PresupuestoAdminPage({
   const presupuesto = data as Presupuesto | null;
   if (!presupuesto) notFound();
 
-  const [lineas, empresas, cobros] = await Promise.all([
+  const [lineas, empresas, cobros, { data: proyectoQ }] = await Promise.all([
     listarLineasPresupuesto([id]),
     listarEmpresas(),
     cobrosConEstado({ presupuestoId: id }),
+    supabase.from("proyectos").select("id, titulo").eq("presupuesto_id", id).maybeSingle(),
   ]);
+  const proyecto = proyectoQ as { id: string; titulo: string } | null;
   const empresa = empresas.find((e) => e.id === presupuesto.empresa_id);
   const hoy = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
   // Un presupuesto ya respondido no se edita: se reabre cambiando su estado.
@@ -57,6 +59,16 @@ export default async function PresupuestoAdminPage({
         </Link>
       </p>
       <PageHeader title={presupuesto.numero} />
+      {proyecto ? (
+        <p className="-mt-2 mb-6 text-sm">
+          <Link
+            href={`/admin/proyectos/${proyecto.id}`}
+            className="hover:text-accent font-medium underline underline-offset-4"
+          >
+            {t("admin.projectOpen", { titulo: proyecto.titulo })}
+          </Link>
+        </p>
+      ) : null}
 
       <div className="grid gap-6">
         <Panel title={t("quotes.statusTitle")}>
