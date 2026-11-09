@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Reveal } from "./reveal";
-import { Arrow, Block, SectionHeading, formatDate, headingNumber } from "./project-article";
+import { Arrow, Block, SectionHeading, formatDate } from "./project-article";
 import { useI18n } from "@/lib/i18n";
 import { getLegalPage, type LegalId } from "@/lib/legal";
 
@@ -14,7 +14,7 @@ export function LegalPageView({ id }: { id: LegalId }) {
 
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
-      <header className="mx-auto max-w-4xl px-6 pt-14 md:px-8 md:pt-20">
+      <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
           <Link
             href="/"
@@ -23,7 +23,7 @@ export function LegalPageView({ id }: { id: LegalId }) {
             <Arrow back />
             {t("blog.home")}
           </Link>
-          <h1 className="mt-8 text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
+          <h1 className="mt-8 max-w-5xl text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
             {content.title}
           </h1>
           <p className="text-muted mt-6 text-sm">
@@ -35,17 +35,13 @@ export function LegalPageView({ id }: { id: LegalId }) {
         </Reveal>
       </header>
 
-      <article className="mx-auto max-w-2xl px-6 pt-12 pb-20 md:px-8 md:pt-16 md:pb-28">
-        <Reveal className="mb-14">
+      <article className="mx-auto max-w-6xl px-6 pt-12 pb-20 md:px-8 md:pt-16 md:pb-28">
+        <Reveal className="mb-14 max-w-4xl">
           <Block block={content.intro} />
         </Reveal>
         {content.sections.map((section, s) => (
-          <Reveal key={s} className="mb-14 last:mb-0">
-            {section.heading && (
-              <SectionHeading n={headingNumber(content.sections, s)}>
-                {section.heading}
-              </SectionHeading>
-            )}
+          <Reveal key={s} className="mb-14 max-w-4xl last:mb-0">
+            {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
             {section.blocks.map((block, i) => (
               <Block key={i} block={block} />
             ))}

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Reveal } from "./reveal";
 import { ProjectCover } from "./project-cover";
-import { SERVICE_ICONS } from "./service-icons";
+import { ServiceCta } from "./service-cta";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { PROJECTS, getProject, type PostBlock, type PostSection } from "@/lib/projects";
 
@@ -107,7 +107,7 @@ export function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: 
           alt={block.alt}
           width={block.width}
           height={block.height}
-          sizes={wide ? "(min-width: 768px) 720px, 100vw" : "(min-width: 640px) 320px, 75vw"}
+          sizes={wide ? "(min-width: 1024px) 896px, 100vw" : "(min-width: 640px) 320px, 75vw"}
           className={
             wide
               ? "border-rule h-auto w-full rounded-2xl border"
@@ -209,7 +209,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
       <ReadingProgress />
-      <header className="mx-auto max-w-4xl px-6 pt-14 md:px-8 md:pt-20">
+      <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
           <Link
             href="/#portfolio"
@@ -219,10 +219,10 @@ export function ProjectArticle({ slug }: { slug: string }) {
             {t("project.back")}
           </Link>
 
-          <h1 className="mt-8 text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
+          <h1 className="mt-8 max-w-5xl text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
             {post.title ?? title}
           </h1>
-          <p className="text-muted mt-6 max-w-2xl text-[19px] leading-relaxed">
+          <p className="text-muted mt-6 max-w-4xl text-[19px] leading-relaxed">
             {post.intro ?? t(`portfolio.${project.key}Desc`)}
           </p>
 
@@ -295,9 +295,9 @@ export function ProjectArticle({ slug }: { slug: string }) {
         </Reveal>
       </div>
 
-      <article className="mx-auto max-w-2xl px-6 py-20 md:px-8 md:py-28">
+      <article className="mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-28">
         {post.sections.map((section, s) => (
-          <Reveal key={s} className="mb-16 last:mb-0">
+          <Reveal key={s} className="mb-16 max-w-4xl last:mb-0">
             {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
             {section.blocks.map((block, i) => (
               <Block key={i} block={block} />
@@ -306,41 +306,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
         ))}
       </article>
 
-      <section className="bg-paper-alt border-rule border-t">
-        <div className="mx-auto max-w-4xl px-6 py-16 md:px-8 md:py-20">
-          <Reveal>
-            <div
-              className="border-rule flex flex-col gap-6 rounded-2xl border p-7 md:p-10"
-              style={{ background: "var(--bg)" }}
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)]">
-                {SERVICE_ICONS[project.service === "web" ? "s2" : "s1"]}
-              </div>
-              <h2 className="text-[clamp(1.5rem,3vw,2rem)] leading-tight font-semibold tracking-[-0.03em]">
-                {t(`project.cta.${project.service}Title`)}
-              </h2>
-              <p className="text-muted max-w-[60ch] text-[17px] leading-[1.75]">
-                {t(`project.cta.${project.service}Text`)}
-              </p>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-                <Link
-                  href={`/servicios/${project.service}`}
-                  className="btn-primary group self-start"
-                >
-                  {t(`project.cta.${project.service}Button`)}
-                  <Arrow />
-                </Link>
-                <Link
-                  href="/#contact"
-                  className="text-sm font-medium text-[var(--accent)] underline decoration-1 underline-offset-4 transition-colors hover:text-[var(--fg)]"
-                >
-                  {t("nav.ctaContact")}
-                </Link>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <ServiceCta service={project.service} />
 
       {next !== project && (
         <section className="border-rule border-t">

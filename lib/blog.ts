@@ -46,8 +46,8 @@ export const BLOG_POSTS: BlogPost[] = [
     ogImage: "/blog/vpn-pyme-acceso-remoto-og.jpg",
     post: {
       es: {
-        title: "VPN para pymes: acceder a la oficina desde fuera sin abrir puertos en el router",
-        seoTitle: "VPN para pymes: acceso remoto seguro",
+        title: "VPN para pymes, acceder a la oficina desde fuera sin abrir puertos en el router",
+        seoTitle: "VPN para pymes, acceso remoto seguro",
         excerpt:
           "Abrir puertos en el router para trabajar desde casa es cómodo y peligroso. Te explico cómo funciona una VPN y qué necesita una pyme para usarla bien.",
         description:
@@ -117,8 +117,8 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
       },
       en: {
-        title: "VPN for small businesses: reaching the office from outside without opening router ports",
-        seoTitle: "VPN for small businesses: secure remote access",
+        title: "VPN for small businesses, reaching the office from outside without opening router ports",
+        seoTitle: "VPN for small businesses, secure remote access",
         excerpt:
           "Opening ports on the router to work from home is convenient and risky. Here is how a VPN works and what a small business needs to use it well.",
         description:
@@ -220,7 +220,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "Velocidad y móvil: la mayoría llega desde el teléfono",
+            heading: "Velocidad y móvil, la mayoría llega desde el teléfono",
             blocks: [
               "Hoy casi todas las búsquedas locales se hacen desde el móvil, a menudo con prisa y con poca cobertura. Una web que tarda en cargar o que obliga a hacer zoom para leer se abandona antes de ver nada.",
               "Mi regla es sencilla: se diseña primero para el móvil y luego se adapta al ordenador, no al revés. Además, evito lo que más pesa sin aportar: vídeos de fondo, carruseles enormes, imágenes sin optimizar y librerías que se cargan para una sola animación.",
@@ -305,7 +305,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "Speed and mobile: most people arrive from a phone",
+            heading: "Speed and mobile, most people arrive from a phone",
             blocks: [
               "Today almost all local searches happen on a phone, often in a hurry and with poor coverage. A site that loads slowly or forces you to zoom in to read gets abandoned before anyone sees anything.",
               "My rule is simple: design for mobile first, then adapt to desktop, not the other way round. I also avoid what weighs the most without adding value: background videos, huge carousels, unoptimised images and libraries loaded for a single animation.",
@@ -375,8 +375,8 @@ export const BLOG_POSTS: BlogPost[] = [
     ogImage: "/blog/backup-3-2-1-og.jpg",
     post: {
       es: {
-        title: "Backup 3-2-1: qué es y cómo lo aplico en empresas",
-        seoTitle: "Backup 3-2-1: qué es y cómo aplicarlo",
+        title: "Backup 3-2-1, qué es y cómo lo aplico en empresas",
+        seoTitle: "Backup 3-2-1, qué es y cómo aplicarlo",
         excerpt:
           "Tres copias, dos soportes y una fuera de la oficina. Te explico la regla 3-2-1 y cómo la monto con Nakivo y Acronis.",
         description:
@@ -447,7 +447,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "La parte que casi nadie hace: probar",
+            heading: "La parte que casi nadie hace, probar",
             blocks: [
               "Una copia que nunca se ha restaurado es una promesa, no una copia. Por eso programo pruebas de restauración periódicas. Recupero una máquina o unos archivos en un entorno aparte y compruebo que todo arranca y se abre bien.",
               "Nakivo ayuda con esto: arranca la máquina desde la copia y te envía una captura de pantalla del sistema ya iniciado. Así sabes que la copia arranca sin tener que restaurarla entera. Aun así, de vez en cuando hago una restauración completa a mano.",
@@ -458,7 +458,7 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
       },
       en: {
-        title: "3-2-1 backup: what it is and how I apply it in companies",
+        title: "3-2-1 backup, what it is and how I apply it in companies",
         excerpt:
           "Three copies, two media and one off-site. I explain the 3-2-1 rule and how I set it up with Nakivo and Acronis.",
         description:
@@ -529,7 +529,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "The part almost nobody does: testing",
+            heading: "The part almost nobody does, testing",
             blocks: [
               "A backup that has never been restored is a promise, not a backup. That is why I schedule regular restore tests. I recover a machine or some files in a separate environment and check that everything boots and opens properly.",
               "Nakivo helps here: it boots the machine from the backup and sends you a screenshot of the running system. That way you know the backup boots without restoring it in full. Even so, every now and then I do a full restore by hand.",
@@ -566,7 +566,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "Rendimiento: la web ya está hecha cuando llega la visita",
+            heading: "Rendimiento, la web ya está hecha cuando llega la visita",
             blocks: [
               "Una web corporativa cambia poco. Las páginas de servicios, de equipo o de contacto son iguales para todo el mundo. Next.js las genera una vez y las sirve como archivos estáticos desde una red de servidores repartida por todo el mundo.",
               "A eso se suma la optimización de imágenes. Next.js convierte cada foto a formatos modernos como AVIF o WebP y la sirve al tamaño justo para cada pantalla. Las fuentes se cargan desde el propio dominio, sin depender de servicios externos.",
@@ -582,7 +582,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "Seguridad: menos piezas, menos puertas",
+            heading: "Seguridad, menos piezas, menos puertas",
             blocks: [
               "La gran mayoría de los fallos de seguridad de WordPress vienen de plugins y temas. Una web con quince plugins tiene quince piezas de terceros que mantener al día, y basta con que una falle.",
               "Una web hecha con Next.js no tiene panel de administración público ni base de datos expuesta. No hay un /wp-admin que los bots puedan atacar probando contraseñas. La superficie de ataque es mucho más pequeña.",
@@ -639,7 +639,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "Performance: the page is ready before the visitor arrives",
+            heading: "Performance, the page is ready before the visitor arrives",
             blocks: [
               "A company website does not change much. The services, team and contact pages are the same for everyone. Next.js generates them once and serves them as static files from a network of servers spread around the world.",
               "Add image optimization to that. Next.js converts every photo to modern formats like AVIF or WebP and serves it at the right size for each screen. Fonts load from your own domain, with no external services involved.",
@@ -655,7 +655,7 @@ export const BLOG_POSTS: BlogPost[] = [
             ],
           },
           {
-            heading: "Security: fewer parts, fewer doors",
+            heading: "Security, fewer parts, fewer doors",
             blocks: [
               "The vast majority of WordPress security issues come from plugins and themes. A site with fifteen plugins has fifteen third-party parts to keep up to date, and it only takes one to fail.",
               "A Next.js website has no public admin panel and no exposed database. There is no /wp-admin for bots to attack by guessing passwords. The attack surface is much smaller.",

@@ -91,7 +91,7 @@ Cada card de "Proyectos recientes" abre `/proyectos/[slug]` (`app/proyectos/[slu
 - **Card**: título corto (`pXTitle`), descripción de una o dos frases (`pXDesc`) y 3-4 tecnologías en `tech`.
 - **Artículo** (`post` en `lib/projects.ts`, ES y EN): `title` largo, `intro` (primer párrafo, va de entradilla), secciones con H2 y, si hace falta, `{ h3 }`, `{ list }` y `{ ol }`. `date` en AAAA-MM-DD. Si Ángel pasa el texto, se respeta tal cual, solo con correcciones mínimas, y se traduce al inglés.
 - **Ficha rápida (`facts`)**: 3 datos `{ label, value }` por idioma (Tipo, Qué hice o Alcance, Estado o Resultado), que se pintan en la cabecera entre la entradilla y la fecha. Obligatoria en cada proyecto nuevo.
-- **Servicio (`service`)**: `"web"` o `"sistemas"`. Al final del artículo, antes de "Siguiente proyecto", sale la card de llamada al servicio (textos en `project.cta.*` de los JSON) con botón a `/servicios/[service]` y enlace "Pedir presupuesto". Los H2 del artículo van sin número ni letra capital; el blog y las páginas legales los conservan (`SectionHeading` con `n` opcional).
+- **Servicio (`service`)**: `"web"` o `"sistemas"`. Al final del artículo, antes de "Siguiente proyecto", sale la card de llamada al servicio (textos en `project.cta.*` de los JSON) con botón a `/servicios/[service]` y enlace "Pedir presupuesto". La card es `components/service-cta.tsx`, compartida con el blog. Los H2 del artículo van sin número ni letra capital, igual que el blog y las páginas legales (`SectionHeading` con `n` opcional, ya nadie lo pasa).
 - **Portada**: la foto que suba Ángel se convierte a WebP (máx. 2200 px de ancho) en `public/projects/`, más una imagen para redes de 1200x630 en JPG (`ogImage`). Los originales pesados no se dejan en `public/`. Un SVG se puede usar tal cual (revisar que no tenga scripts, em dashes ni animaciones sin `prefers-reduced-motion`).
 - **Orden**: el proyecto nuevo se añade a `PROJECTS`; la card, la página, el "Siguiente proyecto" y el sitemap salen solos.
 
@@ -112,6 +112,15 @@ Componente compartido: `components/real-cases.tsx` (los dos casos de `about.case
 ## Blog
 
 Listado en `/blog` y artículos en `/blog/[slug]`. El contenido (ES y EN) vive en `lib/blog.ts`, con los mismos bloques que los proyectos. Cada artículo lleva su imagen para redes de 1200x630 en `public/blog/`. La home tiene una mención corta (`components/blog-teaser.tsx`, ancla `#blog`) con los dos más recientes.
+
+**Anchos de las páginas interiores** (blog, proyectos y legales): un solo contenedor `max-w-6xl px-6 md:px-8`, alineado a la izquierda con la nav, igual que las páginas de servicio. Dentro, el H1 llega a `max-w-5xl`, la entradilla y el cuerpo a `max-w-4xl`, y el texto de `ServiceCta` a `max-w-2xl`. No vuelvas a centrar el cuerpo en una columna más estrecha.
+
+Listado en rejilla de 2 columnas desde `md`, con cards de la misma altura y "Leer artículo" abajo. Reglas para los próximos posts:
+
+- Título y H2 sin dos puntos (coma en su lugar).
+- Cada artículo termina con la llamada al servicio (`components/service-cta.tsx`, la misma que los proyectos), que sale sola según la categoría: `sistemas` y `automatizacion` a sistemas, `desarrollo` a web.
+- Sin números en los H2 ni letra capital, igual que proyectos y páginas legales.
+- La imagen para redes (1200x630, `public/blog/<slug>-og.jpg`) sigue la plantilla de las actuales. Fondo `#0a0f1c` con brillo naranja arriba a la derecha, raya y "BLOG · CATEGORÍA" en JetBrains Mono `#fb923c`, título en Space Grotesk blanco, y pie con "Ángel Fernández." y "Sistemas y desarrollo web". Sin "Palma de Mallorca".
 
 ## i18n
 

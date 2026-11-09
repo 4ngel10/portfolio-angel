@@ -3,14 +3,8 @@
 import Link from "next/link";
 import { Reveal } from "./reveal";
 import { TiltCard } from "./tilt-card";
-import {
-  Arrow,
-  Block,
-  ReadingProgress,
-  SectionHeading,
-  formatDate,
-  headingNumber,
-} from "./project-article";
+import { Arrow, Block, ReadingProgress, SectionHeading, formatDate } from "./project-article";
+import { ServiceCta } from "./service-cta";
 import { useI18n } from "@/lib/i18n";
 import { BLOG_POSTS, getBlogPost, readingMinutes } from "@/lib/blog";
 
@@ -27,7 +21,7 @@ export function BlogArticle({ slug }: { slug: string }) {
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
       <ReadingProgress />
-      <header className="mx-auto max-w-4xl px-6 pt-14 md:px-8 md:pt-20">
+      <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
           <Link
             href="/blog"
@@ -37,19 +31,27 @@ export function BlogArticle({ slug }: { slug: string }) {
             {t("blog.back")}
           </Link>
 
-          <h1 className="mt-8 text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
+          <h1 className="mt-8 max-w-5xl text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.04em]">
             {content.title}
           </h1>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <span className="text-muted text-sm">
-              <time dateTime={post.date} suppressHydrationWarning>
+              <time dateTime={post.date} suppressHydrationWarning className="whitespace-nowrap">
                 {formatDate(post.date, locale)}
-              </time>
-              <span className="mx-2 opacity-40">·</span>
-              Ángel Fernández
-              <span className="mx-2 opacity-40">·</span>
-              {readingMinutes(content)} {t("blog.minutes")}
+              </time>{" "}
+              <span className="whitespace-nowrap">
+                <span className="mr-2 opacity-40" aria-hidden>
+                  ·
+                </span>
+                Ángel Fernández
+              </span>{" "}
+              <span className="whitespace-nowrap">
+                <span className="mr-2 opacity-40" aria-hidden>
+                  ·
+                </span>
+                {readingMinutes(content)} {t("blog.minutes")}
+              </span>
             </span>
             <span
               className="font-mono text-[11px] font-semibold tracking-wider uppercase"
@@ -61,18 +63,13 @@ export function BlogArticle({ slug }: { slug: string }) {
         </Reveal>
       </header>
 
-      <article className="mx-auto max-w-2xl px-6 pt-14 pb-20 md:px-8 md:pt-20 md:pb-28">
-        <Reveal className="mb-16">
-          {/* Entradilla con letra capital, como el primer párrafo de los proyectos. */}
-          <Block block={content.intro} dropCap />
+      <article className="mx-auto max-w-6xl px-6 pt-14 pb-20 md:px-8 md:pt-20 md:pb-28">
+        <Reveal className="mb-16 max-w-4xl">
+          <Block block={content.intro} />
         </Reveal>
         {content.sections.map((section, s) => (
-          <Reveal key={s} className="mb-16 last:mb-0">
-            {section.heading && (
-              <SectionHeading n={headingNumber(content.sections, s)}>
-                {section.heading}
-              </SectionHeading>
-            )}
+          <Reveal key={s} className="mb-16 max-w-4xl last:mb-0">
+            {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
             {section.blocks.map((block, i) => (
               <Block key={i} block={block} />
             ))}
@@ -80,8 +77,10 @@ export function BlogArticle({ slug }: { slug: string }) {
         ))}
       </article>
 
+      <ServiceCta service={post.category === "desarrollo" ? "web" : "sistemas"} />
+
       {next !== post && (
-        <section className="bg-paper-alt border-rule border-t">
+        <section className="border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
             <Link href={`/blog/${next.slug}`} className="block" style={{ perspective: "1200px" }}>
               <TiltCard
