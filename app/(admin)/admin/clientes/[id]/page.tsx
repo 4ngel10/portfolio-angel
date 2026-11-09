@@ -115,7 +115,7 @@ export default async function ClientePage({
     "border-rule bg-paper-alt block h-full rounded-xl border px-4 py-2.5 transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.98]";
   const numCls = "text-2xl leading-none font-semibold tracking-tight tabular-nums";
   const cifras = [
-    { href: "#horas", n: bolsa ? num(restantes) : "-", l: t("admin.statHoursLeft"), barra: true },
+    { href: "#horas", n: bolsa ? num(restantes) : "-", l: t("admin.statHoursLeft") },
     {
       href: "#proyectos",
       n: String(suyos.filter((p) => p.estado === "activo").length),
@@ -127,7 +127,6 @@ export default async function ClientePage({
       l: t("admin.statPendingCollect"),
       acento: hayVencido,
     },
-    { href: "#personas", n: String(personas.length), l: t("admin.people") },
   ];
 
   return (
@@ -160,22 +159,15 @@ export default async function ClientePage({
         </p>
       </header>
 
-      <dl className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {/* Misma rejilla de 3 columnas y mismo gap que los paneles de debajo: la tercera cifra queda
+          justo encima de la columna lateral. */}
+      <dl className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-6">
         {cifras.map((c) => (
           <Link key={c.href} href={c.href} className={tile}>
-            <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+            <div className="flex items-baseline gap-x-2.5">
               <dd className={`${numCls} ${c.acento ? "text-[var(--accent)]" : ""}`}>{c.n}</dd>
-              <dt className="text-muted text-sm leading-snug">{c.l}</dt>
+              <dt className="text-muted min-w-0 text-sm leading-snug">{c.l}</dt>
             </div>
-            {c.barra && bolsa ? (
-              <div className="mt-2">
-                <ProgressBar
-                  value={bolsa.horas_consumidas}
-                  max={bolsa.horas_contratadas}
-                  label={t("home.consumedHours")}
-                />
-              </div>
-            ) : null}
           </Link>
         ))}
       </dl>
@@ -183,8 +175,8 @@ export default async function ClientePage({
       {/* Por debajo de lg, una sola columna en el orden de "order-*". Desde lg, dos pilas
           independientes (los contenedores dejan de ser "contents"), para que no queden huecos
           entre paneles de distinta altura. */}
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
-        <div className="contents lg:grid lg:content-start lg:gap-6">
+      <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+        <div className="contents lg:col-span-2 lg:grid lg:content-start lg:gap-6">
           <div id="proyectos" className="order-2 scroll-mt-4">
             <Panel title={t("admin.projectsTitle")}>
               {suyos.length === 0 ? (
