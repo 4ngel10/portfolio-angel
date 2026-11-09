@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { MES } from "./validate";
 import type {
   BolsaHoras,
   BolsaMovimiento,
@@ -64,7 +65,7 @@ export async function listarMovimientos(f?: {
     .order("fecha", { ascending: false })
     .order("created_at", { ascending: false });
   if (f?.empresaId) q = q.eq("empresa_id", f.empresaId);
-  if (f?.mes && /^d{4}-(0[1-9]|1[0-2])$/.test(f.mes)) {
+  if (f?.mes && MES.test(f.mes)) {
     const [y, m] = f.mes.split("-").map(Number);
     const fin = new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10);
     q = q.gte("fecha", `${f.mes}-01`).lte("fecha", fin);
@@ -142,7 +143,7 @@ export async function incidenciasSinRespuesta(): Promise<
 }
 
 /**
- * Presupuestos aceptados que aún no tienen proyecto (solo admin). Con `incluir` se añade ese
+ * Presupuestos enviados o aceptados que aún no tienen proyecto (solo admin). Con `incluir` se añade ese
  * presupuesto aunque ya esté enlazado, para que el selector de la ficha del proyecto lo muestre.
  */
 export async function presupuestosSinProyecto(incluir?: string | null): Promise<Presupuesto[]> {
@@ -151,7 +152,7 @@ export async function presupuestosSinProyecto(incluir?: string | null): Promise<
     supabase
       .from("presupuestos")
       .select("*")
-      .eq("estado", "aceptado")
+      .in("estado", ["aceptado", "enviado"])
       .order("fecha_emision", { ascending: false }),
     supabase.from("proyectos").select("presupuesto_id").not("presupuesto_id", "is", null),
   ]);

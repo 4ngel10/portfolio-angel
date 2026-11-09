@@ -55,6 +55,9 @@ export async function POST(request: NextRequest) {
   const tokenHash = form.get("token_hash");
   if (typeof tokenHash === "string" && tokenHash && form.get("type") === "magiclink") {
     const supabase = await createClient();
+    // Se cierra cualquier sesión previa: si el enlace ya se usó y el canje falla, la persona
+    // acaba en /login sin sesión y ve el aviso, en vez de entrar con la sesión de la primera vez.
+    await supabase.auth.signOut();
     const { error } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash: tokenHash });
     if (!error) return destino(supabase, origin, false, 303);
   }

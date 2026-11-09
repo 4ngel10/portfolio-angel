@@ -56,7 +56,7 @@ export function Inline({ text }: { text: string }) {
           {...(external && { target: "_blank", rel: "noopener noreferrer" })}
           className={`font-medium text-[var(--accent)] underline decoration-1 underline-offset-4 transition-colors hover:text-[var(--fg)] ${
             // Un enlace de una sola palabra ("3-2-1") no se parte por el guion.
-            /s/.test(link[1]) ? "" : "whitespace-nowrap"
+            /\s/.test(link[1]) ? "" : "whitespace-nowrap"
           }`}
         >
           {link[1]}

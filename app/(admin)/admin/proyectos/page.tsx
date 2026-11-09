@@ -138,7 +138,7 @@ export default async function ProyectosAdminPage({
                   presupuestos={libres.map((p) => ({
                     id: p.id,
                     empresa_id: p.empresa_id,
-                    etiqueta: `${p.numero} · ${p.titulo}`,
+                    etiqueta: `${p.numero} · ${p.titulo}${p.estado === "enviado" ? ` (${t("admin.quotePendingSign")})` : ""}`,
                   }))}
                   defaultEmpresa={preEmpresa}
                   defaultPresupuesto={prePresupuesto}
@@ -147,6 +147,7 @@ export default async function ProyectosAdminPage({
                     elegirEmpresa: t("common.chooseCompany"),
                     presupuesto: t("admin.quoteField"),
                     sinPresupuesto: t("admin.quoteNone"),
+                    sinDisponibles: t("admin.quoteNoneAvailable"),
                     ayuda: t("admin.quoteHint"),
                     elegirAntes: t("admin.quoteChooseCompany"),
                   }}

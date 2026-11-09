@@ -1,3 +1,10 @@
+// OJO con las barras invertidas: \d, \s y \w deben llevar su "\" (sin ella la regex busca la
+// letra suelta y rechaza todo). Las regex de fecha viven aquí para no repetirlas por el código.
+/** Fecha AAAA-MM-DD (solo el formato; para saber si existe, `esFecha` en finanzas.ts). */
+export const FECHA = /^\d{4}-\d{2}-\d{2}$/;
+/** Mes AAAA-MM. */
+export const MES = /^\d{4}-(0[1-9]|1[0-2])$/;
+
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

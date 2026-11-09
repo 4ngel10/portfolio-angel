@@ -9,17 +9,19 @@
   --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 
-  --color-paper: #fbfaf7;
-  --color-paper-alt: #f3f1ec;
-  --color-ink: #1a1a1a;
-  --color-muted: #58544e;
-  --color-rule: #e8e4dc;
+  /* Valores fijos del modo claro. No se usan directamente en clases: las utilidades usan los
+     tokens de más abajo (--color-ink...), que siguen al tema. */
+  --color-paper-light: #fbfaf7;
+  --color-paper-alt-light: #f3f1ec;
+  --color-ink-light: #1a1a1a;
+  --color-muted-light: #58544e;
+  --color-rule-light: #e8e4dc;
   /* Borde de los campos de formulario: 3:1 o más sobre los dos fondos (WCAG 1.4.11). */
-  --color-field: #8c867c;
-  --color-chip: #efece6;
-  --color-accent: #c2410c;
+  --color-field-light: #8c867c;
+  --color-chip-light: #efece6;
+  --color-accent-light: #c2410c;
   /* Verde suave para cifras positivas (resultado). AA sobre paper y paper-alt. */
-  --color-positive: #166534;
+  --color-positive-light: #166534;
 
   --color-paper-dark: #0a0f1c;
   --color-paper-alt-dark: #0f1629;
@@ -31,21 +33,34 @@
   --color-accent-dark: #fb923c;
   --color-positive-dark: #4ade80;
 
+  /* Tokens que usan las utilidades (text-ink, hover:bg-chip, group-hover:text-accent...). Apuntan
+     a las variables del tema (--fg, --bg...), que cambian con .dark, así que TODAS las variantes
+     de Tailwind (hover:, focus:, group-hover:, con opacidad...) siguen al tema. */
+  --color-paper: var(--bg);
+  --color-paper-alt: var(--bg-alt);
+  --color-ink: var(--fg);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-field: var(--field);
+  --color-chip: var(--chip);
+  --color-accent: var(--accent);
+  --color-positive: var(--positive);
+
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @layer base {
   :root {
     color-scheme: light;
-    --bg: var(--color-paper);
-    --bg-alt: var(--color-paper-alt);
-    --fg: var(--color-ink);
-    --muted: var(--color-muted);
-    --rule: var(--color-rule);
-    --field: var(--color-field);
-    --chip: var(--color-chip);
-    --accent: var(--color-accent);
-    --positive: var(--color-positive);
+    --bg: var(--color-paper-light);
+    --bg-alt: var(--color-paper-alt-light);
+    --fg: var(--color-ink-light);
+    --muted: var(--color-muted-light);
+    --rule: var(--color-rule-light);
+    --field: var(--color-field-light);
+    --chip: var(--color-chip-light);
+    --accent: var(--color-accent-light);
+    --positive: var(--color-positive-light);
   }
 
   :root.dark {
@@ -168,30 +183,6 @@
   .font-mono {
     font-family: var(--font-mono);
     letter-spacing: -0.01em;
-  }
-  .text-accent {
-    color: var(--accent);
-  }
-  .bg-paper {
-    background: var(--bg);
-  }
-  .bg-paper-alt {
-    background: var(--bg-alt);
-  }
-  .text-ink {
-    color: var(--fg);
-  }
-  .text-muted {
-    color: var(--muted);
-  }
-  .border-rule {
-    border-color: var(--rule);
-  }
-  .border-field {
-    border-color: var(--field);
-  }
-  .bg-chip {
-    background: var(--chip);
   }
 
   .btn-primary {

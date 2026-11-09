@@ -5,7 +5,7 @@ import { inputCls, labelCls } from "./styles";
 
 type Props = {
   empresas: { id: string; nombre: string }[];
-  /** Presupuestos aceptados sin proyecto, con el texto ya listo para mostrar. */
+  /** Presupuestos enviados o aceptados sin proyecto, con el texto ya listo para mostrar. */
   presupuestos: { id: string; empresa_id: string; etiqueta: string }[];
   defaultEmpresa?: string;
   defaultPresupuesto?: string;
@@ -14,14 +14,15 @@ type Props = {
     elegirEmpresa: string;
     presupuesto: string;
     sinPresupuesto: string;
+    sinDisponibles: string;
     ayuda: string;
     elegirAntes: string;
   };
 };
 
 /**
- * Selector de empresa y, debajo, el de presupuesto: solo ofrece los aceptados de la empresa
- * elegida. Se vuelve a su estado inicial cuando el formulario se vacía tras guardar.
+ * Selector de empresa y, debajo, el de presupuesto: solo ofrece los enviados o aceptados de la
+ * empresa elegida. Se vuelve a su estado inicial cuando el formulario se vacía tras guardar.
  */
 export function EmpresaPresupuesto({
   empresas,
@@ -77,12 +78,14 @@ export function EmpresaPresupuesto({
           key={empresa}
           id={`${id}-presupuesto`}
           name="presupuesto_id"
-          disabled={!empresa}
+          disabled={!empresa || opciones.length === 0}
           defaultValue={empresa === defaultEmpresa ? defaultPresupuesto : ""}
           aria-describedby={`${id}-ayuda`}
           className={inputCls}
         >
-          <option value="">{textos.sinPresupuesto}</option>
+          <option value="">
+            {empresa && opciones.length === 0 ? textos.sinDisponibles : textos.sinPresupuesto}
+          </option>
           {opciones.map((p) => (
             <option key={p.id} value={p.id}>
               {p.etiqueta}

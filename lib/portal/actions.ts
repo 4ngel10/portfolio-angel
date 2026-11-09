@@ -11,7 +11,7 @@ import { SITE_URL } from "@/lib/site";
 import { getI18n } from "./i18n";
 import { cuentasDesactivadas } from "./cuentas";
 import { SECTORES } from "./sectores";
-import { isEmail, isUuid, oneOf, slugify, text, type FormState } from "./validate";
+import { FECHA, isEmail, isUuid, oneOf, slugify, text, type FormState } from "./validate";
 
 export async function signOut() {
   const supabase = await createClient();
@@ -229,8 +229,8 @@ export async function reenviarInvitacion(_: FormState, fd: FormData): Promise<Fo
 /* Admin: proyectos e hitos                                            */
 /* ------------------------------------------------------------------ */
 
-/** El presupuesto existe, es de esa empresa y está aceptado. */
-async function presupuestoAceptadoDe(
+/** El presupuesto existe, es de esa empresa y está enviado o aceptado (los borradores no). */
+async function presupuestoElegibleDe(
   supabase: Awaited<ReturnType<typeof createClient>>,
   presupuestoId: string,
   empresaId: string,
@@ -240,7 +240,7 @@ async function presupuestoAceptadoDe(
     .select("id")
     .eq("id", presupuestoId)
     .eq("empresa_id", empresaId)
-    .eq("estado", "aceptado")
+    .in("estado", ["aceptado", "enviado"])
     .maybeSingle();
   return !!data;
 }
@@ -264,7 +264,7 @@ export async function vincularPresupuesto(_: FormState, fd: FormData): Promise<F
   if (
     presupuestoId &&
     presupuestoId !== proyecto.presupuesto_id &&
-    !(await presupuestoAceptadoDe(supabase, presupuestoId, proyecto.empresa_id))
+    !(await presupuestoElegibleDe(supabase, presupuestoId, proyecto.empresa_id))
   ) {
     return await fallo("quoteInvalid");
   }
@@ -292,7 +292,7 @@ export async function crearProyecto(_: FormState, fd: FormData): Promise<FormSta
   if (presupuestoId && !isUuid(presupuestoId)) return await fallo("quoteInvalid");
 
   const supabase = await createClient();
-  if (presupuestoId && !(await presupuestoAceptadoDe(supabase, presupuestoId, empresaId))) {
+  if (presupuestoId && !(await presupuestoElegibleDe(supabase, presupuestoId, empresaId))) {
     return await fallo("quoteInvalid");
   }
   const { error } = await supabase.from("proyectos").insert({
@@ -328,7 +328,7 @@ export async function crearHito(_: FormState, fd: FormData): Promise<FormState> 
   const fecha = text(fd, "fecha_objetivo", 10);
   if (!isUuid(proyectoId)) return await fallo("invalidProject");
   if (titulo.length < 2) return await fallo("milestoneTitle");
-  if (fecha && !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return await fallo("invalidDate");
+  if (fecha && !FECHA.test(fecha)) return await fallo("invalidDate");
 
   const supabase = await createClient();
   const { data: ultimo } = await supabase
@@ -547,7 +547,7 @@ export async function registrarHoras(_: FormState, fd: FormData): Promise<FormSt
     return await fallo("hoursNeedInt");
   }
   if (!concepto) return await fallo("conceptRequired");
-  if (!/^d{4}-d{2}-d{2}$/.test(fecha) || Number.isNaN(Date.parse(fecha))) {
+  if (!FECHA.test(fecha) || Number.isNaN(Date.parse(fecha))) {
     return await fallo("invalidDate");
   }
   if (proyectoId && !isUuid(proyectoId)) return await fallo("invalidProject");
@@ -757,8 +757,6 @@ function leerLineas(raw: string): LineaEntrada[] | null {
   }
   return lineas;
 }
-
-const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
 /** Crea o edita un presupuesto con todas sus líneas. Al crear, lleva a su página. */
 export async function guardarPresupuesto(_: FormState, fd: FormData): Promise<FormState> {

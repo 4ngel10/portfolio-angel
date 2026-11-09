@@ -5,6 +5,7 @@
  * de caja) y el gasto en su `fecha`. "Pendiente de cobro" es siempre el total vivo de los
  * cobros no anulados y sin pagar, sea cual sea el periodo elegido.
  */
+import { FECHA } from "./validate";
 import { redondear } from "./presupuestos";
 import type {
   CategoriaGasto,
@@ -67,7 +68,7 @@ export function fechaMadrid(instante: Date | string): string {
 
 /** AAAA-MM-DD que existe de verdad (rechaza 2026-02-30). */
 export function esFecha(f: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(f)) return false;
+  if (!FECHA.test(f)) return false;
   const { y, m, d } = partes(f);
   return m >= 1 && m <= 12 && d >= 1 && d <= ultimoDia(y, m);
 }

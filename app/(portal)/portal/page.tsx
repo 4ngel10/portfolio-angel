@@ -7,17 +7,10 @@ import {
   listarBolsas,
   listarHitos,
   listarProyectos,
-  mapaTitulos,
-  progreso,
 } from "@/lib/portal/queries";
-import {
-  EmptyState,
-  EstadoProyectoBadge,
-  PageHeader,
-  Panel,
-  ProgressBar,
-} from "@/components/portal/ui";
+import { PageHeader, Panel, ProgressBar } from "@/components/portal/ui";
 import { Aparece } from "@/components/portal/aparece";
+import { PanelProyectos, PanelTuTurno } from "@/components/portal/vistas-cliente";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getI18n();
@@ -26,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function PortalPage() {
   const perfil = await requireCliente();
-  const { t, fecha, num } = await getI18n();
+  const { t, num } = await getI18n();
   const proyectos = await listarProyectos();
   const [hitos, bolsas, { incidencias }] = await Promise.all([
     listarHitos(proyectos.map((p) => p.id)),
@@ -34,8 +27,6 @@ export default async function PortalPage() {
     cargarIncidencias({ soloAbiertas: true }),
   ]);
 
-  const titulos = mapaTitulos(proyectos);
-  const tuTurno = hitos.filter((h) => h.pelota_en === "cliente" && !h.completado);
   const bolsa = bolsas[0];
   const restantes = bolsa ? Math.max(0, bolsa.horas_contratadas - bolsa.horas_consumidas) : null;
 
@@ -49,77 +40,11 @@ export default async function PortalPage() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="grid content-start gap-6">
           <Aparece>
-            <Panel title={t("home.yourTurn")}>
-              {tuTurno.length === 0 ? (
-                <EmptyState>{t("home.nothingPending")}</EmptyState>
-              ) : (
-                <ul className="grid gap-2">
-                  {tuTurno.map((h) => (
-                    <li key={h.id} className="border-rule bg-paper rounded-xl border p-4">
-                      <p className="font-medium">{h.titulo}</p>
-                      {h.descripcion ? (
-                        <p className="text-muted mt-1 text-sm">{h.descripcion}</p>
-                      ) : null}
-                      <p className="text-muted mt-2 text-xs">
-                        <Link
-                          href={`/portal/proyecto/${h.proyecto_id}`}
-                          className="hover:text-accent underline-offset-4 hover:underline"
-                        >
-                          {titulos[h.proyecto_id]}
-                        </Link>
-                        {h.fecha_objetivo
-                          ? ` · ${t("home.dueDate", { date: fecha(h.fecha_objetivo) })}`
-                          : ""}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Panel>
+            <PanelTuTurno proyectos={proyectos} hitos={hitos} enlaces />
           </Aparece>
 
           <Aparece retraso={0.05}>
-            <Panel title={t("home.projects")}>
-              {proyectos.length === 0 ? (
-                <EmptyState>{t("home.noProjects")}</EmptyState>
-              ) : (
-                <ul className="grid gap-3">
-                  {proyectos.map((p) => {
-                    const { hechos, total } = progreso(hitos, p.id);
-                    return (
-                      <li key={p.id}>
-                        <Link
-                          href={`/portal/proyecto/${p.id}`}
-                          className="border-rule bg-paper block rounded-xl border p-4 transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.99]"
-                        >
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <h3 className="font-semibold">{p.titulo}</h3>
-                            <EstadoProyectoBadge estado={p.estado} />
-                          </div>
-                          {p.descripcion ? (
-                            <p className="text-muted mt-1 line-clamp-2 text-sm">{p.descripcion}</p>
-                          ) : null}
-                          <div className="mt-3 flex items-center gap-3">
-                            <div className="flex-1">
-                              <ProgressBar
-                                value={hechos}
-                                max={total}
-                                label={t("home.progressOf", { title: p.titulo })}
-                              />
-                            </div>
-                            <span className="text-muted text-xs">
-                              {total === 0
-                                ? t("home.noMilestones")
-                                : t("home.milestonesProgress", { done: hechos, total })}
-                            </span>
-                          </div>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </Panel>
+            <PanelProyectos proyectos={proyectos} hitos={hitos} enlaces />
           </Aparece>
         </div>
 

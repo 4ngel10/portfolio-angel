@@ -144,10 +144,15 @@ export default async function ProyectoAdminPage({ params }: { params: Promise<{ 
                 aria-describedby="p-presupuesto-ayuda"
                 className={inputCls}
               >
-                <option value="">{t("admin.quoteNone")}</option>
+                <option value="">
+                  {opciones.length === 0 && !actual
+                    ? t("admin.quoteNoneAvailable")
+                    : t("admin.quoteNone")}
+                </option>
                 {opciones.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.numero} {"·"} {p.titulo}
+                    {p.estado === "enviado" ? ` (${t("admin.quotePendingSign")})` : ""}
                   </option>
                 ))}
                 {actual && !opciones.some((p) => p.id === actual.id) ? (

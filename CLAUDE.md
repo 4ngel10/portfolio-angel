@@ -60,6 +60,7 @@ public/
 
 Las decisiones de estilo son deliberadas, no las deshagas:
 
+- **Tokens de color**: en `@theme`, `--color-ink`, `--color-paper`, `--color-accent`... apuntan a las variables del tema (`--fg`, `--bg`, `--accent`...), que cambian con `.dark`; los valores fijos del modo claro son `--color-*-light` y los del oscuro `--color-*-dark`. Así `hover:`, `focus:`, `group-hover:` y las opacidades siguen al tema. No redefinas a mano `.text-ink` y similares ni uses un `--color-*-light` en una clase.
 - **Fuentes**: Space Grotesk + JetBrains Mono. **No usar Inter**.
 - **Acento**: `#c2410c` light / `#fb923c` dark. Un solo acento en toda la página.
 - **Fondos**: paper `#fbfaf7` + alt `#f3f1ec` (light). Dark: `#0a0f1c` + `#0f1629`.
@@ -131,8 +132,11 @@ Zona privada: `/admin` (solo yo, con TOTP) y `/portal` (clientes). Código en `a
 - **Presupuesto y proyecto**: `proyectos.presupuesto_id` (opcional, único, `on delete set null`) enlaza un proyecto con un presupuesto aceptado de su empresa. El Resumen avisa de los aceptados sin proyecto solo si se aceptaron en los últimos 90 días.
 - **Resumen (`/admin`)**: "Pendiente de ti" junta presupuestos enviados sin firmar, aceptados sin proyecto, cobros vencidos, incidencias sin respuesta del admin (más de 2 días laborables) y bolsas al 20 % o menos. La línea "Este mes" usa `resumenCaja()` de `lib/portal/finanzas.ts`, el mismo cálculo que Finanzas.
 - **Clientes**: tabla en `/admin/clientes` y alta en un paso con "Nuevo cliente" (`crearCliente`: empresa nueva o existente y primera persona). La invitación por correo (casilla marcada por defecto, también al añadir personas y con "Reenviar invitación") genera el enlace con `auth.admin.generateLink` (`magiclink`) y lo manda por Resend. El enlace apunta a `/auth/entrar?token_hash=...&type=magiclink`, una página con el botón "Entrar" que no canjea nada al abrirse (los filtros de correo no lo gastan); el botón hace POST a `/auth/callback`, que lo canjea con `verifyOtp` y manda a elegir contraseña o a `/portal`. Las personas desactivadas (`banned_until`) no reciben avisos ni invitaciones (`cuentasDesactivadas()` en `lib/portal/cuentas.ts`).
-- **Vista de cliente** (`/admin/clientes/[id]/vista`): solo lectura y **sin cambiar de sesión**. Son las consultas del admin filtradas por `empresa_id`, pintadas con los componentes del portal (`IncidenciasLista` con `soloLectura`). Lleva una banda fija con la empresa y el botón de volver.
+- **Vista de cliente** (`/admin/clientes/[id]/vista`): solo lectura y **sin cambiar de sesión**. Son las consultas del admin filtradas por `empresa_id`, pintadas con los componentes del portal (`IncidenciasLista` con `soloLectura`). Reutiliza los componentes de `components/portal/vistas-cliente.tsx` (los mismos que las páginas del portal, con `enlaces` desactivado), con pestañas `?seccion=` (proyectos, incidencias, horas, presupuestos) al ancho del portal (1080px). Lleva una banda fija con la empresa y el botón de volver, pegada bajo la cabecera.
 - **Finanzas**: la gráfica mensual tiene escala mínima de 500 € y líneas de referencia; los meses abreviados llevan siempre 3 letras (`mes3()` en `lib/portal/translate.ts`). `--positive` es el verde del resultado positivo.
+- **Cabecera** (`components/portal/shell.tsx`): dos filas en admin y portal. Fila 1, marca a la izquierda y a la derecha "Nuevo" (solo admin), "Ver la web", idioma, tema y "Salir" (en móvil, "Nuevo" y "Salir" quedan en icono). Fila 2, secciones como pestañas con borde inferior de 2px en el acento, con scroll horizontal sin barra en pantallas estrechas.
+- **Presupuesto en el proyecto**: el selector ofrece los enviados ("pendiente de firma") y los aceptados de la empresa sin proyecto; los borradores no. "Pendiente de ti" solo avisa de los aceptados.
+- **Regex de fecha**: `FECHA` y `MES` viven en `lib/portal/validate.ts`. Ojo con las barras invertidas (`d`, `s`) al escribir regex: sin ellas rechazan todo.
 - **Navegación del admin**: botón "Nuevo" con menú (presupuesto, cliente, proyecto, cobro, gasto), enlace "Ver la web" e `/admin/incidencias` con filtros por estado, prioridad y empresa.
 
 ## i18n
