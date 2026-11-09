@@ -33,7 +33,7 @@ Antes de subir: `npm run typecheck`, `npx eslint app components lib` y `npm run 
 ```
 app/
   layout.tsx            providers + fuentes + metadata + skip link
-  page.tsx              home: hero, stack, about, services, portfolio, blog-teaser, contact
+  page.tsx              home: hero, services, stack, portfolio, about, blog-teaser, contact
   proyectos/[slug]/     página de cada proyecto
   servicios/[id]/       /servicios/sistemas y /servicios/web
   blog/ y blog/[slug]/  listado y artículos
@@ -52,6 +52,8 @@ messages/
   es.json en.json
 public/
   projects/ blog/       portadas WebP e imágenes para redes (1200x630)
+  angel-portrait.webp   foto del hero (800x1000, 4:5, desde lg); no recortar ni reconvertir
+  angel-square.webp     foto de Sobre mí en móvil y tablet (640x640) y `image` del Person en JSON-LD
 ```
 
 ## Convenciones de diseño
@@ -61,20 +63,23 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Fuentes**: Space Grotesk + JetBrains Mono. **No usar Inter**.
 - **Acento**: `#c2410c` light / `#fb923c` dark. Un solo acento en toda la página.
 - **Fondos**: paper `#fbfaf7` + alt `#f3f1ec` (light). Dark: `#0a0f1c` + `#0f1629`.
-- **Em dashes (—)**: cero. Usa comas, puntos o dos puntos.
+- **Em dashes (—)**: cero. Usa comas o puntos.
+- **Dos puntos y guiones como puntuación**: cero en los textos visibles de la home (preferencia de Ángel). Se mantienen los guiones que forman parte de una palabra (Hyper-V, "15 minutos") y el separador " · " de los resultados de los casos. Para rangos: "24 a 48 horas", no "24-48".
+- **Cards de servicios**: el icono y el título no llevan `translateZ`. Con la perspectiva del tilt se ensanchaban y quedaban unos 6px a la izquierda del lead y los bullets (medido). Si se añade profundidad, que sea a todos los hijos por igual.
 - **Eyebrows**: cero. Las secciones se abren con su H2.
 - **Radios**: tope en 16px para cards. Nada de 24px+.
 - **Botones**: `.btn-primary` y `.btn-secondary` en `globals.css`. Siempre `scale(0.97)` en `:active`.
 - **Imágenes (portadas de proyecto)**: al pasar el ratón solo hacen un zoom discreto (`scale-[1.03]`, 500 ms, en `project-cover.tsx`). Sin tilt ni elevación en las cards con portada (home, cabecera del proyecto y "Siguiente proyecto"); decisión de Ángel.
+- **Foto de Ángel**: hero en escritorio (`lg:`) y Sobre mí en móvil y tablet (`lg:hidden`), nunca las dos a la vez. La del hero solo hace un zoom discreto al pasar el ratón (`scale-[1.03]`, 500 ms), decisión de Ángel, también con reduced motion (clase `.hero-photo` excluida de la regla global); sin tilt, sombra de color ni marco decorativo. `rounded-2xl` y borde `var(--rule)`. El hero ya no lleva brillo naranja, rejilla de puntos ni parallax.
 - **Tilt 3D** (solo cards sin imagen: servicios y blog): gateado por `useReducedMotion`. Con ratón sigue al cursor; en táctil se inclina hacia el punto tocado y vuelve al soltar (decisión de Ángel: mismo efecto en móvil que en PC).
 - **Hover en móvil**: `@variant hover (&:hover)` en `globals.css` hace que `hover:` también se active al tocar (Tailwind v4 lo limita a `(hover: hover)` por defecto). No lo quites: Ángel quiere los mismos efectos en móvil que en PC.
 - **Enlaces externos**: siempre `target="_blank" rel="noopener noreferrer"`. LinkedIn con `www.` para que en móvil abra la app.
 - **Icon system**: inline SVG stroke 2px, 24x24 viewBox. No instales lucide ni heroicons sin consultar.
 - **`.btn-primary` pisa a `hidden`/`md:hidden`**: su `display` gana a esas utilidades. Para ocultar un botón según el tamaño, envuélvelo en un `<span>` o `<div>` con la clase `hidden md:inline-flex` (o `md:hidden`).
-- **Fondos de la home alternos**: about (alt), services, portfolio (alt), blog, contact (alt). Una sección nueva mantiene la alternancia. Las secciones con `id` llevan `scroll-mt-[72px]` para no quedar bajo la nav fija.
+- **Fondos de la home alternos**: orden hero, services (alt), banda de tecnologías (sin fondo, con bordes), portfolio, about (alt), blog, contact (alt). Una sección nueva mantiene la alternancia. Las secciones con `id` llevan `scroll-mt-[72px]` para no quedar bajo la nav fija.
 - **Accesibilidad**: skip link "Ir al contenido principal" en el layout; cada página tiene `<main id="main">`. Los enlaces internos mueven el foco a su destino (`lib/smooth-scroll.ts`). SVG decorativos con `aria-hidden`. Las portadas llevan `coverAlt` describiendo la imagen. Los campos de formulario usan `.border-field` (token `--field`), con contraste 3:1 sobre el fondo; `--rule` es solo para separadores y cards.
 - **Hero sin esperar al JS**: la entrada del H1, el subtítulo y el texto va en CSS (`.hero-rise`, `.hero-fade` en `globals.css`), no con `initial` de Framer Motion, para no retrasar el LCP. Los `Reveal` llevan `data-reveal` y un `<noscript>` del layout los muestra si no hay JS. El indicador "Desliza" solo se ve en escritorio, centrado al pie del hero.
-- **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch (dentro de un `useEffect` sí se puede, como la palabra rotatoria del hero, que no rota con reduced motion). **Excepciones aprobadas por Ángel** (se mueven siempre, también con reduced motion): el carrusel de la banda de habilidades (`.carousel-group`, `components/carousel.tsx`), sin pausa al hacer hover. La banda "Disponible" del footer es fija (titular con punto de estado, plazo de respuesta y botón "Contactar"), para no repetir el carrusel arriba y abajo. Son lentos y lineales. También el scroll suave de los enlaces internos (`lib/smooth-scroll.ts`).
+- **Reduced motion**: Framer Motion lo gestiona globalmente con `<MotionConfig reducedMotion="user">` (`lib/motion.tsx`). No ramifiques `initial`/`animate` con `useReducedMotion`: en SSR vale `null` y provoca hydration mismatch (dentro de un `useEffect` sí se puede, como la palabra rotatoria del hero, que no rota con reduced motion). **Excepciones aprobadas por Ángel** (se mueven siempre, también con reduced motion): el carrusel de la banda de habilidades (`.carousel-group`, `components/carousel.tsx`), sin pausa al hacer hover. La banda "Disponible" del footer es fija (titular con punto de estado, plazo de respuesta y botón "Contactar"), para no repetir el carrusel arriba y abajo. Son lentos y lineales. También el scroll suave de los enlaces internos (`lib/smooth-scroll.ts`) y el cursor `.caret` de la línea de terminal del hero (`~/angel $ sistemas + web`), que parpadea siempre (`.caret` ya no está en el bloque `prefers-reduced-motion` de `globals.css`), y el contador de cifras de "Sobre mí" (`components/count-up.tsx`), que sube de 0 a su valor (1,4 s) también con reduced motion.
 
 ## Páginas de proyecto
 
@@ -119,7 +124,7 @@ El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (sele
 - **hreflang solo "es" y "x-default"** (`alternatesFor()` en `lib/seo.ts`, junto al canonical): el inglés se elige en el navegador sobre la misma URL, no hay URLs `/en/`. Un hreflang "en" hacia la página en español sería un error (decisión de Ángel), y por lo mismo no hay `og:locale:alternate`. Si algún día hay rutas `/en/...`, se añaden en `alternatesFor()`.
 - **Favicon e imagen para redes de la home**: `app/favicon.ico`, `app/icon.png` y `app/apple-icon.png` (convención de Next); la imagen OG de la home es `public/og-home.jpg` (`HOME_OG_IMAGE`), con `twitter:card` `summary_large_image`.
 - **404**: `app/not-found.tsx`, con la misma nav y footer que el resto; textos en `notFound.*` de los JSON.
-- **Nada de testimonios ni datos inventados** publicados como reales (Ángel aún no tiene clientes freelance). Los textos que hablen de experiencia se basan en lo que figura en la web: sector hotelero, homelab, proyectos.
+- **Nada de testimonios ni datos inventados** publicados como reales. Las cifras de experiencia (3 años, ~60 hoteles, ~120 servidores, ~1.000 usuarios) las dio Ángel el 2026-11-08; si cambian, se actualizan en `about.*` y `hero.lead`.
 
 ## Dominio
 

@@ -53,134 +53,198 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
-    slug: "prompt-vault",
-    key: "p2",
-    cover: "AI",
-    tint: 14,
-    tech: ["React", "Supabase", "Tailwind", "PWA"],
-    url: "https://prompt-vault-three-xi.vercel.app/",
-    image: "/projects/prompt-vault.webp",
+    slug: "mapeo-impresoras-rds",
+    key: "p1",
+    cover: "PS1",
+    tint: 8,
+    tech: ["PowerShell", "Active Directory", "GPO", "RDS"],
+    image: "/projects/powershell-printer-cover.svg",
     coverAlt: {
-      es: "Captura de Prompt Vault: buscador, filtros por tipo y categoría, y tarjetas de prompts y skills de IA con sus etiquetas.",
-      en: "Prompt Vault screenshot: search bar, filters by type and category, and cards of AI prompts and skills with their tags.",
+      es: "Ventana de terminal de PowerShell con el script PrinterMapping.ps1: lee del usuario de Active Directory sus impresoras, las conecta una a una y fija la predeterminada.",
+      en: "PowerShell terminal window with the PrinterMapping.ps1 script: it reads the user's printers from Active Directory, connects them one by one and sets the default.",
     },
-    ogImage: "/projects/prompt-vault-og.jpg",
-    imageDark: "/projects/prompt-vault-dark.webp",
-    date: "2026-10-16",
+    ogImage: "/projects/powershell-printer-og.jpg",
+    date: "2026-10-17",
     post: {
       es: {
-        title: "Prompt Vault: mi bóveda personal de prompts",
-        seoTitle: "Prompt Vault: bóveda personal de prompts",
+        title: "Automatizar el mapeo de impresoras en RDS con PowerShell y Active Directory",
+        seoTitle: "Mapeo de impresoras en RDS con PowerShell",
         intro:
-          "Si usas modelos de IA con cierta frecuencia, acabas con prompts buenos repartidos por todas partes. Unos en notas del móvil. Otros en un documento de Google que abriste una vez. Los mejores, claro, perdidos en algún chat antiguo. Yo me hartaba de perder cinco minutos buscando entre capturas y mensajes cada vez que necesitaba uno. Así que me hice una app para tenerlos todos en un sitio.",
+          "En un cliente con varias sedes y más de 30 impresoras, configurar las impresoras a mano cada vez que un usuario iniciaba sesión era insostenible. Cada alta nueva, cada cambio de puesto, cada “se me han borrado las impresoras” significaba conectarse al equipo y añadirlas una a una. Con bandejas, ajustes predefinidos y todo. Multiplica eso por 90 usuarios y ya te imaginas.",
         sections: [
           {
-            heading: "Qué es Prompt Vault",
             blocks: [
-              "Una web app donde guardo prompts, skills y plantillas organizados por categorías, con búsqueda rápida y copia en un clic. La quería usar igual desde el móvil que desde el portátil, así que la construí como PWA. Se instala como app nativa, se abre desde el icono, sin barra del navegador. Android, iOS, escritorio, funciona igual.",
-              "Tiene modo claro y oscuro con un botón en la cabecera, autenticación con Google o email, y todos los datos sincronizados en la nube. Si guardo un prompt desde el móvil, lo tengo al instante en el ordenador.",
+              "Así que decidí automatizarlo con un script de PowerShell que se lanza por GPO en el inicio de sesión.",
             ],
           },
           {
-            heading: "El stack",
+            heading: "La idea",
             blocks: [
-              "No quería complicarme con nada exótico. React 19 con Vite para el frontend, porque Vite arranca en milisegundos y React es terreno conocido. Tailwind CSS v4 para los estilos: cero archivos CSS sueltos, todo inline, todo consistente.",
-              "Supabase para el backend completo: autenticación, base de datos PostgreSQL con Row Level Security y almacenamiento. Es como tener un Firebase pero con SQL de verdad. Y Vercel para el despliegue: push a main y ya está en producción.",
-              "La tipografía es Plus Jakarta Sans, que le da un aire limpio sin recurrir a las de siempre.",
+              "El planteamiento es sencillo: que sea Active Directory quien sepa qué impresoras necesita cada usuario. Creé dos atributos personalizados en AD: uno para la impresora predeterminada y otro para las adicionales. Cuando el usuario inicia sesión en el servidor RDS, una GPO lanza el script, que lee esos atributos y mapea automáticamente las impresoras que le corresponden.",
+              "¿Por qué AD y no otra cosa? Porque es el sitio natural donde ya gestionas al usuario. Si alguien cambia de sede o de departamento, solo tienes que actualizar sus atributos en AD y la próxima vez que inicie sesión ya tiene sus impresoras nuevas. Sin tocar el equipo, sin conectarte en remoto, sin tickets.",
             ],
           },
           {
-            heading: "Qué puedes hacer con ella",
+            heading: "Qué hace el script",
             blocks: [
-              "Cada prompt tiene un tipo y una categoría. Los tipos por defecto son “Prompt” y “Skill”, pero puedes crear los que quieras. La app ajusta el género gramatical: si creas un tipo que termina en -a, dice “nueva” en vez de “nuevo”. Un detallito tonto que mola.",
-              "Las categorías tienen su color de una paleta pastel con 10 tonos, todos con contraste AA. Bonitos y legibles.",
-              "Arriba hay una barra de búsqueda que filtra en tiempo real por título y contenido. Cuando tienes 50 o 100 prompts, esto marca la diferencia entre encontrar algo en 2 segundos o quedarte buscando.",
-              "Copiar es un clic. Aparece un “Copiado” durante 2 segundos y ya lo tienes en el portapapeles, listo para pegar donde quieras.",
+              "El script no solo instala las impresoras. También configura las bandejas y los ajustes predefinidos de cada una. Si una impresora tiene la bandeja 2 para papel A3 y la 3 para sobres, el usuario la recibe lista para usar sin tener que tocar nada.",
+              "El proceso es limpio: al arrancar, el script consulta AD, obtiene la lista de impresoras asignadas al usuario, las mapea con su configuración y establece la predeterminada. Todo transparente para el usuario.",
             ],
           },
           {
-            heading: "Compartir sin dramas",
+            heading: "Logs para dormir tranquilo",
             blocks: [
-              "Puedes compartir de dos formas. Por email: escribes el correo y a la otra persona le aparece en su bóveda en solo lectura. O por enlace público: generas una URL y cualquiera puede verlo sin cuenta. Si cambias de idea, desactivas el enlace.",
+              "Cada ejecución genera un log individual por usuario en una carpeta compartida del servidor. Queda registrado qué impresoras se han mapeado, a qué hora y si ha ido bien o ha fallado algo.",
+              "Esto parece un detalle menor, pero cuando un usuario dice “no me funciona la impresora” y tú puedes mirar su log y ver exactamente qué ha pasado, te ahorras bastante tiempo de diagnóstico.",
             ],
           },
           {
-            heading: "Papelera y seguridad",
+            heading: "El botón de “arréglame las impresoras”",
             blocks: [
-              "Cuando borras algo, va a la papelera. Tienes 6 segundos para darle a “Deshacer”. Y si no, sigue accesible desde tu avatar durante 30 días.",
-              "La seguridad no es decorativa. Cada usuario solo ve sus propios datos, y no porque haya un condicional en el frontend: está implementado con Row Level Security en la base de datos. La propia base rechaza cualquier consulta que intente tocar datos de otro.",
+              "Uno de los problemas recurrentes era que a veces, por un error o un cambio de configuración, las impresoras del usuario desaparecían. En vez de abrir un ticket y esperar, el script deja un acceso directo en el escritorio que resetea la GPO y vuelve a lanzar el mapeo completo.",
+              "El usuario hace doble clic y en unos segundos tiene todas sus impresoras de vuelta. Esto ha reducido bastante las incidencias relacionadas con impresoras.",
             ],
           },
           {
-            heading: "Cómo lo construí",
+            heading: "Números",
             blocks: [
-              "El proceso fue iterativo, que es como mejor salen estas cosas. Empecé con una versión mínima que guardaba prompts en localStorage, sin base de datos ni login. A partir de ahí fui añadiendo capas: primero las categorías y tipos personalizables con su paleta de colores, luego la migración a Supabase con autenticación real y Row Level Security, y por último las funciones de compartir, la papelera y la configuración PWA.",
-              "El repositorio está en GitHub y cada push a main despliega automáticamente en Vercel. Del commit a producción, todo automático.",
+              "El script gestiona unos 90 usuarios y entre 30 y 35 impresoras repartidas en varias sedes. Lleva varias versiones de mejoras incrementales y ahora mismo está en la v6.0. Cada iteración ha ido puliendo cosas: mejor gestión de errores, los logs, la configuración de bandejas, el acceso directo de recuperación.",
             ],
           },
           {
-            heading: "Qué viene después",
+            heading: "Lo que me llevo",
             blocks: [
-              "Prompt Vault ya la uso a diario y me ahorra tiempo de verdad. Pero tengo ideas: exportar e importar prompts en formatos estándar, carpetas para agrupar prompts relacionados y un historial de versiones para esos prompts que vas puliendo con el tiempo.",
-              "Si te interesa, el código es público en [GitHub](https://github.com/4ngel10/prompt-vault). Y si tú también andas con prompts repartidos por mil sitios, te recomiendo buscarte algún sistema. Da igual si es una app, una hoja de cálculo o una carpeta bien organizada. Tener tus prompts a mano cambia bastante el día a día.",
+              "Este proyecto me enseñó que la mejor automatización es la que el usuario ni nota. Nadie te da las gracias porque sus impresoras aparezcan solas, pero sí que dejan de llamarte para que se las configures. Y eso, al final, es el objetivo.",
+              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, te animo a explorar este enfoque. La inversión inicial de montar el script merece la pena con creces.",
             ],
           },
         ],
       },
       en: {
-        title: "Prompt Vault: my personal prompt vault",
+        title: "Automating printer mapping on RDS with PowerShell and Active Directory",
         intro:
-          "If you use AI models fairly often, you end up with good prompts scattered everywhere. Some in phone notes. Others in a Google Doc you opened once. The best ones, of course, lost in some old chat. I was tired of spending five minutes digging through screenshots and messages every time I needed one. So I built an app to keep them all in one place.",
+          "At a client with several sites and more than 30 printers, setting up printers by hand every time a user signed in was unsustainable. Every new hire, every desk change, every “my printers are gone” meant connecting to the machine and adding them one by one. Trays, presets and all. Multiply that by 90 users and you get the picture.",
         sections: [
           {
-            heading: "What Prompt Vault is",
             blocks: [
-              "A web app where I keep prompts, skills and templates organized by category, with fast search and one-click copy. I wanted to use it the same way on my phone and on my laptop, so I built it as a PWA. It installs like a native app and opens from its icon, with no browser bar. Android, iOS or desktop, it works the same.",
-              "It has light and dark mode with a button in the header, sign-in with Google or email, and all data synced to the cloud. If I save a prompt on my phone, it is on my computer instantly.",
+              "So I decided to automate it with a PowerShell script launched by GPO at sign-in.",
             ],
           },
           {
-            heading: "The stack",
+            heading: "The idea",
             blocks: [
-              "I did not want anything exotic. React 19 with Vite for the frontend, because Vite starts in milliseconds and React is familiar ground. Tailwind CSS v4 for styling: zero loose CSS files, everything inline, everything consistent.",
-              "Supabase for the whole backend: authentication, a PostgreSQL database with Row Level Security, and storage. Like Firebase, but with real SQL. And Vercel for deployment: push to main and it is in production.",
-              "The typeface is Plus Jakarta Sans, which gives it a clean feel without falling back on the usual suspects.",
+              "The approach is simple: let Active Directory know which printers each user needs. I created two custom attributes in AD: one for the default printer and another for the additional ones. When the user signs in to the RDS server, a GPO launches the script, which reads those attributes and automatically maps the printers that belong to them.",
+              "Why AD and not something else? Because it is the natural place where you already manage the user. If someone changes site or department, you only update their attributes in AD and the next time they sign in they already have their new printers. No touching the machine, no remote sessions, no tickets.",
             ],
           },
           {
-            heading: "What you can do with it",
+            heading: "What the script does",
             blocks: [
-              "Every prompt has a type and a category. The default types are “Prompt” and “Skill”, but you can create any you like. In Spanish, the app adjusts grammatical gender: if a type ends in -a, it says “nueva” instead of “nuevo”. A silly little detail that I love.",
-              "Categories get a color from a 10-tone pastel palette, all of them meeting AA contrast. Pretty and readable.",
-              "A search bar at the top filters by title and content in real time. With 50 or 100 prompts, that is the difference between finding something in 2 seconds and hunting for it.",
-              "Copying is one click. A “Copied” label shows up for 2 seconds and it is on your clipboard, ready to paste anywhere.",
+              "The script does not just install the printers. It also configures each one's trays and presets. If a printer has tray 2 for A3 paper and tray 3 for envelopes, the user gets it ready to use without touching anything.",
+              "The process is clean: on start, the script queries AD, gets the list of printers assigned to the user, maps them with their configuration and sets the default one. All transparent to the user.",
             ],
           },
           {
-            heading: "Sharing, no drama",
+            heading: "Logs to sleep well",
             blocks: [
-              "You can share in two ways. By email: type the address and the item shows up in the other person's vault, read-only. Or by public link: generate a URL and anyone can view it without an account. Change your mind, turn the link off.",
+              "Every run writes an individual log per user to a shared folder on the server. It records which printers were mapped, at what time, and whether everything went fine or something failed.",
+              "It looks like a small detail, but when a user says “my printer doesn't work” and you can open their log and see exactly what happened, you save a lot of troubleshooting time.",
             ],
           },
           {
-            heading: "Trash and security",
+            heading: "The “fix my printers” button",
             blocks: [
-              "When you delete something, it goes to the trash. You get 6 seconds to hit “Undo”. After that, it is still reachable from your avatar for 30 days.",
-              "Security is not decorative. Each user only sees their own data, and not because of a conditional in the frontend: it is enforced with Row Level Security in the database. The database itself rejects any query that tries to touch someone else's data.",
+              "A recurring problem was that sometimes, because of an error or a configuration change, a user's printers disappeared. Instead of opening a ticket and waiting, the script leaves a desktop shortcut that resets the GPO and runs the full mapping again.",
+              "The user double-clicks it and in a few seconds all their printers are back. This has noticeably cut down printer-related incidents.",
             ],
           },
           {
-            heading: "How I built it",
+            heading: "Numbers",
             blocks: [
-              "The process was iterative, which is how these things turn out best. I started with a minimal version that stored prompts in localStorage, with no database and no login. From there I added layers: first customizable categories and types with their color palette, then the move to Supabase with real authentication and Row Level Security, and finally sharing, the trash and the PWA setup.",
-              "The repository lives on GitHub and every push to main deploys to Vercel automatically. From commit to production, fully automated.",
+              "The script handles around 90 users and 30 to 35 printers spread across several sites. It has gone through several rounds of incremental improvements and is currently at v6.0. Each iteration polished something: better error handling, the logs, tray configuration, the recovery shortcut.",
             ],
           },
           {
-            heading: "What comes next",
+            heading: "What I take away",
             blocks: [
-              "I use Prompt Vault every day and it genuinely saves me time. But I have ideas: exporting and importing prompts in standard formats, folders to group related prompts, and version history for those prompts you keep refining over time.",
-              "If you are curious, the code is public on [GitHub](https://github.com/4ngel10/prompt-vault). And if your prompts are scattered across a thousand places too, I recommend finding yourself a system. It does not matter whether it is an app, a spreadsheet or a well-organized folder. Having your prompts at hand makes a real difference day to day.",
+              "This project taught me that the best automation is the one the user does not even notice. Nobody thanks you because their printers show up on their own, but they do stop calling you to set them up. And in the end, that is the goal.",
+              "If you work in an environment with lots of printers and lots of users, I encourage you to explore this approach. The initial investment in building the script pays off many times over.",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "flexgrip",
+    key: "p4",
+    cover: "FG",
+    tint: 14,
+    tech: ["Astro", "Stripe", "SEO"],
+    url: "https://www.flexgrip.site/",
+    image: "/projects/flexgrip.webp",
+    coverAlt: {
+      es: "Captura de FlexGrip: titular «Entrena en cualquier lugar por solo 14,99 €», botón de compra y un kit con cinco bandas elásticas de colores, un handgrip y una bolsa de malla.",
+      en: "FlexGrip screenshot: headline “Entrena en cualquier lugar por solo 14,99 €”, a buy button and a kit with five colored resistance bands, a hand gripper and a mesh bag.",
+    },
+    ogImage: "/projects/flexgrip-og.jpg",
+    date: "2026-10-20",
+    post: {
+      es: {
+        title: "FlexGrip, landing de producto y venta directa",
+        seoTitle: "FlexGrip, landing y venta directa",
+        intro:
+          "FlexGrip es una tienda online enfocada en la venta de un kit de entrenamiento completo compuesto por cinco bandas elásticas, un handgrip regulable y una bolsa de transporte. La idea de partida era muy clara: ofrecer una web directa donde quien entra entiende al instante la propuesta de valor y puede hacer el pedido sin distracciones.",
+        sections: [
+          {
+            heading: "Qué ofrece la web",
+            blocks: [
+              "El diseño pone el producto en el centro con un titular directo, el precio destacado, un botón de compra visible y las garantías principales a la vista, como el envío exprés, 30 días de devolución y 3 años de garantía.",
+              "A lo largo de la página se detalla la resistencia de cada banda elástica, el funcionamiento del handgrip regulable, una tabla comparativa con otras alternativas del mercado, opiniones de clientes y una sección de preguntas frecuentes para resolver dudas antes del pago.",
+            ],
+          },
+          {
+            heading: "Estrategia SEO y presencia en buscadores",
+            blocks: [
+              "Para que el proyecto fuera visible en buscadores desde el primer día, realizamos un estudio previo de palabras clave centrado en intenciones de búsqueda de compra rápida para equipamiento de entrenamiento en casa.",
+              "Optimizamos todas las etiquetas meta, los datos estructurados de producto para mostrar precios y valoraciones en los resultados de Google, y la estructura de encabezados. Además, dimos de alta la propiedad en Google Search Console, enviamos el sitemap generado automáticamente y verificamos la correcta indexación de la página para supervisar el rendimiento y el tráfico orgánico.",
+            ],
+          },
+          {
+            heading: "Cómo está desarrollada",
+            blocks: [
+              "Para el desarrollo elegí Astro, lo que permite generar una página estática extremadamente ligera, rápida y optimizada para la conversión. Para no complicar la infraestructura con un proceso de checkout complejo, la compra se gestiona mediante integraciones directas con Stripe.",
+              "La interfaz utiliza una paleta en tonos oscuros con acentos en verde lima para resaltar las llamadas a la acción, priorizando en todo momento la experiencia y navegación desde el móvil.",
+              "Puedes ver el proyecto funcionando en [flexgrip.site](https://www.flexgrip.site/).",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "FlexGrip, product landing page and direct sales",
+        intro:
+          "FlexGrip is an online store focused on selling a complete training kit made up of five resistance bands, an adjustable hand gripper and a carry bag. The starting idea was very clear: a direct website where whoever lands on it instantly understands the value proposition and can place the order without distractions.",
+        sections: [
+          {
+            heading: "What the site offers",
+            blocks: [
+              "The design puts the product at the center, with a direct headline, a highlighted price, a visible buy button and the main guarantees in plain sight, such as express shipping, 30-day returns and a 3-year warranty.",
+              "Throughout the page it details the resistance of each band, how the adjustable gripper works, a comparison table against other options on the market, customer reviews and an FAQ section to settle doubts before payment.",
+            ],
+          },
+          {
+            heading: "SEO strategy and search presence",
+            blocks: [
+              "So that the project would be visible in search engines from day one, we carried out a prior keyword study focused on quick-purchase search intent for home training equipment.",
+              "We optimized all the meta tags, the product structured data to show prices and ratings in Google results, and the heading structure. We also registered the property in Google Search Console, submitted the automatically generated sitemap and verified the page was correctly indexed, so we can monitor performance and organic traffic.",
+            ],
+          },
+          {
+            heading: "How it is built",
+            blocks: [
+              "For development I chose Astro, which makes it possible to generate an extremely light, fast static page optimized for conversion. To avoid complicating the infrastructure with a complex checkout process, purchases are handled through direct Stripe integrations.",
+              "The interface uses a dark palette with lime green accents to highlight the calls to action, always prioritizing the experience and navigation on mobile.",
+              "You can see the project running at [flexgrip.site](https://www.flexgrip.site/).",
             ],
           },
         ],
@@ -412,198 +476,134 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    slug: "flexgrip",
-    key: "p4",
-    cover: "FG",
+    slug: "prompt-vault",
+    key: "p2",
+    cover: "AI",
     tint: 14,
-    tech: ["Astro", "Stripe", "SEO"],
-    url: "https://www.flexgrip.site/",
-    image: "/projects/flexgrip.webp",
+    tech: ["React", "Supabase", "Tailwind", "PWA"],
+    url: "https://prompt-vault-three-xi.vercel.app/",
+    image: "/projects/prompt-vault.webp",
     coverAlt: {
-      es: "Captura de FlexGrip: titular «Entrena en cualquier lugar por solo 14,99 €», botón de compra y un kit con cinco bandas elásticas de colores, un handgrip y una bolsa de malla.",
-      en: "FlexGrip screenshot: headline “Entrena en cualquier lugar por solo 14,99 €”, a buy button and a kit with five colored resistance bands, a hand gripper and a mesh bag.",
+      es: "Captura de Prompt Vault: buscador, filtros por tipo y categoría, y tarjetas de prompts y skills de IA con sus etiquetas.",
+      en: "Prompt Vault screenshot: search bar, filters by type and category, and cards of AI prompts and skills with their tags.",
     },
-    ogImage: "/projects/flexgrip-og.jpg",
-    date: "2026-10-20",
+    ogImage: "/projects/prompt-vault-og.jpg",
+    imageDark: "/projects/prompt-vault-dark.webp",
+    date: "2026-10-16",
     post: {
       es: {
-        title: "FlexGrip: landing de producto y venta directa",
-        seoTitle: "FlexGrip: landing y venta directa",
+        title: "Prompt Vault: mi bóveda personal de prompts",
+        seoTitle: "Prompt Vault: bóveda personal de prompts",
         intro:
-          "FlexGrip es una tienda online enfocada en la venta de un kit de entrenamiento completo compuesto por cinco bandas elásticas, un handgrip regulable y una bolsa de transporte. La idea de partida era muy clara: ofrecer una web directa donde quien entra entiende al instante la propuesta de valor y puede hacer el pedido sin distracciones.",
+          "Si usas modelos de IA con cierta frecuencia, acabas con prompts buenos repartidos por todas partes. Unos en notas del móvil. Otros en un documento de Google que abriste una vez. Los mejores, claro, perdidos en algún chat antiguo. Yo me hartaba de perder cinco minutos buscando entre capturas y mensajes cada vez que necesitaba uno. Así que me hice una app para tenerlos todos en un sitio.",
         sections: [
           {
-            heading: "Qué ofrece la web",
+            heading: "Qué es Prompt Vault",
             blocks: [
-              "El diseño pone el producto en el centro con un titular directo, el precio destacado, un botón de compra visible y las garantías principales a la vista, como el envío exprés, 30 días de devolución y 3 años de garantía.",
-              "A lo largo de la página se detalla la resistencia de cada banda elástica, el funcionamiento del handgrip regulable, una tabla comparativa con otras alternativas del mercado, opiniones de clientes y una sección de preguntas frecuentes para resolver dudas antes del pago.",
+              "Una web app donde guardo prompts, skills y plantillas organizados por categorías, con búsqueda rápida y copia en un clic. La quería usar igual desde el móvil que desde el portátil, así que la construí como PWA. Se instala como app nativa, se abre desde el icono, sin barra del navegador. Android, iOS, escritorio, funciona igual.",
+              "Tiene modo claro y oscuro con un botón en la cabecera, autenticación con Google o email, y todos los datos sincronizados en la nube. Si guardo un prompt desde el móvil, lo tengo al instante en el ordenador.",
             ],
           },
           {
-            heading: "Estrategia SEO y presencia en buscadores",
+            heading: "El stack",
             blocks: [
-              "Para que el proyecto fuera visible en buscadores desde el primer día, realizamos un estudio previo de palabras clave centrado en intenciones de búsqueda de compra rápida para equipamiento de entrenamiento en casa.",
-              "Optimizamos todas las etiquetas meta, los datos estructurados de producto para mostrar precios y valoraciones en los resultados de Google, y la estructura de encabezados. Además, dimos de alta la propiedad en Google Search Console, enviamos el sitemap generado automáticamente y verificamos la correcta indexación de la página para supervisar el rendimiento y el tráfico orgánico.",
+              "No quería complicarme con nada exótico. React 19 con Vite para el frontend, porque Vite arranca en milisegundos y React es terreno conocido. Tailwind CSS v4 para los estilos: cero archivos CSS sueltos, todo inline, todo consistente.",
+              "Supabase para el backend completo: autenticación, base de datos PostgreSQL con Row Level Security y almacenamiento. Es como tener un Firebase pero con SQL de verdad. Y Vercel para el despliegue: push a main y ya está en producción.",
+              "La tipografía es Plus Jakarta Sans, que le da un aire limpio sin recurrir a las de siempre.",
             ],
           },
           {
-            heading: "Cómo está desarrollada",
+            heading: "Qué puedes hacer con ella",
             blocks: [
-              "Para el desarrollo elegí Astro, lo que permite generar una página estática extremadamente ligera, rápida y optimizada para la conversión. Para no complicar la infraestructura con un proceso de checkout complejo, la compra se gestiona mediante integraciones directas con Stripe.",
-              "La interfaz utiliza una paleta en tonos oscuros con acentos en verde lima para resaltar las llamadas a la acción, priorizando en todo momento la experiencia y navegación desde el móvil.",
-              "Puedes ver el proyecto funcionando en [flexgrip.site](https://www.flexgrip.site/).",
+              "Cada prompt tiene un tipo y una categoría. Los tipos por defecto son “Prompt” y “Skill”, pero puedes crear los que quieras. La app ajusta el género gramatical: si creas un tipo que termina en -a, dice “nueva” en vez de “nuevo”. Un detallito tonto que mola.",
+              "Las categorías tienen su color de una paleta pastel con 10 tonos, todos con contraste AA. Bonitos y legibles.",
+              "Arriba hay una barra de búsqueda que filtra en tiempo real por título y contenido. Cuando tienes 50 o 100 prompts, esto marca la diferencia entre encontrar algo en 2 segundos o quedarte buscando.",
+              "Copiar es un clic. Aparece un “Copiado” durante 2 segundos y ya lo tienes en el portapapeles, listo para pegar donde quieras.",
+            ],
+          },
+          {
+            heading: "Compartir sin dramas",
+            blocks: [
+              "Puedes compartir de dos formas. Por email: escribes el correo y a la otra persona le aparece en su bóveda en solo lectura. O por enlace público: generas una URL y cualquiera puede verlo sin cuenta. Si cambias de idea, desactivas el enlace.",
+            ],
+          },
+          {
+            heading: "Papelera y seguridad",
+            blocks: [
+              "Cuando borras algo, va a la papelera. Tienes 6 segundos para darle a “Deshacer”. Y si no, sigue accesible desde tu avatar durante 30 días.",
+              "La seguridad no es decorativa. Cada usuario solo ve sus propios datos, y no porque haya un condicional en el frontend: está implementado con Row Level Security en la base de datos. La propia base rechaza cualquier consulta que intente tocar datos de otro.",
+            ],
+          },
+          {
+            heading: "Cómo lo construí",
+            blocks: [
+              "El proceso fue iterativo, que es como mejor salen estas cosas. Empecé con una versión mínima que guardaba prompts en localStorage, sin base de datos ni login. A partir de ahí fui añadiendo capas: primero las categorías y tipos personalizables con su paleta de colores, luego la migración a Supabase con autenticación real y Row Level Security, y por último las funciones de compartir, la papelera y la configuración PWA.",
+              "El repositorio está en GitHub y cada push a main despliega automáticamente en Vercel. Del commit a producción, todo automático.",
+            ],
+          },
+          {
+            heading: "Qué viene después",
+            blocks: [
+              "Prompt Vault ya la uso a diario y me ahorra tiempo de verdad. Pero tengo ideas: exportar e importar prompts en formatos estándar, carpetas para agrupar prompts relacionados y un historial de versiones para esos prompts que vas puliendo con el tiempo.",
+              "Si te interesa, el código es público en [GitHub](https://github.com/4ngel10/prompt-vault). Y si tú también andas con prompts repartidos por mil sitios, te recomiendo buscarte algún sistema. Da igual si es una app, una hoja de cálculo o una carpeta bien organizada. Tener tus prompts a mano cambia bastante el día a día.",
             ],
           },
         ],
       },
       en: {
-        title: "FlexGrip: product landing page and direct sales",
+        title: "Prompt Vault: my personal prompt vault",
         intro:
-          "FlexGrip is an online store focused on selling a complete training kit made up of five resistance bands, an adjustable hand gripper and a carry bag. The starting idea was very clear: a direct website where whoever lands on it instantly understands the value proposition and can place the order without distractions.",
+          "If you use AI models fairly often, you end up with good prompts scattered everywhere. Some in phone notes. Others in a Google Doc you opened once. The best ones, of course, lost in some old chat. I was tired of spending five minutes digging through screenshots and messages every time I needed one. So I built an app to keep them all in one place.",
         sections: [
           {
-            heading: "What the site offers",
+            heading: "What Prompt Vault is",
             blocks: [
-              "The design puts the product at the center, with a direct headline, a highlighted price, a visible buy button and the main guarantees in plain sight, such as express shipping, 30-day returns and a 3-year warranty.",
-              "Throughout the page it details the resistance of each band, how the adjustable gripper works, a comparison table against other options on the market, customer reviews and an FAQ section to settle doubts before payment.",
+              "A web app where I keep prompts, skills and templates organized by category, with fast search and one-click copy. I wanted to use it the same way on my phone and on my laptop, so I built it as a PWA. It installs like a native app and opens from its icon, with no browser bar. Android, iOS or desktop, it works the same.",
+              "It has light and dark mode with a button in the header, sign-in with Google or email, and all data synced to the cloud. If I save a prompt on my phone, it is on my computer instantly.",
             ],
           },
           {
-            heading: "SEO strategy and search presence",
+            heading: "The stack",
             blocks: [
-              "So that the project would be visible in search engines from day one, we carried out a prior keyword study focused on quick-purchase search intent for home training equipment.",
-              "We optimized all the meta tags, the product structured data to show prices and ratings in Google results, and the heading structure. We also registered the property in Google Search Console, submitted the automatically generated sitemap and verified the page was correctly indexed, so we can monitor performance and organic traffic.",
+              "I did not want anything exotic. React 19 with Vite for the frontend, because Vite starts in milliseconds and React is familiar ground. Tailwind CSS v4 for styling: zero loose CSS files, everything inline, everything consistent.",
+              "Supabase for the whole backend: authentication, a PostgreSQL database with Row Level Security, and storage. Like Firebase, but with real SQL. And Vercel for deployment: push to main and it is in production.",
+              "The typeface is Plus Jakarta Sans, which gives it a clean feel without falling back on the usual suspects.",
             ],
           },
           {
-            heading: "How it is built",
+            heading: "What you can do with it",
             blocks: [
-              "For development I chose Astro, which makes it possible to generate an extremely light, fast static page optimized for conversion. To avoid complicating the infrastructure with a complex checkout process, purchases are handled through direct Stripe integrations.",
-              "The interface uses a dark palette with lime green accents to highlight the calls to action, always prioritizing the experience and navigation on mobile.",
-              "You can see the project running at [flexgrip.site](https://www.flexgrip.site/).",
-            ],
-          },
-        ],
-      },
-    },
-  },
-  {
-    slug: "mapeo-impresoras-rds",
-    key: "p1",
-    cover: "PS1",
-    tint: 8,
-    tech: ["PowerShell", "Active Directory", "GPO", "RDS"],
-    image: "/projects/powershell-printer-cover.svg",
-    coverAlt: {
-      es: "Ventana de terminal de PowerShell con el script PrinterMapping.ps1: lee del usuario de Active Directory sus impresoras, las conecta una a una y fija la predeterminada.",
-      en: "PowerShell terminal window with the PrinterMapping.ps1 script: it reads the user's printers from Active Directory, connects them one by one and sets the default.",
-    },
-    ogImage: "/projects/powershell-printer-og.jpg",
-    date: "2026-10-17",
-    post: {
-      es: {
-        title: "Automatizar el mapeo de impresoras en RDS con PowerShell y Active Directory",
-        seoTitle: "Mapeo de impresoras en RDS con PowerShell",
-        intro:
-          "En un cliente con varias sedes y más de 30 impresoras, configurar las impresoras a mano cada vez que un usuario iniciaba sesión era insostenible. Cada alta nueva, cada cambio de puesto, cada “se me han borrado las impresoras” significaba conectarse al equipo y añadirlas una a una. Con bandejas, ajustes predefinidos y todo. Multiplica eso por 90 usuarios y ya te imaginas.",
-        sections: [
-          {
-            blocks: [
-              "Así que decidí automatizarlo con un script de PowerShell que se lanza por GPO en el inicio de sesión.",
+              "Every prompt has a type and a category. The default types are “Prompt” and “Skill”, but you can create any you like. In Spanish, the app adjusts grammatical gender: if a type ends in -a, it says “nueva” instead of “nuevo”. A silly little detail that I love.",
+              "Categories get a color from a 10-tone pastel palette, all of them meeting AA contrast. Pretty and readable.",
+              "A search bar at the top filters by title and content in real time. With 50 or 100 prompts, that is the difference between finding something in 2 seconds and hunting for it.",
+              "Copying is one click. A “Copied” label shows up for 2 seconds and it is on your clipboard, ready to paste anywhere.",
             ],
           },
           {
-            heading: "La idea",
+            heading: "Sharing, no drama",
             blocks: [
-              "El planteamiento es sencillo: que sea Active Directory quien sepa qué impresoras necesita cada usuario. Creé dos atributos personalizados en AD: uno para la impresora predeterminada y otro para las adicionales. Cuando el usuario inicia sesión en el servidor RDS, una GPO lanza el script, que lee esos atributos y mapea automáticamente las impresoras que le corresponden.",
-              "¿Por qué AD y no otra cosa? Porque es el sitio natural donde ya gestionas al usuario. Si alguien cambia de sede o de departamento, solo tienes que actualizar sus atributos en AD y la próxima vez que inicie sesión ya tiene sus impresoras nuevas. Sin tocar el equipo, sin conectarte en remoto, sin tickets.",
+              "You can share in two ways. By email: type the address and the item shows up in the other person's vault, read-only. Or by public link: generate a URL and anyone can view it without an account. Change your mind, turn the link off.",
             ],
           },
           {
-            heading: "Qué hace el script",
+            heading: "Trash and security",
             blocks: [
-              "El script no solo instala las impresoras. También configura las bandejas y los ajustes predefinidos de cada una. Si una impresora tiene la bandeja 2 para papel A3 y la 3 para sobres, el usuario la recibe lista para usar sin tener que tocar nada.",
-              "El proceso es limpio: al arrancar, el script consulta AD, obtiene la lista de impresoras asignadas al usuario, las mapea con su configuración y establece la predeterminada. Todo transparente para el usuario.",
+              "When you delete something, it goes to the trash. You get 6 seconds to hit “Undo”. After that, it is still reachable from your avatar for 30 days.",
+              "Security is not decorative. Each user only sees their own data, and not because of a conditional in the frontend: it is enforced with Row Level Security in the database. The database itself rejects any query that tries to touch someone else's data.",
             ],
           },
           {
-            heading: "Logs para dormir tranquilo",
+            heading: "How I built it",
             blocks: [
-              "Cada ejecución genera un log individual por usuario en una carpeta compartida del servidor. Queda registrado qué impresoras se han mapeado, a qué hora y si ha ido bien o ha fallado algo.",
-              "Esto parece un detalle menor, pero cuando un usuario dice “no me funciona la impresora” y tú puedes mirar su log y ver exactamente qué ha pasado, te ahorras bastante tiempo de diagnóstico.",
+              "The process was iterative, which is how these things turn out best. I started with a minimal version that stored prompts in localStorage, with no database and no login. From there I added layers: first customizable categories and types with their color palette, then the move to Supabase with real authentication and Row Level Security, and finally sharing, the trash and the PWA setup.",
+              "The repository lives on GitHub and every push to main deploys to Vercel automatically. From commit to production, fully automated.",
             ],
           },
           {
-            heading: "El botón de “arréglame las impresoras”",
+            heading: "What comes next",
             blocks: [
-              "Uno de los problemas recurrentes era que a veces, por un error o un cambio de configuración, las impresoras del usuario desaparecían. En vez de abrir un ticket y esperar, el script deja un acceso directo en el escritorio que resetea la GPO y vuelve a lanzar el mapeo completo.",
-              "El usuario hace doble clic y en unos segundos tiene todas sus impresoras de vuelta. Esto ha reducido bastante las incidencias relacionadas con impresoras.",
-            ],
-          },
-          {
-            heading: "Números",
-            blocks: [
-              "El script gestiona unos 90 usuarios y entre 30 y 35 impresoras repartidas en varias sedes. Lleva varias versiones de mejoras incrementales y ahora mismo está en la v6.0. Cada iteración ha ido puliendo cosas: mejor gestión de errores, los logs, la configuración de bandejas, el acceso directo de recuperación.",
-            ],
-          },
-          {
-            heading: "Lo que me llevo",
-            blocks: [
-              "Este proyecto me enseñó que la mejor automatización es la que el usuario ni nota. Nadie te da las gracias porque sus impresoras aparezcan solas, pero sí que dejan de llamarte para que se las configures. Y eso, al final, es el objetivo.",
-              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, te animo a explorar este enfoque. La inversión inicial de montar el script merece la pena con creces.",
-            ],
-          },
-        ],
-      },
-      en: {
-        title: "Automating printer mapping on RDS with PowerShell and Active Directory",
-        intro:
-          "At a client with several sites and more than 30 printers, setting up printers by hand every time a user signed in was unsustainable. Every new hire, every desk change, every “my printers are gone” meant connecting to the machine and adding them one by one. Trays, presets and all. Multiply that by 90 users and you get the picture.",
-        sections: [
-          {
-            blocks: [
-              "So I decided to automate it with a PowerShell script launched by GPO at sign-in.",
-            ],
-          },
-          {
-            heading: "The idea",
-            blocks: [
-              "The approach is simple: let Active Directory know which printers each user needs. I created two custom attributes in AD: one for the default printer and another for the additional ones. When the user signs in to the RDS server, a GPO launches the script, which reads those attributes and automatically maps the printers that belong to them.",
-              "Why AD and not something else? Because it is the natural place where you already manage the user. If someone changes site or department, you only update their attributes in AD and the next time they sign in they already have their new printers. No touching the machine, no remote sessions, no tickets.",
-            ],
-          },
-          {
-            heading: "What the script does",
-            blocks: [
-              "The script does not just install the printers. It also configures each one's trays and presets. If a printer has tray 2 for A3 paper and tray 3 for envelopes, the user gets it ready to use without touching anything.",
-              "The process is clean: on start, the script queries AD, gets the list of printers assigned to the user, maps them with their configuration and sets the default one. All transparent to the user.",
-            ],
-          },
-          {
-            heading: "Logs to sleep well",
-            blocks: [
-              "Every run writes an individual log per user to a shared folder on the server. It records which printers were mapped, at what time, and whether everything went fine or something failed.",
-              "It looks like a small detail, but when a user says “my printer doesn't work” and you can open their log and see exactly what happened, you save a lot of troubleshooting time.",
-            ],
-          },
-          {
-            heading: "The “fix my printers” button",
-            blocks: [
-              "A recurring problem was that sometimes, because of an error or a configuration change, a user's printers disappeared. Instead of opening a ticket and waiting, the script leaves a desktop shortcut that resets the GPO and runs the full mapping again.",
-              "The user double-clicks it and in a few seconds all their printers are back. This has noticeably cut down printer-related incidents.",
-            ],
-          },
-          {
-            heading: "Numbers",
-            blocks: [
-              "The script handles around 90 users and 30 to 35 printers spread across several sites. It has gone through several rounds of incremental improvements and is currently at v6.0. Each iteration polished something: better error handling, the logs, tray configuration, the recovery shortcut.",
-            ],
-          },
-          {
-            heading: "What I take away",
-            blocks: [
-              "This project taught me that the best automation is the one the user does not even notice. Nobody thanks you because their printers show up on their own, but they do stop calling you to set them up. And in the end, that is the goal.",
-              "If you work in an environment with lots of printers and lots of users, I encourage you to explore this approach. The initial investment in building the script pays off many times over.",
+              "I use Prompt Vault every day and it genuinely saves me time. But I have ideas: exporting and importing prompts in standard formats, folders to group related prompts, and version history for those prompts you keep refining over time.",
+              "If you are curious, the code is public on [GitHub](https://github.com/4ngel10/prompt-vault). And if your prompts are scattered across a thousand places too, I recommend finding yourself a system. It does not matter whether it is an app, a spreadsheet or a well-organized folder. Having your prompts at hand makes a real difference day to day.",
             ],
           },
         ],

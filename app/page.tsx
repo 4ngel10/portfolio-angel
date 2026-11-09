@@ -23,10 +23,10 @@ export default function Page() {
       <Nav />
       <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
         <Hero />
-        <StackBand />
-        <About />
         <Services />
+        <StackBand />
         <Portfolio />
+        <About />
         <BlogTeaser />
         <Contact />
       </main>

@@ -106,7 +106,7 @@ export function Contact() {
   return (
     <section id="contact" className="bg-paper-alt scroll-mt-[72px] py-24 md:py-28">
       <div className="mx-auto max-w-6xl px-6 md:px-8">
-        <div className="grid items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+        <div className="grid grid-cols-1 items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <Reveal>
             <h2 className="text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
               {t("contact.title")}

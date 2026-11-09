@@ -17,11 +17,11 @@ import type { ServiceDetail as Service } from "./services";
 import { BLOG_POSTS, type BlogPost } from "./blog";
 import es from "@/messages/es.json";
 
-export const HOME_TITLE = "Ángel Fernández · Sistemas y desarrollo web en Mallorca";
+export const HOME_TITLE = "Ángel Fernández · Administrador de Sistemas y Desarrollador Web";
 /** Imagen para redes de la home (1200x630). */
 export const HOME_OG_IMAGE = "/og-home.jpg";
 export const HOME_DESCRIPTION =
-  "Administrador de sistemas y desarrollador web freelance en Palma de Mallorca. Infraestructura IT segura, backups, redes y webs a medida para empresas.";
+  "Administrador de sistemas, 3 años en 60 hoteles, y desarrollador web para autónomos y pymes. En remoto y en Palma de Mallorca. Primera llamada gratuita.";
 
 /** Canonical + hreflang de una página (ruta relativa a metadataBase). */
 export function alternatesFor(path: string) {
@@ -97,6 +97,7 @@ export function homeJsonLd() {
       name: PERSON_NAME,
       jobTitle: ["Administrador de Sistemas", "Desarrollador Web"],
       url: SITE_URL,
+      image: `${SITE_URL}/angel-square.webp`,
       email: LEGAL.email,
       sameAs: ["https://www.linkedin.com/in/angelfernandezgarriga", "https://github.com/4ngel10"],
       address: {

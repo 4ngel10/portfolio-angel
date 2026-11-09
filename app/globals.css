@@ -130,9 +130,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     /* Excepciones deliberadas (decisión de Ángel, ver CLAUDE.md): los carruseles
-       (.carousel-group) se mueven siempre.
+       (.carousel-group) se mueven siempre, el cursor del hero (.caret) parpadea siempre y el zoom
+       de la foto del hero (.hero-photo) también se anima al pasar el ratón.
        Son lentos, lineales y sin parallax. */
-    *:not(.carousel-group),
+    *:not(.carousel-group):not(.caret):not(.hero-photo),
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
@@ -292,7 +293,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .caret,
     .hero-rise,
     .hero-fade {
       animation: none !important;

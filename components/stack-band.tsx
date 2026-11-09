@@ -4,48 +4,29 @@ import { Carousel } from "./carousel";
 import { useI18n } from "@/lib/i18n";
 
 // Nombres propios: iguales en todos los idiomas.
+// Alternan sistemas y web.
 const TECH = [
-  "Hyper-V",
-  "VMware",
-  "Active Directory",
   "Windows Server",
-  "PowerShell",
-  "Fortinet",
-  "Nakivo",
-  "Veeam",
-  "Azure",
-  "Proxmox",
-  "Docker",
-  "Zabbix",
   "Next.js",
-  "Shopify",
-  "NinjaOne",
-  "UniFi",
-  "Acronis",
+  "Microsoft 365",
   "TypeScript",
+  "Active Directory",
+  "Shopify",
+  "Hyper-V",
   "Vercel",
-  "Google Ads",
+  "Fortinet",
+  "Proxmox",
+  "Veeam",
   "Intune",
-  "Grafana",
-  "pfSense",
-  "OPNsense",
-  "GitLab",
-  "Nginx",
-  "Apache",
-  "SOTI",
 ];
-
-// Áreas de trabajo: traducidas en messages/*.json (marquee.area1..area12).
-const AREA_KEYS = Array.from({ length: 12 }, (_, i) => `marquee.area${i + 1}`);
 
 export function StackBand() {
   const { t } = useI18n();
-  const areas = AREA_KEYS.map((k) => t(k));
 
   return (
     <section
       aria-label={t("marquee.stack")}
-      className="space-y-5 border-y py-8 md:py-10"
+      className="border-y py-6 md:py-8"
       style={{ borderColor: "var(--rule)" }}
     >
       <Carousel
@@ -71,20 +52,6 @@ export function StackBand() {
           </svg>
         }
         itemClassName="text-3xl md:text-5xl font-semibold tracking-[-0.03em] text-muted"
-      />
-      <Carousel
-        direction="right"
-        speed={124}
-        repeat={2}
-        gap="1.25rem"
-        items={areas}
-        label={t("marquee.areas")}
-        separator={
-          <span className="opacity-40" aria-hidden>
-            /
-          </span>
-        }
-        itemClassName="font-mono text-xs md:text-sm uppercase tracking-[0.12em] text-muted"
       />
     </section>
   );

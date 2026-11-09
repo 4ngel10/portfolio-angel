@@ -8,7 +8,7 @@ import { useI18n } from "@/lib/i18n";
 const EASE = [0.23, 1, 0.32, 1] as const;
 
 /**
- * Botón "Contactar" flotante, solo en móvil (en escritorio el de la nav siempre se ve).
+ * Botón "Contactar" flotante, en móvil y tablet, por debajo de lg (en escritorio el de la nav siempre se ve).
  * Aparece al dejar atrás el hero, que ya tiene su propio botón, y se esconde cuando la
  * sección de contacto entra en pantalla, para no tapar el formulario ni el footer.
  * Es un enlace a #contact: el scroll suave y el foco los pone lib/smooth-scroll.ts.
@@ -44,8 +44,8 @@ export function MobileContactCta() {
   }, []);
 
   return (
-    // El md:hidden va en un envoltorio: en el propio enlace lo pisa el display de .btn-primary.
-    <div className="md:hidden">
+    // El lg:hidden va en un envoltorio: en el propio enlace lo pisa el display de .btn-primary.
+    <div className="lg:hidden">
       <AnimatePresence>
         {visible && (
           <motion.a

@@ -38,8 +38,8 @@ export const SERVICES: ServiceDetail[] = [
       ],
     },
     closing: {
-      es: "¿Buscas soporte IT para tu empresa en Mallorca? Cuéntame qué tienes montado y qué te preocupa. Te respondo en 24-48 horas con una propuesta clara, sin compromiso.",
-      en: "Looking for IT support for your business in Mallorca? Tell me what you have in place and what worries you. I reply within 24-48 hours with a clear proposal, no strings attached.",
+      es: "¿Buscas soporte IT para tu empresa en Mallorca? Cuéntame qué tienes montado y qué te preocupa. Te respondo en 24 a 48 horas con una propuesta clara, sin compromiso.",
+      en: "Looking for IT support for your business in Mallorca? Tell me what you have in place and what worries you. I reply within 24 to 48 hours with a clear proposal, no strings attached.",
     },
     groups: {
       es: [
@@ -246,8 +246,8 @@ export const SERVICES: ServiceDetail[] = [
       ],
     },
     closing: {
-      es: "¿Quieres crear la página web de tu empresa en Mallorca o renovar la que tienes? Cuéntame qué necesitas y te respondo en 24-48 horas con una propuesta clara, sin compromiso.",
-      en: "Want to build your company website in Mallorca or refresh the one you have? Tell me what you need and I will reply within 24-48 hours with a clear proposal, no strings attached.",
+      es: "¿Quieres crear la página web de tu empresa en Mallorca o renovar la que tienes? Cuéntame qué necesitas y te respondo en 24 a 48 horas con una propuesta clara, sin compromiso.",
+      en: "Want to build your company website in Mallorca or refresh the one you have? Tell me what you need and I will reply within 24 to 48 hours with a clear proposal, no strings attached.",
     },
     groups: {
       es: [
@@ -389,7 +389,7 @@ export const PRINCIPLES: Record<Locale, { title: string; text: string }[]> = {
     },
     {
       title: "Comunicación clara",
-      text: "Te respondo en 24-48 h con una propuesta concreta, sin tecnicismos innecesarios ni letra pequeña.",
+      text: "Te respondo en 24 a 48 h con una propuesta concreta, sin tecnicismos innecesarios ni letra pequeña.",
     },
   ],
   en: [
@@ -407,7 +407,7 @@ export const PRINCIPLES: Record<Locale, { title: string; text: string }[]> = {
     },
     {
       title: "Clear communication",
-      text: "I reply within 24-48 h with a concrete proposal, without needless jargon or fine print.",
+      text: "I reply within 24 to 48 h with a concrete proposal, without needless jargon or fine print.",
     },
   ],
 };

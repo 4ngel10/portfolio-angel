@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Bullet } from "./bullet";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { TiltCard } from "./tilt-card";
 import { Inline } from "./project-article";
@@ -38,24 +39,6 @@ const TARGETED = "shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]";
 const CHIP =
   "rounded px-2 py-0.5 font-mono text-[11px] transition-[transform,color,background-color] duration-200 hover:-translate-y-0.5 hover:text-[var(--accent)]";
 const CHIP_STYLE = { background: "var(--chip)", color: "var(--muted)" };
-
-const Check = () => (
-  <svg
-    className="mt-[0.4em] shrink-0"
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2.5}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ color: "var(--accent)" }}
-    aria-hidden
-  >
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
 
 /** Altura de la nav fija más un poco de aire, para que el apartado no quede debajo. */
 const NAV_OFFSET = 88;
@@ -161,10 +144,7 @@ export function ServicePage({ id }: { id: string }) {
                   >
                     {String(gi + 1).padStart(2, "0")}
                   </span>
-                  <h2
-                    className="pr-12 text-[19px] leading-snug font-semibold tracking-tight"
-                    style={{ transform: "translateZ(25px)" }}
-                  >
+                  <h2 className="pr-12 text-[19px] leading-snug font-semibold tracking-tight">
                     <span className={TITLE_HOVER}>{g.title}</span>
                   </h2>
                   <ul className="mt-4 flex flex-col gap-3">
@@ -173,7 +153,7 @@ export function ServicePage({ id }: { id: string }) {
                         key={i}
                         className="text-muted flex gap-3 text-[15px] leading-relaxed transition-[transform,color] duration-200 hover:translate-x-1 hover:text-[var(--fg)]"
                       >
-                        <Check />
+                        <Bullet />
                         <span>
                           <Inline text={item} />
                         </span>

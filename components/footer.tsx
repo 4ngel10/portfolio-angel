@@ -12,12 +12,11 @@ export function Footer() {
   const home = (hash: string) => (isHome ? hash : `/${hash}`);
 
   const links = [
-    { href: home("#about"), label: t("nav.about") },
     { href: home("#services"), label: t("nav.services") },
     { href: home("#portfolio"), label: t("nav.portfolio") },
+    { href: home("#about"), label: t("nav.about") },
     { href: home("#blog"), label: t("nav.blog") },
     { href: home("#contact"), label: t("nav.contact") },
-    { href: "/login", label: t("nav.ctaClients") },
   ];
 
   return (
@@ -122,6 +121,7 @@ export function Footer() {
             { href: "/aviso-legal", label: t("footer.legal") },
             { href: "/privacidad", label: t("footer.privacy") },
             { href: "/cookies", label: t("footer.cookies") },
+            { href: "/login", label: t("nav.ctaClients") },
           ].map((l) => (
             <Link
               key={l.href}

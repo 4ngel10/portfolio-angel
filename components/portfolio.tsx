@@ -43,7 +43,7 @@ export function Portfolio() {
   };
 
   return (
-    <section id="portfolio" className="bg-paper-alt scroll-mt-[72px] py-24 md:py-28">
+    <section id="portfolio" className="scroll-mt-[72px] py-24 md:py-28">
       <div className="mx-auto max-w-6xl px-6 md:px-8">
         <Reveal>
           <h2 className="text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">

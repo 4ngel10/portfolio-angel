@@ -17,7 +17,7 @@ export function NavLink(props: React.ComponentProps<"a"> & { href: string }) {
 /**
  * Barra de navegación de todas las páginas. En la home los enlaces bajan a cada sección
  * y el scroll spy marca la que se ve. En el resto llevan a la sección de la home y se marca
- * el apartado al que pertenece la página (Servicios, Portfolio o Blog).
+ * el apartado al que pertenece la página (Servicios, Proyectos o Blog).
  */
 export function Nav() {
   const { t, locale, setLocale } = useI18n();
@@ -44,7 +44,6 @@ export function Nav() {
   }, [open]);
 
   const links = [
-    { href: home("#about"), spy: "#about", label: t("nav.about") },
     { href: home("#services"), spy: "#services", section: "/servicios", label: t("nav.services") },
     {
       href: home("#portfolio"),
@@ -52,6 +51,7 @@ export function Nav() {
       section: "/proyectos",
       label: t("nav.portfolio"),
     },
+    { href: home("#about"), spy: "#about", label: t("nav.about") },
     // Baja a la mención #blog de la home (desde ahí se entra al blog completo).
     { href: home("#blog"), spy: "#blog", section: "/blog", label: t("nav.blog") },
     { href: home("#contact"), spy: "#contact", label: t("nav.contact") },
@@ -63,7 +63,7 @@ export function Nav() {
   // Scroll spy: marca en la nav la sección que ocupa la parte de arriba de la pantalla.
   useEffect(() => {
     if (!isHome) return;
-    const ids = ["about", "services", "portfolio", "blog", "contact"];
+    const ids = ["services", "portfolio", "about", "blog", "contact"];
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -106,7 +106,7 @@ export function Nav() {
           Ángel Fernández<span style={{ color: "var(--accent)" }}>.</span>
         </NavLink>
 
-        <div className="text-muted hidden items-center gap-9 text-sm font-medium md:flex">
+        <div className="text-muted hidden items-center gap-9 text-sm font-medium lg:flex">
           {links.map((l) => {
             const current = isCurrent(l);
             return (
@@ -179,15 +179,9 @@ export function Nav() {
           </button>
 
           {/* Solo escritorio. El hidden va en un envoltorio: en el enlace lo pisaba el display
-              de .btn-primary y en móvil no cabía la nav. En móvil está MobileContactCta. */}
-          {/* Ruta relativa: vale en localhost y en el dominio de producción. /login manda a cada
-              rol a su zona (admin a /admin, cliente a /portal) y, sin sesión, pide el acceso. */}
+              de .btn-primary y en móvil no cabía la nav. En móvil está MobileContactCta.
+              "Acceso Clientes" vive en el footer (/login). */}
           <span className="hidden lg:inline-flex">
-            <Link href="/login" className="btn-secondary !px-4 !py-3 !text-sm">
-              {t("nav.ctaClients")}
-            </Link>
-          </span>
-          <span className="hidden md:inline-flex">
             <NavLink href={home("#contact")} className="btn-primary !px-4 !py-3 !text-sm">
               {t("nav.ctaContact")}
             </NavLink>
@@ -200,7 +194,7 @@ export function Nav() {
             aria-label={t("a11y.toggleMenu")}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className="flex h-11 w-11 items-center justify-center rounded-xl border md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border lg:hidden"
             style={{ borderColor: "var(--rule)" }}
           >
             {open ? (
@@ -238,7 +232,7 @@ export function Nav() {
       {open && (
         <div
           id="mobile-menu"
-          className="absolute top-[72px] right-0 left-0 flex flex-col gap-4 border-b px-6 py-5 text-base font-medium md:hidden"
+          className="absolute top-[72px] right-0 left-0 flex flex-col gap-4 border-b px-6 py-5 text-base font-medium lg:hidden"
           style={{ background: "var(--bg)", borderColor: "var(--rule)" }}
         >
           {links.map((l) => (
@@ -252,9 +246,6 @@ export function Nav() {
               {l.label}
             </NavLink>
           ))}
-          <Link href="/login" onClick={() => setOpen(false)} className="font-semibold">
-            {t("nav.ctaClients")}
-          </Link>
         </div>
       )}
     </nav>
