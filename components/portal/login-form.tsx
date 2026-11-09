@@ -69,12 +69,12 @@ export function LoginForm({ aviso }: { aviso?: string }) {
     return (
       <div role="status" aria-live="polite">
         <h1 className="text-2xl font-semibold tracking-tight">{t("login.sentTitle")}</h1>
-        <p className="mt-3 text-muted">{t("login.sentBody")}</p>
-        <p className="mt-3 break-all font-medium">{email}</p>
+        <p className="text-muted mt-3">{t("login.sentBody")}</p>
+        <p className="mt-3 font-medium break-all">{email}</p>
         <button
           type="button"
           onClick={() => setEstado("idle")}
-          className="mt-6 text-sm font-medium text-ink underline underline-offset-4 hover:text-accent"
+          className="text-ink hover:text-accent mt-6 text-sm font-medium underline underline-offset-4"
         >
           {t("login.useOther")}
         </button>
@@ -87,10 +87,10 @@ export function LoginForm({ aviso }: { aviso?: string }) {
   return (
     <form onSubmit={conPassword ? entrar : enviarEnlace} noValidate>
       <h1 className="text-2xl font-semibold tracking-tight">{t("login.title")}</h1>
-      <p className="mt-3 text-muted">{conPassword ? t("login.intro") : t("login.linkIntro")}</p>
+      <p className="text-muted mt-3">{conPassword ? t("login.intro") : t("login.linkIntro")}</p>
 
       {aviso ? (
-        <p role="alert" className="mt-5 rounded-xl border border-rule bg-chip px-4 py-3 text-sm">
+        <p role="alert" className="border-rule bg-chip mt-5 rounded-xl border px-4 py-3 text-sm">
           {aviso}
         </p>
       ) : null}
@@ -157,7 +157,7 @@ export function LoginForm({ aviso }: { aviso?: string }) {
       <button
         type="button"
         onClick={() => cambiarModo(conPassword ? "enlace" : "password")}
-        className="mt-5 block w-full text-center text-sm font-medium text-ink underline underline-offset-4 hover:text-accent"
+        className="text-ink hover:text-accent mt-5 block w-full text-center text-sm font-medium underline underline-offset-4"
       >
         {conPassword ? t("login.firstTime") : t("login.backToPassword")}
       </button>

@@ -6,8 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fallo, refrescar } from "./action-utils";
 import { getPerfil, requireAdmin } from "./auth";
-import { avisarAdmin } from "./email";
+import { avisarAdmin, avisarBolsaBaja, enviarInvitacion } from "./email";
+import { SITE_URL } from "@/lib/site";
 import { getI18n } from "./i18n";
+import { cuentasDesactivadas } from "./cuentas";
 import { SECTORES } from "./sectores";
 import { isEmail, isUuid, oneOf, slugify, text, type FormState } from "./validate";
 
@@ -68,24 +70,58 @@ export async function guardarDetallesEmpresa(_: FormState, fd: FormData): Promis
   return { ok: true, message: (await getI18n()).t("ok.companyDetailsSaved") };
 }
 
-export async function invitarCliente(_: FormState, fd: FormData): Promise<FormState> {
-  await requireAdmin();
-  const email = text(fd, "email", 254).toLowerCase();
-  const nombre = text(fd, "nombre", 80);
-  const empresaId = text(fd, "empresa_id", 40);
-  if (!isEmail(email)) return await fallo("emailInvalid");
-  if (nombre.length < 2) return await fallo("personName");
-  if (!isUuid(empresaId)) return await fallo("chooseCompany");
+/**
+ * Enlace de acceso de un solo uso (auth.admin.generateLink) y correo de bienvenida. Nunca lanza:
+ * devuelve false si falta la configuración o algo falla, y el alta se mantiene igualmente.
+ */
+async function enviarInvitacionCorreo(
+  email: string,
+  nombre: string,
+  empresaId: string,
+  locale: "es" | "en" = "es",
+) {
+  try {
+    const admin = createAdminClient();
+    const [{ data: enlace, error }, { data: empresa }] = await Promise.all([
+      admin.auth.admin.generateLink({ type: "magiclink", email }),
+      admin.from("empresas").select("nombre").eq("id", empresaId).maybeSingle(),
+    ]);
+    const hash = enlace?.properties?.hashed_token;
+    if (error || !hash) {
+      console.error("[invitacion] No se pudo generar el enlace:", error?.message);
+      return false;
+    }
+    // /auth/entrar no canjea nada al abrirse: el hash se gasta al pulsar "Entrar" (POST a
+    // /auth/callback), para que los filtros de correo que abren los enlaces no lo consuman.
+    const url = `${SITE_URL}/auth/entrar?token_hash=${encodeURIComponent(hash)}&type=magiclink`;
+    return await enviarInvitacion({
+      to: email,
+      nombre,
+      empresa: empresa?.nombre ?? "",
+      enlace: url,
+      locale,
+    });
+  } catch (e) {
+    console.error("[invitacion]", e);
+    return false;
+  }
+}
 
-  // Se crea el usuario en Supabase Auth (sin enviar nada) y su perfil. La persona
-  // entra después pidiendo su enlace en /login.
+/** Crea la cuenta y el perfil de una persona y, si se pide, le manda la invitación. */
+async function altaPersona(
+  empresaId: string,
+  nombre: string,
+  email: string,
+  invitar: boolean,
+): Promise<FormState> {
+  // Se crea el usuario en Supabase Auth (sin enviar nada) y su perfil.
   const admin = createAdminClient();
   const { data: creado, error: errAuth } = await admin.auth.admin.createUser({
     email,
     email_confirm: true,
   });
   if (errAuth || !creado.user) {
-    console.error("[invitarCliente]", errAuth?.message);
+    console.error("[altaPersona]", errAuth?.message);
     return await fallo(errAuth?.code === "email_exists" ? "emailExists" : "userFail");
   }
 
@@ -97,17 +133,153 @@ export async function invitarCliente(_: FormState, fd: FormData): Promise<FormSt
     email,
   });
   if (errPerfil) {
-    console.error("[invitarCliente]", errPerfil.message);
+    console.error("[altaPersona]", errPerfil.message);
     await admin.auth.admin.deleteUser(creado.user.id); // no dejar un usuario a medias
     return await fallo("profileFail");
   }
+
+  const { t } = await getI18n();
+  if (!invitar) return { ok: true, message: t("ok.personCreated", { name: nombre, email }) };
+  const enviada = await enviarInvitacionCorreo(email, nombre, empresaId);
+  return {
+    ok: true,
+    message: t(enviada ? "ok.personInvited" : "ok.personInviteFailed", { name: nombre, email }),
+  };
+}
+
+export async function invitarCliente(_: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const email = text(fd, "email", 254).toLowerCase();
+  const nombre = text(fd, "nombre", 80);
+  const empresaId = text(fd, "empresa_id", 40);
+  if (!isEmail(email)) return await fallo("emailInvalid");
+  if (nombre.length < 2) return await fallo("personName");
+  if (!isUuid(empresaId)) return await fallo("chooseCompany");
+
+  const resultado = await altaPersona(empresaId, nombre, email, fd.get("invitar") === "on");
   refrescar();
-  return { ok: true, message: (await getI18n()).t("ok.personCreated", { name: nombre, email }) };
+  return resultado;
+}
+
+/**
+ * Alta de un cliente en un solo paso: la empresa (una que ya existe o una nueva con su nombre)
+ * y su primera persona. Si la persona falla y la empresa era nueva, la empresa se deshace.
+ */
+export async function crearCliente(_: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const email = text(fd, "email", 254).toLowerCase();
+  const nombre = text(fd, "nombre", 80);
+  const existente = text(fd, "empresa_id", 40);
+  const nombreEmpresa = text(fd, "empresa_nombre", 80);
+  if (existente && !isUuid(existente)) return await fallo("chooseCompany");
+  if (!existente && nombreEmpresa.length < 2) return await fallo("companyName");
+  if (!isEmail(email)) return await fallo("emailInvalid");
+  if (nombre.length < 2) return await fallo("personName");
+
+  const supabase = await createClient();
+  let empresaId = existente;
+  if (!empresaId) {
+    const { data: creada, error } = await supabase
+      .from("empresas")
+      .insert({ nombre: nombreEmpresa, slug: slugify(nombreEmpresa) })
+      .select("id")
+      .single();
+    if (error || !creada) {
+      console.error("[crearCliente]", error?.message);
+      return await fallo(error?.code === "23505" ? "companyExists" : "companyFail");
+    }
+    empresaId = creada.id;
+  }
+
+  const resultado = await altaPersona(empresaId, nombre, email, fd.get("invitar") === "on");
+  if (!resultado.ok && !existente) {
+    await supabase.from("empresas").delete().eq("id", empresaId);
+  }
+  refrescar();
+  return resultado;
+}
+
+/** Vuelve a enviar la invitación a una persona que ya tiene cuenta. */
+export async function reenviarInvitacion(_: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const id = text(fd, "id", 40);
+  if (!isUuid(id)) return await fallo("userInvalid");
+  const supabase = await createClient();
+  const { data: persona } = await supabase
+    .from("usuarios")
+    .select("nombre, email, empresa_id, role, idioma")
+    .eq("id", id)
+    .maybeSingle();
+  if (!persona || persona.role !== "cliente" || !persona.empresa_id) {
+    return await fallo("userInvalid");
+  }
+  // A una cuenta desactivada no se le reenvía nada (ni se puede comprobar: se trata como tal).
+  if ((await cuentasDesactivadas([id])).has(id)) return await fallo("userDisabled");
+  const enviada = await enviarInvitacionCorreo(
+    persona.email,
+    persona.nombre,
+    persona.empresa_id,
+    persona.idioma === "en" ? "en" : "es",
+  );
+  if (!enviada) return await fallo("inviteFail");
+  return { ok: true, message: (await getI18n()).t("ok.inviteResent", { email: persona.email }) };
 }
 
 /* ------------------------------------------------------------------ */
 /* Admin: proyectos e hitos                                            */
 /* ------------------------------------------------------------------ */
+
+/** El presupuesto existe, es de esa empresa y está aceptado. */
+async function presupuestoAceptadoDe(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  presupuestoId: string,
+  empresaId: string,
+) {
+  const { data } = await supabase
+    .from("presupuestos")
+    .select("id")
+    .eq("id", presupuestoId)
+    .eq("empresa_id", empresaId)
+    .eq("estado", "aceptado")
+    .maybeSingle();
+  return !!data;
+}
+
+/** Enlaza el proyecto con un presupuesto aceptado de su empresa, lo cambia o lo quita (vacío). */
+export async function vincularPresupuesto(_: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  const proyectoId = text(fd, "proyecto_id", 40);
+  const presupuestoId = text(fd, "presupuesto_id", 40);
+  if (!isUuid(proyectoId)) return await fallo("invalidProject");
+  if (presupuestoId && !isUuid(presupuestoId)) return await fallo("quoteInvalid");
+
+  const supabase = await createClient();
+  const { data: proyecto } = await supabase
+    .from("proyectos")
+    .select("empresa_id, presupuesto_id")
+    .eq("id", proyectoId)
+    .maybeSingle();
+  if (!proyecto) return await fallo("invalidProject");
+  // Dejar el que ya tiene no se revalida: puede que el presupuesto haya cambiado de estado después.
+  if (
+    presupuestoId &&
+    presupuestoId !== proyecto.presupuesto_id &&
+    !(await presupuestoAceptadoDe(supabase, presupuestoId, proyecto.empresa_id))
+  ) {
+    return await fallo("quoteInvalid");
+  }
+
+  const { error } = await supabase
+    .from("proyectos")
+    .update({ presupuesto_id: presupuestoId || null })
+    .eq("id", proyectoId);
+  if (error) {
+    console.error("[vincularPresupuesto]", error.message);
+    return await fallo(error.code === "23505" ? "quoteTaken" : "projectFail");
+  }
+  refrescar();
+  return { ok: true, message: (await getI18n()).t("ok.projectQuoteSaved") };
+}
 
 export async function crearProyecto(_: FormState, fd: FormData): Promise<FormState> {
   await requireAdmin();
@@ -116,14 +288,22 @@ export async function crearProyecto(_: FormState, fd: FormData): Promise<FormSta
   const descripcion = text(fd, "descripcion", 2000);
   if (!isUuid(empresaId)) return await fallo("chooseCompany");
   if (titulo.length < 3) return await fallo("projectTitle");
+  const presupuestoId = text(fd, "presupuesto_id", 40);
+  if (presupuestoId && !isUuid(presupuestoId)) return await fallo("quoteInvalid");
 
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("proyectos")
-    .insert({ empresa_id: empresaId, titulo, descripcion: descripcion || null });
+  if (presupuestoId && !(await presupuestoAceptadoDe(supabase, presupuestoId, empresaId))) {
+    return await fallo("quoteInvalid");
+  }
+  const { error } = await supabase.from("proyectos").insert({
+    empresa_id: empresaId,
+    titulo,
+    descripcion: descripcion || null,
+    presupuesto_id: presupuestoId || null,
+  });
   if (error) {
     console.error("[crearProyecto]", error.message);
-    return await fallo("projectFail");
+    return await fallo(error.code === "23505" ? "quoteTaken" : "projectFail");
   }
   refrescar();
   return { ok: true, message: (await getI18n()).t("ok.projectCreated") };
@@ -289,13 +469,22 @@ function mesActual() {
   return { inicio: inicio.toISOString().slice(0, 10), fin: fin.toISOString().slice(0, 10) };
 }
 
+/** Horas con coma o punto decimal y como mucho dos decimales. NaN si no es válido. */
+function leerHoras(fd: FormData, key: string): number {
+  const n = Number(text(fd, key, 10).replace(",", "."));
+  return Number.isFinite(n) && Math.abs(n * 100 - Math.round(n * 100)) < 1e-6 ? n : NaN;
+}
+
+/** Umbral de bolsa baja: con el 20 % o menos de lo contratado se avisa al cliente. */
+const UMBRAL_BOLSA_BAJA = 0.2;
+
 /** Fija las horas contratadas de una empresa (la crea si no tenía bolsa). */
 export async function guardarBolsa(_: FormState, fd: FormData): Promise<FormState> {
   await requireAdmin();
   const empresaId = text(fd, "empresa_id", 40);
-  const horas = Number(text(fd, "horas_contratadas", 6));
+  const horas = leerHoras(fd, "horas_contratadas");
   if (!isUuid(empresaId)) return await fallo("chooseCompany");
-  if (!Number.isInteger(horas) || horas < 0 || horas > 10000) return await fallo("hoursInteger");
+  if (Number.isNaN(horas) || horas < 0 || horas > 10000) return await fallo("hoursInteger");
   // Precio de la bolsa en euros; vacío = sin precio todavía. Acepta coma decimal.
   const precioTexto = text(fd, "precio", 12).replace(",", ".");
   const precio = precioTexto === "" ? null : Number(precioTexto);
@@ -306,14 +495,19 @@ export async function guardarBolsa(_: FormState, fd: FormData): Promise<FormStat
   const supabase = await createClient();
   const { data: actual } = await supabase
     .from("bolsa_horas")
-    .select("id")
+    .select("id, horas_contratadas")
     .eq("empresa_id", empresaId)
     .maybeSingle();
   const { inicio, fin } = mesActual();
   const { error } = actual
     ? await supabase
         .from("bolsa_horas")
-        .update({ horas_contratadas: horas, precio })
+        .update({
+          horas_contratadas: horas,
+          precio,
+          // Al ampliar las horas, el aviso de bolsa baja vuelve a quedar disponible.
+          ...(horas > Number(actual.horas_contratadas) && { ultimo_aviso_bajo: null }),
+        })
         .eq("id", actual.id)
     : await supabase.from("bolsa_horas").insert({
         empresa_id: empresaId,
@@ -330,34 +524,119 @@ export async function guardarBolsa(_: FormState, fd: FormData): Promise<FormStat
   return { ok: true, message: (await getI18n()).t("ok.bankSaved") };
 }
 
-/** Suma (o resta, si es negativo) horas consumidas. Nunca baja de cero. */
+/** Fecha de hoy en España (AAAA-MM-DD): el servidor corre en UTC. */
+function hoyMadrid() {
+  return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Madrid" }).format(new Date());
+}
+
+/**
+ * Apunta horas (o una corrección, en negativo) con su fecha, proyecto opcional y concepto.
+ * El movimiento y el contador se escriben juntos en registrar_horas() (db/rls.sql). Si el apunte
+ * deja la bolsa al 20 % o menos, se avisa una vez al cliente; si el correo falla, el apunte
+ * queda guardado igualmente.
+ */
 export async function registrarHoras(_: FormState, fd: FormData): Promise<FormState> {
   await requireAdmin();
   const empresaId = text(fd, "empresa_id", 40);
-  const horas = Number(text(fd, "horas", 6));
+  const horas = leerHoras(fd, "horas");
+  const concepto = text(fd, "concepto", 200);
+  const fecha = text(fd, "fecha", 10) || hoyMadrid();
+  const proyectoId = text(fd, "proyecto_id", 40);
   if (!isUuid(empresaId)) return await fallo("invalidCompany");
-  if (!Number.isInteger(horas) || horas === 0 || Math.abs(horas) > 1000) {
+  if (Number.isNaN(horas) || horas === 0 || Math.abs(horas) > 1000) {
     return await fallo("hoursNeedInt");
   }
+  if (!concepto) return await fallo("conceptRequired");
+  if (!/^d{4}-d{2}-d{2}$/.test(fecha) || Number.isNaN(Date.parse(fecha))) {
+    return await fallo("invalidDate");
+  }
+  if (proyectoId && !isUuid(proyectoId)) return await fallo("invalidProject");
 
   const supabase = await createClient();
-  const { data: bolsa } = await supabase
-    .from("bolsa_horas")
-    .select("id, horas_consumidas")
-    .eq("empresa_id", empresaId)
-    .maybeSingle();
-  if (!bolsa) return await fallo("noBank");
-
-  const { error } = await supabase
-    .from("bolsa_horas")
-    .update({ horas_consumidas: Math.max(0, bolsa.horas_consumidas + horas) })
-    .eq("id", bolsa.id);
+  const { data, error } = await supabase.rpc("registrar_horas", {
+    p_empresa: empresaId,
+    p_fecha: fecha,
+    p_horas: horas,
+    p_proyecto: proyectoId || null,
+    p_concepto: concepto,
+  });
   if (error) {
     console.error("[registrarHoras]", error.message);
+    if (error.message.includes("no_bank")) return await fallo("noBank");
+    if (error.message.includes("below_zero")) return await fallo("hoursBelowZero");
+    if (error.message.includes("invalid_project")) return await fallo("invalidProject");
     return await fallo("hoursFail");
   }
+
+  await avisarSiBolsaBaja(supabase, empresaId, Array.isArray(data) ? data[0] : data);
   refrescar();
   return { ok: true, message: (await getI18n()).t("ok.hoursRecorded") };
+}
+
+type EstadoBolsa = {
+  horas_contratadas: number | string;
+  horas_consumidas: number | string;
+  ultimo_aviso_bajo: string | null;
+} | null;
+
+/** Avisa al cliente una sola vez cuando la bolsa baja al umbral; lo rearma si vuelve a subir. */
+async function avisarSiBolsaBaja(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  empresaId: string,
+  fila: EstadoBolsa,
+) {
+  if (!fila) return;
+  try {
+    const contratadas = Number(fila.horas_contratadas);
+    const restantes = Math.max(
+      0,
+      Math.round((contratadas - Number(fila.horas_consumidas)) * 100) / 100,
+    );
+    const baja = contratadas > 0 && restantes <= contratadas * UMBRAL_BOLSA_BAJA;
+
+    if (!baja) {
+      if (fila.ultimo_aviso_bajo) {
+        await supabase
+          .from("bolsa_horas")
+          .update({ ultimo_aviso_bajo: null })
+          .eq("empresa_id", empresaId);
+      }
+      return;
+    }
+    if (fila.ultimo_aviso_bajo) return;
+
+    const [{ data: personas }, { data: empresa }] = await Promise.all([
+      supabase
+        .from("usuarios")
+        .select("id, email, idioma")
+        .eq("empresa_id", empresaId)
+        .eq("role", "cliente"),
+      supabase.from("empresas").select("nombre").eq("id", empresaId).maybeSingle(),
+    ]);
+    const desactivadas = await cuentasDesactivadas((personas ?? []).map((p) => p.id as string));
+    const destinatarios = (personas ?? [])
+      .filter((p) => !desactivadas.has(p.id as string))
+      .map((p) => ({
+        email: p.email as string,
+        locale: p.idioma === "en" ? ("en" as const) : ("es" as const),
+      }));
+    if (destinatarios.length === 0) return;
+
+    const enviado = await avisarBolsaBaja({
+      destinatarios,
+      empresa: empresa?.nombre ?? "",
+      restantes,
+      contratadas,
+    });
+    if (enviado) {
+      await supabase
+        .from("bolsa_horas")
+        .update({ ultimo_aviso_bajo: new Date().toISOString() })
+        .eq("empresa_id", empresaId);
+    }
+  } catch (e) {
+    console.error("[avisarSiBolsaBaja]", e);
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -688,4 +967,20 @@ export async function rechazarPresupuesto(fd: FormData) {
     .eq("estado", "enviado");
   refrescar();
   await avisarPresupuesto(id, "rechazado", perfil.nombre);
+}
+
+/**
+ * Guarda el idioma de la persona con sesión para que los correos le lleguen en él. Los clientes
+ * no tienen política de escritura sobre `usuarios` (así nadie puede cambiarse el rol), por eso
+ * se usa la clave de servicio, y solo sobre la fila de quien tiene la sesión.
+ */
+export async function guardarIdioma(locale: string): Promise<void> {
+  if (locale !== "es" && locale !== "en") return;
+  const perfil = await getPerfil();
+  if (!perfil) return;
+  const { error } = await createAdminClient()
+    .from("usuarios")
+    .update({ idioma: locale })
+    .eq("id", perfil.id);
+  if (error) console.error("[guardarIdioma]", error.message);
 }

@@ -29,6 +29,27 @@
       "when": 1793027902203,
       "tag": "0003_finanzas",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794225147996,
+      "tag": "0004_bolsa_movimientos",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794226541308,
+      "tag": "0005_proyecto_presupuesto",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794233145258,
+      "tag": "0006_usuario_idioma",
+      "breakpoints": true
     }
   ]
 }

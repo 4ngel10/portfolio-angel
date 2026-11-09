@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
+import { guardarIdioma } from "@/lib/portal/actions";
 import { usePT } from "./i18n-provider";
 
 /**
@@ -19,6 +20,7 @@ export function Prefs() {
   function cambiarIdioma() {
     const next = locale === "es" ? "en" : "es";
     setLocale(next); // guarda también la cookie y el idioma de la web pública
+    void guardarIdioma(next); // idioma de los correos (sin sesión no hace nada)
     router.refresh();
   }
 
@@ -27,7 +29,7 @@ export function Prefs() {
       <button
         type="button"
         onClick={cambiarIdioma}
-        className="text-muted rounded-full border border-rule px-2.5 py-1.5 font-mono text-xs transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:text-[var(--fg)] active:scale-[0.97]"
+        className="text-muted border-rule rounded-full border px-2.5 py-1.5 font-mono text-xs transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:text-[var(--fg)] active:scale-[0.97]"
         aria-label={t("common.toggleLanguage")}
       >
         <span className={locale === "es" ? "text-ink font-semibold" : ""}>ES</span>
@@ -41,7 +43,7 @@ export function Prefs() {
         type="button"
         onClick={toggle}
         aria-label={t("common.toggleTheme")}
-        className="flex size-9 items-center justify-center rounded-xl border border-rule transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.97]"
+        className="border-rule flex size-9 items-center justify-center rounded-xl border transition-[color,border-color,background-color,opacity,transform] duration-150 ease-[var(--ease-out)] hover:border-[var(--fg)] active:scale-[0.97]"
       >
         <svg
           width="16"

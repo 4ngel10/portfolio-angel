@@ -18,6 +18,7 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import {
@@ -55,10 +56,15 @@ export const usuarios = pgTable(
     nombre: text("nombre").notNull(),
     email: text("email").notNull(),
     avatarUrl: text("avatar_url"),
+    // Idioma de los correos que se le envían; se actualiza al cambiarlo en el portal.
+    idioma: text("idioma", { enum: ["es", "en"] })
+      .notNull()
+      .default("es"),
   },
   (t) => [
     index("usuarios_empresa_idx").on(t.empresaId),
     check("usuarios_role_check", sql`${t.role} in ('admin', 'cliente')`),
+    check("usuarios_idioma_check", sql`${t.idioma} in ('es', 'en')`),
   ],
 );
 
@@ -74,10 +80,15 @@ export const proyectos = pgTable(
     estado: text("estado", { enum: ["activo", "pausado", "completado"] })
       .notNull()
       .default("activo"),
+    // Presupuesto aceptado del que nace el proyecto. Opcional; un presupuesto solo tiene un proyecto.
+    presupuestoId: uuid("presupuesto_id").references(() => presupuestos.id, {
+      onDelete: "set null",
+    }),
     createdAt: createdAt(),
   },
   (t) => [
     index("proyectos_empresa_idx").on(t.empresaId),
+    uniqueIndex("proyectos_presupuesto_uniq").on(t.presupuestoId),
     check("proyectos_estado_check", sql`${t.estado} in ('activo', 'pausado', 'completado')`),
   ],
 );
@@ -178,12 +189,21 @@ export const bolsaHoras = pgTable(
     empresaId: uuid("empresa_id")
       .notNull()
       .references(() => empresas.id, { onDelete: "cascade" }),
-    horasContratadas: integer("horas_contratadas").notNull(),
-    horasConsumidas: integer("horas_consumidas").notNull().default(0),
+    // Horas con hasta dos decimales (0,25 = un cuarto de hora).
+    horasContratadas: numeric("horas_contratadas", {
+      precision: 7,
+      scale: 2,
+      mode: "number",
+    }).notNull(),
+    horasConsumidas: numeric("horas_consumidas", { precision: 7, scale: 2, mode: "number" })
+      .notNull()
+      .default(0),
     // Precio de la bolsa en euros (pago único, no mensual). Lo ven el admin y el cliente.
     precio: numeric("precio", { precision: 10, scale: 2, mode: "number" }),
     periodoInicio: date("periodo_inicio").notNull(),
     periodoFin: date("periodo_fin").notNull(),
+    // Cuándo se avisó al cliente de que la bolsa está baja (20 % o menos). Se borra al ampliar horas.
+    ultimoAvisoBajo: timestamp("ultimo_aviso_bajo", { withTimezone: true }),
   },
   (t) => [
     index("bolsa_horas_empresa_idx").on(t.empresaId),
@@ -191,6 +211,37 @@ export const bolsaHoras = pgTable(
       "bolsa_horas_no_negativas",
       sql`${t.horasConsumidas} >= 0 and ${t.horasContratadas} >= 0`,
     ),
+  ],
+);
+
+/**
+ * Registro de cada apunte de horas. La suma de `horas` de una bolsa cuadra con
+ * `bolsa_horas.horas_consumidas`: los dos se escriben a la vez en la función registrar_horas().
+ * Negativo = corrección. Los clientes lo leen (solo su empresa) y no escriben.
+ */
+export const bolsaMovimientos = pgTable(
+  "bolsa_movimientos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    empresaId: uuid("empresa_id")
+      .notNull()
+      .references(() => empresas.id, { onDelete: "cascade" }),
+    bolsaId: uuid("bolsa_id")
+      .notNull()
+      .references(() => bolsaHoras.id, { onDelete: "cascade" }),
+    proyectoId: uuid("proyecto_id").references(() => proyectos.id, { onDelete: "set null" }),
+    fecha: date("fecha")
+      .notNull()
+      .default(sql`current_date`),
+    horas: numeric("horas", { precision: 6, scale: 2, mode: "number" }).notNull(),
+    concepto: text("concepto").notNull(),
+    createdBy: uuid("created_by").references(() => usuarios.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("bolsa_movimientos_empresa_fecha_idx").on(t.empresaId, t.fecha),
+    check("bolsa_movimientos_horas_check", sql`${t.horas} <> 0`),
+    check("bolsa_movimientos_concepto_check", sql`char_length(${t.concepto}) between 1 and 200`),
   ],
 );
 
@@ -207,8 +258,16 @@ export const bolsaHistorial = pgTable(
       .references(() => empresas.id, { onDelete: "cascade" }),
     periodoInicio: date("periodo_inicio").notNull(),
     periodoFin: date("periodo_fin").notNull(),
-    horasContratadas: integer("horas_contratadas").notNull(),
-    horasConsumidas: integer("horas_consumidas").notNull(),
+    horasContratadas: numeric("horas_contratadas", {
+      precision: 7,
+      scale: 2,
+      mode: "number",
+    }).notNull(),
+    horasConsumidas: numeric("horas_consumidas", {
+      precision: 7,
+      scale: 2,
+      mode: "number",
+    }).notNull(),
     precio: numeric("precio", { precision: 10, scale: 2, mode: "number" }),
     createdAt: createdAt(),
   },

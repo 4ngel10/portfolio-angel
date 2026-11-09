@@ -1,0 +1,2 @@
+ALTER TABLE "usuarios" ADD COLUMN "idioma" text DEFAULT 'es' NOT NULL;--> statement-breakpoint
+ALTER TABLE "usuarios" ADD CONSTRAINT "usuarios_idioma_check" CHECK ("usuarios"."idioma" in ('es', 'en'));
