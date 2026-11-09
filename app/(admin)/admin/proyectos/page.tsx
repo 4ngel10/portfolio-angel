@@ -3,10 +3,17 @@ import type { Metadata } from "next";
 import { SECTORES } from "@/lib/portal/sectores";
 import { requireAdmin } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
-import { listarEmpresas, listarHitos, listarProyectos, progreso } from "@/lib/portal/queries";
+import {
+  listarEmpresas,
+  listarHitos,
+  listarProyectos,
+  presupuestosSinProyecto,
+  progreso,
+} from "@/lib/portal/queries";
 import { crearProyecto } from "@/lib/portal/actions";
-import { oneOf } from "@/lib/portal/validate";
+import { isUuid, oneOf } from "@/lib/portal/validate";
 import { FiltrosProyectos } from "@/components/portal/filtros-proyectos";
+import { EmpresaPresupuesto } from "@/components/portal/empresa-presupuesto";
 import { ActionForm } from "@/components/portal/action-form";
 import { inputCls, labelCls } from "@/components/portal/styles";
 import { EmptyState, EstadoProyectoBadge, PageHeader, Panel } from "@/components/portal/ui";
@@ -21,14 +28,20 @@ const ESTADOS = ["activo", "pausado", "completado"] as const;
 export default async function ProyectosAdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sector?: string; estado?: string }>;
+  searchParams: Promise<{
+    sector?: string;
+    estado?: string;
+    empresa?: string;
+    presupuesto?: string;
+  }>;
 }) {
   await requireAdmin();
   const { t, fecha } = await getI18n();
-  const [todos, empresas, hitos] = await Promise.all([
+  const [todos, empresas, hitos, libres] = await Promise.all([
     listarProyectos(),
     listarEmpresas(),
     listarHitos(),
+    presupuestosSinProyecto(),
   ]);
   const nombre = Object.fromEntries(empresas.map((e) => [e.id, e.nombre]));
 
@@ -41,6 +54,9 @@ export default async function ProyectosAdminPage({
     (p) => (!sector || sectorDe[p.empresa_id] === sector) && (!estado || p.estado === estado),
   );
   const filtrado = !!sector || !!estado;
+  // Desde "Pendiente de ti" llega con la empresa y el presupuesto ya elegidos.
+  const preEmpresa = isUuid(q.empresa) && nombre[q.empresa] ? q.empresa : "";
+  const prePresupuesto = isUuid(q.presupuesto) ? q.presupuesto : "";
 
   return (
     <>
@@ -109,62 +125,61 @@ export default async function ProyectosAdminPage({
           )}
         </Panel>
 
-        <Panel title={t("admin.newProject")}>
-          <ActionForm
-            action={crearProyecto}
-            submitLabel={t("admin.createProject")}
-            pendingLabel={t("admin.creating")}
-          >
-            <div className="grid gap-3">
-              <div>
-                <label htmlFor="pr-empresa" className={labelCls}>
-                  {t("common.company")}
-                </label>
-                <select
-                  id="pr-empresa"
-                  name="empresa_id"
-                  required
-                  defaultValue=""
-                  className={inputCls}
-                >
-                  <option value="" disabled>
-                    {t("common.chooseCompany")}
-                  </option>
-                  {empresas.map((e) => (
-                    <option key={e.id} value={e.id}>
-                      {e.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="pr-titulo" className={labelCls}>
-                  {t("common.titleLabel")}
-                </label>
-                <input
-                  id="pr-titulo"
-                  name="titulo"
-                  required
-                  minLength={3}
-                  maxLength={120}
-                  className={inputCls}
+        <div id="nuevo" className="scroll-mt-4">
+          <Panel title={t("admin.newProject")}>
+            <ActionForm
+              action={crearProyecto}
+              submitLabel={t("admin.createProject")}
+              pendingLabel={t("admin.creating")}
+            >
+              <div className="grid gap-3">
+                <EmpresaPresupuesto
+                  empresas={empresas.map((e) => ({ id: e.id, nombre: e.nombre }))}
+                  presupuestos={libres.map((p) => ({
+                    id: p.id,
+                    empresa_id: p.empresa_id,
+                    etiqueta: `${p.numero} · ${p.titulo}`,
+                  }))}
+                  defaultEmpresa={preEmpresa}
+                  defaultPresupuesto={prePresupuesto}
+                  textos={{
+                    empresa: t("common.company"),
+                    elegirEmpresa: t("common.chooseCompany"),
+                    presupuesto: t("admin.quoteField"),
+                    sinPresupuesto: t("admin.quoteNone"),
+                    ayuda: t("admin.quoteHint"),
+                    elegirAntes: t("admin.quoteChooseCompany"),
+                  }}
                 />
+                <div>
+                  <label htmlFor="pr-titulo" className={labelCls}>
+                    {t("common.titleLabel")}
+                  </label>
+                  <input
+                    id="pr-titulo"
+                    name="titulo"
+                    required
+                    minLength={3}
+                    maxLength={120}
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="pr-desc" className={labelCls}>
+                    {t("common.description")}
+                  </label>
+                  <textarea
+                    id="pr-desc"
+                    name="descripcion"
+                    rows={3}
+                    maxLength={2000}
+                    className={inputCls}
+                  />
+                </div>
               </div>
-              <div>
-                <label htmlFor="pr-desc" className={labelCls}>
-                  {t("common.description")}
-                </label>
-                <textarea
-                  id="pr-desc"
-                  name="descripcion"
-                  rows={3}
-                  maxLength={2000}
-                  className={inputCls}
-                />
-              </div>
-            </div>
-          </ActionForm>
-        </Panel>
+            </ActionForm>
+          </Panel>
+        </div>
       </div>
     </>
   );

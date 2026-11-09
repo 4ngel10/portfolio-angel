@@ -3,6 +3,7 @@ import { signOut } from "@/lib/portal/actions";
 import { getI18n } from "@/lib/portal/i18n";
 import type { Perfil } from "@/lib/portal/types";
 import { I18nBoundary } from "./i18n-boundary";
+import { MenuNuevo } from "./menu-nuevo";
 import { NavLinks } from "./nav-links";
 import { Prefs } from "./prefs";
 
@@ -24,6 +25,7 @@ export async function Shell({
         { href: "/admin", label: t("nav.overview"), exact: true },
         { href: "/admin/clientes", label: t("nav.clients") },
         { href: "/admin/proyectos", label: t("nav.projects") },
+        { href: "/admin/incidencias", label: t("nav.incidents") },
         { href: "/admin/horas", label: t("nav.hours") },
         { href: "/admin/presupuestos", label: t("nav.quotes") },
         { href: "/admin/finanzas", label: t("nav.finance") },
@@ -54,6 +56,42 @@ export async function Shell({
               <NavLinks items={items} label={t("common.mainNav")} />
             </div>
             <div className="ml-auto flex items-center gap-3 text-sm whitespace-nowrap">
+              {admin ? (
+                <>
+                  <MenuNuevo
+                    etiqueta={t("nav.new")}
+                    items={[
+                      { href: "/admin/presupuestos/nuevo", label: t("nav.newQuote") },
+                      { href: "/admin/clientes?nuevo=1", label: t("nav.newClient") },
+                      { href: "/admin/proyectos#nuevo", label: t("nav.newProject") },
+                      { href: "/admin/finanzas/cobros#nuevo", label: t("nav.newCharge") },
+                      { href: "/admin/finanzas/gastos#nuevo", label: t("nav.newExpense") },
+                    ]}
+                  />
+                  <Link
+                    href="/"
+                    className="text-muted hover:text-ink inline-flex items-center gap-1.5 rounded-lg px-1 py-1 text-sm transition-colors"
+                    aria-label={t("nav.viewSite")}
+                  >
+                    <span className="hidden sm:inline">{t("nav.viewSite")}</span>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </Link>
+                </>
+              ) : null}
               <Prefs />
               <form action={signOut}>
                 <button

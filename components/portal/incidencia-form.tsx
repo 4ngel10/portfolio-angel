@@ -51,7 +51,7 @@ export function IncidenciaForm({
   }
 
   if (proyectos.length === 0) {
-    return <p className="text-sm text-muted">{t("form.noProjects")}</p>;
+    return <p className="text-muted text-sm">{t("form.noProjects")}</p>;
   }
 
   return (
@@ -106,7 +106,12 @@ export function IncidenciaForm({
         <label htmlFor={`inc-prio-${sufijo}`} className={labelCls}>
           {t("form.priority")}
         </label>
-        <select id={`inc-prio-${sufijo}`} name="prioridad" defaultValue="media" className={inputCls}>
+        <select
+          id={`inc-prio-${sufijo}`}
+          name="prioridad"
+          defaultValue="media"
+          className={inputCls}
+        >
           <option value="baja">{t("form.low")}</option>
           <option value="media">{t("form.medium")}</option>
           <option value="alta">{t("form.high")}</option>

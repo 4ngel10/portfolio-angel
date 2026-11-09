@@ -3,145 +3,179 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
 import { createClient } from "@/lib/supabase/server";
-import { listarEmpresas, listarProyectos } from "@/lib/portal/queries";
-import { invitarCliente } from "@/lib/portal/actions";
-import { NuevaEmpresa } from "@/components/portal/nueva-empresa";
-import { ActionForm } from "@/components/portal/action-form";
-import { inputCls, labelCls } from "@/components/portal/styles";
-import { EmptyState, PageHeader, Panel } from "@/components/portal/ui";
+import { listarBolsas, listarEmpresas, listarProyectos } from "@/lib/portal/queries";
+import { cobrosConEstado } from "@/lib/portal/finanzas-queries";
+import { redondear } from "@/lib/portal/presupuestos";
+import { NuevoCliente } from "@/components/portal/nuevo-cliente";
+import { EmptyState, PageHeader, ProgressBar } from "@/components/portal/ui";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getI18n();
   return { title: t("admin.clientsTitle") };
 }
 
-export default async function ClientesPage() {
+export default async function ClientesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ nuevo?: string }>;
+}) {
   await requireAdmin();
-  const { t, fecha } = await getI18n();
+  const { t, fecha, euros, num } = await getI18n();
+  const { nuevo } = await searchParams;
   const supabase = await createClient();
-  const [empresas, proyectos, { data: usuarios }] = await Promise.all([
+  const [empresas, proyectos, bolsas, cobros, { data: usuarios }] = await Promise.all([
     listarEmpresas(),
     listarProyectos(),
+    listarBolsas(),
+    cobrosConEstado(),
     supabase.from("usuarios").select("id, empresa_id").eq("role", "cliente"),
   ]);
 
-  const contar = (arr: { empresa_id: string | null }[] | null | undefined, id: string) =>
-    (arr ?? []).filter((x) => x.empresa_id === id).length;
+  const filas = empresas.map((e) => {
+    const bolsa = bolsas.find((b) => b.empresa_id === e.id);
+    const abiertos = cobros.filter(
+      (c) => c.cobro.empresa_id === e.id && ["pendiente", "parcial", "vencido"].includes(c.estado),
+    );
+    return {
+      empresa: e,
+      personas: (usuarios ?? []).filter((u) => u.empresa_id === e.id).length,
+      activos: proyectos.filter((p) => p.empresa_id === e.id && p.estado === "activo").length,
+      bolsa,
+      restantes: bolsa
+        ? Math.max(0, Math.round((bolsa.horas_contratadas - bolsa.horas_consumidas) * 100) / 100)
+        : 0,
+      pendiente: redondear(abiertos.reduce((s, c) => s + c.pendiente, 0)),
+      vencido: abiertos.some((c) => c.estado === "vencido"),
+    };
+  });
+
+  const horas = (f: (typeof filas)[number]) =>
+    f.bolsa ? (
+      <div className="min-w-[8rem]">
+        <p className="tabular-nums">
+          {t("admin.leftOf", { left: num(f.restantes), total: num(f.bolsa.horas_contratadas) })}
+        </p>
+        <div className="mt-1.5 max-w-[9rem]">
+          <ProgressBar
+            value={f.bolsa.horas_consumidas}
+            max={f.bolsa.horas_contratadas}
+            label={`${t("home.consumedHours")}: ${f.empresa.nombre}`}
+          />
+        </div>
+      </div>
+    ) : (
+      <span className="text-muted">{t("admin.noBankShort")}</span>
+    );
+  const cobro = (f: (typeof filas)[number]) => (
+    <span
+      className={`tabular-nums ${f.vencido ? "font-medium text-[var(--accent)]" : f.pendiente === 0 ? "text-muted" : ""}`}
+    >
+      {euros(f.pendiente)}
+    </span>
+  );
 
   return (
     <>
-      <PageHeader title={t("admin.clientsTitle")} />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <Panel title={t("admin.companies")}>
-          {empresas.length === 0 ? (
-            <EmptyState>{t("admin.noCompanies")}</EmptyState>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="text-muted">
-                  <tr>
-                    <th scope="col" className="py-2 pr-4 font-medium">
-                      {t("admin.colCompany")}
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-medium">
-                      {t("admin.colPeople")}
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-medium">
-                      {t("admin.colProjects")}
-                    </th>
-                    <th scope="col" className="py-2 font-medium">
-                      {t("admin.colSince")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--rule)]">
-                  {empresas.map((e) => (
-                    <tr key={e.id}>
-                      <td className="py-2.5 pr-4">
-                        <Link
-                          href={`/admin/clientes/${e.id}`}
-                          className="hover:text-accent font-medium underline-offset-4 hover:underline"
-                        >
-                          {e.nombre}
-                        </Link>
-                      </td>
-                      <td className="py-2.5 pr-4 tabular-nums">{contar(usuarios, e.id)}</td>
-                      <td className="py-2.5 pr-4 tabular-nums">{contar(proyectos, e.id)}</td>
-                      <td className="text-muted py-2.5">{fecha(e.created_at)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Panel>
+      <PageHeader
+        title={t("admin.clientsTitle")}
+        action={
+          <NuevoCliente
+            empresas={empresas.map((e) => ({ id: e.id, nombre: e.nombre }))}
+            abrirAlCargar={nuevo === "1"}
+          />
+        }
+      />
 
-        <div className="grid content-start gap-6">
-          <Panel title={t("admin.newCompany")}>
-            <NuevaEmpresa />
-          </Panel>
-
-          <Panel title={t("admin.registerPerson")}>
-            <ActionForm
-              action={invitarCliente}
-              submitLabel={t("admin.register")}
-              pendingLabel={t("admin.creating")}
-            >
-              <div className="grid gap-3">
-                <div>
-                  <label htmlFor="cli-empresa" className={labelCls}>
-                    {t("common.company")}
-                  </label>
-                  <select
-                    id="cli-empresa"
-                    name="empresa_id"
-                    required
-                    defaultValue=""
-                    className={inputCls}
+      {filas.length === 0 ? (
+        <EmptyState>{t("admin.noCompanies")}</EmptyState>
+      ) : (
+        <>
+          {/* Escritorio: tabla a todo el ancho. Cada fila entera es el enlace a la ficha. */}
+          <div className="border-rule bg-paper-alt hidden overflow-x-auto rounded-2xl border md:block">
+            <table className="w-full text-left text-sm">
+              <thead className="text-muted border-rule border-b">
+                <tr>
+                  <th scope="col" className="px-5 py-3 font-medium">
+                    {t("admin.colCompany")}
+                  </th>
+                  <th scope="col" className="px-3 py-3 font-medium">
+                    {t("admin.colPeople")}
+                  </th>
+                  <th scope="col" className="px-3 py-3 font-medium">
+                    {t("admin.colActiveProjects")}
+                  </th>
+                  <th scope="col" className="px-3 py-3 font-medium">
+                    {t("admin.colHoursLeft")}
+                  </th>
+                  <th scope="col" className="px-3 py-3 font-medium">
+                    {t("admin.colPendingCollect")}
+                  </th>
+                  <th scope="col" className="px-5 py-3 font-medium">
+                    {t("admin.colSince")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--rule)]">
+                {filas.map((f) => (
+                  <tr
+                    key={f.empresa.id}
+                    className="relative transition-colors duration-150 hover:bg-[var(--chip)] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:-outline-offset-2 has-[a:focus-visible]:outline-[var(--accent)]"
                   >
-                    <option value="" disabled>
-                      {t("common.chooseCompany")}
-                    </option>
-                    {empresas.map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {e.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="cli-nombre" className={labelCls}>
-                    {t("common.name")}
-                  </label>
-                  <input
-                    id="cli-nombre"
-                    name="nombre"
-                    required
-                    maxLength={80}
-                    autoComplete="off"
-                    className={inputCls}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="cli-email" className={labelCls}>
-                    {t("common.email")}
-                  </label>
-                  <input
-                    id="cli-email"
-                    name="email"
-                    type="email"
-                    required
-                    autoComplete="off"
-                    spellCheck={false}
-                    className={inputCls}
-                  />
-                </div>
-              </div>
-            </ActionForm>
-            <p className="text-muted mt-3 text-xs">{t("admin.registerHint")}</p>
-          </Panel>
-        </div>
-      </div>
+                    <td className="px-5 py-3.5">
+                      <Link
+                        href={`/admin/clientes/${f.empresa.id}`}
+                        className="font-medium after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+                      >
+                        {f.empresa.nombre}
+                      </Link>
+                    </td>
+                    <td className="px-3 py-3.5 tabular-nums">{f.personas}</td>
+                    <td className="px-3 py-3.5 tabular-nums">{f.activos}</td>
+                    <td className="px-3 py-3.5">{horas(f)}</td>
+                    <td className="px-3 py-3.5">{cobro(f)}</td>
+                    <td className="text-muted px-5 py-3.5">{fecha(f.empresa.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Móvil: tarjetas apiladas con los mismos datos. */}
+          <ul className="grid gap-3 md:hidden">
+            {filas.map((f) => (
+              <li key={f.empresa.id}>
+                <Link
+                  href={`/admin/clientes/${f.empresa.id}`}
+                  className="border-rule bg-paper-alt block rounded-2xl border p-4 transition-colors hover:border-[var(--fg)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                >
+                  <p className="font-semibold">{f.empresa.nombre}</p>
+                  <p className="text-muted mt-0.5 text-xs">
+                    {t("admin.colSince")} {fecha(f.empresa.created_at)}
+                  </p>
+                  <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                    <div>
+                      <dt className="text-muted text-xs">{t("admin.colPeople")}</dt>
+                      <dd className="tabular-nums">{f.personas}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted text-xs">{t("admin.colActiveProjects")}</dt>
+                      <dd className="tabular-nums">{f.activos}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted text-xs">{t("admin.colHoursLeft")}</dt>
+                      <dd>{horas(f)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted text-xs">{t("admin.colPendingCollect")}</dt>
+                      <dd>{cobro(f)}</dd>
+                    </div>
+                  </dl>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </>
   );
 }
