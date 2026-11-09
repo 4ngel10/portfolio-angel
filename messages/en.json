@@ -117,7 +117,9 @@
     "casesTitle": "Real cases.",
     "projectsTitle": "Real projects.",
     "thisSiteTitle": "This very website",
-    "thisSiteText": "Bilingual, with light and dark mode, and a client area with quotes signed online."
+    "thisSiteText": "Bilingual, with light and dark mode, and a client area with quotes signed online.",
+    "thisSiteCta": "See the homepage",
+    "thisSiteAlt": "Homepage of this website with the headline Systems Administrator and Web Developer and Ángel's photo"
   },
   "portfolio": {
     "title": "Projects.",
@@ -166,7 +168,15 @@
     "next": "Next project",
     "read": "Read",
     "readArticle": "Read the story",
-    "home": "Home"
+    "home": "Home",
+    "cta": {
+      "webTitle": "Need a website like this?",
+      "webText": "I design and build custom websites, with domain, hosting and maintenance included.",
+      "webButton": "See the web development service",
+      "sistemasTitle": "Sound familiar?",
+      "sistemasText": "I look after your company's systems, from backups to the network, so everything just works without you having to think about it.",
+      "sistemasButton": "See the systems service"
+    }
   },
   "contact": {
     "title": "Got a project in mind? Let's talk.",

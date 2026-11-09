@@ -16,7 +16,7 @@ export function ProjectCover({
   priority = false,
   children,
 }: {
-  project: Project;
+  project: Pick<Project, "image" | "imageDark" | "cover" | "tint">;
   alt: string;
   sizes: string;
   className?: string;

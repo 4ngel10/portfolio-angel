@@ -48,6 +48,10 @@ export type Project = {
   ogImage?: string;
   /** Fecha de publicación del artículo, AAAA-MM-DD. */
   date?: string;
+  /** Ficha rápida de la cabecera, 3 datos. */
+  facts?: Record<Locale, { label: string; value: string }[]>;
+  /** Servicio al que lleva la llamada del final del artículo. */
+  service: "web" | "sistemas";
   post: Record<Locale, Post>;
 };
 
@@ -65,6 +69,22 @@ export const PROJECTS: Project[] = [
     },
     ogImage: "/projects/powershell-printer-og.jpg",
     date: "2026-10-17",
+    service: "sistemas",
+    facts: {
+      es: [
+        { label: "Tipo", value: "Proyecto para un cliente" },
+        { label: "Alcance", value: "90 usuarios y 30 a 35 impresoras en varias sedes" },
+        {
+          label: "Resultado",
+          value: "Impresoras listas al iniciar sesión, sin configurarlas a mano",
+        },
+      ],
+      en: [
+        { label: "Type", value: "Client project" },
+        { label: "Scope", value: "90 users and 30 to 35 printers across several sites" },
+        { label: "Result", value: "Printers ready at sign in, with no manual setup" },
+      ],
+    },
     post: {
       es: {
         title: "Automatizar el mapeo de impresoras en RDS con PowerShell y Active Directory",
@@ -189,12 +209,25 @@ export const PROJECTS: Project[] = [
     },
     ogImage: "/projects/flexgrip-og.jpg",
     date: "2026-10-20",
+    service: "web",
+    facts: {
+      es: [
+        { label: "Tipo", value: "Producto propio" },
+        { label: "Qué hice", value: "Diseño, desarrollo, SEO y pagos" },
+        { label: "Estado", value: "Online y vendiendo" },
+      ],
+      en: [
+        { label: "Type", value: "My own product" },
+        { label: "What I did", value: "Design, development, SEO and payments" },
+        { label: "Status", value: "Live and selling" },
+      ],
+    },
     post: {
       es: {
         title: "FlexGrip, landing de producto y venta directa",
         seoTitle: "FlexGrip, landing y venta directa",
         intro:
-          "FlexGrip es una tienda online enfocada en la venta de un kit de entrenamiento completo compuesto por cinco bandas elásticas, un handgrip regulable y una bolsa de transporte. La idea de partida era muy clara: ofrecer una web directa donde quien entra entiende al instante la propuesta de valor y puede hacer el pedido sin distracciones.",
+          "FlexGrip es un producto propio que vendo online, un kit de entrenamiento con cinco bandas elásticas, un handgrip regulable y una bolsa de transporte. La idea de partida era muy clara. Una web directa donde quien entra entiende al instante la propuesta y puede hacer el pedido sin distracciones.",
         sections: [
           {
             heading: "Qué ofrece la web",
@@ -206,8 +239,8 @@ export const PROJECTS: Project[] = [
           {
             heading: "Estrategia SEO y presencia en buscadores",
             blocks: [
-              "Para que el proyecto fuera visible en buscadores desde el primer día, realizamos un estudio previo de palabras clave centrado en intenciones de búsqueda de compra rápida para equipamiento de entrenamiento en casa.",
-              "Optimizamos todas las etiquetas meta, los datos estructurados de producto para mostrar precios y valoraciones en los resultados de Google, y la estructura de encabezados. Además, dimos de alta la propiedad en Google Search Console, enviamos el sitemap generado automáticamente y verificamos la correcta indexación de la página para supervisar el rendimiento y el tráfico orgánico.",
+              "Para que el proyecto fuera visible en buscadores desde el primer día, hice un estudio previo de palabras clave centrado en intenciones de búsqueda de compra rápida para equipamiento de entrenamiento en casa.",
+              "Optimicé todas las etiquetas meta, los datos estructurados de producto para mostrar precios y valoraciones en los resultados de Google, y la estructura de encabezados. Además, di de alta la propiedad en Google Search Console, envié el sitemap generado automáticamente y comprobé la correcta indexación de la página para supervisar el rendimiento y el tráfico orgánico.",
             ],
           },
           {
@@ -223,7 +256,7 @@ export const PROJECTS: Project[] = [
       en: {
         title: "FlexGrip, product landing page and direct sales",
         intro:
-          "FlexGrip is an online store focused on selling a complete training kit made up of five resistance bands, an adjustable hand gripper and a carry bag. The starting idea was very clear: a direct website where whoever lands on it instantly understands the value proposition and can place the order without distractions.",
+          "FlexGrip is my own product, which I sell online, a training kit with five resistance bands, an adjustable hand gripper and a carry bag. The goal was very clear from the start. A straightforward website where visitors instantly get the offer and can order without distractions.",
         sections: [
           {
             heading: "What the site offers",
@@ -235,8 +268,8 @@ export const PROJECTS: Project[] = [
           {
             heading: "SEO strategy and search presence",
             blocks: [
-              "So that the project would be visible in search engines from day one, we carried out a prior keyword study focused on quick-purchase search intent for home training equipment.",
-              "We optimized all the meta tags, the product structured data to show prices and ratings in Google results, and the heading structure. We also registered the property in Google Search Console, submitted the automatically generated sitemap and verified the page was correctly indexed, so we can monitor performance and organic traffic.",
+              "So that the project would be visible in search engines from day one, I did a prior keyword study focused on quick-purchase search intent for home training equipment.",
+              "I optimized all the meta tags, the product structured data to show prices and ratings in Google results, and the heading structure. I also registered the property in Google Search Console, submitted the automatically generated sitemap and checked that the page was correctly indexed, so I can monitor performance and organic traffic.",
             ],
           },
           {
@@ -264,6 +297,19 @@ export const PROJECTS: Project[] = [
     },
     ogImage: "/projects/homelab-og.jpg",
     date: "2026-10-16",
+    service: "sistemas",
+    facts: {
+      es: [
+        { label: "Tipo", value: "Proyecto personal" },
+        { label: "Alcance", value: "Un mini PC con Proxmox y 5 servicios" },
+        { label: "Resultado", value: "Copias diarias en la nube con aviso por Telegram" },
+      ],
+      en: [
+        { label: "Type", value: "Personal project" },
+        { label: "Scope", value: "One mini PC running Proxmox and 5 services" },
+        { label: "Result", value: "Daily cloud backups with a Telegram report" },
+      ],
+    },
     post: {
       es: {
         title: "Un homelab personal sobre Proxmox",
@@ -490,10 +536,23 @@ export const PROJECTS: Project[] = [
     ogImage: "/projects/prompt-vault-og.jpg",
     imageDark: "/projects/prompt-vault-dark.webp",
     date: "2026-10-16",
+    service: "web",
+    facts: {
+      es: [
+        { label: "Tipo", value: "Proyecto propio" },
+        { label: "Qué hice", value: "Diseño, desarrollo y base de datos" },
+        { label: "Estado", value: "Lo uso a diario, código público" },
+      ],
+      en: [
+        { label: "Type", value: "Personal project" },
+        { label: "What I did", value: "Design, development and database" },
+        { label: "Status", value: "In daily use, open source" },
+      ],
+    },
     post: {
       es: {
-        title: "Prompt Vault: mi bóveda personal de prompts",
-        seoTitle: "Prompt Vault: bóveda personal de prompts",
+        title: "Prompt Vault, mi bóveda personal de prompts",
+        seoTitle: "Prompt Vault, bóveda personal de prompts",
         intro:
           "Si usas modelos de IA con cierta frecuencia, acabas con prompts buenos repartidos por todas partes. Unos en notas del móvil. Otros en un documento de Google que abriste una vez. Los mejores, claro, perdidos en algún chat antiguo. Yo me hartaba de perder cinco minutos buscando entre capturas y mensajes cada vez que necesitaba uno. Así que me hice una app para tenerlos todos en un sitio.",
         sections: [
@@ -551,7 +610,7 @@ export const PROJECTS: Project[] = [
         ],
       },
       en: {
-        title: "Prompt Vault: my personal prompt vault",
+        title: "Prompt Vault, my personal prompt vault",
         intro:
           "If you use AI models fairly often, you end up with good prompts scattered everywhere. Some in phone notes. Others in a Google Doc you opened once. The best ones, of course, lost in some old chat. I was tired of spending five minutes digging through screenshots and messages every time I needed one. So I built an app to keep them all in one place.",
         sections: [

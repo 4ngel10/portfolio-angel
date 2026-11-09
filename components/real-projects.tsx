@@ -81,61 +81,60 @@ function ProjectCard({ project }: { project: Project }) {
 
 const SELF_TECH = ["Next.js", "Supabase", "Tailwind CSS"];
 
-/** Card de esta misma web: sin portada, con el icono de desarrollo web, y sin enlace. */
+/** Portada de esta misma web: captura del hero en claro y en oscuro (public/projects/this-site*.webp). */
+const SELF_COVER = {
+  image: "/projects/this-site.webp",
+  imageDark: "/projects/this-site-dark.webp",
+  cover: "",
+  tint: 8,
+};
+
+/** Card de esta misma web: igual que las de proyecto, pero enlaza a la home. */
 function SelfCard() {
   const { t } = useI18n();
   return (
-    <div className={CARD} style={{ background: "var(--bg)" }}>
-      <div
-        className="flex h-52 items-center justify-center"
-        style={{ background: "color-mix(in oklab, var(--accent) 6%, var(--bg-alt))" }}
-        aria-hidden
-      >
-        <div
-          className="border-rule flex h-16 w-16 items-center justify-center rounded-2xl border text-[var(--accent)]"
-          style={{ background: "var(--bg)" }}
-        >
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+    <Link
+      href="/"
+      className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+    >
+      <div className={`${CARD} ${CARD_LINK}`} style={{ background: "var(--bg)" }}>
+        <ProjectCover
+          project={SELF_COVER}
+          alt={t("servicesPage.thisSiteAlt")}
+          sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
+          className="h-52"
+        />
+        <div className="flex flex-1 flex-col p-6">
+          <span
+            className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
+            style={{ color: "var(--accent)" }}
           >
-            <polyline points="16 18 22 12 16 6" />
-            <polyline points="8 6 2 12 8 18" />
-          </svg>
+            {t("portfolio.p2Tag")}
+          </span>
+          <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
+            {t("servicesPage.thisSiteTitle")}
+          </h3>
+          <p className="text-muted mb-4 text-[13px] leading-relaxed">
+            {t("servicesPage.thisSiteText")}
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {SELF_TECH.map((tt) => (
+              <span
+                key={tt}
+                className="rounded px-2 py-0.5 font-mono text-[11px]"
+                style={{ background: "var(--chip)", color: "var(--muted)" }}
+              >
+                {tt}
+              </span>
+            ))}
+          </div>
+          <span className="text-muted mt-auto inline-flex items-center gap-2 self-start pt-5 text-[13px] font-medium transition-colors duration-200 group-hover:text-[var(--accent)]">
+            {t("servicesPage.thisSiteCta")}
+            <Arrow />
+          </span>
         </div>
       </div>
-      <div className="flex flex-1 flex-col p-6">
-        <span
-          className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
-          style={{ color: "var(--accent)" }}
-        >
-          {t("portfolio.p2Tag")}
-        </span>
-        <h3 className="mb-2 text-[17px] leading-snug font-semibold tracking-tight">
-          {t("servicesPage.thisSiteTitle")}
-        </h3>
-        <p className="text-muted mb-4 text-[13px] leading-relaxed">
-          {t("servicesPage.thisSiteText")}
-        </p>
-        <div className="flex flex-wrap gap-1.5">
-          {SELF_TECH.map((tt) => (
-            <span
-              key={tt}
-              className="rounded px-2 py-0.5 font-mono text-[11px]"
-              style={{ background: "var(--chip)", color: "var(--muted)" }}
-            >
-              {tt}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
+    </Link>
   );
 }
 

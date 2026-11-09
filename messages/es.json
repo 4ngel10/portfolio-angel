@@ -117,7 +117,9 @@
     "casesTitle": "Casos reales.",
     "projectsTitle": "Proyectos reales.",
     "thisSiteTitle": "Esta misma web",
-    "thisSiteText": "Bilingüe, con modo claro y oscuro, y un área de clientes con presupuestos que se firman online."
+    "thisSiteText": "Bilingüe, con modo claro y oscuro, y un área de clientes con presupuestos que se firman online.",
+    "thisSiteCta": "Ver la portada",
+    "thisSiteAlt": "Portada de esta web con el titular Administrador de Sistemas y Desarrollador Web y la foto de Ángel"
   },
   "portfolio": {
     "title": "Proyectos.",
@@ -166,7 +168,15 @@
     "next": "Siguiente proyecto",
     "read": "Leer",
     "readArticle": "Leer artículo",
-    "home": "Inicio"
+    "home": "Inicio",
+    "cta": {
+      "webTitle": "¿Necesitas una web así?",
+      "webText": "Diseño y desarrollo webs a medida, con dominio, hosting y mantenimiento incluidos.",
+      "webButton": "Ver el servicio de desarrollo web",
+      "sistemasTitle": "¿Te suena este problema?",
+      "sistemasText": "Me encargo de los sistemas de tu empresa, de las copias de seguridad a la red, para que todo funcione sin que tengas que pensar en ello.",
+      "sistemasButton": "Ver el servicio de sistemas"
+    }
   },
   "contact": {
     "title": "¿Tienes un proyecto en mente? Hablemos.",

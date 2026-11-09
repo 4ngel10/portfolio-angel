@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Reveal } from "./reveal";
 import { ProjectCover } from "./project-cover";
+import { SERVICE_ICONS } from "./service-icons";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { PROJECTS, getProject, type PostBlock, type PostSection } from "@/lib/projects";
 
@@ -169,23 +170,25 @@ export function ReadingProgress() {
 }
 
 /** Título de sección con su número y una línea de acento que se dibuja al aparecer. */
-export function SectionHeading({ n, children }: { n: number; children: React.ReactNode }) {
+export function SectionHeading({ n, children }: { n?: number; children: React.ReactNode }) {
   return (
     <div className="mb-6">
-      <div className="mb-3 flex items-center gap-3">
-        <span className="font-mono text-[12px] font-medium" style={{ color: "var(--accent)" }}>
-          {String(n).padStart(2, "0")}
-        </span>
-        <motion.span
-          className="h-px w-16 origin-left"
-          style={{ background: "var(--accent)" }}
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true, margin: "0px 0px -15% 0px" }}
-          transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-          aria-hidden
-        />
-      </div>
+      {n !== undefined && (
+        <div className="mb-3 flex items-center gap-3">
+          <span className="font-mono text-[12px] font-medium" style={{ color: "var(--accent)" }}>
+            {String(n).padStart(2, "0")}
+          </span>
+          <motion.span
+            className="h-px w-16 origin-left"
+            style={{ background: "var(--accent)" }}
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, margin: "0px 0px -15% 0px" }}
+            transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+            aria-hidden
+          />
+        </div>
+      )}
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] leading-tight font-semibold tracking-[-0.03em]">
         {children}
       </h2>
@@ -222,6 +225,17 @@ export function ProjectArticle({ slug }: { slug: string }) {
           <p className="text-muted mt-6 max-w-2xl text-[19px] leading-relaxed">
             {post.intro ?? t(`portfolio.${project.key}Desc`)}
           </p>
+
+          {project.facts && (
+            <dl className="border-rule mt-8 grid grid-cols-1 gap-x-8 gap-y-5 border-y py-6 md:grid-cols-3">
+              {project.facts[locale].map((f) => (
+                <div key={f.label} className="min-w-0">
+                  <dt className="text-muted font-mono text-[11px]">{f.label}</dt>
+                  <dd className="mt-1.5 text-[15px] leading-snug font-semibold">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
             {project.date && (
@@ -284,18 +298,52 @@ export function ProjectArticle({ slug }: { slug: string }) {
       <article className="mx-auto max-w-2xl px-6 py-20 md:px-8 md:py-28">
         {post.sections.map((section, s) => (
           <Reveal key={s} className="mb-16 last:mb-0">
-            {section.heading && (
-              <SectionHeading n={headingNumber(post.sections, s)}>{section.heading}</SectionHeading>
-            )}
+            {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
             {section.blocks.map((block, i) => (
-              <Block key={i} block={block} dropCap={s === 0 && i === 0} />
+              <Block key={i} block={block} />
             ))}
           </Reveal>
         ))}
       </article>
 
+      <section className="bg-paper-alt border-rule border-t">
+        <div className="mx-auto max-w-4xl px-6 py-16 md:px-8 md:py-20">
+          <Reveal>
+            <div
+              className="border-rule flex flex-col gap-6 rounded-2xl border p-7 md:p-10"
+              style={{ background: "var(--bg)" }}
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)]">
+                {SERVICE_ICONS[project.service === "web" ? "s2" : "s1"]}
+              </div>
+              <h2 className="text-[clamp(1.5rem,3vw,2rem)] leading-tight font-semibold tracking-[-0.03em]">
+                {t(`project.cta.${project.service}Title`)}
+              </h2>
+              <p className="text-muted max-w-[60ch] text-[17px] leading-[1.75]">
+                {t(`project.cta.${project.service}Text`)}
+              </p>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+                <Link
+                  href={`/servicios/${project.service}`}
+                  className="btn-primary group self-start"
+                >
+                  {t(`project.cta.${project.service}Button`)}
+                  <Arrow />
+                </Link>
+                <Link
+                  href="/#contact"
+                  className="text-sm font-medium text-[var(--accent)] underline decoration-1 underline-offset-4 transition-colors hover:text-[var(--fg)]"
+                >
+                  {t("nav.ctaContact")}
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {next !== project && (
-        <section className="bg-paper-alt border-rule border-t">
+        <section className="border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
             <Link href={`/proyectos/${next.slug}`} className="block">
               <div
