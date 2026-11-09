@@ -240,3 +240,27 @@ export function aCsv(filas: Record<string, string | number | null>[], columnas: 
   ];
   return `﻿${lineas.join("\r\n")}\r\n`;
 }
+
+/** Caja de un rango: cobrado (pagos), gastado y resultado. La usan Finanzas y el Resumen. */
+export function resumenCaja(
+  pagos: Pick<Pago, "fecha" | "importe">[],
+  gastos: Pick<Gasto, "fecha" | "importe">[],
+  desde: string,
+  hasta: string,
+) {
+  const dentro = <T extends { fecha: string }>(filas: T[]) =>
+    filas.filter((f) => f.fecha >= desde && f.fecha <= hasta);
+  const cobrado = redondear(dentro(pagos).reduce((s, p) => s + p.importe, 0));
+  const gastado = redondear(dentro(gastos).reduce((s, g) => s + g.importe, 0));
+  return { cobrado, gastado, resultado: redondear(cobrado - gastado) };
+}
+
+/** Días laborables (lunes a viernes) transcurridos entre dos fechas AAAA-MM-DD, sin contar festivos. */
+export function diasLaborables(desde: string, hasta: string): number {
+  let n = 0;
+  for (let f = sumarDias(desde, 1); f <= hasta; f = sumarDias(f, 1)) {
+    const dia = new Date(`${f}T12:00:00Z`).getUTCDay();
+    if (dia !== 0 && dia !== 6) n++;
+  }
+  return n;
+}
