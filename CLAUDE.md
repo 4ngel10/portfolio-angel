@@ -122,6 +122,19 @@ Listado en rejilla de 2 columnas desde `md`, con cards de la misma altura y "Lee
 - Sin números en los H2 ni letra capital, igual que proyectos y páginas legales.
 - La imagen para redes (1200x630, `public/blog/<slug>-og.jpg`) sigue la plantilla de las actuales. Fondo `#0a0f1c` con brillo naranja arriba a la derecha, raya y "BLOG · CATEGORÍA" en JetBrains Mono `#fb923c`, título en Space Grotesk blanco, y pie con "Ángel Fernández." y "Sistemas y desarrollo web". Sin "Palma de Mallorca".
 
+## Portal y admin
+
+Zona privada: `/admin` (solo yo, con TOTP) y `/portal` (clientes). Código en `app/(admin)`, `app/(portal)`, `components/portal/**` y `lib/portal/**`. Esquema en `db/schema.ts`, migraciones con drizzle-kit en `db/migrations/` y políticas RLS y funciones en `db/rls.sql` (repetible). Nunca se ejecuta SQL contra Supabase desde aquí: se da el SQL a Ángel y lo lanza él, primero la migración y después `rls.sql`. Toda acción de admin empieza con `requireAdmin()`. Los textos del portal van en el bloque `portal` de los dos JSON (`getI18n()` en servidor, `usePT()` en cliente).
+
+- **Bolsa de horas**: `bolsa_horas` (horas con dos decimales, `numeric(7,2)`) y `bolsa_movimientos`, un registro por cada apunte (fecha, horas, proyecto opcional, concepto de 1 a 200 caracteres, negativo = corrección). La suma de movimientos cuadra con `horas_consumidas` porque los dos se escriben a la vez en la función de Postgres `registrar_horas()` (SECURITY DEFINER, exige `is_admin()`, bloquea la fila, no deja bajar de 0 ni apuntar a un proyecto de otra empresa). `registrarHoras` en `lib/portal/actions.ts` la llama por RPC. El cliente lee los movimientos de su empresa por RLS y no escribe nunca. La migración 0004 creó un movimiento "Saldo inicial" por cada bolsa con horas consumidas (se guarda en español y se traduce al mostrarlo).
+- **Aviso de bolsa baja**: al dejar la bolsa en el 20 % o menos de lo contratado se envía un solo correo a las personas de la empresa (`avisarBolsaBaja` en `lib/portal/email.ts`). `bolsa_horas.ultimo_aviso_bajo` evita repetirlo; se borra al ampliar las horas contratadas o si un apunte sube la bolsa por encima del 20 %. Si el correo falla, el apunte se guarda igual. Cada correo va en el idioma de la persona: `usuarios.idioma` (`es` por defecto), que se guarda al cambiar el idioma en las preferencias del portal (`guardarIdioma` en `lib/portal/actions.ts`).
+- **Presupuesto y proyecto**: `proyectos.presupuesto_id` (opcional, único, `on delete set null`) enlaza un proyecto con un presupuesto aceptado de su empresa. El Resumen avisa de los aceptados sin proyecto solo si se aceptaron en los últimos 90 días.
+- **Resumen (`/admin`)**: "Pendiente de ti" junta presupuestos enviados sin firmar, aceptados sin proyecto, cobros vencidos, incidencias sin respuesta del admin (más de 2 días laborables) y bolsas al 20 % o menos. La línea "Este mes" usa `resumenCaja()` de `lib/portal/finanzas.ts`, el mismo cálculo que Finanzas.
+- **Clientes**: tabla en `/admin/clientes` y alta en un paso con "Nuevo cliente" (`crearCliente`: empresa nueva o existente y primera persona). La invitación por correo (casilla marcada por defecto, también al añadir personas y con "Reenviar invitación") genera el enlace con `auth.admin.generateLink` (`magiclink`) y lo manda por Resend. El enlace apunta a `/auth/entrar?token_hash=...&type=magiclink`, una página con el botón "Entrar" que no canjea nada al abrirse (los filtros de correo no lo gastan); el botón hace POST a `/auth/callback`, que lo canjea con `verifyOtp` y manda a elegir contraseña o a `/portal`. Las personas desactivadas (`banned_until`) no reciben avisos ni invitaciones (`cuentasDesactivadas()` en `lib/portal/cuentas.ts`).
+- **Vista de cliente** (`/admin/clientes/[id]/vista`): solo lectura y **sin cambiar de sesión**. Son las consultas del admin filtradas por `empresa_id`, pintadas con los componentes del portal (`IncidenciasLista` con `soloLectura`). Lleva una banda fija con la empresa y el botón de volver.
+- **Finanzas**: la gráfica mensual tiene escala mínima de 500 € y líneas de referencia; los meses abreviados llevan siempre 3 letras (`mes3()` en `lib/portal/translate.ts`). `--positive` es el verde del resultado positivo.
+- **Navegación del admin**: botón "Nuevo" con menú (presupuesto, cliente, proyecto, cobro, gasto), enlace "Ver la web" e `/admin/incidencias` con filtros por estado, prioridad y empresa.
+
 ## i18n
 
 Añadir una clave: edita **los dos** JSON (`messages/es.json` y `messages/en.json`) y úsala con `t("ruta.anidada")`. El `t()` cae a la ruta si falta la clave.
@@ -145,7 +158,7 @@ El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (sele
 
 ## Dominio
 
-`SITE_URL` en `lib/site.ts` es la URL pública que usan metadata, `sitemap.xml` y `robots.txt`. Ahora es `https://portfolio-angel-vert.vercel.app`; cuando haya dominio propio se cambia solo ahí (y se añade el dominio en Vercel).
+`SITE_URL` en `lib/site.ts` es la URL pública que usan metadata, `sitemap.xml` y `robots.txt`. Es `https://www.angel-fernandez.es` (con `www`, que es el dominio principal en Vercel). Si cambia, se modifica solo ahí. Los correos (`RESEND_FROM`) salen de `portal@angel-fernandez.es`, así que el dominio tiene que estar verificado en Resend.
 
 ## Qué NO hacer sin consultar
 
