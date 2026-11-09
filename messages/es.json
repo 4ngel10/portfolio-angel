@@ -140,11 +140,18 @@
     "next": "Proyecto siguiente"
   },
   "notFound": {
-    "code": "Error 404",
+    "cmd": "cd /pagina-perdida",
+    "err": "no such file or directory",
     "title": "Esta página no existe.",
-    "lead": "Puede que el enlace esté roto o que la página se haya movido. Desde el inicio llegas a todo lo demás.",
+    "lead": "Puede que el enlace esté roto o que la página se haya movido. Esto es lo que suele buscar la gente.",
     "home": "Volver al inicio",
-    "projects": "Ver proyectos"
+    "quote": "Pedir presupuesto",
+    "links": {
+      "sistemas": { "title": "Sistemas", "text": "Copias, redes, Microsoft 365 y soporte." },
+      "web": { "title": "Desarrollo web", "text": "Webs a medida con dominio y hosting." },
+      "projects": { "title": "Proyectos", "text": "Trabajos reales, explicados." },
+      "blog": { "title": "Blog", "text": "Lo que aplico en mi trabajo." }
+    }
   },
   "blog": {
     "title": "Blog.",

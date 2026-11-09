@@ -140,11 +140,18 @@
     "next": "Next project"
   },
   "notFound": {
-    "code": "Error 404",
+    "cmd": "cd /lost-page",
+    "err": "no such file or directory",
     "title": "This page doesn't exist.",
-    "lead": "The link may be broken or the page may have moved. From the home page you can reach everything else.",
+    "lead": "The link may be broken or the page may have moved. Here's what people usually look for.",
     "home": "Back to home",
-    "projects": "See projects"
+    "quote": "Get a quote",
+    "links": {
+      "sistemas": { "title": "Systems", "text": "Backups, networks, Microsoft 365 and support." },
+      "web": { "title": "Web development", "text": "Custom websites with domain and hosting." },
+      "projects": { "title": "Projects", "text": "Real work, explained." },
+      "blog": { "title": "Blog", "text": "What I apply in my work." }
+    }
   },
   "blog": {
     "title": "Blog.",
