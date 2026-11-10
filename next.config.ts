@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { cspPublica, RUTAS_PRIVADAS } from "./lib/csp";
 
 /** Cabeceras de seguridad para todo el sitio (web pública, portal y admin). */
 const securityHeaders = [
@@ -7,7 +8,10 @@ const securityHeaders = [
   { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()" },
+  // Solo HTTPS durante dos años. Sin preload a propósito.
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
 ];
 
 const nextConfig: NextConfig = {
@@ -18,7 +22,15 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // CSP en modo prueba (solo informa) para la web pública. Las rutas privadas la reciben
+      // de proxy.ts con nonce, así que se excluyen aquí. Ver docs/csp.md.
+      {
+        source: `/((?!(?:${RUTAS_PRIVADAS.join("|")}|api)(?:/|$)).*)`,
+        headers: [{ key: "Content-Security-Policy-Report-Only", value: cspPublica() }],
+      },
+    ];
   },
 };
 

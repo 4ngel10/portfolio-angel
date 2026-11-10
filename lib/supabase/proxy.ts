@@ -4,9 +4,16 @@ import { NextResponse, type NextRequest } from "next/server";
 /**
  * Refresca la sesión de Supabase en cada petición a /portal y /admin y, si no hay
  * sesión, manda al login. El rol (cliente o admin) se comprueba en los layouts.
+ * `cabecerasExtra` se añaden a la petición que verá la página (nonce y CSP, ver proxy.ts).
  */
-export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
+export async function updateSession(request: NextRequest, cabecerasExtra: Record<string, string> = {}) {
+  // Se construye tras cualquier cambio de cookies para que la página vea la sesión renovada.
+  const siguiente = () => {
+    const headers = new Headers(request.headers);
+    for (const [k, v] of Object.entries(cabecerasExtra)) headers.set(k, v);
+    return NextResponse.next({ request: { headers } });
+  };
+  let response = siguiente();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,7 +25,7 @@ export async function updateSession(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
+          response = siguiente();
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options),
           );

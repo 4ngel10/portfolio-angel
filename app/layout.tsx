@@ -6,6 +6,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { MotionProvider } from "@/lib/motion";
 import { SkipLink } from "@/components/skip-link";
 import { SITE_URL } from "@/lib/site";
+import { THEME_SCRIPT } from "@/lib/theme-script";
 import { HOME_DESCRIPTION, HOME_OG_IMAGE, HOME_TITLE } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
@@ -59,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             color cambiado, duplicaba la etiqueta. lib/theme.tsx la actualiza al cambiar tema. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var d=document.documentElement,dark=true;try{dark=localStorage.getItem('theme')!=='light';}catch(e){}if(dark)d.classList.add('dark');var m=document.createElement('meta');m.name='theme-color';m.content=dark?'#0a0f1c':'#fbfaf7';document.head.appendChild(m);})();`,
+            __html: THEME_SCRIPT,
           }}
         />
         {/* Sin JS, los bloques con entrada al hacer scroll (components/reveal.tsx) se quedarían
