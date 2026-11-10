@@ -4,33 +4,14 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getI18n } from "@/lib/portal/i18n";
 import { isUuid } from "@/lib/portal/validate";
-
-const MAX_BYTES = 50 * 1024 * 1024; // límite por archivo del plan gratuito de Supabase
-
-/** Tipos admitidos. Todo lo demás se rechaza: el archivo lo abrirá otra persona. */
-const TIPOS_PERMITIDOS = new Set([
-  "application/pdf",
-  "application/zip",
-  "application/json",
-  "text/plain",
-  "text/csv",
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-  "image/gif",
-  "image/heic",
-  "image/heif",
-  "image/tiff",
-  "video/mp4",
-  "video/quicktime",
-  "video/webm",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-powerpoint",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-]);
+import { filasEnLaUltimaHora } from "@/lib/portal/rate-limit";
+import {
+  LIMITE_SUBIDAS_HORA,
+  MAX_ARCHIVOS_EMPRESA,
+  MAX_BYTES_ARCHIVO,
+  MAX_BYTES_EMPRESA,
+  TIPOS_PERMITIDOS,
+} from "@/lib/portal/storage-limits";
 
 const limpiarNombre = (n: string) =>
   n
@@ -60,7 +41,7 @@ export async function POST(request: Request) {
   if (!TIPOS_PERMITIDOS.has(contentType)) {
     return NextResponse.json({ error: t("api.typeNotAllowed") }, { status: 415 });
   }
-  if (!Number.isFinite(size) || size <= 0 || size > MAX_BYTES) {
+  if (!Number.isFinite(size) || size <= 0 || size > MAX_BYTES_ARCHIVO) {
     return NextResponse.json({ error: t("api.tooLarge") }, { status: 413 });
   }
 
@@ -77,6 +58,42 @@ export async function POST(request: Request) {
     .eq("id", proyectoId)
     .maybeSingle();
   if (!proyecto) return NextResponse.json({ error: t("api.projectNotFound") }, { status: 404 });
+
+  // El admin sube sin límite por hora ni tope de empresa.
+  const { data: perfil } = await supabase
+    .from("usuarios")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+  const esAdmin = perfil?.role === "admin";
+
+  // Límite por persona y hora (las subidas ya registradas) y tope de la empresa.
+  if (!esAdmin) {
+    const subidasRecientes = await filasEnLaUltimaHora(supabase, "archivos", {
+      columna: "subido_por",
+      valor: user.id,
+    });
+    if (subidasRecientes >= LIMITE_SUBIDAS_HORA) {
+      return NextResponse.json({ error: t("api.rateLimited") }, { status: 429 });
+    }
+
+    const { data: existentes, error: errorCuota } = await supabase
+      .from("archivos")
+      .select("tamanio_bytes")
+      .eq("empresa_id", proyecto.empresa_id)
+      .limit(MAX_ARCHIVOS_EMPRESA + 1);
+    if (errorCuota) {
+      console.error("[presign] cuota", errorCuota.message);
+      return NextResponse.json({ error: t("api.prepFail") }, { status: 500 });
+    }
+    const usados = (existentes ?? []).reduce((acc, f) => acc + Number(f.tamanio_bytes ?? 0), 0);
+    if (
+      (existentes?.length ?? 0) >= MAX_ARCHIVOS_EMPRESA ||
+      usados + size > MAX_BYTES_EMPRESA
+    ) {
+      return NextResponse.json({ error: t("api.quotaExceeded") }, { status: 413 });
+    }
+  }
 
   const path = `${proyecto.empresa_id}/${proyecto.id}/${randomUUID()}-${limpiarNombre(fileName)}`;
   const { data, error } = await createAdminClient()

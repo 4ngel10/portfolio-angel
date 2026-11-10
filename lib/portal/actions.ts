@@ -11,6 +11,8 @@ import { SITE_URL } from "@/lib/site";
 import { getI18n } from "./i18n";
 import { cuentasDesactivadas } from "./cuentas";
 import { SECTORES } from "./sectores";
+import { filasEnLaUltimaHora } from "./rate-limit";
+import { LIMITE_MENSAJES_HORA } from "./storage-limits";
 import { FECHA, isEmail, isUuid, oneOf, slugify, text, type FormState } from "./validate";
 
 export async function signOut() {
@@ -426,6 +428,13 @@ export async function enviarMensaje(_: FormState, fd: FormData): Promise<FormSta
   if (!contenido) return await fallo("writeMessage");
 
   const supabase = await createClient();
+  if (perfil.role === "cliente") {
+    const recientes = await filasEnLaUltimaHora(supabase, "mensajes_incidencia", {
+      columna: "autor_id",
+      valor: perfil.id,
+    });
+    if (recientes >= LIMITE_MENSAJES_HORA) return await fallo("rateLimited");
+  }
   const { error } = await supabase
     .from("mensajes_incidencia")
     .insert({ incidencia_id: incidenciaId, autor_id: perfil.id, contenido });

@@ -702,6 +702,7 @@
       "invalidIncident": "Invalid issue.",
       "writeMessage": "Write a message.",
       "messageFail": "The message could not be sent.",
+      "rateLimited": "You have sent too many messages in a row. Please try again in a while.",
       "hoursInteger": "Enter a valid number of hours, with up to two decimals.",
       "bankFail": "The hour bank could not be saved.",
       "invalidCompany": "Invalid company.",
@@ -800,7 +801,9 @@
       "describe": "Describe what is happening.",
       "onlyClients": "Only clients can open issues.",
       "incidentFail": "The issue could not be created.",
-      "receiptTooLarge": "The receipt is over 10 MB."
+      "receiptTooLarge": "The receipt is over 10 MB.",
+      "rateLimited": "You have made too many requests in a row. Please try again in a while.",
+      "quotaExceeded": "Your company has reached its storage allowance (500 MB or 200 files). Contact me to increase it."
     },
     "sectors": {
       "hosteleria": "Hospitality",

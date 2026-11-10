@@ -702,6 +702,7 @@
       "invalidIncident": "Incidencia no válida.",
       "writeMessage": "Escribe un mensaje.",
       "messageFail": "No se pudo enviar el mensaje.",
+      "rateLimited": "Has enviado demasiados mensajes seguidos. Inténtalo de nuevo dentro de un rato.",
       "hoursInteger": "Indica un número de horas válido, con hasta dos decimales.",
       "bankFail": "No se pudo guardar la bolsa.",
       "invalidCompany": "Empresa no válida.",
@@ -800,7 +801,9 @@
       "describe": "Describe qué ocurre.",
       "onlyClients": "Solo los clientes abren incidencias.",
       "incidentFail": "No se pudo crear la incidencia.",
-      "receiptTooLarge": "El justificante supera los 10 MB."
+      "receiptTooLarge": "El justificante supera los 10 MB.",
+      "rateLimited": "Has hecho demasiadas peticiones seguidas. Inténtalo de nuevo dentro de un rato.",
+      "quotaExceeded": "Tu empresa ha alcanzado el espacio disponible (500 MB o 200 archivos). Contacta conmigo para ampliarlo."
     },
     "sectors": {
       "hosteleria": "Hostelería",

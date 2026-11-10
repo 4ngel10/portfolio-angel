@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { avisarNuevaIncidencia } from "@/lib/portal/email";
 import { getI18n } from "@/lib/portal/i18n";
 import { isUuid, oneOf } from "@/lib/portal/validate";
+import { filasEnLaUltimaHora } from "@/lib/portal/rate-limit";
+import { LIMITE_INCIDENCIAS_HORA } from "@/lib/portal/storage-limits";
 import type { Perfil } from "@/lib/portal/types";
 
 /** Un cliente abre una incidencia en uno de sus proyectos y el admin recibe un correo. */
@@ -32,6 +34,15 @@ export async function POST(request: Request) {
     .maybeSingle<Pick<Perfil, "id" | "empresa_id" | "role">>();
   if (perfil?.role !== "cliente" || !perfil.empresa_id) {
     return NextResponse.json({ error: t("api.onlyClients") }, { status: 403 });
+  }
+
+  // Límite por hora. La tabla no guarda quién la abre, así que cuenta por empresa.
+  const recientes = await filasEnLaUltimaHora(supabase, "incidencias", {
+    columna: "empresa_id",
+    valor: perfil.empresa_id,
+  });
+  if (recientes >= LIMITE_INCIDENCIAS_HORA) {
+    return NextResponse.json({ error: t("api.rateLimited") }, { status: 429 });
   }
 
   // RLS solo devuelve el proyecto si es de su empresa.
