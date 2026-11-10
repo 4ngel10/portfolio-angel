@@ -43,7 +43,12 @@ const PERSON_NAME = "Ángel Fernández Garriga";
 /** Referencia al Person de la home, para author y provider en el resto de páginas. */
 const personRef = { "@type": "Person", "@id": PERSON_ID, name: PERSON_NAME, url: SITE_URL };
 
-type Crumb = { name: string; path: string };
+/** Fecha AAAA-MM-DD a ISO 8601 con hora y zona horaria, como pide Google en datePublished/dateModified. */
+function isoDate(date: string) {
+  return `${date}T09:00:00+01:00`;
+}
+
+type Crumb ={ name: string; path: string };
 
 function breadcrumb(items: Crumb[]) {
   return {
@@ -182,7 +187,7 @@ export function projectJsonLd(project: Project) {
       url: `${SITE_URL}${path}`,
       mainEntityOfPage: `${SITE_URL}${path}`,
       inLanguage: "es",
-      ...(project.date && { datePublished: project.date, dateModified: project.date }),
+      ...(project.date && { datePublished: isoDate(project.date), dateModified: isoDate(project.date) }),
       ...(project.ogImage && { image: `${SITE_URL}${project.ogImage}` }),
       author: personRef,
       publisher: personRef,
@@ -214,7 +219,7 @@ export function blogIndexJsonLd() {
         "@type": "BlogPosting",
         headline: p.post.es.title,
         url: `${SITE_URL}/blog/${p.slug}`,
-        datePublished: p.date,
+        datePublished: isoDate(p.date),
       })),
     },
     breadcrumb([
@@ -237,8 +242,8 @@ export function blogPostJsonLd(post: BlogPost) {
       url: `${SITE_URL}${path}`,
       mainEntityOfPage: `${SITE_URL}${path}`,
       inLanguage: "es",
-      datePublished: post.date,
-      dateModified: post.date,
+      datePublished: isoDate(post.date),
+      dateModified: isoDate(post.date),
       image: `${SITE_URL}${post.ogImage}`,
       author: personRef,
       publisher: personRef,
