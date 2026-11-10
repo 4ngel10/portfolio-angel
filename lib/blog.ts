@@ -254,7 +254,7 @@ export const BLOG_POSTS: BlogPost[] = [
           {
             heading: "Cómo funciona una VPN en la práctica",
             blocks: [
-              "Una VPN crea un túnel cifrado entre el dispositivo de la persona (portátil, móvil o tablet) y la red de la oficina. Mientras está conectada, el equipo se comporta como si estuviera dentro: ve el servidor, las carpetas compartidas, las impresoras y puede abrir el escritorio remoto.",
+              "Una VPN crea un túnel cifrado entre el dispositivo de la persona (portátil, móvil o tablet) y la red de la oficina. Mientras está conectada, el equipo se comporta como si estuviera dentro: ve el servidor, las carpetas compartidas, las impresoras y puede abrir el escritorio remoto. Si ese escritorio es un servidor RDS, en el proyecto de [mapeo de impresoras en RDS con PowerShell](/proyectos/mapeo-impresoras-rds) cuento cómo dejo las impresoras listas al iniciar sesión.",
               "Lo importante es lo que no pasa: los servicios internos ya no se publican en Internet. Solo queda abierto un puerto, el de la propia VPN, y no responde a quien no lleva una clave válida.",
               "En mi homelab uso WireGuard, una VPN moderna, rápida y muy ligera. Cuando estoy fuera me conecto y el móvil se comporta como si estuviera en casa. Lo cuento en el proyecto [Homelab personal sobre Proxmox](/proyectos/homelab-proxmox). Es el mismo principio que aplicaría a una oficina pequeña.",
               {
@@ -326,7 +326,7 @@ export const BLOG_POSTS: BlogPost[] = [
           {
             heading: "How a VPN works in practice",
             blocks: [
-              "A VPN creates an encrypted tunnel between the person's device (laptop, phone or tablet) and the office network. While it is connected, the device behaves as if it were inside: it sees the server, shared folders and printers, and it can open remote desktop.",
+              "A VPN creates an encrypted tunnel between the person's device (laptop, phone or tablet) and the office network. While it is connected, the device behaves as if it were inside: it sees the server, shared folders and printers, and it can open remote desktop. If that desktop is an RDS server, in the project on [printer mapping on RDS with PowerShell](/proyectos/mapeo-impresoras-rds) I describe how I leave the printers ready at sign in.",
               "What matters is what no longer happens: internal services are not published on the Internet. Only one port stays open, the VPN's own, and it does not answer anyone without a valid key.",
               "In my homelab I use WireGuard, a modern, fast and very light VPN. When I am away I connect and my phone behaves as if it were at home. I describe it in the project [Personal homelab on Proxmox](/proyectos/homelab-proxmox). It is the same principle I would apply to a small office.",
               {
@@ -458,7 +458,7 @@ export const BLOG_POSTS: BlogPost[] = [
                   "Un blog abandonado con una sola entrada de hace dos años.",
                 ],
               },
-              "Una web pequeña y clara, bien mantenida, rinde más que una grande y confusa.",
+              "Una web pequeña y clara, bien mantenida, rinde más que una grande y confusa. Qué revisar para mantenerla al día lo cuento en [el mantenimiento de la web de una pyme](/blog/mantenimiento-web-pyme).",
               "Si quieres que revise la web de tu negocio o crear una desde cero, puedes ver cómo trabajo en [desarrollo web](/servicios/web) o [contarme tu caso](/#contact). Un ejemplo de tienda online sencilla y directa es [FlexGrip](/proyectos/flexgrip).",
             ],
           },
@@ -543,7 +543,7 @@ export const BLOG_POSTS: BlogPost[] = [
                   "An abandoned blog with a single post from two years ago.",
                 ],
               },
-              "A small, clear, well-maintained site performs better than a big, confusing one.",
+              "A small, clear, well-maintained site performs better than a big, confusing one. What to check to keep it up to date is covered in [maintaining a small business website](/blog/mantenimiento-web-pyme).",
               "If you want me to review your business website or build one from scratch, you can see how I work in [web development](/servicios/web) or [tell me about your case](/#contact). A simple, direct online shop example is [FlexGrip](/proyectos/flexgrip).",
             ],
           },
@@ -585,7 +585,7 @@ export const BLOG_POSTS: BlogPost[] = [
             blocks: [
               "El riesgo no es solo que un disco se rompa. El peligro más serio hoy es el ransomware: cifra los archivos y pide un rescate. Y si la copia está en una unidad conectada al servidor, también la cifra.",
               "Luego está el error humano, que es lo más habitual. Alguien borra una carpeta, sobrescribe un Excel o vacía la papelera sin mirar. Con una buena política de copias, eso se arregla en minutos.",
-              "Y hay que pensar en lo que cuesta un día parado. Sin correo, sin facturación y sin acceso a los archivos, una oficina no trabaja. La copia de seguridad es lo que convierte ese día en una hora.",
+              "Y hay que pensar en lo que cuesta un día parado. Sin correo, sin facturación y sin acceso a los archivos, una oficina no trabaja. La copia de seguridad es lo que convierte ese día en una hora. Lo mismo vale para el acceso remoto. Si falla el equipo de la [VPN de la oficina](/blog/vpn-pyme-acceso-remoto), nadie entra desde casa hasta que se repone, y con su configuración copiada eso lleva minutos.",
               "Si tu empresa está en Mallorca o en cualquier otra isla, hay un matiz más: la copia externa conviene que esté fuera de la isla. Una tormenta o un corte eléctrico grande afectan a toda la zona a la vez.",
             ],
           },
@@ -667,7 +667,7 @@ export const BLOG_POSTS: BlogPost[] = [
             blocks: [
               "The risk is not just a disk dying. The most serious threat today is ransomware: it encrypts your files and demands a ransom. And if the backup sits on a drive connected to the server, it gets encrypted too.",
               "Then there is human error, the most common one. Someone deletes a folder, overwrites a spreadsheet or empties the recycle bin without looking. With a good backup policy, that is fixed in minutes.",
-              "And think about what a day of downtime costs. No email, no invoicing and no access to files means the office simply stops. A backup is what turns that day into an hour.",
+              "And think about what a day of downtime costs. No email, no invoicing and no access to files means the office simply stops. A backup is what turns that day into an hour. The same goes for remote access. If the machine running the [office VPN](/blog/vpn-pyme-acceso-remoto) fails, nobody can get in from home until it is replaced, and with its configuration backed up that takes minutes.",
               "If your company is in Mallorca or on any other island, there is one more detail: the off-site copy should ideally be off the island. A storm or a major power cut hits the whole area at once.",
             ],
           },
@@ -782,9 +782,9 @@ export const BLOG_POSTS: BlogPost[] = [
           {
             heading: "Cuándo no lo recomiendo",
             blocks: [
-              "Next.js no es para todo. Si quieres editar cada día textos, imágenes y páginas por tu cuenta, con un editor visual, WordPress te da más autonomía desde el primer día.",
+              "Next.js no es para todo. Si quieres editar cada día textos, imágenes y páginas por tu cuenta, con un editor visual, WordPress te da más autonomía desde el primer día. Y para una aplicación con usuarios y base de datos, como [Prompt Vault](/proyectos/prompt-vault), que construí con React y Vite, el planteamiento es distinto.",
               "Lo mismo con un blog grande con varias personas publicando. Ahí la solución suele ser un punto intermedio: Next.js para la web y un gestor de contenidos aparte (un CMS headless) para que el equipo escriba sin tocar código.",
-              "Para una web corporativa, un portfolio o una landing page que cambian de vez en cuando, Next.js gana en casi todo.",
+              "Para una web corporativa, un portfolio o una landing page que cambian de vez en cuando, Next.js gana en casi todo. Qué debe llevar esa web para conseguir clientes lo cuento en [la web de una pyme que consigue clientes](/blog/web-pyme-que-vende).",
             ],
           },
           {
@@ -855,9 +855,9 @@ export const BLOG_POSTS: BlogPost[] = [
           {
             heading: "When I do not recommend it",
             blocks: [
-              "Next.js is not for everything. If you want to edit text, images and pages yourself every day with a visual editor, WordPress gives you more independence from day one.",
+              "Next.js is not for everything. If you want to edit text, images and pages yourself every day with a visual editor, WordPress gives you more independence from day one. And for an application with users and a database, like [Prompt Vault](/proyectos/prompt-vault), which I built with React and Vite, the approach is different.",
               "The same goes for a large blog with several people publishing. There the answer is usually a middle ground: Next.js for the website and a separate content manager (a headless CMS) so the team can write without touching code.",
-              "For a company website, a portfolio or a landing page that changes now and then, Next.js wins on almost everything.",
+              "For a company website, a portfolio or a landing page that changes now and then, Next.js wins on almost everything. What that site needs to win customers is covered in [the small business website that wins customers](/blog/web-pyme-que-vende).",
             ],
           },
           {

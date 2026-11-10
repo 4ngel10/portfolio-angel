@@ -135,7 +135,7 @@ export const PROJECTS: Project[] = [
             heading: "Lo que me llevo",
             blocks: [
               "Este proyecto me enseñó que la mejor automatización es la que el usuario ni nota. Nadie te da las gracias porque sus impresoras aparezcan solas, pero sí que dejan de llamarte para que se las configures. Y eso, al final, es el objetivo.",
-              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, te animo a explorar este enfoque. La inversión inicial de montar el script merece la pena con creces.",
+              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, te animo a explorar este enfoque. La inversión inicial de montar el script merece la pena con creces. Este tipo de automatizaciones forman parte de mi servicio de [administración de sistemas](/servicios/sistemas).",
             ],
           },
         ],
@@ -188,7 +188,7 @@ export const PROJECTS: Project[] = [
             heading: "What I take away",
             blocks: [
               "This project taught me that the best automation is the one the user does not even notice. Nobody thanks you because their printers show up on their own, but they do stop calling you to set them up. And in the end, that is the goal.",
-              "If you work in an environment with lots of printers and lots of users, I encourage you to explore this approach. The initial investment in building the script pays off many times over.",
+              "If you work in an environment with lots of printers and lots of users, I encourage you to explore this approach. The initial investment in building the script pays off many times over. This kind of automation is part of my [systems administration](/servicios/sistemas) service.",
             ],
           },
         ],
@@ -232,7 +232,7 @@ export const PROJECTS: Project[] = [
           {
             heading: "Qué ofrece la web",
             blocks: [
-              "El diseño pone el producto en el centro con un titular directo, el precio destacado, un botón de compra visible y las garantías principales a la vista, como el envío exprés, 30 días de devolución y 3 años de garantía.",
+              "El diseño pone el producto en el centro con un titular directo, el precio destacado, un botón de compra visible y las garantías principales a la vista, como el envío exprés, 30 días de devolución y 3 años de garantía. Es el enfoque que explico en [qué debe tener la web de una pyme para conseguir clientes](/blog/web-pyme-que-vende).",
               "A lo largo de la página se detalla la resistencia de cada banda elástica, el funcionamiento del handgrip regulable, una tabla comparativa con otras alternativas del mercado, opiniones de clientes y una sección de preguntas frecuentes para resolver dudas antes del pago.",
             ],
           },
@@ -261,7 +261,7 @@ export const PROJECTS: Project[] = [
           {
             heading: "What the site offers",
             blocks: [
-              "The design puts the product at the center, with a direct headline, a highlighted price, a visible buy button and the main guarantees in plain sight, such as express shipping, 30-day returns and a 3-year warranty.",
+              "The design puts the product at the center, with a direct headline, a highlighted price, a visible buy button and the main guarantees in plain sight, such as express shipping, 30-day returns and a 3-year warranty. It is the approach I explain in [what a small business website needs to win customers](/blog/web-pyme-que-vende).",
               "Throughout the page it details the resistance of each band, how the adjustable gripper works, a comparison table against other options on the market, customer reviews and an FAQ section to settle doubts before payment.",
             ],
           },
@@ -342,7 +342,7 @@ export const PROJECTS: Project[] = [
               "Un contenedor LXC que hace de servidor DNS para toda la casa. Cuando un dispositivo pide un dominio de publicidad o rastreo, Pi-hole no lo resuelve y el anuncio nunca llega. Funciona en el móvil, la tele y el portátil sin instalar nada en ellos.",
               "Uso las listas HaGeZi Pro y OISD, y por encima Quad9 con DNSSEC como DNS de salida. La diferencia se nota desde el primer día.",
               { h3: "WireGuard, mi túnel a casa" },
-              "Otro contenedor, esta vez con WireGuard, una VPN moderna, rápida y muy ligera. Cuando estoy fuera me conecto y el móvil se comporta como si estuviera dentro de casa. Muy útil para trabajar desde el ordenador mediante escritorio remoto desde un móvil o una tablet.",
+              "Otro contenedor, esta vez con WireGuard, una VPN moderna, rápida y muy ligera. Cuando estoy fuera me conecto y el móvil se comporta como si estuviera dentro de casa. Muy útil para trabajar desde el ordenador mediante escritorio remoto desde un móvil o una tablet. Cómo lo plantearía en una oficina lo cuento en [VPN para pymes](/blog/vpn-pyme-acceso-remoto).",
               { h3: "Nginx Proxy Manager, nombres en vez de números" },
               "Con tantos servicios llegué a un punto en el que tenía que recordar una dirección y un puerto para cada uno. Un lío. Así que monté Nginx Proxy Manager, un proxy inverso con una interfaz web muy cómoda.",
               "Funciona así. En Pi-hole creo registros DNS locales para cada servicio, todos apuntando al proxy. Cuando escribo el nombre en el navegador, Pi-hole lo resuelve hacia Nginx Proxy Manager, y este mira qué nombre le he pedido y me lleva al servicio correcto. Proxmox, Pi-hole y compañía tienen ahora su propio nombre fácil de recordar.",
@@ -354,7 +354,7 @@ export const PROJECTS: Project[] = [
           {
             heading: "Copias de seguridad dobles",
             blocks: [
-              "Todo lo anterior no vale nada si un día el SSD dice basta. Por eso tengo dos sistemas de copias que no dependen el uno del otro.",
+              "Todo lo anterior no vale nada si un día el SSD dice basta. Por eso tengo dos sistemas de copias que no dependen el uno del otro, una versión a pequeña escala de la [regla de backup 3-2-1](/blog/backup-3-2-1).",
               { h3: "Primera capa: Proxmox copia las máquinas enteras" },
               "Cada noche, Proxmox lanza VZDump y hace una copia completa de cada máquina virtual y cada contenedor. Salen archivos comprimidos con zstd, que ocupan bastante menos. En el propio servidor guardo las dos últimas copias de cada uno.",
               "De madrugada entra en juego el contenedor de Rclone. Tiene montada la carpeta de copias del anfitrión y la sube a Google Drive.",
@@ -446,7 +446,7 @@ export const PROJECTS: Project[] = [
               "An LXC container that acts as the DNS server for the whole house. When a device asks for an advertising or tracking domain, Pi-hole does not resolve it and the ad never arrives. It works on the phone, the TV and the laptop without installing anything on them.",
               "I use the HaGeZi Pro and OISD lists, with Quad9 and DNSSEC as the upstream DNS. You notice the difference from day one.",
               { h3: "WireGuard, my tunnel home" },
-              "Another container, this time with WireGuard, a modern, fast and very light VPN. When I am away I connect and my phone behaves as if it were at home. Very handy for working on my computer over remote desktop from a phone or a tablet.",
+              "Another container, this time with WireGuard, a modern, fast and very light VPN. When I am away I connect and my phone behaves as if it were at home. Very handy for working on my computer over remote desktop from a phone or a tablet. How I would set it up in an office is covered in [VPN for small businesses](/blog/vpn-pyme-acceso-remoto).",
               { h3: "Nginx Proxy Manager, names instead of numbers" },
               "With so many services I reached the point of having to remember an address and a port for each one. A mess. So I set up Nginx Proxy Manager, a reverse proxy with a very comfortable web interface.",
               "Here is how it works. In Pi-hole I create local DNS records for each service, all pointing to the proxy. When I type a name in the browser, Pi-hole resolves it to Nginx Proxy Manager, which checks the name I asked for and sends me to the right service. Proxmox, Pi-hole and friends now each have an easy name to remember.",
@@ -458,7 +458,7 @@ export const PROJECTS: Project[] = [
           {
             heading: "Double backups",
             blocks: [
-              "None of the above is worth anything if the SSD gives up one day. That is why I have two backup systems that do not depend on each other.",
+              "None of the above is worth anything if the SSD gives up one day. That is why I have two backup systems that do not depend on each other, a small-scale version of the [3-2-1 backup rule](/blog/backup-3-2-1).",
               { h3: "First layer: Proxmox backs up whole machines" },
               "Every night, Proxmox runs VZDump and makes a full backup of every virtual machine and container. The output is compressed with zstd, so it takes up much less space. On the server itself I keep the last two backups of each.",
               "In the early hours the Rclone container steps in. It has the host's backup folder mounted and uploads it to Google Drive.",

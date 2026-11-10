@@ -16,7 +16,10 @@ export function BlogArticle({ slug }: { slug: string }) {
   const content = post.post[locale];
 
   const idx = BLOG_POSTS.indexOf(post);
-  const next = BLOG_POSTS[(idx + 1) % BLOG_POSTS.length];
+  // Siguiente: otro artículo de la misma categoría (el que sigue en la lista, dando la vuelta)
+  // y, si no hay ninguno, el siguiente de la lista.
+  const ordered = [...BLOG_POSTS.slice(idx + 1), ...BLOG_POSTS.slice(0, idx)];
+  const next = ordered.find((p) => p.category === post.category) ?? ordered[0] ?? post;
 
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
