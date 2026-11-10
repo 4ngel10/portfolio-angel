@@ -265,3 +265,50 @@ end $$;
 
 revoke all on function public.registrar_horas(uuid, date, numeric, uuid, text) from public, anon;
 grant execute on function public.registrar_horas(uuid, date, numeric, uuid, text) to authenticated;
+
+-- ---------------------------------------------------------------------
+-- 10. Blog: blog_posts, blog_post_versions y blog_api_tokens.
+-- Los visitantes (anon) y las cuentas con sesión solo leen los artículos publicados cuya fecha
+-- ya pasó (un artículo con fecha futura está programado y no se ve). Todo lo demás es del admin
+-- (is_admin() exige aal2). Las versiones y las claves de la API no tienen política para nadie
+-- más. Las rutas de la API del blog usan la clave de servicio, que se salta RLS, y solo después
+-- de validar el token.
+-- anon solo puede leer columnas concretas de blog_posts: created_by queda fuera (puede llevar el
+-- nombre de un token de la API). Por eso la web pública tiene que pedir las columnas por nombre,
+-- nunca select(*).
+-- ---------------------------------------------------------------------
+do $$
+declare t text;
+begin
+  foreach t in array array['blog_posts','blog_post_versions','blog_api_tokens'] loop
+    execute format('alter table public.%I enable row level security', t);
+    execute format('revoke all on public.%I from anon', t);
+    execute format('drop policy if exists admin_all on public.%I', t);
+    execute format(
+      'create policy admin_all on public.%I for all to authenticated
+         using (public.is_admin()) with check (public.is_admin())', t);
+  end loop;
+end $$;
+
+grant select (id, slug, category, status, published_at, content, og_image, created_at, updated_at)
+  on public.blog_posts to anon;
+
+drop policy if exists publicado_select on public.blog_posts;
+create policy publicado_select on public.blog_posts for select to anon, authenticated
+  using (status = 'publicado' and published_at is not null and published_at <= now());
+
+-- Bucket "blog": imágenes de los artículos. Público para leer por URL (se sirven por
+-- /blog-img/... desde la web), 5 MB por archivo y solo imágenes. No hay política de select para
+-- anon a propósito: la URL pública funciona sin ella, y así nadie puede listar el bucket.
+-- Escribir, solo el admin; la API del blog sube con la clave de servicio.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('blog', 'blog', true, 5242880,
+        array['image/webp', 'image/jpeg', 'image/png', 'image/svg+xml'])
+on conflict (id) do update
+  set public = true, file_size_limit = 5242880,
+      allowed_mime_types = array['image/webp', 'image/jpeg', 'image/png', 'image/svg+xml'];
+
+drop policy if exists blog_admin_write on storage.objects;
+create policy blog_admin_write on storage.objects for all to authenticated
+  using (bucket_id = 'blog' and public.is_admin())
+  with check (bucket_id = 'blog' and public.is_admin());

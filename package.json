@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "test": "tsx scripts/probar-blog.ts",
     "audit": "npm audit --omit=dev --audit-level=moderate",
     "format": "prettier --write ."
   },
@@ -21,7 +22,8 @@
     "postgres": "^3.4.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "resend": "^6.34.1"
+    "resend": "^6.34.1",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.2.0",
@@ -36,6 +38,7 @@
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "0.6.9",
     "tailwindcss": "4.0.0-beta.8",
+    "tsx": "^4.23.15",
     "typescript": "5.7.2"
   },
   "allowScripts": {

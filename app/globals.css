@@ -22,6 +22,8 @@
   --color-accent-light: #c2410c;
   /* Verde suave para cifras positivas (resultado). AA sobre paper y paper-alt. */
   --color-positive-light: #166534;
+  --color-danger-light: #b91c1c;
+  --color-warn-light: #92400e;
 
   --color-paper-dark: #0a0f1c;
   --color-paper-alt-dark: #0f1629;
@@ -32,6 +34,8 @@
   --color-chip-dark: #0a0f1c;
   --color-accent-dark: #fb923c;
   --color-positive-dark: #4ade80;
+  --color-danger-dark: #f87171;
+  --color-warn-dark: #fbbf24;
 
   /* Tokens que usan las utilidades (text-ink, hover:bg-chip, group-hover:text-accent...). Apuntan
      a las variables del tema (--fg, --bg...), que cambian con .dark, así que TODAS las variantes
@@ -45,6 +49,8 @@
   --color-chip: var(--chip);
   --color-accent: var(--accent);
   --color-positive: var(--positive);
+  --color-danger: var(--danger);
+  --color-warn: var(--warn);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -61,6 +67,8 @@
     --chip: var(--color-chip-light);
     --accent: var(--color-accent-light);
     --positive: var(--color-positive-light);
+    --danger: var(--color-danger-light);
+    --warn: var(--color-warn-light);
   }
 
   :root.dark {
@@ -74,6 +82,8 @@
     --chip: var(--color-chip-dark);
     --accent: var(--color-accent-dark);
     --positive: var(--color-positive-dark);
+    --danger: var(--color-danger-dark);
+    --warn: var(--color-warn-dark);
   }
 
   html {

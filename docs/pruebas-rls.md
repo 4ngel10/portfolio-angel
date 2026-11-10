@@ -35,10 +35,12 @@ Lanza `db/verificar-rls.sql`, una consulta cada vez, y compara con lo que dice c
 
 - (a) 0 filas.
 - (b) 0 filas.
-- (c) Solo políticas `admin_all`, `cliente_select` y los tres `cliente_insert` esperados.
+- (c) Solo políticas `admin_all`, `cliente_select` y los tres `cliente_insert` esperados, más `publicado_select` en `blog_posts` (la única que nombra a `anon`).
 - (d) `anon_execute` y `public_execute` en `false` en todas las funciones.
-- (e) El bucket `archivos` con `publico = false`.
+- (e) El bucket `archivos` con `publico = false` y el bucket `blog` con `publico = true`, 5242880 bytes y solo tipos de imagen. Sin políticas de `anon` en `storage.objects`.
 - (f) 0 filas.
+- (g) Solo `blog_posts`, con 9 columnas (sin `created_by`).
+- (h) Una fila: `publicado`, `visible_para_visitantes = true`, 5 artículos (tras el seed del blog).
 
 Si algo no cuadra, no sigas hasta entender por qué.
 
@@ -197,7 +199,102 @@ where empresa_id in ('EMPRESA_A', 'EMPRESA_B');
 
 Para confirmar que el administrador sí puede, usa la web (apuntar horas en `/admin/horas`) y no SQL, porque `is_admin()` depende de la sesión.
 
-## 5. Cierre
+## 5. El blog: los visitantes solo ven lo publicado
+
+Cada bloque crea artículos de prueba con el rol administrador (rol `postgres`, sin `set role`) y se deshace con `rollback`. Lánzalos por separado.
+
+```sql
+begin;
+insert into public.blog_posts (slug, category, status, published_at, content, created_by) values
+  ('prueba-publicado',  'sistemas', 'publicado', now() - interval '1 day', '{}'::jsonb, 'prueba'),
+  ('prueba-programado', 'sistemas', 'publicado', now() + interval '1 day', '{}'::jsonb, 'prueba'),
+  ('prueba-borrador',   'sistemas', 'borrador',  null,                     '{}'::jsonb, 'prueba');
+
+set local role anon;
+
+-- 5.1 Un visitante solo ve el publicado con fecha pasada.
+-- Debe devolver 1 fila (prueba-publicado), sin el programado ni el borrador.
+select slug from public.blog_posts where slug like 'prueba-%';
+rollback;
+
+begin;
+insert into public.blog_posts (slug, category, status, published_at, content, created_by) values
+  ('prueba-publicado', 'sistemas', 'publicado', now() - interval '1 day', '{}'::jsonb, 'api:secreto');
+set local role anon;
+
+-- 5.2 created_by no se puede leer como visitante.
+-- Debe fallar con "permission denied for table blog_posts" (o la columna created_by).
+select created_by from public.blog_posts;
+rollback;
+
+begin;
+set local role anon;
+-- 5.3 Un visitante no puede escribir. Debe fallar con "permission denied".
+insert into public.blog_posts (slug, category, status, content, created_by)
+values ('intruso', 'sistemas', 'borrador', '{}'::jsonb, 'anon');
+rollback;
+
+begin;
+set local role anon;
+-- 5.4 Ni leer las versiones ni las claves de la API. Cada una debe fallar con "permission denied".
+select * from public.blog_post_versions;
+rollback;
+
+begin;
+set local role anon;
+select * from public.blog_api_tokens;
+rollback;
+```
+
+Con una cuenta de cliente (sesión `authenticated` sin ser admin) pasa lo mismo, salvo que no hay "permission denied" sino filas vacías o un fallo de RLS:
+
+```sql
+begin;
+insert into public.blog_posts (slug, category, status, published_at, content, created_by) values
+  ('prueba-publicado',  'sistemas', 'publicado', now() - interval '1 day', '{}'::jsonb, 'prueba'),
+  ('prueba-borrador',   'sistemas', 'borrador',  null,                     '{}'::jsonb, 'prueba');
+insert into public.blog_api_tokens (nombre, token_hash) values ('prueba', 'hash-de-prueba');
+
+set local role authenticated;
+select set_config('request.jwt.claims',
+  '{"sub":"UUID_A","role":"authenticated"}', true);
+
+-- 5.5 Cliente: 1 fila (solo el publicado).
+select slug from public.blog_posts where slug like 'prueba-%';
+-- 5.6 Cliente: 0 filas en las dos.
+select id from public.blog_post_versions;
+select id from public.blog_api_tokens;
+rollback;
+
+begin;
+set local role authenticated;
+select set_config('request.jwt.claims',
+  '{"sub":"UUID_A","role":"authenticated"}', true);
+-- 5.7 Cliente: no puede escribir. Debe fallar con "new row violates row-level security policy".
+insert into public.blog_posts (slug, category, status, content, created_by)
+values ('intruso', 'sistemas', 'borrador', '{}'::jsonb, 'cliente');
+rollback;
+```
+
+Y los checks de la tabla, como administrador (los dos deben fallar):
+
+```sql
+begin;
+-- 5.8 Slug con mayúsculas. Debe fallar con 'violates check constraint "blog_posts_slug_check"'.
+insert into public.blog_posts (slug, category, status, content, created_by)
+values ('Mayusculas', 'sistemas', 'borrador', '{}'::jsonb, 'prueba');
+rollback;
+
+begin;
+-- 5.9 Publicado sin fecha. Debe fallar con 'violates check constraint "blog_posts_publicado_fecha_check"'.
+insert into public.blog_posts (slug, category, status, content, created_by)
+values ('sin-fecha', 'sistemas', 'publicado', '{}'::jsonb, 'prueba');
+rollback;
+```
+
+Bucket `blog`: abre en el navegador la URL pública de una imagen subida (`<SUPABASE_URL>/storage/v1/object/public/blog/<slug>/<archivo>`), debe verse. Un visitante no debe poder listar el bucket: `<SUPABASE_URL>/storage/v1/object/list/blog` con solo la clave anon debe dar error o lista vacía.
+
+## 6. Cierre
 
 - Si todo ha salido como se describe, borra las empresas de prueba (archivar y eliminar desde la ficha).
 - Si alguna prueba de "debe fallar" ha funcionado, o alguna de "0 filas" ha devuelto datos, no despliegues. Anota qué consulta fue y qué devolvió.

@@ -2,14 +2,19 @@ import type { MetadataRoute } from "next";
 import { SITE_URL, LAST_UPDATED } from "@/lib/site";
 import { PROJECTS } from "@/lib/projects";
 import { SERVICES } from "@/lib/services";
-import { BLOG_POSTS } from "@/lib/blog";
+import { getPublishedPosts } from "@/lib/blog-db";
 import { LEGAL_PAGES } from "@/lib/legal";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Se regenera cada hora y al publicar desde el panel.
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE_URL;
-  const latestPost = BLOG_POSTS.reduce(
-    (max, p) => (p.date > max ? p.date : max),
-    BLOG_POSTS[0]?.date ?? LAST_UPDATED,
+  const posts = await getPublishedPosts();
+  // updatedAt es ISO con desfase y todos llevan el mismo formato, así que compara bien como texto.
+  const latestPost = posts.reduce(
+    (max, p) => (p.updatedAt > max ? p.updatedAt : max),
+    posts[0]?.updatedAt ?? LAST_UPDATED,
   );
   return [
     {
@@ -36,9 +41,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 0.7,
     },
-    ...BLOG_POSTS.map((p) => ({
+    ...posts.map((p) => ({
       url: `${base}/blog/${p.slug}`,
-      lastModified: new Date(p.date),
+      lastModified: new Date(p.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),

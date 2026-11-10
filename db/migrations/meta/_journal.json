@@ -64,6 +64,13 @@
       "when": 1794315089574,
       "tag": "0008_archivos_storage_path_check",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794330325287,
+      "tag": "0009_blog",
+      "breakpoints": true
     }
   ]
 }

@@ -13,6 +13,7 @@ import {
   date,
   index,
   integer,
+  jsonb,
   numeric,
   pgTable,
   text,
@@ -27,6 +28,7 @@ import {
   ORIGENES_COBRO,
   PERIODICIDADES,
 } from "../lib/portal/finanzas";
+import type { BlogPostContent } from "../lib/blog";
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
@@ -522,4 +524,73 @@ export const gastos = pgTable(
     ),
     check("gastos_importe_positivo", sql`${t.importe} > 0`),
   ],
+);
+
+/* ------------------------------------------------------------------ */
+/* Blog (publicado desde el panel /admin/blog; ver db/rls.sql, apartado 10) */
+/* ------------------------------------------------------------------ */
+
+const CATEGORIAS_BLOG = ["sistemas", "desarrollo", "automatizacion"] as const;
+const ESTADOS_BLOG = ["borrador", "publicado"] as const;
+const ALCANCES_TOKEN_BLOG = ["borrador"] as const;
+
+/** Contenido de un artículo en los dos idiomas (misma forma que lib/blog.ts). */
+export type BlogContenido = { es: BlogPostContent; en: BlogPostContent };
+
+export const blogPosts = pgTable(
+  "blog_posts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: text("slug").notNull().unique(),
+    category: text("category", { enum: CATEGORIAS_BLOG }).notNull(),
+    status: text("status", { enum: ESTADOS_BLOG }).notNull().default("borrador"),
+    // Con fecha futura el artículo está programado: RLS no lo enseña hasta que llega su hora.
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    content: jsonb("content").$type<BlogContenido>().notNull(),
+    ogImage: text("og_image"),
+    // 'migracion', 'admin' o 'api:<nombre del token>'.
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("blog_posts_status_published_idx").on(t.status, t.publishedAt.desc()),
+    // Minúsculas, números y guiones sueltos (sin guion al principio ni al final).
+    check("blog_posts_slug_check", sql`${t.slug} ~ '^[a-z0-9]+(-[a-z0-9]+)*$'`),
+    check("blog_posts_category_check", enLista(t.category, CATEGORIAS_BLOG)),
+    check("blog_posts_status_check", enLista(t.status, ESTADOS_BLOG)),
+    check(
+      "blog_posts_publicado_fecha_check",
+      sql`${t.status} <> 'publicado' or ${t.publishedAt} is not null`,
+    ),
+  ],
+);
+
+/** Versiones anteriores de cada artículo (el panel conserva las 20 últimas). */
+export const blogPostVersions = pgTable(
+  "blog_post_versions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => blogPosts.id, { onDelete: "cascade" }),
+    content: jsonb("content").$type<BlogContenido>().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("blog_post_versions_post_idx").on(t.postId, t.createdAt.desc())],
+);
+
+/** Claves de la API del blog (la rutina de Claude). Solo se guarda el sha256 en hexadecimal. */
+export const blogApiTokens = pgTable(
+  "blog_api_tokens",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    nombre: text("nombre").notNull(),
+    tokenHash: text("token_hash").notNull().unique(),
+    scope: text("scope", { enum: ALCANCES_TOKEN_BLOG }).notNull().default("borrador"),
+    createdAt: createdAt(),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [check("blog_api_tokens_scope_check", enLista(t.scope, ALCANCES_TOKEN_BLOG))],
 );

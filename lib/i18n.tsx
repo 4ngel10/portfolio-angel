@@ -75,3 +75,27 @@ export function useI18n() {
   if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
   return ctx;
 }
+
+/**
+ * Pinta a sus hijos en un idioma fijo, sin tocar la cookie ni el idioma del resto de la página.
+ * La vista previa del panel del blog lo usa para enseñar un artículo en español o en inglés.
+ */
+export function FixedLocale({ locale, children }: { locale: Locale; children: React.ReactNode }) {
+  const parent = useContext(I18nContext);
+  const t = useCallback(
+    (path: string) => {
+      let cursor: unknown = messages[locale];
+      for (const p of path.split(".")) {
+        if (cursor && typeof cursor === "object" && p in (cursor as Record<string, unknown>)) {
+          cursor = (cursor as Record<string, unknown>)[p];
+        } else {
+          return path;
+        }
+      }
+      return typeof cursor === "string" ? cursor : path;
+    },
+    [locale],
+  );
+  const setLocale = parent?.setLocale ?? (() => {});
+  return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>;
+}

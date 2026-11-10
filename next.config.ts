@@ -7,7 +7,10 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()",
+  },
   // Solo HTTPS durante dos años. Sin preload a propósito.
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
@@ -19,6 +22,20 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF primero (pesa menos que WebP con la misma calidad); WebP para navegadores sin AVIF.
     formats: ["image/avif", "image/webp"],
+  },
+  // Las imágenes del blog viven en el bucket público "blog" de Supabase y se sirven por este
+  // dominio: /blog-img/<slug>/<archivo>. Así el navegador solo ve 'self' (img-src de la CSP no
+  // cambia) y las URLs no dependen de Supabase. El Cache-Control lo pone Supabase (un día, el
+  // que se fija al subir); una regla de headers() no surte efecto sobre una respuesta proxificada.
+  async rewrites() {
+    const supabase = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabase) return [];
+    return [
+      {
+        source: "/blog-img/:slug/:archivo",
+        destination: `${supabase}/storage/v1/object/public/blog/:slug/:archivo`,
+      },
+    ];
   },
   async headers() {
     return [

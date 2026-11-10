@@ -5,10 +5,10 @@ import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { TiltCard } from "./tilt-card";
 import { Arrow, formatDate } from "./project-article";
 import { useI18n } from "@/lib/i18n";
-import { BLOG_POSTS, readingMinutes } from "@/lib/blog";
+import type { BlogPostSummary } from "@/lib/blog-types";
 
 /** Listado del blog: /blog. Mismo lenguaje de cards que proyectos y servicios. */
-export function BlogIndex() {
+export function BlogIndex({ posts }: { posts: BlogPostSummary[] }) {
   const { t, locale } = useI18n();
 
   return (
@@ -35,8 +35,8 @@ export function BlogIndex() {
           stagger={0.08}
           style={{ perspective: "1200px" }}
         >
-          {BLOG_POSTS.map((p) => {
-            const content = p.post[locale];
+          {posts.map((p) => {
+            const content = p[locale];
             return (
               <RevealItem key={p.slug} className="h-full">
                 <Link
@@ -68,7 +68,7 @@ export function BlogIndex() {
                           <span className="mx-1 opacity-40" aria-hidden>
                             ·
                           </span>
-                          {readingMinutes(content)} {t("blog.minutes")}
+                          {content.minutes} {t("blog.minutes")}
                         </span>
                       </div>
                       {/* Mismo hover que los títulos de proyectos: crece y pasa a negrita. */}

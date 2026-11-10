@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export type ItemPendiente = {
-  icono: "presupuesto" | "cobro" | "incidencia" | "bolsa";
+  icono: "presupuesto" | "cobro" | "incidencia" | "bolsa" | "articulo";
   texto: string;
   /** Texto corto en el acento al final de la fila (plazo, retraso...). */
   aviso?: string;
@@ -23,6 +23,12 @@ const ICONOS: Record<ItemPendiente["icono"], React.ReactNode> = {
     </>
   ),
   incidencia: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />,
+  articulo: (
+    <>
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </>
+  ),
   bolsa: (
     <>
       <circle cx="12" cy="12" r="10" />

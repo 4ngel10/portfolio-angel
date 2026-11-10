@@ -6,23 +6,24 @@ import { TiltCard } from "./tilt-card";
 import { Arrow, Block, ReadingProgress, SectionHeading, formatDate } from "./project-article";
 import { ServiceCta } from "./service-cta";
 import { useI18n } from "@/lib/i18n";
-import { BLOG_POSTS, getBlogPost, readingMinutes } from "@/lib/blog";
+import { readingMinutes, type BlogPost, type BlogPostSummary } from "@/lib/blog-types";
 
 /** Artículo del blog: /blog/[slug]. Misma maqueta que los artículos de proyecto. */
-export function BlogArticle({ slug }: { slug: string }) {
+export function BlogArticle({
+  post,
+  next,
+  comoDiv = false,
+}: {
+  post: BlogPost;
+  next: BlogPostSummary | null;
+  /** Pinta un <div> en vez de <main id="main">, para la vista previa del admin (que ya tiene su <main>). */
+  comoDiv?: boolean;
+}) {
   const { t, locale } = useI18n();
-  // La ruta ya valida el slug (notFound), aquí siempre existe.
-  const post = getBlogPost(slug)!;
   const content = post.post[locale];
 
-  const idx = BLOG_POSTS.indexOf(post);
-  // Siguiente: otro artículo de la misma categoría (el que sigue en la lista, dando la vuelta)
-  // y, si no hay ninguno, el siguiente de la lista.
-  const ordered = [...BLOG_POSTS.slice(idx + 1), ...BLOG_POSTS.slice(0, idx)];
-  const next = ordered.find((p) => p.category === post.category) ?? ordered[0] ?? post;
-
   return (
-    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
+    <Contenedor comoDiv={comoDiv}>
       <ReadingProgress />
       <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
@@ -82,7 +83,7 @@ export function BlogArticle({ slug }: { slug: string }) {
 
       <ServiceCta service={post.category === "desarrollo" ? "web" : "sistemas"} />
 
-      {next !== post && (
+      {next && (
         <section className="border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
             <Link href={`/blog/${next.slug}`} className="block" style={{ perspective: "1200px" }}>
@@ -94,7 +95,7 @@ export function BlogArticle({ slug }: { slug: string }) {
               >
                 <span className="text-muted block text-sm font-medium">{t("blog.next")}</span>
                 <span className="block text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[1.05] font-semibold tracking-[-0.035em] transition-colors duration-200 group-hover:text-[var(--accent)]">
-                  {next.post[locale].title}
+                  {next[locale].title}
                 </span>
                 <span className="text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200 group-hover:text-[var(--accent)]">
                   {t("blog.read")}
@@ -105,6 +106,15 @@ export function BlogArticle({ slug }: { slug: string }) {
           </div>
         </section>
       )}
+    </Contenedor>
+  );
+}
+
+function Contenedor({ comoDiv, children }: { comoDiv: boolean; children: React.ReactNode }) {
+  if (comoDiv) return <div>{children}</div>;
+  return (
+    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
+      {children}
     </main>
   );
 }

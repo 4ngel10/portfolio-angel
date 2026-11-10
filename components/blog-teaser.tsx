@@ -4,16 +4,13 @@ import Link from "next/link";
 import { Reveal } from "./reveal";
 import { Arrow, formatDate } from "./project-article";
 import { useI18n } from "@/lib/i18n";
-import { BLOG_POSTS } from "@/lib/blog";
-
-/** Cuántos artículos recientes se enseñan en la home. */
-const LATEST = 2;
+import type { BlogPostLink } from "@/lib/blog-types";
 
 /**
  * Mención corta al blog en la home, entre Proyectos y Contacto. Es el ancla #blog que
  * marca el scroll spy de la nav (el enlace "Blog" de la nav lleva a /blog).
  */
-export function BlogTeaser() {
+export function BlogTeaser({ posts }: { posts: BlogPostLink[] }) {
   const { t, locale } = useI18n();
 
   return (
@@ -36,7 +33,7 @@ export function BlogTeaser() {
         </div>
 
         <ul className="border-rule flex flex-col border-t">
-          {BLOG_POSTS.slice(0, LATEST).map((p) => (
+          {posts.map((p) => (
             <li key={p.slug} className="border-rule border-b">
               <Link
                 href={`/blog/${p.slug}`}
@@ -58,7 +55,7 @@ export function BlogTeaser() {
                     </time>
                   </span>
                   <span className="mt-1.5 block text-[17px] leading-snug font-semibold tracking-tight transition-colors duration-200 group-hover:text-[var(--accent)]">
-                    {p.post[locale].title}
+                    {p[locale].title}
                   </span>
                 </span>
                 <span className="text-muted shrink-0 transition-colors duration-200 group-hover:text-[var(--accent)]">

@@ -11,6 +11,7 @@ import {
   mapaTitulos,
 } from "@/lib/portal/queries";
 import { requireAdmin } from "@/lib/portal/auth";
+import { borradoresDeApi } from "@/lib/blog-admin";
 import { cobrosConEstado, listarGastos, listarPagos } from "@/lib/portal/finanzas-queries";
 import {
   diasEntre,
@@ -60,6 +61,7 @@ export default async function AdminPage() {
     todasSinRespuesta,
     pagos,
     gastos,
+    borradoresApi,
   ] = await Promise.all([
     listarEmpresas(),
     listarProyectos(),
@@ -70,6 +72,7 @@ export default async function AdminPage() {
     incidenciasSinRespuesta(),
     listarPagos(),
     listarGastos(),
+    borradoresDeApi(),
   ]);
 
   // Los clientes archivados no salen en el Resumen ni en "Pendiente de ti". Sus cobros y pagos
@@ -202,6 +205,15 @@ export default async function AdminPage() {
         total: num(b.horas_contratadas),
       }),
       href: `/admin/clientes/${b.empresa_id}`,
+    });
+  }
+
+  // Borradores que ha creado la API del blog y esperan que los revises.
+  for (const b of borradoresApi) {
+    pendiente.push({
+      icono: "articulo",
+      texto: t("blog.pendingApi", { title: b.content.es.title || t("blog.untitled") }),
+      href: `/admin/blog/${b.id}`,
     });
   }
 

@@ -14,7 +14,7 @@
 import { LEGAL, SITE_URL } from "./site";
 import type { Project } from "./projects";
 import type { ServiceDetail as Service } from "./services";
-import { BLOG_POSTS, type BlogPost } from "./blog";
+import type { BlogPost } from "./blog-types";
 import es from "@/messages/es.json";
 
 export const HOME_TITLE = "Ángel Fernández · Administrador de Sistemas y Desarrollador Web";
@@ -48,7 +48,7 @@ function isoDate(date: string) {
   return `${date}T09:00:00+01:00`;
 }
 
-type Crumb ={ name: string; path: string };
+type Crumb = { name: string; path: string };
 
 function breadcrumb(items: Crumb[]) {
   return {
@@ -187,7 +187,10 @@ export function projectJsonLd(project: Project) {
       url: `${SITE_URL}${path}`,
       mainEntityOfPage: `${SITE_URL}${path}`,
       inLanguage: "es",
-      ...(project.date && { datePublished: isoDate(project.date), dateModified: isoDate(project.date) }),
+      ...(project.date && {
+        datePublished: isoDate(project.date),
+        dateModified: isoDate(project.date),
+      }),
       ...(project.ogImage && { image: `${SITE_URL}${project.ogImage}` }),
       author: personRef,
       publisher: personRef,
@@ -205,7 +208,7 @@ export const BLOG_DESCRIPTION =
   "Artículos sobre administración de sistemas, backup, desarrollo web con Next.js y automatización. Guías prácticas desde Palma de Mallorca.";
 
 /** Listado del blog: Blog (con sus artículos) + BreadcrumbList (Inicio > Blog). */
-export function blogIndexJsonLd() {
+export function blogIndexJsonLd(posts: BlogPost[]) {
   return graph(
     {
       "@type": "Blog",
@@ -215,11 +218,11 @@ export function blogIndexJsonLd() {
       url: `${SITE_URL}/blog`,
       inLanguage: "es",
       author: personRef,
-      blogPost: BLOG_POSTS.map((p) => ({
+      blogPost: posts.map((p) => ({
         "@type": "BlogPosting",
         headline: p.post.es.title,
         url: `${SITE_URL}/blog/${p.slug}`,
-        datePublished: isoDate(p.date),
+        datePublished: p.publishedAt,
       })),
     },
     breadcrumb([
@@ -242,8 +245,8 @@ export function blogPostJsonLd(post: BlogPost) {
       url: `${SITE_URL}${path}`,
       mainEntityOfPage: `${SITE_URL}${path}`,
       inLanguage: "es",
-      datePublished: isoDate(post.date),
-      dateModified: isoDate(post.date),
+      datePublished: post.publishedAt,
+      dateModified: post.updatedAt,
       image: `${SITE_URL}${post.ogImage}`,
       author: personRef,
       publisher: personRef,

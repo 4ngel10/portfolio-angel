@@ -11,12 +11,18 @@ import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
 import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
+import { getLatestPosts } from "@/lib/blog-db";
+import { enlaceDe } from "@/lib/blog-types";
 import { alternatesFor, homeJsonLd } from "@/lib/seo";
 
 // Canonical solo en la home: en el layout lo heredarían páginas como el 404.
 export const metadata: Metadata = { alternates: alternatesFor("/") };
 
-export default function Page() {
+// Estática; se regenera cada hora y al publicar desde el panel por el teaser del blog.
+export const revalidate = 3600;
+
+export default async function Page() {
+  const ultimos = await getLatestPosts(2);
   return (
     <>
       <JsonLd data={homeJsonLd()} />
@@ -27,7 +33,7 @@ export default function Page() {
         <StackBand />
         <Portfolio />
         <About />
-        <BlogTeaser />
+        <BlogTeaser posts={ultimos.map(enlaceDe)} />
         <Contact />
       </main>
       <Footer />
