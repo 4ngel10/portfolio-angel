@@ -26,7 +26,7 @@ npm run typecheck  # tsc --noEmit
 npm run format     # prettier --write .
 ```
 
-Antes de subir: `npm run typecheck`, `npx eslint app components lib` y `npm run build`.
+Antes de subir: `npm run typecheck`, `npx eslint app components lib`, `npm run build` y `npm run audit` (`npm audit` de producción, nivel moderado o superior; debe salir con 0 vulnerabilidades).
 
 ## Estructura
 
@@ -165,6 +165,18 @@ El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (sele
 ## Dominio
 
 `SITE_URL` en `lib/site.ts` es la URL pública que usan metadata, `sitemap.xml` y `robots.txt`. Es `https://www.angel-fernandez.es` (con `www`, que es el dominio principal en Vercel). Si cambia, se modifica solo ahí. Los correos (`RESEND_FROM`) salen de `portal@angel-fernandez.es`, así que el dominio tiene que estar verificado en Resend.
+
+## Seguridad
+
+- Toda server action y toda página del admin empieza con `requireAdmin()` (las rutas de API, con `comprobarAdmin()`).
+- El cliente con service role (`createAdminClient`) solo se usa en código con `server-only`, y siempre después de comprobar permisos. Nunca en componentes de cliente.
+- Ninguna tabla nueva sin RLS. Tras cada migración, lanzar `db/verificar-rls.sql` (y `docs/pruebas-rls.md` si cambian políticas o rutas de Storage).
+- `user_metadata` nunca decide acceso: lo edita el propio usuario. Las marcas (`password_set`, `password_temporary`) van en `app_metadata`, escritas solo desde el servidor, y se leen con `marcasContrasena()` en `lib/portal/auth.ts`. Solo sirven para redirigir.
+- Los endpoints que envían correo o crean datos desde una cuenta de cliente llevan límite de uso (ver `lib/portal/rate-limit.ts` y `lib/portal/storage-limits.ts`).
+- La CSP de las rutas privadas (`/admin`, `/portal`, `/login`, `/mfa`, `/contrasena`, `/auth`) lleva nonce y sale de `proxy.ts`. Nunca poner `Content-Security-Policy` en `next.config.ts` para esas rutas ni en la respuesta del proxy: en Vercel las cabeceras de `next.config.ts` llegan también a la petición y pisan la del proxy, y Next deja de poner el nonce en sus scripts (causa y pruebas en `docs/csp.md`).
+- Las cabeceras de las rutas privadas se ponen desde `proxy.ts`, no desde `next.config.ts`, por la misma razón.
+- Las IP de firma se leen con `ipDelCliente()` (`lib/portal/ip.ts`), no de `x-forwarded-for` a pelo.
+- Mínimo de 12 caracteres para cualquier contraseña (clientes y admin).
 
 ## Qué NO hacer sin consultar
 

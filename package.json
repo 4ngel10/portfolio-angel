@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "audit": "npm audit --omit=dev --audit-level=moderate",
     "format": "prettier --write ."
   },
   "dependencies": {

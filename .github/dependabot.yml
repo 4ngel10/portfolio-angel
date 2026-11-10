@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    # Solo las actualizaciones normales se agrupan. Las de seguridad no entran en ningún grupo,
+    # así que Dependabot abre un PR por separado para cada una.
+    groups:
+      dev-minor-patch:
+        applies-to: version-updates
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # Tailwind 4 beta a propósito (4.0.0-beta.8): se actualiza a mano, Dependabot no propone nada.
+      - dependency-name: "tailwindcss"
+      - dependency-name: "@tailwindcss/postcss"
+      # Pineado en 11.15.0.
+      - dependency-name: "framer-motion"
+        update-types: ["version-update:semver-major"]

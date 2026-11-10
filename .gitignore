@@ -37,5 +37,6 @@ next-env.d.ts
 *.tsbuildinfo
 
 # claude code: ajustes personales y binario de impeccable (se descarga solo, 19 MB, solo Windows)
+.claude/settings.json
 .claude/settings.local.json
 .claude/skills/impeccable/scripts/bin/
