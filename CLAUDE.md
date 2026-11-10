@@ -23,10 +23,11 @@ npm run dev        # arranca en http://localhost:3000
 npm run build      # build producción
 npx eslint app components lib   # lint (`npm run lint` usa `next lint`, que ya no existe en Next 16)
 npm run typecheck  # tsc --noEmit
+npm test           # pruebas del validador y el conversor del blog (scripts/probar-blog.ts)
 npm run format     # prettier --write .
 ```
 
-Antes de subir: `npm run typecheck`, `npx eslint app components lib`, `npm run build` y `npm run audit` (`npm audit` de producción, nivel moderado o superior; debe salir con 0 vulnerabilidades).
+Antes de subir: `npm run typecheck`, `npm test`, `npx eslint app components lib scripts`, `npm run build` y `npm run audit` (`npm audit` de producción, nivel moderado o superior; debe salir con 0 vulnerabilidades).
 
 ## Estructura
 
@@ -45,7 +46,8 @@ components/
   project-article / services-page / blog-index / blog-article                páginas interiores
   carousel / tilt-card / reveal / project-cover / json-ld / skip-link / mobile-contact-cta / back-to-top
 lib/
-  projects.ts services.ts blog.ts   contenido (ES y EN)
+  projects.ts services.ts           contenido (ES y EN)
+  blog-db.ts blog-types.ts blog-validate.ts blog-markup.ts blog-actions.ts   blog en Supabase (ver sección Blog)
   seo.ts                            meta descriptions y JSON-LD
   theme.tsx i18n.tsx motion.tsx smooth-scroll.ts site.ts
 messages/
@@ -112,7 +114,14 @@ Los "casos reales" (ransomware y sistema saturado) se quitaron de Sobre mí y de
 
 ## Blog
 
-Listado en `/blog` y artículos en `/blog/[slug]`. El contenido (ES y EN) vive en `lib/blog.ts`, con los mismos bloques que los proyectos. Cada artículo lleva su imagen para redes de 1200x630 en `public/blog/`. La home tiene una mención corta (`components/blog-teaser.tsx`, ancla `#blog`) con los dos más recientes.
+Listado en `/blog` y artículos en `/blog/[slug]`. **El contenido vive en Supabase** (`blog_posts`, ES y EN en la columna `content` con los mismos bloques que los proyectos) y se edita desde `/admin/blog`; `lib/blog.ts` queda solo como respaldo de la migración y se retirará en la fase 5. Las imágenes están en el bucket público `blog` y se sirven por `/blog-img/<slug>/<archivo>` (rewrite en `next.config.ts`, así la CSP no cambia). Cada artículo lleva su imagen para redes de 1200x630.
+
+- **Lectura pública** (`lib/blog-db.ts`): cliente anon sin cookies, columnas por nombre (anon no puede leer `created_by`, nunca `select("*")`), `unstable_cache` con etiqueta `blog` y `revalidate` de 3600. Si Supabase falla lanza una excepción, no devuelve `[]`. Las páginas siguen estáticas. Un artículo programado (`publicado` con fecha futura) aparece en la primera regeneración tras su hora.
+- **Tras cualquier cambio** llama a `revalidarBlog(slug)` (`lib/blog-revalidate.ts`).
+- **Panel** (`/admin/blog`, `components/portal/blog-editor.tsx`, `lib/blog-actions.ts`): lee y escribe con la sesión del admin (política `admin_all`), no con service role; solo la subida de imágenes y la lectura de su tamaño usan `createAdminClient()` tras `requireAdmin()` o `comprobarAdmin()`. Estado programado = publicado con `published_at` futuro. El slug de un publicado no se cambia. Se guardan las últimas 20 versiones y `updated_at` solo cambia si cambia el contenido. `created_by` es el email del admin, `migracion` para los 5 originales y, en la fase 4, `api:<token>` para los borradores de la API (salen en "Pendiente de ti").
+- **Validador** (`lib/blog-validate.ts`, compartido por panel, actions y la futura API): sin regex con barras invertidas. Errores bloquean publicar, avisos no. El límite de 60 caracteres del título solo es error en ES, y el mínimo de 2 imágenes solo en artículos no migrados. Los mensajes van en español, fuera de los JSON. **Si cambias una regla, añade o ajusta su prueba en `scripts/probar-blog.ts`.**
+- **Texto con marcas** (`lib/blog-markup.ts`): `##` H2, `###` H3, `- ` lista, `1. ` ordenada, `![alt](ruta "pie")`, línea en blanco entre bloques. Ida y vuelta sin pérdidas (probado con los 5 artículos). width y height de las imágenes se leen del archivo al guardar.
+- **Vista previa** (`/admin/blog/[id]/vista`): usa `BlogArticle` con `comoDiv` (el Shell ya tiene `<main>`) y `FixedLocale` de `lib/i18n.tsx` para ver ES o EN sin tocar la cookie. La home tiene una mención corta (`components/blog-teaser.tsx`, ancla `#blog`) con los dos más recientes.
 
 **Anchos de las páginas interiores** (blog, proyectos y legales): un solo contenedor `max-w-6xl px-6 md:px-8`, alineado a la izquierda con la nav, igual que las páginas de servicio. Dentro, el H1 llega a `max-w-5xl`, la entradilla y el cuerpo a `max-w-4xl`, y el texto de `ServiceCta` a `max-w-2xl`. No vuelvas a centrar el cuerpo en una columna más estrecha.
 
@@ -193,4 +202,4 @@ Vercel conectado al repo de GitHub. Push a `main` = deploy producción. PRs = pr
 
 Ángel prefiere que, al terminar y verificar cada tarea, se haga commit y push a `main` sin preguntar. Los cambios grandes (rediseños) se enseñan antes.
 
-No hacen falta variables de entorno en Vercel.
+Variables de entorno en Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (la web lee el blog con ella) y `SUPABASE_SERVICE_ROLE_KEY` (subida de imágenes del blog y portal). El formulario de contacto no necesita ninguna.
