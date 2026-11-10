@@ -8,12 +8,15 @@ import { updateSession } from "@/lib/supabase/proxy";
 const CON_SESION = /^\/(portal|admin)(\/|$)/;
 
 export async function proxy(request: NextRequest) {
-  // CSP con nonce por petición. Next lo lee de la cabecera de la petición y lo pone en sus scripts.
+  // CSP con nonce por petición. Next lee el nonce de la cabecera de la PETICIÓN
+  // "content-security-policy" y, si esa existe pero sin nonce (en Vercel llega la de frame-ancestors
+  // de next.config.ts), ignora la Report-Only y no pone nonce en ningún script. Por eso la política
+  // completa va en la petición con ese nombre (el navegador no la ve) y en la respuesta solo la
+  // Report-Only. Pasar a enforce: ver docs/csp.md.
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const csp = cspPrivada(nonce);
-  // Modo prueba: solo informa en la consola. Pasar a enforce cambiando el nombre de la cabecera (docs/csp.md).
-  const NOMBRE = "Content-Security-Policy-Report-Only";
-  const extra = { "x-nonce": nonce, [NOMBRE]: csp };
+  const NOMBRE_RESPUESTA = "Content-Security-Policy-Report-Only";
+  const extra = { "x-nonce": nonce, "Content-Security-Policy": csp };
 
   let response: NextResponse;
   if (CON_SESION.test(request.nextUrl.pathname)) {
@@ -23,7 +26,7 @@ export async function proxy(request: NextRequest) {
     for (const [k, v] of Object.entries(extra)) headers.set(k, v);
     response = NextResponse.next({ request: { headers } });
   }
-  response.headers.set(NOMBRE, csp);
+  response.headers.set(NOMBRE_RESPUESTA, csp);
   return response;
 }
 
