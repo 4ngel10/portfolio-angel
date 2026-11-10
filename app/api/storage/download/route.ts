@@ -13,10 +13,19 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const { data: archivo } = await supabase
     .from("archivos")
-    .select("storage_path, nombre")
+    .select("storage_path, nombre, empresa_id, proyecto_id")
     .eq("id", id)
     .maybeSingle();
   if (!archivo) return NextResponse.json({ error: t("api.fileNotFound") }, { status: 404 });
+
+  // La ruta se firma con la clave de servicio, así que tiene que ser la de esta empresa y proyecto.
+  if (
+    !archivo.storage_path.startsWith(`${archivo.empresa_id}/${archivo.proyecto_id}/`) ||
+    archivo.storage_path.includes("..")
+  ) {
+    console.error("[download] ruta fuera de su carpeta", id);
+    return NextResponse.json({ error: t("api.fileNotFound") }, { status: 404 });
+  }
 
   const { data, error } = await createAdminClient()
     .storage.from("archivos")

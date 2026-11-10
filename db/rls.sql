@@ -134,12 +134,17 @@ create policy cliente_insert on public.mensajes_incidencia for insert to authent
                 where i.id = incidencia_id and i.empresa_id = public.current_empresa_id())
   );
 
--- Registrar un archivo subido a un proyecto propio.
+-- Registrar un archivo subido a un proyecto propio. La ruta en Storage tiene que ser de esa
+-- misma empresa y proyecto (<empresa_id>/<proyecto_id>/..., sin ".."): sin esto, un cliente podría
+-- registrar la ruta de otra empresa y descargarla. También lo exige el check
+-- archivos_storage_path_check (migración 0008).
 drop policy if exists cliente_insert on public.archivos;
 create policy cliente_insert on public.archivos for insert to authenticated
   with check (
     empresa_id = public.current_empresa_id()
     and subido_por = auth.uid()
+    and storage_path like empresa_id::text || '/' || proyecto_id::text || '/%'
+    and storage_path not like '%..%'
     and exists (select 1 from public.proyectos p
                 where p.id = proyecto_id and p.empresa_id = public.current_empresa_id())
   );

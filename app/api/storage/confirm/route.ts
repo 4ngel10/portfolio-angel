@@ -6,6 +6,10 @@ import { avisarAdmin } from "@/lib/portal/email";
 import { getI18n } from "@/lib/portal/i18n";
 import { isUuid } from "@/lib/portal/validate";
 
+/** <uuid>-<nombre limpio>. El nombre solo tiene letras, números, punto, guion y guion bajo (limpiarNombre en presign). */
+const NOMBRE_EN_STORAGE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-[A-Za-z0-9._-]+$/i;
+
 /** Paso 2 de la subida: el archivo ya está en Storage, se registra en la tabla `archivos`. */
 export async function POST(request: Request) {
   const { t } = await getI18n();
@@ -38,8 +42,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: t("api.invalidPath") }, { status: 400 });
   }
 
-  // El tamaño real lo da Storage, no el cliente.
+  // El resto de la ruta es <uuid>-<nombre>, sin subcarpetas ni ".." (lo genera /api/storage/presign).
   const nombreEnStorage = path.slice(carpeta.length);
+  if (!NOMBRE_EN_STORAGE.test(nombreEnStorage) || nombreEnStorage.includes("/")) {
+    return NextResponse.json({ error: t("api.invalidPath") }, { status: 400 });
+  }
+
+  // El tamaño real lo da Storage, no el cliente.
   const { data: objetos } = await createAdminClient()
     .storage.from("archivos")
     .list(carpeta.slice(0, -1), {

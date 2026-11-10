@@ -57,6 +57,13 @@
       "when": 1794259252230,
       "tag": "0007_empresa_archivada",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794315089574,
+      "tag": "0008_archivos_storage_path_check",
+      "breakpoints": true
     }
   ]
 }

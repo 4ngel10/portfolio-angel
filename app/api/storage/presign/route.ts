@@ -37,6 +37,7 @@ const limpiarNombre = (n: string) =>
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-zA-Z0-9._-]+/g, "_")
+    .replace(/\.{2,}/g, ".")
     .replace(/^[._]+/, "")
     .slice(-100) || "archivo";
 

@@ -141,6 +141,11 @@ export const archivos = pgTable(
   (t) => [
     index("archivos_proyecto_idx").on(t.proyectoId),
     index("archivos_empresa_idx").on(t.empresaId),
+    // La ruta en Storage siempre es <empresa_id>/<proyecto_id>/<uuid>-<nombre>, y nunca lleva "..".
+    check(
+      "archivos_storage_path_check",
+      sql`${t.storagePath} like ${t.empresaId}::text || '/' || ${t.proyectoId}::text || '/%' and ${t.storagePath} not like '%..%'`,
+    ),
   ],
 );
 
