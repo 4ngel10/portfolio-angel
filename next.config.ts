@@ -5,7 +5,6 @@ import { cspPublica, RUTAS_PRIVADAS } from "./lib/csp";
 const securityHeaders = [
   // Nadie puede incrustar la web en un iframe (clickjacking sobre /admin y /portal).
   { key: "X-Frame-Options", value: "DENY" },
-  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()" },
@@ -24,11 +23,16 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
-      // CSP en modo prueba (solo informa) para la web pública. Las rutas privadas la reciben
-      // de proxy.ts con nonce, así que se excluyen aquí. Ver docs/csp.md.
+      // CSP de la web pública: frame-ancestors (enforced) y la política completa en modo prueba.
+      // Las rutas privadas las recibe de proxy.ts con nonce, así que se excluyen aquí. La
+      // frame-ancestors NO puede ir en las cabeceras globales: en Vercel llega también a la petición
+      // y pisa la del proxy, y Next ya no encuentra el nonce. Ver docs/csp.md.
       {
         source: `/((?!(?:${RUTAS_PRIVADAS.join("|")}|api)(?:/|$)).*)`,
-        headers: [{ key: "Content-Security-Policy-Report-Only", value: cspPublica() }],
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+          { key: "Content-Security-Policy-Report-Only", value: cspPublica() },
+        ],
       },
     ];
   },

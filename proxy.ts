@@ -27,6 +27,9 @@ export async function proxy(request: NextRequest) {
     response = NextResponse.next({ request: { headers } });
   }
   response.headers.set(NOMBRE_RESPUESTA, csp);
+  // OJO: no poner aquí un "Content-Security-Policy" en la respuesta. Next (y Vercel) copian las
+  // cabeceras de respuesta del proxy a la petición y pisarían la política con nonce. Contra los
+  // iframes en estas rutas vale X-Frame-Options: DENY (next.config.ts).
   return response;
 }
 

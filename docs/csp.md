@@ -35,9 +35,25 @@ Arreglo (`proxy.ts`): la política completa va también en la cabecera de petici
 
 Scripts propios: el único script en línea ejecutable es el del tema (`app/layout.tsx`), cubierto por hash. Los demás `<script>` son `application/ld+json` y no se ejecutan. No hubo que leer `x-nonce` en ningún componente.
 
+### Causa confirmada y arreglo definitivo
+
+El primer arreglo (política completa en la cabecera de petición `Content-Security-Policy`) no bastó en Vercel. Un despliegue de prueba con logs (`[diag-csp]`) lo explicó: la página recibía `x-nonce` correcto, pero la cabecera de petición `content-security-policy` llegaba como `frame-ancestors 'none'`, es decir, la de `next.config.ts`. En Vercel las cabeceras de `headers()` de `next.config.ts` también llegan a la petición y pisan la que pone `proxy.ts`. Como Next lee el nonce de esa cabecera, no lo encontraba.
+
+Descartado: las rutas privadas ya eran dinámicas (ƒ en la tabla del build) y no hay `cacheComponents`, PPR ni `"use cache"`; forzar el render dinámico no era el problema.
+
+Arreglo:
+
+- `next.config.ts`: `Content-Security-Policy: frame-ancestors 'none'` ya no está en las cabeceras globales. Va solo en la regla de la web pública (la que excluye `admin`, `portal`, `login`, `mfa`, `contrasena`, `auth` y `api`). Siguen en las globales `X-Frame-Options: DENY` y el resto.
+- `proxy.ts`: en las rutas privadas, la política completa con nonce va en la petición y en la respuesta solo `Content-Security-Policy-Report-Only`.
+- `/api` queda sin CSP (son JSON); `X-Frame-Options: DENY` sigue.
+
+**No poner un `Content-Security-Policy` en la respuesta del proxy.** Se probó (`frame-ancestors 'none'` enforced en las rutas privadas) y rompe el nonce: Next copia las cabeceras de respuesta del proxy a la petición y vuelve a pisar la política. En local, 0 de 24 scripts con nonce con esa línea y 23 de 24 sin ella. Contra los iframes en las rutas privadas vale `X-Frame-Options: DENY`; `frame-ancestors` entra en enforce junto con el resto de la política (ver más abajo).
+
+Resultado en local (build de producción, `/login`): 23 de 24 scripts ejecutables con nonce; el otro es el del tema, con hash. También con una petición que ya trae un `Content-Security-Policy`.
+
 **Pendiente de comprobar tras desplegar:** repetir `curl.exe -s https://www.angel-fernandez.es/login` y contar los scripts sin nonce (debe quedar solo el del tema). `/admin` con sesión no se ha podido probar en local; usa el mismo proxy.
 
-Ojo al probar en local: un `next start` anterior puede seguir vivo y servir una versión vieja. Comprueba que el puerto está libre antes de arrancar.
+Ojo al probar en local: un `next start` anterior puede seguir vivo y servir una versión vieja (y dar resultados falsos). Usa un puerto nuevo en cada prueba o comprueba con `netstat` que está libre.
 
 ## Resultado de la prueba (localhost, build de producción)
 
