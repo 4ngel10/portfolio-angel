@@ -243,6 +243,7 @@ rollback;
 begin;
 set local role anon;
 select * from public.blog_api_tokens;
+select * from public.blog_api_uso;
 rollback;
 ```
 
@@ -261,9 +262,10 @@ select set_config('request.jwt.claims',
 
 -- 5.5 Cliente: 1 fila (solo el publicado).
 select slug from public.blog_posts where slug like 'prueba-%';
--- 5.6 Cliente: 0 filas en las dos.
+-- 5.6 Cliente: 0 filas en las tres.
 select id from public.blog_post_versions;
 select id from public.blog_api_tokens;
+select id from public.blog_api_uso;
 rollback;
 
 begin;

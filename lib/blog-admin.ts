@@ -29,9 +29,14 @@ export type VersionBlog = { id: string; created_at: string; titulo: string | nul
 /** Prefijo de created_by de los borradores que crea la API (fase 4): "api:<nombre del token>". */
 export const PREFIJO_API = "api:";
 
-export function estadoDe(fila: Pick<FilaBlog, "status" | "published_at">, ahora = Date.now()): EstadoBlog {
+export function estadoDe(
+  fila: Pick<FilaBlog, "status" | "published_at">,
+  ahora = Date.now(),
+): EstadoBlog {
   if (fila.status !== "publicado") return "borrador";
-  return fila.published_at && new Date(fila.published_at).getTime() > ahora ? "programado" : "publicado";
+  return fila.published_at && new Date(fila.published_at).getTime() > ahora
+    ? "programado"
+    : "publicado";
 }
 
 export async function listarPostsAdmin(): Promise<FilaBlog[]> {
@@ -62,6 +67,25 @@ export async function listarVersiones(postId: string): Promise<VersionBlog[]> {
     .limit(20);
   if (error) throw new Error(`[blog-admin] ${error.message}`);
   return (data ?? []) as unknown as VersionBlog[];
+}
+
+export type ClaveBlog = {
+  id: string;
+  nombre: string;
+  created_at: string;
+  last_used_at: string | null;
+  revoked_at: string | null;
+};
+
+/** Claves de la API del blog, sin el hash. */
+export async function listarClaves(): Promise<ClaveBlog[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("blog_api_tokens")
+    .select("id, nombre, created_at, last_used_at, revoked_at")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`[blog-admin] ${error.message}`);
+  return (data ?? []) as ClaveBlog[];
 }
 
 /** Borradores que ha creado la API y esperan revisión. */

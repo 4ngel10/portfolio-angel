@@ -1,10 +1,6 @@
 "use server";
 
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import sharp from "sharp";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
 import { isUuid } from "@/lib/portal/validate";
@@ -13,6 +9,7 @@ import type { FilaBlog } from "./blog-admin";
 import { contenidoDeEditor, esEditorPost, type EditorPost } from "./blog-editor";
 import { imagenesConocidas, type TamanoImagen } from "./blog-markup";
 import { revalidarBlog } from "./blog-revalidate";
+import { canonico, guardarVersionCon, ogValido, resolverTamanos } from "./blog-save";
 import { madridLocalAUtc } from "./blog-types";
 import { validarPost, type Fallo, type PostParaValidar } from "./blog-validate";
 
@@ -36,21 +33,6 @@ export type ResultadoBlog = {
 };
 
 const MAX_BYTES_ENTRADA = 400_000;
-const VERSIONES_QUE_SE_CONSERVAN = 20;
-const BUCKET = "blog";
-
-/** JSON con las claves ordenadas: jsonb no conserva el orden, así que no se puede comparar a pelo. */
-function canonico(valor: unknown): string {
-  if (Array.isArray(valor)) return `[${valor.map(canonico).join(",")}]`;
-  if (valor && typeof valor === "object") {
-    const o = valor as Record<string, unknown>;
-    return `{${Object.keys(o)
-      .sort()
-      .map((k) => `${JSON.stringify(k)}:${canonico(o[k])}`)
-      .join(",")}}`;
-  }
-  return JSON.stringify(valor) ?? "null";
-}
 
 function paraValidar(
   fila: Pick<FilaBlog, "slug" | "category" | "og_image" | "content" | "created_by">,
@@ -72,55 +54,6 @@ async function cargarFila(id: string): Promise<FilaBlog | null> {
   return (data as FilaBlog | null) ?? null;
 }
 
-/** Ruta del archivo dentro del bucket para una imagen /blog-img/..., o null si no es de fiar. */
-function claveEnBucket(ruta: string): string | null {
-  const prefijo = "/blog-img/";
-  if (!ruta.startsWith(prefijo)) return null;
-  const clave = ruta.slice(prefijo.length);
-  if (clave === "" || clave.includes("..") || clave.includes("//") || clave.startsWith("/"))
-    return null;
-  return clave;
-}
-
-/** Lee el archivo de una imagen y devuelve su tamaño, o null si no se puede. */
-async function leerTamano(ruta: string): Promise<TamanoImagen | null> {
-  try {
-    let bytes: Buffer | null = null;
-    const clave = claveEnBucket(ruta);
-    if (clave) {
-      const { data } = await createAdminClient().storage.from(BUCKET).download(clave);
-      if (data) bytes = Buffer.from(await data.arrayBuffer());
-    } else if (ruta.startsWith("/blog/") && !ruta.includes("..")) {
-      const base = path.join(process.cwd(), "public", "blog");
-      const archivo = path.join(process.cwd(), "public", ruta);
-      if (archivo.startsWith(base + path.sep)) bytes = await readFile(archivo);
-    }
-    if (!bytes) return null;
-    const meta = await sharp(bytes).metadata();
-    return meta.width && meta.height ? { width: meta.width, height: meta.height } : null;
-  } catch {
-    return null;
-  }
-}
-
-/** Rellena width y height de las imágenes nuevas leyendo el archivo subido. */
-async function resolverTamanos(contenido: BlogContenido): Promise<void> {
-  const cache = new Map<string, TamanoImagen | null>();
-  for (const idioma of ["es", "en"] as const) {
-    for (const seccion of contenido[idioma].sections) {
-      for (const bloque of seccion.blocks) {
-        if (typeof bloque !== "object" || !("img" in bloque) || bloque.width > 0) continue;
-        if (!cache.has(bloque.img)) cache.set(bloque.img, await leerTamano(bloque.img));
-        const tamano = cache.get(bloque.img);
-        if (tamano) {
-          bloque.width = tamano.width;
-          bloque.height = tamano.height;
-        }
-      }
-    }
-  }
-}
-
 /** Contenido del editor a contenido guardable, conservando el tamaño de las imágenes que ya había. */
 async function construirContenido(
   entrada: EditorPost,
@@ -139,37 +72,9 @@ async function construirContenido(
   return contenido;
 }
 
-function ogValido(og: string): boolean {
-  return (
-    og === "" || ((og.startsWith("/blog-img/") || og.startsWith("/blog/")) && !og.includes(".."))
-  );
-}
-
-/** Guarda una copia del contenido y deja solo las últimas 20. */
+/** Copia del contenido en el historial, con la sesión del admin. */
 async function guardarVersion(postId: string, contenido: BlogContenido) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("blog_post_versions")
-    .insert({ post_id: postId, content: contenido });
-  if (error) {
-    console.error("[blog-actions] no se pudo guardar la versión", error.message);
-    return;
-  }
-  const { data: viejas } = await supabase
-    .from("blog_post_versions")
-    .select("id")
-    .eq("post_id", postId)
-    .order("created_at", { ascending: false })
-    .range(VERSIONES_QUE_SE_CONSERVAN, 10_000);
-  if (viejas && viejas.length > 0) {
-    await supabase
-      .from("blog_post_versions")
-      .delete()
-      .in(
-        "id",
-        viejas.map((v) => v.id as string),
-      );
-  }
+  await guardarVersionCon(await createClient(), postId, contenido);
 }
 
 /** Crea o actualiza un artículo (siempre como lo envía el editor; no cambia su estado). */

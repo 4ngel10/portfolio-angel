@@ -34,7 +34,10 @@ export default async function VistaPreviaPage({ params }: { params: Params }) {
 
   return (
     <>
-      <Link href={`/admin/blog/${fila.id}`} className="text-muted hover:text-ink mb-3 inline-block text-sm">
+      <Link
+        href={`/admin/blog/${fila.id}`}
+        className="text-muted hover:text-ink mb-3 inline-block text-sm"
+      >
         {t("blog.preview.edit")}
       </Link>
       <BlogVista post={post} />

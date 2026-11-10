@@ -46,7 +46,7 @@ order by 1, 2;
 --   * Nunca debe haber una política con cmd UPDATE o DELETE para clientes,
 --     ni ninguna con el rol {public} o {anon}.
 --   * bolsa_historial, ajustes, cobros, pagos, suscripciones y gastos: solo admin_all.
---   * blog_post_versions y blog_api_tokens: solo admin_all.
+--   * blog_post_versions, blog_api_tokens y blog_api_uso: solo admin_all.
 --   * blog_posts: admin_all y publicado_select (SELECT, {anon,authenticated}). Es la ÚNICA
 --     política que puede nombrar a anon. Su condición debe ser: status = 'publicado' and
 --     published_at is not null and published_at <= now().
@@ -88,7 +88,7 @@ order by p.proname;
 -- ---------------------------------------------------------------------
 -- (e) Buckets de Storage y si son públicos.
 -- CORRECTO: el bucket "archivos" con publico = false. El bucket "blog" SÍ es público (imágenes de
--- los artículos), con limite_bytes = 5242880 y solo image/webp, jpeg, png y svg+xml. Ningún bucket público salvo que
+-- los artículos), con limite_bytes = 5242880 y solo image/webp, jpeg y png (el SVG se convierte a WebP antes de subirlo). Ningún bucket público salvo que
 -- sea intencionado. Los archivos de clientes solo se sirven con URL firmada de 60 s
 -- desde /api/storage/download.
 -- ---------------------------------------------------------------------

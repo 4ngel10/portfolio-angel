@@ -26,9 +26,10 @@ export default async function EditarArticuloPage({ params }: { params: Params })
   const { t } = await getI18n();
   const versiones = await listarVersiones(fila.id);
 
-  const conocidas = ([...imagenesConocidas(fila.content.es.sections), ...imagenesConocidas(fila.content.en.sections)]).map(
-    ([ruta, tamano]) => ({ ruta, ...tamano }),
-  );
+  const conocidas = [
+    ...imagenesConocidas(fila.content.es.sections),
+    ...imagenesConocidas(fila.content.en.sections),
+  ].map(([ruta, tamano]) => ({ ruta, ...tamano }));
 
   return (
     <>

@@ -32,8 +32,13 @@ export default async function AdminBlogPage() {
     return { p, estado: estadoDe(p, ahora), errores: r.errores.length, avisos: r.avisos.length };
   });
 
-  const estadoTexto = { borrador: t("blog.status.draft"), programado: t("blog.status.scheduled"), publicado: t("blog.status.published") };
-  const chip = "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap";
+  const estadoTexto = {
+    borrador: t("blog.status.draft"),
+    programado: t("blog.status.scheduled"),
+    publicado: t("blog.status.published"),
+  };
+  const chip =
+    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap";
 
   return (
     <>
@@ -42,6 +47,9 @@ export default async function AdminBlogPage() {
         intro={t("blog.intro")}
         action={
           <div className="flex flex-wrap items-center gap-3">
+            <Link href="/admin/blog/claves" className="btn-secondary">
+              {t("blog.keys.link")}
+            </Link>
             <a href="/api/admin/blog/exportar" className="btn-secondary" download>
               {t("blog.exportAll")}
             </a>
@@ -88,7 +96,9 @@ export default async function AdminBlogPage() {
                       {estadoTexto[estado]}
                     </span>
                   </span>
-                  <span className="text-muted text-sm">{p.published_at ? fecha(p.published_at) : "-"}</span>
+                  <span className="text-muted text-sm">
+                    {p.published_at ? fecha(p.published_at) : "-"}
+                  </span>
                   <span className="text-muted text-sm">{fecha(p.updated_at)}</span>
                   <span className="flex flex-wrap gap-1.5">
                     {errores > 0 ? (
@@ -96,7 +106,9 @@ export default async function AdminBlogPage() {
                         {t("blog.chipErrors", { n: errores })}
                       </span>
                     ) : (
-                      <span className={`${chip} border-rule text-muted`}>{t("blog.chipReady")}</span>
+                      <span className={`${chip} border-rule text-muted`}>
+                        {t("blog.chipReady")}
+                      </span>
                     )}
                     {avisos > 0 ? (
                       <span className={`${chip} border-[var(--warn)] text-[var(--warn)]`}>

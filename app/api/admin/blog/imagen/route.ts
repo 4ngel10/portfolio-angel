@@ -1,10 +1,9 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
-import sharp from "sharp";
 import { comprobarAdmin } from "@/lib/portal/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { slugValido } from "@/lib/blog-validate";
-import { slugify } from "@/lib/portal/validate";
+import { esErrorImagen, nombreImagen, procesarImagen, subirImagen } from "@/lib/blog-imagenes";
 
 /**
  * Subida de imágenes del editor del blog. Solo el admin (comprobarAdmin). Convierte a WebP
@@ -15,9 +14,6 @@ import { slugify } from "@/lib/portal/validate";
 export const runtime = "nodejs";
 
 const MAX_BYTES_ENTRADA = 15 * 1024 * 1024;
-const MAX_BYTES_SALIDA = 5 * 1024 * 1024; // el límite del bucket
-const ANCHO_MAXIMO = 2200;
-const TIPOS = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 export async function POST(request: Request) {
   const auth = await comprobarAdmin();
@@ -29,44 +25,20 @@ export async function POST(request: Request) {
   if (!(archivo instanceof File) || typeof slug !== "string" || !slugValido(slug)) {
     return NextResponse.json({ error: "Faltan el archivo o un slug válido." }, { status: 400 });
   }
-  if (!TIPOS.has(archivo.type)) {
-    return NextResponse.json({ error: "Solo se admiten JPG, PNG, WebP o GIF." }, { status: 415 });
-  }
   if (archivo.size > MAX_BYTES_ENTRADA) {
     return NextResponse.json({ error: "La imagen pesa más de 15 MB." }, { status: 413 });
   }
 
-  let salida: Buffer;
-  let ancho: number;
-  let alto: number;
-  try {
-    const resultado = await sharp(Buffer.from(await archivo.arrayBuffer()))
-      .rotate()
-      .resize({ width: ANCHO_MAXIMO, withoutEnlargement: true })
-      .webp({ quality: 82 })
-      .toBuffer({ resolveWithObject: true });
-    salida = resultado.data;
-    ancho = resultado.info.width;
-    alto = resultado.info.height;
-  } catch {
-    return NextResponse.json({ error: "No se pudo leer la imagen." }, { status: 422 });
-  }
-  if (salida.length > MAX_BYTES_SALIDA) {
-    return NextResponse.json({ error: "La imagen convertida pesa más de 5 MB." }, { status: 413 });
+  const imagen = await procesarImagen(Buffer.from(await archivo.arrayBuffer()), archivo.type);
+  if (esErrorImagen(imagen)) {
+    return NextResponse.json({ error: imagen.error }, { status: imagen.status });
   }
 
-  // Nombre sin extensión original, y un sufijo para que dos subidas no se pisen.
-  const origen = archivo.name.includes(".") ? archivo.name.slice(0, archivo.name.lastIndexOf(".")) : archivo.name;
-  const nombre = `${slugify(origen) || "imagen"}-${randomBytes(3).toString("hex")}.webp`;
-
-  const { error } = await createAdminClient()
-    .storage.from("blog")
-    .upload(`${slug}/${nombre}`, salida, {
-      contentType: "image/webp",
-      cacheControl: "31536000",
-      upsert: false,
-    });
-  if (error) return NextResponse.json({ error: "No se pudo guardar la imagen." }, { status: 500 });
-
-  return NextResponse.json({ path: `/blog-img/${slug}/${nombre}`, width: ancho, height: alto });
+  // Un sufijo aleatorio para que dos subidas con el mismo nombre no se pisen.
+  const nombre = `${nombreImagen(archivo.name)}-${randomBytes(3).toString("hex")}`;
+  const subida = await subirImagen(createAdminClient(), slug, nombre, imagen);
+  if (esErrorImagen(subida)) {
+    return NextResponse.json({ error: subida.error }, { status: subida.status });
+  }
+  return NextResponse.json({ path: subida.ruta, width: imagen.width, height: imagen.height });
 }

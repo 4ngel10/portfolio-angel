@@ -9,7 +9,10 @@ export async function GET() {
 
   const supabase = await createClient();
   const [posts, versiones] = await Promise.all([
-    supabase.from("blog_posts").select("*").order("published_at", { ascending: false, nullsFirst: true }),
+    supabase
+      .from("blog_posts")
+      .select("*")
+      .order("published_at", { ascending: false, nullsFirst: true }),
     supabase.from("blog_post_versions").select("*").order("created_at", { ascending: false }),
   ]);
   if (posts.error || versiones.error) {
@@ -18,7 +21,11 @@ export async function GET() {
 
   const dia = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
   return new NextResponse(
-    JSON.stringify({ exportado: new Date().toISOString(), posts: posts.data, versiones: versiones.data }, null, 2),
+    JSON.stringify(
+      { exportado: new Date().toISOString(), posts: posts.data, versiones: versiones.data },
+      null,
+      2,
+    ),
     {
       headers: {
         "Content-Type": "application/json; charset=utf-8",

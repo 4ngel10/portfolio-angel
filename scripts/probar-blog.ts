@@ -8,6 +8,7 @@
 import { BLOG_POSTS } from "../lib/blog";
 import { bloquesATexto, imagenesConocidas, textoABloques } from "../lib/blog-markup";
 import { validarPost, type PostParaValidar } from "../lib/blog-validate";
+import { DENSIDAD_BASE, DENSIDAD_MAXIMA, densidadSvg, motivoSvgInseguro } from "../lib/blog-svg";
 import type { BlogPostContent } from "../lib/blog-types";
 
 let fallos = 0;
@@ -175,6 +176,31 @@ console.log("Validador, casos que debe detectar");
     "avisa de un rango con guion",
     validarPost(rango, { publicar: true }).avisos.some((a) => a.ruta === "es.intro"),
   );
+}
+
+console.log("SVG, comprobación previa a convertirlo a WebP");
+{
+  const cab = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"';
+  comprobar(
+    "acepta un SVG limpio",
+    motivoSvgInseguro(`${cab}><rect width="5" height="5"/></svg>`) === null,
+  );
+  const malos: [string, string][] = [
+    ["<script", `${cab}><script>alert(1)</script></svg>`],
+    ["onload", `${cab} onload="alert(1)"></svg>`],
+    ["javascript:", `${cab}><a href="javascript:alert(1)"/></svg>`],
+    ["<foreignobject", `${cab}><foreignObject/></svg>`],
+    ["raya larga", `${cab}><text>a ${String.fromCharCode(0x2014)} b</text></svg>`],
+    ["href externo", `${cab}><image href="http://example.com/x.png"/></svg>`],
+    ["entidad", `<!DOCTYPE svg [<!ENTITY x SYSTEM "file:///etc/passwd">]>${cab}/>`],
+  ];
+  for (const [nombre, svg] of malos) {
+    comprobar(`rechaza un SVG con ${nombre}`, motivoSvgInseguro(svg) !== null);
+  }
+  comprobar("densidad de un SVG de 400 px: 288 (sale a 1600 px)", densidadSvg(400) === 288);
+  comprobar("densidad de un SVG enorme: nunca baja de 72", densidadSvg(5000) === DENSIDAD_BASE);
+  comprobar("densidad de un SVG diminuto: tiene tope", densidadSvg(1) === DENSIDAD_MAXIMA);
+  comprobar("densidad sin ancho: la base", densidadSvg(0) === DENSIDAD_BASE);
 }
 
 console.log("Conversor texto y bloques, ida y vuelta");

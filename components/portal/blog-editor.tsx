@@ -450,7 +450,7 @@ export function BlogEditor({
                   <input
                     ref={archivo}
                     type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
                     className="sr-only"
                     tabIndex={-1}
                     onChange={alSubirImagen}

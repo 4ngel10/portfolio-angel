@@ -267,7 +267,7 @@ revoke all on function public.registrar_horas(uuid, date, numeric, uuid, text) f
 grant execute on function public.registrar_horas(uuid, date, numeric, uuid, text) to authenticated;
 
 -- ---------------------------------------------------------------------
--- 10. Blog: blog_posts, blog_post_versions y blog_api_tokens.
+-- 10. Blog: blog_posts, blog_post_versions, blog_api_tokens y blog_api_uso.
 -- Los visitantes (anon) y las cuentas con sesión solo leen los artículos publicados cuya fecha
 -- ya pasó (un artículo con fecha futura está programado y no se ve). Todo lo demás es del admin
 -- (is_admin() exige aal2). Las versiones y las claves de la API no tienen política para nadie
@@ -280,7 +280,7 @@ grant execute on function public.registrar_horas(uuid, date, numeric, uuid, text
 do $$
 declare t text;
 begin
-  foreach t in array array['blog_posts','blog_post_versions','blog_api_tokens'] loop
+  foreach t in array array['blog_posts','blog_post_versions','blog_api_tokens','blog_api_uso'] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on public.%I from anon', t);
     execute format('drop policy if exists admin_all on public.%I', t);
@@ -303,10 +303,10 @@ create policy publicado_select on public.blog_posts for select to anon, authenti
 -- Escribir, solo el admin; la API del blog sube con la clave de servicio.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('blog', 'blog', true, 5242880,
-        array['image/webp', 'image/jpeg', 'image/png', 'image/svg+xml'])
+        array['image/webp', 'image/jpeg', 'image/png'])
 on conflict (id) do update
   set public = true, file_size_limit = 5242880,
-      allowed_mime_types = array['image/webp', 'image/jpeg', 'image/png', 'image/svg+xml'];
+      allowed_mime_types = array['image/webp', 'image/jpeg', 'image/png'];
 
 drop policy if exists blog_admin_write on storage.objects;
 create policy blog_admin_write on storage.objects for all to authenticated

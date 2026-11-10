@@ -367,3 +367,83 @@ export function validarPost(post: PostParaValidar, opciones: { publicar: boolean
 
   return { errores, avisos };
 }
+
+const esTexto = (x: unknown): x is string => typeof x === "string";
+const esListaTextos = (x: unknown): x is string[] => Array.isArray(x) && x.every(esTexto);
+
+/**
+ * Comprueba la forma de un contenido que llega de fuera (la API) y devuelve una copia limpia, solo
+ * con las claves conocidas. Las imágenes pueden venir sin width y height (se leen del archivo al
+ * guardar). Si algo no encaja, devuelve los fallos por ruta.
+ */
+export function normalizarContenido(
+  entrada: unknown,
+  prefijo: string,
+): { contenido: BlogPostContent } | { errores: Fallo[] } {
+  const errores: Fallo[] = [];
+  const falla = (ruta: string, mensaje: string) =>
+    errores.push({ ruta: `${prefijo}.${ruta}`, mensaje });
+  if (typeof entrada !== "object" || entrada === null || Array.isArray(entrada)) {
+    return { errores: [{ ruta: prefijo, mensaje: "Tiene que ser un objeto." }] };
+  }
+  const o = entrada as Record<string, unknown>;
+  for (const campo of ["title", "excerpt", "description", "intro"] as const) {
+    if (!esTexto(o[campo])) falla(campo, "Tiene que ser un texto.");
+  }
+  if (o.seoTitle !== undefined && !esTexto(o.seoTitle))
+    falla("seoTitle", "Tiene que ser un texto.");
+  if (!Array.isArray(o.sections) || o.sections.length === 0 || o.sections.length > 60) {
+    falla("sections", "Tiene que ser una lista de 1 a 60 secciones.");
+    return { errores };
+  }
+
+  const sections: BlogPostContent["sections"] = [];
+  o.sections.forEach((s: unknown, i: number) => {
+    const ruta = `sections[${i}]`;
+    if (typeof s !== "object" || s === null || Array.isArray(s))
+      return falla(ruta, "Tiene que ser un objeto.");
+    const sec = s as Record<string, unknown>;
+    if (sec.heading !== undefined && !esTexto(sec.heading))
+      falla(`${ruta}.heading`, "Tiene que ser un texto.");
+    if (!Array.isArray(sec.blocks) || sec.blocks.length > 200) {
+      return falla(`${ruta}.blocks`, "Tiene que ser una lista de bloques.");
+    }
+    const blocks: PostBlock[] = [];
+    sec.blocks.forEach((b: unknown, j: number) => {
+      const r = `${ruta}.blocks[${j}]`;
+      if (esTexto(b)) return void blocks.push(b);
+      if (typeof b !== "object" || b === null || Array.isArray(b))
+        return falla(r, "Bloque no válido.");
+      const bl = b as Record<string, unknown>;
+      if (esTexto(bl.h3)) return void blocks.push({ h3: bl.h3 });
+      if (esListaTextos(bl.list)) return void blocks.push({ list: bl.list });
+      if (esListaTextos(bl.ol)) return void blocks.push({ ol: bl.ol });
+      if (esTexto(bl.img) && esTexto(bl.alt)) {
+        const num = (v: unknown) =>
+          typeof v === "number" && Number.isFinite(v) && v > 0 ? Math.round(v) : 0;
+        const imagen: PostImage = {
+          img: bl.img,
+          alt: bl.alt,
+          width: num(bl.width),
+          height: num(bl.height),
+        };
+        if (esTexto(bl.caption) && bl.caption !== "") imagen.caption = bl.caption;
+        return void blocks.push(imagen);
+      }
+      falla(r, "Bloque no válido, usa un texto, h3, list, ol o img con alt.");
+    });
+    sections.push({ ...(esTexto(sec.heading) ? { heading: sec.heading } : {}), blocks });
+  });
+  if (errores.length > 0) return { errores };
+
+  return {
+    contenido: {
+      title: (o.title as string).trim(),
+      ...(esTexto(o.seoTitle) && o.seoTitle.trim() ? { seoTitle: o.seoTitle.trim() } : {}),
+      excerpt: (o.excerpt as string).trim(),
+      description: (o.description as string).trim(),
+      intro: (o.intro as string).trim(),
+      sections,
+    },
+  };
+}

@@ -594,3 +594,23 @@ export const blogApiTokens = pgTable(
   },
   (t) => [check("blog_api_tokens_scope_check", enLista(t.scope, ALCANCES_TOKEN_BLOG))],
 );
+
+/**
+ * Uso de la API del blog, una fila por cada artículo o imagen que escribe un token. Sirve para el
+ * límite por hora (lib/blog-api-auth.ts). Solo la escribe la API con la clave de servicio.
+ */
+export const blogApiUso = pgTable(
+  "blog_api_uso",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tokenId: uuid("token_id")
+      .notNull()
+      .references(() => blogApiTokens.id, { onDelete: "cascade" }),
+    tipo: text("tipo", { enum: ["articulo", "imagen"] as const }).notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("blog_api_uso_token_idx").on(t.tokenId, t.tipo, t.createdAt.desc()),
+    check("blog_api_uso_tipo_check", enLista(t.tipo, ["articulo", "imagen"] as const)),
+  ],
+);
