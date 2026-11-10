@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { marcasContrasena } from "@/lib/portal/auth";
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
@@ -23,7 +24,7 @@ async function destino(supabase: Supabase, origin: string, contrasena: boolean, 
   }
   if (perfil?.role === "cliente") {
     // Primera vez (aún sin contraseña) o enlace de "contraseña olvidada": a elegirla.
-    const sinPassword = !user?.user_metadata?.password_set;
+    const sinPassword = !marcasContrasena(user).elegida;
     const ruta = sinPassword || contrasena ? "/contrasena" : "/portal";
     return NextResponse.redirect(`${origin}${ruta}`, status);
   }

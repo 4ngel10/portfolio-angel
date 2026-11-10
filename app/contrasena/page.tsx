@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getPerfil } from "@/lib/portal/auth";
+import { getPerfil, marcasContrasena } from "@/lib/portal/auth";
 import { createClient } from "@/lib/supabase/server";
 import { getI18n } from "@/lib/portal/i18n";
 import { PasswordForm } from "@/components/portal/password-form";
@@ -29,7 +29,7 @@ export default async function PasswordPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const temporal = user?.user_metadata?.password_temporary === true;
+  const temporal = marcasContrasena(user).temporal;
 
   return (
     <I18nBoundary>

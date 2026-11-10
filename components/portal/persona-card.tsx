@@ -129,7 +129,7 @@ export function PersonaCard({
                   id={`p-${p.id}`}
                   name="password"
                   type="password"
-                  minLength={8}
+                  minLength={12}
                   maxLength={72}
                   autoComplete="new-password"
                   aria-describedby={`ph-${p.id}`}

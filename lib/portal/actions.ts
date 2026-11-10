@@ -1,11 +1,11 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fallo, refrescar } from "./action-utils";
 import { getPerfil, requireAdmin } from "./auth";
+import { ipDelCliente } from "./ip";
 import { avisarAdmin, avisarBolsaBaja, enviarInvitacion } from "./email";
 import { SITE_URL } from "@/lib/site";
 import { getI18n } from "./i18n";
@@ -663,6 +663,24 @@ async function clienteObjetivo(id: string) {
   return data && data.role === "cliente" ? data : null;
 }
 
+/**
+ * El cliente acaba de elegir su contraseña (el formulario ya la cambió con su sesión): se anota en
+ * app_metadata, que solo se escribe desde el servidor. La marca solo decide si el portal le pide
+ * elegirla; no da acceso a nada.
+ */
+export async function marcarContrasenaElegida(): Promise<{ ok: boolean }> {
+  const perfil = await getPerfil();
+  if (!perfil || perfil.role !== "cliente") return { ok: false };
+  const { error } = await createAdminClient().auth.admin.updateUserById(perfil.id, {
+    app_metadata: { password_set: true, password_temporary: false },
+  });
+  if (error) {
+    console.error("[marcarContrasenaElegida]", error.message);
+    return { ok: false };
+  }
+  return { ok: true };
+}
+
 export async function guardarUsuario(_: FormState, fd: FormData): Promise<FormState> {
   await requireAdmin();
   const id = text(fd, "id", 40);
@@ -675,16 +693,17 @@ export async function guardarUsuario(_: FormState, fd: FormData): Promise<FormSt
   if (nombre.length < 2) return await fallo("personName");
   if (!isEmail(email)) return await fallo("emailInvalid");
   if (!isUuid(empresaId)) return await fallo("chooseCompany");
-  if (password && (password.length < 8 || password.length > 72))
+  if (password && (password.length < 12 || password.length > 72))
     return await fallo("passwordShort");
 
   const admin = createAdminClient();
   const { error: errAuth } = await admin.auth.admin.updateUserById(id, {
     email,
     email_confirm: true,
-    // Contraseña provisional: el portal obliga a la persona a elegir la suya al entrar.
+    // Contraseña provisional: el portal obliga a la persona a elegir la suya al entrar. Las marcas
+    // van en app_metadata (solo servidor); user_metadata lo puede editar el propio usuario.
     ...(password
-      ? { password, user_metadata: { password_set: false, password_temporary: true } }
+      ? { password, app_metadata: { password_set: false, password_temporary: true } }
       : {}),
   });
   if (errAuth) {
@@ -941,7 +960,7 @@ export async function firmarPresupuesto(_: FormState, fd: FormData): Promise<For
   if (fd.get("acepto") !== "on") return await fallo("signConfirm");
   if (!(await presupuestoPendiente(id))) return await fallo("quoteNotPending");
 
-  const reenviada = (await headers()).get("x-forwarded-for") ?? "";
+  const ip = await ipDelCliente();
   const { error } = await createAdminClient()
     .from("presupuestos")
     .update({
@@ -949,7 +968,7 @@ export async function firmarPresupuesto(_: FormState, fd: FormData): Promise<For
       firma_nombre: nombre,
       firma_usuario_id: perfil.id,
       firma_fecha: new Date().toISOString(),
-      firma_ip: reenviada.split(",")[0].trim().slice(0, 45) || null,
+      firma_ip: ip,
     })
     .eq("id", id)
     .eq("estado", "enviado");

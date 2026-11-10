@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { requireAdmin } from "@/lib/portal/auth";
+import { marcasContrasena, requireAdmin } from "@/lib/portal/auth";
 import { getI18n } from "@/lib/portal/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -93,7 +93,7 @@ export default async function ClientePage({
   const ahora = Date.now();
   const personas: PersonaInfo[] = (usuarios ?? []).map((u) => {
     const cuenta = cuentas.get(u.id);
-    const meta = cuenta?.user_metadata ?? {};
+    const marcas = marcasContrasena(cuenta);
     return {
       id: u.id,
       nombre: u.nombre,
@@ -103,9 +103,9 @@ export default async function ClientePage({
       alta: cuenta?.created_at ?? null,
       ultimoAcceso: cuenta?.last_sign_in_at ?? null,
       contrasena:
-        meta.password_temporary === true
+        marcas.temporal
           ? "provisional"
-          : meta.password_set
+          : marcas.elegida
             ? "propia"
             : "pendiente",
     };

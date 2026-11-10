@@ -27,6 +27,12 @@ export async function proxy(request: NextRequest) {
     response = NextResponse.next({ request: { headers } });
   }
   response.headers.set(NOMBRE_RESPUESTA, csp);
+  // El enlace de invitación lleva el token en la URL: que no salga en el Referer ni se guarde.
+  // Va aquí y no en next.config.ts (ver el aviso de abajo sobre las cabeceras mezcladas).
+  if (request.nextUrl.pathname.startsWith("/auth/entrar")) {
+    response.headers.set("Referrer-Policy", "no-referrer");
+    response.headers.set("Cache-Control", "no-store");
+  }
   // OJO: no poner aquí un "Content-Security-Policy" en la respuesta. Next (y Vercel) copian las
   // cabeceras de respuesta del proxy a la petición y pisarían la política con nonce. Contra los
   // iframes en estas rutas vale X-Frame-Options: DENY (next.config.ts).

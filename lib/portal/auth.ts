@@ -28,13 +28,34 @@ export async function requireCliente(): Promise<Perfil & { empresa_id: string }>
   return perfil as Perfil & { empresa_id: string };
 }
 
-/** Si el cliente aún no ha elegido contraseña (`password_set` en los metadatos de su cuenta). */
+type CuentaConMarcas = {
+  app_metadata?: Record<string, unknown> | null;
+  user_metadata?: Record<string, unknown> | null;
+};
+
+/**
+ * Marcas de contraseña de una cuenta (`password_set`, `password_temporary`). Solo sirven para
+ * decidir a qué pantalla se manda a la persona, NUNCA para dar acceso: `user_metadata` lo puede
+ * editar el propio usuario. Se escriben en `app_metadata` (solo servidor, cliente admin). Durante
+ * la transición, si `app_metadata` no la trae, se usa `user_metadata` para no echar a los clientes
+ * que ya tenían la marca.
+ */
+export function marcasContrasena(user: CuentaConMarcas | null | undefined) {
+  const app = user?.app_metadata ?? {};
+  const meta = user?.user_metadata ?? {};
+  return {
+    elegida: (app.password_set ?? meta.password_set) === true,
+    temporal: (app.password_temporary ?? meta.password_temporary) === true,
+  };
+}
+
+/** Si el cliente aún no ha elegido contraseña (`password_set`, ver `marcasContrasena`). Solo redirige. */
 export const sinContrasena = cache(async (): Promise<boolean> => {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  return !user?.user_metadata?.password_set;
+  return !marcasContrasena(user).elegida;
 });
 
 /**

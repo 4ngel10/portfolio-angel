@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { marcarContrasenaElegida } from "@/lib/portal/actions";
 import { usePT } from "./i18n-provider";
 import { inputCls, labelCls } from "./styles";
 
@@ -16,7 +17,7 @@ export function PasswordForm({
   admin?: boolean;
 }) {
   const router = useRouter();
-  const minimo = admin ? 12 : 8;
+  const minimo = 12;
   const { t } = usePT();
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
@@ -31,15 +32,22 @@ export function PasswordForm({
 
     setError(null);
     setGuardando(true);
-    // `password_set` marca que ya eligió contraseña: el portal deja de pedírsela.
     const supabase = createClient();
-    const { error } = await supabase.auth.updateUser(
-      admin ? { password } : { password, data: { password_set: true, password_temporary: false } },
-    );
+    const { error } = await supabase.auth.updateUser({ password });
     if (error) {
       setGuardando(false);
       setError(error.code === "weak_password" ? corta : t("password.failed"));
       return;
+    }
+    // El cliente deja anotado en el servidor (app_metadata) que ya eligió contraseña: el portal
+    // deja de pedírsela. Si falla, volvería a esta pantalla, así que se avisa.
+    if (!admin) {
+      const marca = await marcarContrasenaElegida();
+      if (!marca.ok) {
+        setGuardando(false);
+        setError(t("password.failed"));
+        return;
+      }
     }
     // Con la contraseña nueva se cierran las demás sesiones del admin: si alguien la tenía, sale.
     if (admin) await supabase.auth.signOut({ scope: "others" });
