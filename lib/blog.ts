@@ -40,6 +40,188 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "mantenimiento-web-pyme",
+    category: "desarrollo",
+    date: "2026-11-10",
+    ogImage: "/blog/mantenimiento-web-pyme-og.jpg",
+    post: {
+      es: {
+        title: "Mantenimiento web para pymes, qué revisar cada mes",
+        seoTitle: "Mantenimiento web para pymes, qué revisar",
+        excerpt:
+          "Una web publicada no es una web terminada. Estas son las cinco cosas que se rompen sin avisar y la revisión mensual que las detecta a tiempo.",
+        description:
+          "Mantenimiento web para pymes y autónomos, qué revisar cada mes para no perder clientes sin saberlo. Lo hago en remoto desde Palma de Mallorca.",
+        intro:
+          "El mantenimiento web para una pyme consiste en revisar cada mes cinco cosas que se rompen sin avisar, el dominio, el certificado de seguridad, el formulario de contacto, la velocidad y los enlaces. Son unos 15 minutos y evitan lo más caro, que es perder consultas sin enterarte.",
+        sections: [
+          {
+            heading: "Una web publicada no es una web terminada",
+            blocks: [
+              "Cuando se entrega una web, todo funciona. El problema es que una web no vive aislada. Depende de un dominio que se renueva, de un certificado que caduca, de un servicio que envía los mensajes del formulario y de un hosting que se actualiza. Si una de esas piezas falla, la web puede seguir viéndose normal mientras deja de hacer su trabajo.",
+              "Lo peligroso es que no suele haber ningún aviso. Nadie te llama para decirte que el formulario no envía, y el cliente que no consigue escribirte no insiste, se va a otro sitio. Por eso conviene mirar la web con regularidad, aunque parezca que va bien.",
+              {
+                img: "/blog/mantenimiento-web-pyme/cuando-falla-es.webp",
+                alt: "Mantenimiento web para pymes, tres fallos silenciosos y su consecuencia. Dominio sin renovar, la web y el correo caen y se pierden consultas. Certificado caducado, aviso de sitio no seguro y el cliente se va. Formulario roto, los mensajes no llegan y un cliente se queda sin respuesta.",
+                width: 1600,
+                height: 800,
+                caption: "Tres fallos que nadie notifica y lo que provocan.",
+              },
+            ],
+          },
+          {
+            heading: "Las cinco cosas que se rompen sin avisar",
+            blocks: [
+              { h3: "El dominio y su renovación" },
+              "El dominio se paga cada cierto tiempo. Si caduca, la web deja de cargar y el correo que usa ese dominio también. Es un descuido muy común, sobre todo cuando el dominio se compró hace años a nombre de otra persona o con una tarjeta que ya no existe. Conviene saber a nombre de quién está, dónde se renueva y cuándo toca.",
+              { h3: "El certificado de seguridad" },
+              "El candado junto a la dirección indica que la conexión va cifrada. Cuando el certificado caduca, el navegador muestra un aviso de sitio no seguro y mucha gente cierra la pestaña. Muchos hosting lo renuevan solos, pero no siempre, así que se comprueba.",
+              { h3: "El formulario de contacto" },
+              "Es la pieza que más dinero mueve y la que más se olvida. Un cambio en el correo, un filtro de spam o un servicio de envío que falla pueden dejar el formulario muerto sin que se vea ningún error. La única forma de saberlo es enviar un mensaje de prueba y comprobar que llega.",
+              { h3: "La velocidad en el móvil" },
+              "Con el tiempo se suben fotos más pesadas, se añaden herramientas y la web se vuelve lenta. La mayoría de las visitas de un negocio local llegan desde el móvil, así que esa es la prueba que importa. Mi enfoque de rendimiento lo cuento en [por qué uso Next.js en webs de clientes](/blog/por-que-nextjs).",
+              { h3: "Los enlaces y los textos" },
+              "Un botón que lleva a una página que ya no existe, un horario antiguo o un precio que ya no es el mismo restan confianza. Recorrer la web como lo haría un cliente nuevo suele destapar estos detalles en pocos minutos.",
+            ],
+          },
+          {
+            heading: "Revisión mensual de la web en 15 minutos",
+            blocks: [
+              "No hace falta saber de informática para hacer una revisión básica. Esta es la rutina que recomiendo a un autónomo o a una pyme pequeña, en cinco pasos.",
+              {
+                ol: [
+                  "**Mira la fecha de renovación del dominio** y confirma que el método de pago sigue vigente.",
+                  "**Abre la web en el navegador** y comprueba que aparece el candado y que no hay avisos.",
+                  "**Envía un mensaje de prueba** por el formulario y verifica que llega a tu bandeja, también a la carpeta de spam.",
+                  "**Abre la web desde el móvil** con datos móviles y fíjate en cuánto tarda en cargar.",
+                  "**Recorre las páginas principales** buscando enlaces rotos, horarios, teléfonos y precios desactualizados.",
+                ],
+              },
+              {
+                img: "/blog/mantenimiento-web-pyme/revision-mensual-es.webp",
+                alt: "Lista de revisión mensual del mantenimiento web para una pyme con cinco puntos. Dominio y fecha de renovación, certificado SSL y candado en la barra, formulario de contacto con mensaje de prueba, velocidad con prueba en el móvil, y enlaces y textos recorriendo la web.",
+                width: 1600,
+                height: 800,
+                caption: "La revisión mensual, punto por punto.",
+              },
+              "Si tu web tiene tienda o pagos, añade una compra de prueba. En mi proyecto [FlexGrip](/proyectos/flexgrip), una tienda con pago por Stripe, ese es el paso que más cuidado merece.",
+            ],
+          },
+          {
+            heading: "Qué incluye el mantenimiento web de una pyme y qué no",
+            blocks: [
+              "Cuando alguien se encarga del mantenimiento por ti, debería cubrir al menos lo siguiente.",
+              {
+                list: [
+                  "**Revisión periódica** del dominio, el certificado, el formulario, la velocidad y los enlaces.",
+                  "**Actualizaciones** de lo que use tu web para que no queden versiones antiguas con fallos conocidos.",
+                  "**Copias de seguridad** comprobadas, siguiendo la idea de [la regla 3-2-1](/blog/backup-3-2-1).",
+                  "**Cambios pequeños** de texto, horarios o precios cuando los necesites.",
+                  "**Respuesta rápida** si algo deja de funcionar.",
+                ],
+              },
+              "Lo que normalmente no entra es una web nueva, un rediseño o campañas de publicidad. Son otros trabajos y se presupuestan aparte. Conviene que quede claro desde el principio qué entra y qué no, para que nadie se lleve sorpresas.",
+            ],
+          },
+          {
+            heading: "Cuándo conviene encargarlo a alguien",
+            blocks: [
+              "Si te gusta revisar tu web tú mismo, la rutina de arriba te sirve. Pero muchos negocios prefieren no pensar en ello, y es razonable. Cuando llevas un negocio, el tiempo se va en atender clientes, no en comprobar certificados.",
+              "En mis webs me encargo del dominio, el hosting y el mantenimiento, y lo explico en la página de [desarrollo web](/servicios/web#mantenimiento). Para empezar, la web debería estar bien planteada desde el inicio. Qué necesita para conseguir clientes lo cuento en [qué debe tener la web de una pyme](/blog/web-pyme-que-vende). Y si quieres que revise la tuya, [cuéntame tu caso](/#contact).",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "Website maintenance for small businesses, monthly checks",
+        seoTitle: "Website maintenance for small businesses",
+        excerpt:
+          "A published website is not a finished website. Here are the five things that break without warning and the monthly check that catches them in time.",
+        description:
+          "Website maintenance for small businesses, what to check every month so you do not lose customers unnoticed. Done remotely from Palma de Mallorca.",
+        intro:
+          "Website maintenance for a small business means checking five things every month that break without warning, the domain, the security certificate, the contact form, the speed and the links. It takes about 15 minutes and prevents the most expensive problem, losing enquiries without knowing it.",
+        sections: [
+          {
+            heading: "A published website is not a finished website",
+            blocks: [
+              "When a website is delivered, everything works. The problem is that a website does not live on its own. It depends on a domain that must be renewed, a certificate that expires, a service that sends the form messages and a hosting plan that gets updated. If one of those pieces fails, the site can look normal while it stops doing its job.",
+              "The dangerous part is that there is usually no warning. Nobody calls to tell you the form does not send, and a customer who cannot reach you does not insist, they go somewhere else. That is why it pays to look at your website regularly, even when it seems fine.",
+              {
+                img: "/blog/mantenimiento-web-pyme/cuando-falla-en.webp",
+                alt: "Website maintenance for small businesses, three silent failures and their consequence. Domain not renewed, site and email go down and enquiries are lost. Expired certificate, unsafe site warning and the customer leaves. Broken form, messages never arrive and a customer is left unanswered.",
+                width: 1600,
+                height: 800,
+                caption: "Three failures nobody reports and what they cause.",
+              },
+            ],
+          },
+          {
+            heading: "The five things that break without warning",
+            blocks: [
+              { h3: "The domain and its renewal" },
+              "The domain is paid for periodically. If it expires, the website stops loading and so does any email that uses that domain. It is a very common oversight, especially when the domain was bought years ago in someone else's name or with a card that no longer exists. You should know whose name it is under, where it is renewed and when.",
+              { h3: "The security certificate" },
+              "The padlock next to the address shows the connection is encrypted. When the certificate expires, the browser shows an unsafe site warning and many people close the tab. Many hosting plans renew it automatically, but not always, so you check.",
+              { h3: "The contact form" },
+              "It is the piece that moves the most money and the one most often forgotten. A change of email, a spam filter or a sending service that fails can leave the form dead with no visible error. The only way to know is to send a test message and check it arrives.",
+              { h3: "Speed on mobile" },
+              "Over time heavier photos get uploaded, tools get added and the site slows down. Most visits to a local business come from a phone, so that is the test that matters. I explain my approach to performance in [why I use Next.js for client websites](/blog/por-que-nextjs).",
+              { h3: "Links and texts" },
+              "A button that leads to a page that no longer exists, an old opening time or a price that has changed all reduce trust. Browsing the site the way a new customer would usually reveals these details in a few minutes.",
+            ],
+          },
+          {
+            heading: "The monthly website check in 15 minutes",
+            blocks: [
+              "You do not need IT knowledge to do a basic check. This is the routine I recommend to a freelancer or a small business, in five steps.",
+              {
+                ol: [
+                  "**Look at the domain renewal date** and confirm the payment method is still valid.",
+                  "**Open the website in your browser** and check the padlock appears and there are no warnings.",
+                  "**Send a test message** through the form and verify it reaches your inbox, spam folder included.",
+                  "**Open the website on your phone** using mobile data and notice how long it takes to load.",
+                  "**Browse the main pages** looking for broken links and outdated opening times, phone numbers and prices.",
+                ],
+              },
+              {
+                img: "/blog/mantenimiento-web-pyme/revision-mensual-en.webp",
+                alt: "Monthly website maintenance checklist for a small business with five points. Domain and renewal date, SSL certificate and the padlock in the bar, contact form with a test message, speed with a test on your phone, and links and texts by browsing the site.",
+                width: 1600,
+                height: 800,
+                caption: "The monthly check, point by point.",
+              },
+              "If your website has a shop or payments, add a test purchase. In my project [FlexGrip](/proyectos/flexgrip), a shop with Stripe payments, that is the step that deserves the most care.",
+            ],
+          },
+          {
+            heading: "What website maintenance for a small business includes and what it does not",
+            blocks: [
+              "When someone takes care of maintenance for you, it should cover at least the following.",
+              {
+                list: [
+                  "**Regular checks** of the domain, the certificate, the form, the speed and the links.",
+                  "**Updates** of whatever your website uses, so old versions with known flaws do not linger.",
+                  "**Verified backups**, following the idea of [the 3-2-1 rule](/blog/backup-3-2-1).",
+                  "**Small changes** to texts, opening times or prices when you need them.",
+                  "**Fast response** if something stops working.",
+                ],
+              },
+              "What normally does not fall under it is a new website, a redesign or advertising campaigns. Those are separate jobs quoted separately. It helps to be clear from the start about what is in and what is out, so nobody gets surprises.",
+            ],
+          },
+          {
+            heading: "When it makes sense to hand it over",
+            blocks: [
+              "If you like checking your website yourself, the routine above works for you. But many businesses prefer not to think about it, and that is reasonable. When you run a business, your time goes on serving customers, not on checking certificates.",
+              "On my websites I take care of the domain, hosting and maintenance, and I explain it on the [web development](/servicios/web#mantenimiento) page. To begin with, the website should be well planned from the start. What it needs to win customers is covered in [what a small business website needs](/blog/web-pyme-que-vende). And if you want me to review yours, [tell me about your case](/#contact).",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
     slug: "vpn-pyme-acceso-remoto",
     category: "sistemas",
     date: "2026-11-02",
