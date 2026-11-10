@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   title: HOME_TITLE,
   description: HOME_DESCRIPTION,
   metadataBase: new URL(SITE_URL),
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     title: HOME_TITLE,
     description: HOME_DESCRIPTION,

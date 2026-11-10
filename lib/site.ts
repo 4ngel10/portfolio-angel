@@ -7,6 +7,12 @@
 export const SITE_URL = "https://www.angel-fernandez.es";
 
 /**
+ * Fecha de la última actualización de contenido de la home y las páginas de servicio (AAAA-MM-DD).
+ * La usa sitemap.xml como lastModified. Se actualiza a mano al cambiar esas páginas.
+ */
+export const LAST_UPDATED = "2026-11-10";
+
+/**
  * Clave de acceso de Web3Forms (formulario de contacto -> Gmail de Ángel).
  * Es pública por diseño: Web3Forms la usa desde el navegador y solo permite enviar
  * correos a la cuenta que la registró. No es un secreto.

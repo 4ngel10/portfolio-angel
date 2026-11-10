@@ -117,7 +117,8 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
       },
       en: {
-        title: "VPN for small businesses, reaching the office from outside without opening router ports",
+        title:
+          "VPN for small businesses, reaching the office from outside without opening router ports",
         seoTitle: "VPN for small businesses, secure remote access",
         excerpt:
           "Opening ports on the router to work from home is convenient and risky. Here is how a VPN works and what a small business needs to use it well.",
@@ -201,7 +202,7 @@ export const BLOG_POSTS: BlogPost[] = [
         excerpt:
           "Una web de pyme no necesita más páginas, sino menos fricción: qué haces, cómo contactar y pruebas reales. Te cuento qué incluyo y qué dejo fuera.",
         description:
-          "Qué debe tener la web de una pyme para conseguir clientes: mensaje claro, contacto visible, velocidad en móvil y SEO local. Y qué elementos sobran en una web de empresa.",
+          "Qué debe tener la web de una pyme para conseguir clientes, con mensaje claro, contacto visible, velocidad en móvil y SEO local. Y qué elementos sobran.",
         intro:
           "Una web de pyme no consigue clientes por tener más páginas, más animaciones o más texto. Los consigue cuando alguien que busca lo que haces entiende en pocos segundos qué ofreces, si estás cerca y cómo contactar contigo. Todo lo demás es secundario, y buena parte sobra.",
         sections: [
@@ -286,7 +287,7 @@ export const BLOG_POSTS: BlogPost[] = [
         excerpt:
           "A small business website does not need more pages, it needs less friction: what you do, how to get in touch and real proof. Here is what I include and what I leave out.",
         description:
-          "What a small business website needs to win customers: a clear message, visible contact, mobile speed and local SEO. And which elements a company site can do without.",
+          "What a small business website needs to win customers, with a clear message, visible contact, mobile speed and local SEO. And what a company site can skip.",
         intro:
           "A small business website does not win customers by having more pages, more animations or more text. It wins them when someone searching for what you do understands within seconds what you offer, whether you are nearby and how to contact you. Everything else is secondary, and a good part of it is unnecessary.",
         sections: [
@@ -340,7 +341,7 @@ export const BLOG_POSTS: BlogPost[] = [
               "If your customers are in your area, your site has to say where you are. The essentials are few and done once:",
               {
                 ol: [
-                  "**A title and a description per page** that include what you do and the city, for example: \"Renovations in Palma de Mallorca\".",
+                  '**A title and a description per page** that include what you do and the city, for example: "Renovations in Palma de Mallorca".',
                   "**One page per main service**, with its own text and not copied from other sites.",
                   "**Structured data and a sitemap**, which help Google understand what the site is about. These are generated automatically, and it is what I do on the sites I build.",
                   "**A Google Business Profile listing** with the same details as the site: identical name, address and phone.",
@@ -380,7 +381,7 @@ export const BLOG_POSTS: BlogPost[] = [
         excerpt:
           "Tres copias, dos soportes y una fuera de la oficina. Te explico la regla 3-2-1 y cómo la monto con Nakivo y Acronis.",
         description:
-          "Qué es la regla de backup 3-2-1 y cómo aplicarla en tu empresa con Nakivo, Veeam y Acronis. Una estrategia de backup sencilla para no perder datos ni días de trabajo.",
+          "Qué es la regla de backup 3-2-1 y cómo aplicarla en tu empresa con Nakivo, Veeam y Acronis. Una estrategia sencilla para no perder datos ni días de trabajo.",
         intro:
           "La regla 3-2-1 cabe en una línea: tres copias de tus datos, en dos soportes distintos y una de ellas fuera de la oficina. Es la base de cualquier estrategia de backup en una empresa. Cuando una copia falla el día que hace falta, casi siempre es porque se saltó uno de esos tres números.",
         sections: [
@@ -462,7 +463,7 @@ export const BLOG_POSTS: BlogPost[] = [
         excerpt:
           "Three copies, two media and one off-site. I explain the 3-2-1 rule and how I set it up with Nakivo and Acronis.",
         description:
-          "What the 3-2-1 backup rule is and how to apply it in your company with Nakivo, Veeam and Acronis. A simple backup strategy so you never lose data or days of work.",
+          "What the 3-2-1 backup rule is and how to apply it in your company with Nakivo, Veeam and Acronis. A simple strategy so you never lose data or days of work.",
         intro:
           "The 3-2-1 rule fits in one line: three copies of your data, on two different media, with one of them off-site. It is the foundation of any company backup strategy. When a backup fails on the day you need it, it is almost always because one of those three numbers was skipped.",
         sections: [
@@ -553,7 +554,7 @@ export const BLOG_POSTS: BlogPost[] = [
         excerpt:
           "Más rápida, más segura y más fácil de mantener que un WordPress con plantilla. Te cuento por qué Next.js es mi opción por defecto.",
         description:
-          "Next.js vs WordPress para webs corporativas: rendimiento, SEO, seguridad y mantenimiento. Las ventajas de Next.js y cuándo tiene sentido una web profesional con Next.js.",
+          "Next.js frente a WordPress en webs corporativas, con rendimiento, SEO, seguridad y mantenimiento. Cuándo tiene sentido una web profesional con Next.js.",
         intro:
           "Cuando me encargan una web, lo primero que decido es con qué la construyo. Casi siempre elijo Next.js. No es por moda: me da webs más rápidas, más seguras y más fáciles de mantener que un WordPress con plantilla.",
         sections: [
@@ -626,7 +627,7 @@ export const BLOG_POSTS: BlogPost[] = [
         excerpt:
           "Faster, more secure and easier to maintain than a WordPress theme. Here is why Next.js is my default choice.",
         description:
-          "Next.js vs WordPress for company websites: performance, SEO, security and maintenance. The advantages of Next.js and when a professional Next.js website makes sense.",
+          "Next.js vs WordPress for company websites, on performance, SEO, security and maintenance. When a professional Next.js website makes sense.",
         intro:
           "When I take on a website, the first decision is what to build it with. Almost every time, I pick Next.js. It is not about trends: it gives me websites that are faster, more secure and easier to maintain than a WordPress theme.",
         sections: [
