@@ -25,13 +25,13 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex flex-col justify-start overflow-hidden pt-10 pb-16 md:pt-24 md:pb-28 lg:min-h-[calc(100svh-72px)] lg:justify-center"
+      className="relative flex flex-col justify-start overflow-hidden pt-10 pb-16 md:pt-16 md:pb-20 lg:min-h-[calc(100svh-72px)] lg:justify-center lg:pt-24 lg:pb-28"
     >
       <div className="relative mx-auto grid w-full max-w-6xl px-6 md:px-8 lg:grid-cols-12 lg:items-center lg:gap-8">
         <div className="lg:col-span-8">
           {/* Hasta lg: H1 a la izquierda y foto a la derecha, alineada al borde inferior. */}
           <div className="flex items-end gap-3 lg:block">
-            <h1 className="min-w-0 flex-1 text-[clamp(1.4rem,7vw,2.6rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance lg:text-[52px] xl:text-[60px]">
+            <h1 className="min-w-0 flex-1 text-[clamp(1.4rem,7vw,2.6rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance md:text-[clamp(2.5rem,6.2vw,3.25rem)] lg:text-[52px] xl:text-[60px]">
               <Line delay={0.05}>
                 {t("hero.title1Pre")}
                 <span className="text-accent">{t("hero.title1Accent")}</span>
@@ -65,7 +65,7 @@ export function Hero() {
                   unoptimized
                   fetchPriority="low"
                   decoding="async"
-                  className="hero-photo relative block h-[240px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
+                  className="hero-photo relative block h-[240px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[280px] md:h-[320px]"
                 />
               </div>
             </div>
@@ -73,7 +73,7 @@ export function Hero() {
 
           <div
             style={{ animationDelay: "0.1s" }}
-            className="hero-fade text-muted mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:mt-8 md:text-lg"
+            className="hero-fade text-muted mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:mt-8 md:text-lg"
           >
             <span style={{ color: "var(--accent)" }} aria-hidden>
               ~/angel $
@@ -89,7 +89,7 @@ export function Hero() {
           <div className="mt-6 md:mt-10">
             <div>
               <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-10">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row md:mt-10">
                 <a href="#contact" className="btn-primary group">
                   {t("hero.ctaPrimary")}
                   <svg
@@ -150,7 +150,7 @@ export function Hero() {
       <a
         href="#services"
         style={{ animationDelay: "0.4s" }}
-        className="hero-fade text-muted absolute bottom-6 left-1/2 hidden origin-top -translate-x-1/2 flex-col items-center gap-2.5 rounded-xl px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-110 hover:text-[var(--fg)] active:scale-105 md:flex"
+        className="hero-fade text-muted absolute bottom-6 left-1/2 hidden origin-top -translate-x-1/2 flex-col items-center gap-2.5 rounded-xl px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-110 hover:text-[var(--fg)] active:scale-105 lg:flex"
       >
         {t("hero.scroll")}
         <span
