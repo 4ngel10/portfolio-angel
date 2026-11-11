@@ -243,7 +243,7 @@ export const SERVICES: ServiceDetail[] = [
           },
           {
             id: "mantenimiento",
-            title: "Mantenimiento informático en Palma",
+            title: "Mantenimiento continuo",
             text: "Reviso cada mes que todo siga en orden, con actualizaciones y copias comprobadas. En Palma y Mallorca, en remoto o presencial.",
           },
           {
@@ -275,8 +275,8 @@ export const SERVICES: ServiceDetail[] = [
           },
           {
             id: "mantenimiento",
-            title: "IT maintenance in Palma",
-            text: "Every month I check everything is in order, with updates and verified backups. In Palma and across Mallorca, remotely or on site.",
+            title: "Ongoing maintenance",
+            text: "Every month I check that everything is in order, with updates and verified backups. In Palma and across Mallorca, remotely or in person.",
           },
           {
             title: "Audit and improvements",
