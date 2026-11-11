@@ -294,7 +294,7 @@ export function validarPost(post: PostParaValidar, opciones: { publicar: boolean
     // Imágenes.
     const imagenes = imagenesDe(c);
     if (imagenes.length < 2) {
-      // Los artículos migrados de lib/blog.ts no tenían imágenes: para ellos es un aviso.
+      // Los artículos migrados (created_by "migracion") no siempre tenían imágenes: para ellos es un aviso.
       (post.creadoPor === "migracion" ? (f: Fallo) => avisos.push(f) : bloquea)({
         ruta: `${idioma}.sections`,
         mensaje: `Hacen falta al menos 2 imágenes con alt y hay ${imagenes.length}.`,

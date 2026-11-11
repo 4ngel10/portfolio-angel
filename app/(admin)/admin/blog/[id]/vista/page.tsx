@@ -28,7 +28,7 @@ export default async function VistaPreviaPage({ params }: { params: Params }) {
     date: dia,
     publishedAt: publicado,
     updatedAt: fila.updated_at,
-    ogImage: fila.og_image ?? `/blog-img/${fila.slug}/og.jpg`,
+    ogImage: fila.og_image,
     post: fila.content,
   };
 

@@ -13,7 +13,11 @@ import { BLOG_TAG } from "./blog-db";
 export function revalidarBlog(slug?: string) {
   revalidateTag(BLOG_TAG, { expire: 0 });
   revalidatePath("/blog");
-  if (slug) revalidatePath(`/blog/${slug}`);
+  if (slug) {
+    revalidatePath(`/blog/${slug}`);
+    // La imagen para redes generada es otra ruta (app/blog/[slug]/opengraph-image.tsx).
+    revalidatePath(`/blog/${slug}/opengraph-image`);
+  }
   revalidatePath("/");
   revalidatePath("/sitemap.xml");
 }

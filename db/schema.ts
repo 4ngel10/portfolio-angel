@@ -28,7 +28,7 @@ import {
   ORIGENES_COBRO,
   PERIODICIDADES,
 } from "../lib/portal/finanzas";
-import type { BlogPostContent } from "../lib/blog";
+import type { BlogPostContent } from "../lib/blog-types";
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
@@ -534,7 +534,7 @@ const CATEGORIAS_BLOG = ["sistemas", "desarrollo", "automatizacion"] as const;
 const ESTADOS_BLOG = ["borrador", "publicado"] as const;
 const ALCANCES_TOKEN_BLOG = ["borrador"] as const;
 
-/** Contenido de un artículo en los dos idiomas (misma forma que lib/blog.ts). */
+/** Contenido de un artículo en los dos idiomas (tipos en lib/blog-types.ts). */
 export type BlogContenido = { es: BlogPostContent; en: BlogPostContent };
 
 export const blogPosts = pgTable(

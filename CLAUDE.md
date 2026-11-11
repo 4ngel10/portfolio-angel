@@ -37,7 +37,9 @@ app/
   page.tsx              home: hero, services, stack, portfolio, about, blog-teaser, contact
   proyectos/[slug]/     página de cada proyecto
   servicios/[id]/       /servicios/sistemas y /servicios/web
-  blog/ y blog/[slug]/  listado y artículos
+  blog/ y blog/[slug]/  listado y artículos (con su opengraph-image)
+  (admin)/admin/blog/   panel del blog y claves de la API
+  api/blog/ api/admin/blog/   API de la rutina (borradores) y subida y exportación del panel
   globals.css           tokens @theme + utilidades
   sitemap.ts robots.ts  SEO (salen solos de PROJECTS, SERVICES y los artículos publicados en Supabase)
 components/
@@ -47,13 +49,15 @@ components/
   carousel / tilt-card / reveal / project-cover / json-ld / skip-link / mobile-contact-cta / back-to-top
 lib/
   projects.ts services.ts           contenido (ES y EN)
-  blog-db.ts blog-types.ts blog-validate.ts blog-markup.ts blog-actions.ts   blog en Supabase (ver sección Blog)
+  blog-*.ts                         blog en Supabase (db, types, validate, markup, actions, save, imagenes, svg, og, api-auth, claves-actions, revalidate; ver sección Blog)
   seo.ts                            meta descriptions y JSON-LD
   theme.tsx i18n.tsx motion.tsx smooth-scroll.ts site.ts
 messages/
   es.json en.json
 public/
-  projects/ blog/       portadas WebP e imágenes para redes (1200x630)
+  projects/             portadas WebP e imágenes para redes (1200x630)
+  blog/                 solo los 5 <slug>-og.jpg antiguos (enlaces ya compartidos); las imágenes de los artículos están en el bucket `blog`
+assets/fonts/           .ttf y licencias OFL para la imagen social generada (next/og)
   angel-portrait.webp   foto del hero (800x1000, 4:5, desde lg); no recortar ni reconvertir
   angel-square.webp     foto de Sobre mí en móvil y tablet (640x640) y `image` del Person en JSON-LD
 ```
@@ -114,16 +118,17 @@ Los "casos reales" (ransomware y sistema saturado) se quitaron de Sobre mí y de
 
 ## Blog
 
-Listado en `/blog` y artículos en `/blog/[slug]`. **El contenido vive en Supabase** (`blog_posts`, ES y EN en la columna `content` con los mismos bloques que los proyectos) y se edita desde `/admin/blog`; `lib/blog.ts` queda solo como respaldo de la migración y se retirará en la fase 5. Las imágenes están en el bucket público `blog` y se sirven por `/blog-img/<slug>/<archivo>` (rewrite en `next.config.ts`, así la CSP no cambia). Cada artículo lleva su imagen para redes de 1200x630.
+Listado en `/blog` y artículos en `/blog/[slug]`. **El contenido vive en Supabase** (`blog_posts`, ES y EN en la columna `content` con los mismos bloques que los proyectos) y se edita desde `/admin/blog` (editor con marcas de texto, comprobador, versiones, programar y exportar). `lib/blog.ts` y los scripts de migración ya no existen (quedan en el historial de git). Las imágenes están en el bucket público `blog` y se sirven por `/blog-img/<slug>/<archivo>` (rewrite en `next.config.ts`, así la CSP no cambia). Cada artículo lleva su imagen para redes de 1200x630, propia o generada. Guía de uso en `docs/blog.md`.
 
 - **Lectura pública** (`lib/blog-db.ts`): cliente anon sin cookies, columnas por nombre (anon no puede leer `created_by`, nunca `select("*")`), `unstable_cache` con etiqueta `blog` y `revalidate` de 3600. Si Supabase falla lanza una excepción, no devuelve `[]`. Las páginas siguen estáticas. Un artículo programado (`publicado` con fecha futura) aparece en la primera regeneración tras su hora.
 - **Tras cualquier cambio** llama a `revalidarBlog(slug)` (`lib/blog-revalidate.ts`).
-- **Panel** (`/admin/blog`, `components/portal/blog-editor.tsx`, `lib/blog-actions.ts`): lee y escribe con la sesión del admin (política `admin_all`), no con service role; solo la subida de imágenes y la lectura de su tamaño usan `createAdminClient()` tras `requireAdmin()` o `comprobarAdmin()`. Estado programado = publicado con `published_at` futuro. El slug de un publicado no se cambia. Se guardan las últimas 20 versiones y `updated_at` solo cambia si cambia el contenido. `created_by` es el email del admin, `migracion` para los 5 originales y, en la fase 4, `api:<token>` para los borradores de la API (salen en "Pendiente de ti").
-- **Validador** (`lib/blog-validate.ts`, compartido por panel, actions y la futura API): sin regex con barras invertidas. Errores bloquean publicar, avisos no. El límite de 60 caracteres del título solo es error en ES, y el mínimo de 2 imágenes solo en artículos no migrados. Los mensajes van en español, fuera de los JSON. **Si cambias una regla, añade o ajusta su prueba en `scripts/probar-blog.ts`.**
-- **Texto con marcas** (`lib/blog-markup.ts`): `##` H2, `###` H3, `- ` lista, `1. ` ordenada, `![alt](ruta "pie")`, línea en blanco entre bloques. Ida y vuelta sin pérdidas (probado con los 5 artículos). width y height de las imágenes se leen del archivo al guardar.
+- **Panel** (`/admin/blog`, `components/portal/blog-editor.tsx`, `lib/blog-actions.ts`): lee y escribe con la sesión del admin (política `admin_all`), no con service role; solo la subida de imágenes y la lectura de su tamaño usan `createAdminClient()` tras `requireAdmin()` o `comprobarAdmin()`. Estado programado = publicado con `published_at` futuro. El slug de un publicado no se cambia. Se guardan las últimas 20 versiones y `updated_at` solo cambia si cambia el contenido. `created_by` es el email del admin, `migracion` para los 5 originales y `api:<nombre de la clave>` para los borradores de la API (salen en "Pendiente de ti").
+- **Validador** (`lib/blog-validate.ts`, compartido por panel, actions y API): sin regex con barras invertidas. Errores bloquean publicar, avisos no. El límite de 60 caracteres del título solo es error en ES, y el mínimo de 2 imágenes solo en artículos no migrados. Los mensajes van en español, fuera de los JSON. **Si cambias una regla, añade o ajusta su prueba en `scripts/probar-blog.ts`.**
+- **Texto con marcas** (`lib/blog-markup.ts`): `##` H2, `###` H3, `- ` lista, `1. ` ordenada, `![alt](ruta "pie")`, línea en blanco entre bloques. Ida y vuelta sin pérdidas (probado con un artículo de ejemplo y, con `BLOG_EXPORT=<json exportado> npm test`, con los reales). width y height de las imágenes se leen del archivo al guardar.
 - **Vista previa** (`/admin/blog/[id]/vista`): usa `BlogArticle` con `comoDiv` (el Shell ya tiene `<main>`) y `FixedLocale` de `lib/i18n.tsx` para ver ES o EN sin tocar la cookie.
 - **API para la rutina de Claude** (`app/api/blog/**`, `lib/blog-api-auth.ts`): solo crea y actualiza **borradores**, nunca publica ni borra. `GET /api/blog/posts`, `PUT /api/blog/posts/[slug]` y `POST /api/blog/imagenes`. Clave en `Authorization: Bearer blg_...`, creada y revocada en `/admin/blog/claves` (se enseña una sola vez, en BD solo el sha256 en `blog_api_tokens`). El PUT pasa el mismo comprobador que Publicar, 409 si el artículo ya está publicado o programado, y `created_by = api:<nombre>`. Límites por token y hora (20 artículos, 60 imágenes) contados en `blog_api_uso`, que se purga a los 7 días y, si no se puede contar, la API responde 503. JSON máximo de 400 KB. Respuestas siempre JSON con `no-store`. `scripts/probar-api-blog.ts` la prueba contra localhost (BD de producción, crea y borra sus propios datos): `npx tsx --env-file=.env.local scripts/probar-api-blog.ts`.
 - **Imágenes del blog** (`lib/blog-imagenes.ts`, `lib/blog-svg.ts`): panel y API comparten la conversión. Todo se guarda como **WebP** de 2200 px como máximo; un SVG se revisa antes (sin scripts, manejadores `on*`, `foreignObject`, recursos externos ni raya larga) y se rasteriza a unos 1600 px. En el bucket no hay nunca un SVG, y `allowed_mime_types` es solo webp, jpeg y png. Un nombre que ya existe da 409, no se sobrescribe.
+- **Imagen para redes** (`app/blog/[slug]/opengraph-image.tsx`, plantilla en `lib/blog-og-imagen.tsx`, ajuste del título en `lib/blog-og.ts`): Next da prioridad a este archivo sobre `generateMetadata`, así que es el único `og:image` de los artículos. Si el artículo tiene `og_image` (los 5 migrados la tienen, en `/blog-img/<slug>/og.jpg`) la ruta sirve esa imagen tal cual; si no, genera una de 1200x630 con `next/og`. Las fuentes son `.ttf` locales en `assets/fonts/` (Space Grotesk Medium y JetBrains Mono SemiBold, licencia OFL junto a ellas), porque `next/og` no lee woff2; no las cargues desde una URL. Se genera una vez por artículo (`generateStaticParams`, `revalidate` 3600) y `revalidarBlog` la invalida. En el panel, sin `og_image` el editor enseña la miniatura de la generada y con ella un botón para volver a la generada.
 - La home tiene una mención corta (`components/blog-teaser.tsx`, ancla `#blog`) con los dos más recientes.
 
 **Anchos de las páginas interiores** (blog, proyectos y legales): un solo contenedor `max-w-6xl px-6 md:px-8`, alineado a la izquierda con la nav, igual que las páginas de servicio. Dentro, el H1 llega a `max-w-5xl`, la entradilla y el cuerpo a `max-w-4xl`, y el texto de `ServiceCta` a `max-w-2xl`. No vuelvas a centrar el cuerpo en una columna más estrecha.
@@ -133,7 +138,7 @@ Listado en rejilla de 2 columnas desde `md`, con cards de la misma altura y "Lee
 - Título y H2 sin dos puntos (coma en su lugar).
 - Cada artículo termina con la llamada al servicio (`components/service-cta.tsx`, la misma que los proyectos), que sale sola según la categoría: `sistemas` y `automatizacion` a sistemas, `desarrollo` a web.
 - Sin números en los H2 ni letra capital, igual que proyectos y páginas legales.
-- La imagen para redes (1200x630, `public/blog/<slug>-og.jpg`) sigue la plantilla de las actuales. Fondo `#0a0f1c` con brillo naranja arriba a la derecha, raya y "BLOG · CATEGORÍA" en JetBrains Mono `#fb923c`, título en Space Grotesk blanco, y pie con "Ángel Fernández." y "Sistemas y desarrollo web". Sin "Palma de Mallorca".
+- La imagen para redes sale por código salvo que el artículo traiga `og_image`. Plantilla (`lib/blog-og-imagen.tsx`): fondo `#0a0f1c` con brillo naranja arriba a la derecha, raya y "BLOG · CATEGORÍA" en JetBrains Mono `#fb923c`, título (`seoTitle` o `title` en español) en Space Grotesk blanco a un tamaño que nunca pasa de 3 líneas, y pie con "Ángel Fernández." y "Sistemas y desarrollo web". Sin "Palma de Mallorca". Los `public/blog/<slug>-og.jpg` de los 5 originales se conservan para los enlaces ya compartidos; no se borran.
 
 ## Portal y admin
 
@@ -151,7 +156,8 @@ Zona privada: `/admin` (solo yo, con TOTP) y `/portal` (clientes). Código en `a
 - **Cabecera** (`components/portal/shell.tsx`): dos filas en admin y portal. Fila 1, marca a la izquierda y a la derecha "Nuevo" (solo admin), "Ver la web", idioma, tema y "Salir" (en móvil, "Nuevo" y "Salir" quedan en icono). Fila 2, secciones como pestañas con borde inferior de 2px en el acento, con scroll horizontal sin barra en pantallas estrechas.
 - **Presupuesto en el proyecto**: el selector ofrece los enviados ("pendiente de firma") y los aceptados de la empresa sin proyecto; los borradores no. "Pendiente de ti" solo avisa de los aceptados.
 - **Regex de fecha**: `FECHA` y `MES` viven en `lib/portal/validate.ts`. Ojo con las barras invertidas (`d`, `s`) al escribir regex: sin ellas rechazan todo.
-- **Navegación del admin**: botón "Nuevo" con menú (presupuesto, cliente, proyecto, cobro, gasto), enlace "Ver la web" e `/admin/incidencias` con filtros por estado, prioridad y empresa.
+- **Blog en el admin**: `/admin/blog` (pestaña "Blog" y entrada "Artículo" del menú "Nuevo"). Los borradores que crea la API (`created_by` con prefijo `api:`) salen en "Pendiente de ti" hasta que los publiques.
+- **Navegación del admin**: botón "Nuevo" con menú (presupuesto, cliente, proyecto, cobro, gasto, artículo), enlace "Ver la web" e `/admin/incidencias` con filtros por estado, prioridad y empresa.
 
 ## i18n
 
@@ -189,6 +195,9 @@ El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (sele
 - Las cabeceras de las rutas privadas se ponen desde `proxy.ts`, no desde `next.config.ts`, por la misma razón.
 - Las IP de firma se leen con `ipDelCliente()` (`lib/portal/ip.ts`), no de `x-forwarded-for` a pelo.
 - Mínimo de 12 caracteres para cualquier contraseña (clientes y admin).
+- **API del blog** (`/api/blog`): solo crea y actualiza borradores, nunca publica ni borra; **publicar exige sesión de admin con TOTP** (`requireAdmin()`). Las claves (`blg_...`) se guardan solo como hash sha256 y se revocan desde `/admin/blog/claves`; la clave en claro se enseña una vez. Hay límite por clave y hora y el cuerpo máximo es de 400 KB.
+- **Imágenes del blog**: los SVG nunca se guardan tal cual, se revisan y se convierten a WebP; el bucket `blog` solo admite webp, jpeg y png.
+- **Lectura pública del blog**: clave anon sin cookies y columnas pedidas por nombre; `anon` no ve `created_by` (ni ninguna tabla del blog salvo las columnas permitidas de `blog_posts`).
 
 ## Qué NO hacer sin consultar
 

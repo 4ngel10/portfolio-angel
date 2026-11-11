@@ -344,6 +344,39 @@ export function BlogEditor({
               <p id="blog-og-ayuda" className="text-muted mt-1 text-xs">
                 {t("blog.editor.ogHelp")}
               </p>
+              {post.ogImage.trim() !== "" ? (
+                <div className="mt-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- miniatura del admin, mismo origen */}
+                  <img
+                    src={post.ogImage.trim()}
+                    alt={t("blog.editor.ogCurrentAlt")}
+                    width={1200}
+                    height={630}
+                    className="border-rule h-auto w-full max-w-sm rounded-xl border"
+                  />
+                  <button
+                    type="button"
+                    className="text-muted hover:text-ink mt-2 text-sm underline-offset-2 hover:underline"
+                    onClick={() => comun("ogImage", "")}
+                  >
+                    {t("blog.editor.ogRemove")}
+                  </button>
+                </div>
+              ) : post.id && estado === "publicado" ? (
+                <div className="mt-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- miniatura del admin, mismo origen */}
+                  <img
+                    src={`/blog/${post.slug}/opengraph-image`}
+                    alt={t("blog.editor.ogGeneratedAlt")}
+                    width={1200}
+                    height={630}
+                    className="border-rule h-auto w-full max-w-sm rounded-xl border"
+                  />
+                  <p className="text-muted mt-1 text-xs">{t("blog.editor.ogGenerated")}</p>
+                </div>
+              ) : (
+                <p className="text-muted mt-3 text-xs">{t("blog.editor.ogGeneratedLater")}</p>
+              )}
             </div>
           </div>
         </section>

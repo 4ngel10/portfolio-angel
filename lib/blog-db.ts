@@ -77,7 +77,7 @@ function aPost(fila: Fila): BlogPost {
     publishedAt: `${publicado.dia}T${publicado.hora}${publicado.desfase}`,
     updatedAt: `${actualizado.dia}T${actualizado.hora}${actualizado.desfase}`,
     // Si el artículo no tiene imagen propia, la de la carpeta de su slug (la fase 5 la genera).
-    ogImage: fila.og_image ?? `/blog-img/${fila.slug}/og.jpg`,
+    ogImage: fila.og_image ?? null,
     post: fila.content,
   };
 }

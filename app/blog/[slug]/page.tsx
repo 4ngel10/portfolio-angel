@@ -8,7 +8,6 @@ import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog-db";
 import { resumenDe, siguienteDe } from "@/lib/blog-types";
-import { SITE_URL } from "@/lib/site";
 import { alternatesFor, blogPostJsonLd } from "@/lib/seo";
 
 type Params = Promise<{ slug: string }>;
@@ -25,7 +24,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const post = await getPublishedPost((await params).slug);
   if (!post) return {};
-  const imagen = `${SITE_URL}${post.ogImage}`;
+  // La imagen para redes no va aquí: la sirve opengraph-image.tsx (la propia og_image del
+  // artículo si la tiene, o la generada), y Next da prioridad al archivo sobre este objeto.
   const { title, seoTitle, description } = post.post.es;
   return {
     title: `${seoTitle ?? title} · Ángel Fernández`,
@@ -38,9 +38,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       locale: "es_ES",
       publishedTime: post.date,
       authors: ["Ángel Fernández Garriga"],
-      images: [{ url: imagen, width: 1200, height: 630 }],
     },
-    twitter: { card: "summary_large_image", title, description, images: [imagen] },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

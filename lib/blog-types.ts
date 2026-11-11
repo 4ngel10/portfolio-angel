@@ -27,8 +27,11 @@ export type BlogPost = {
   publishedAt: string;
   /** ISO 8601 con el desfase de Madrid. */
   updatedAt: string;
-  /** Ruta de la imagen para redes (1200x630), por ejemplo /blog-img/<slug>/og.jpg. */
-  ogImage: string;
+  /**
+   * Ruta de la imagen para redes propia del artículo (por ejemplo /blog-img/<slug>/og.jpg), o null
+   * si no tiene. Sin ella se usa la generada por código (/blog/<slug>/opengraph-image).
+   */
+  ogImage: string | null;
   post: Record<Locale, BlogPostContent>;
 };
 

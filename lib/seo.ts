@@ -247,7 +247,8 @@ export function blogPostJsonLd(post: BlogPost) {
       inLanguage: "es",
       datePublished: post.publishedAt,
       dateModified: post.updatedAt,
-      image: `${SITE_URL}${post.ogImage}`,
+      // La propia del artículo o, si no tiene, la generada por código.
+      image: `${SITE_URL}${post.ogImage ?? `/blog/${post.slug}/opengraph-image`}`,
       author: personRef,
       publisher: personRef,
       isPartOf: { "@id": `${SITE_URL}/blog#blog` },
