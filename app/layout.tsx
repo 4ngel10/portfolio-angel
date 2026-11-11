@@ -7,7 +7,7 @@ import { MotionProvider } from "@/lib/motion";
 import { SkipLink } from "@/components/skip-link";
 import { SITE_URL } from "@/lib/site";
 import { THEME_SCRIPT } from "@/lib/theme-script";
-import { HOME_DESCRIPTION, HOME_OG_IMAGE, HOME_TITLE } from "@/lib/seo";
+import { HOME_DESCRIPTION, HOME_OG_IMAGE, HOME_TITLE, SITE_NAME } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -37,6 +37,7 @@ export const metadata: Metadata = {
     description: HOME_DESCRIPTION,
     type: "website",
     locale: "es_ES",
+    siteName: SITE_NAME,
     images: [{ url: HOME_OG_IMAGE, width: 1200, height: 630, alt: HOME_TITLE }],
   },
   twitter: {

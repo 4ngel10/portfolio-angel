@@ -1,17 +1,14 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { CERTIFICATIONS } from "@/lib/certifications";
 
 // Cifras del equipo de sistemas en el que trabaja Ángel (las dio él el 2026-11-08). Textos en
 // hero.stat{n}Value / Label. Van estáticas, sin contador: el hero no debe depender del JS.
 const STATS = [1, 2, 3, 4];
 
-// Certificaciones que ha indicado Ángel. Sin fechas ni enlaces hasta que los aporte.
-const CERTS = [
-  "Omada OCNA Wireless",
-  "Hornetsecurity Certified Engineering Training",
-  "3CX Basic Certified Engineer V20",
-];
+// Certificaciones: lib/certifications.ts (la misma lista alimenta el JSON-LD).
+const CERTS = CERTIFICATIONS.map((c) => c.name);
 
 /** Prueba social bajo los botones del hero: cifras del equipo y certificaciones. */
 export function ProofStrip() {

@@ -12,12 +12,16 @@
  */
 
 import { LEGAL, SITE_URL } from "./site";
+import { CERTIFICATIONS } from "./certifications";
 import type { Project } from "./projects";
 import type { ServiceDetail as Service } from "./services";
 import type { BlogPost } from "./blog-types";
 import es from "@/messages/es.json";
 
-export const HOME_TITLE = "Ángel Fernández · Administrador de Sistemas y Desarrollador Web";
+/** Título de la home (47 caracteres, tope de 60). Sin marca: va en SITE_NAME (og:site_name y WebSite). */
+export const HOME_TITLE = "Informático para empresas y hoteles en Mallorca";
+/** Nombre del sitio, para og:site_name y el WebSite del JSON-LD (no el título largo de la home). */
+export const SITE_NAME = "Ángel Fernández";
 /** Imagen para redes de la home (1200x630). */
 export const HOME_OG_IMAGE = "/og-home.jpg";
 export const HOME_DESCRIPTION =
@@ -31,8 +35,14 @@ export function alternatesFor(path: string) {
 /** Meta description de cada página de servicio, por id. */
 export const SERVICE_DESCRIPTIONS: Record<string, string> = {
   sistemas:
-    "Administración de sistemas en Palma de Mallorca. Copias de seguridad, Microsoft 365, redes, equipos, servidores y soporte IT para autónomos y pymes.",
-  web: "Desarrollo web a medida para autónomos y pymes, en remoto y en Palma de Mallorca. Webs rápidas y optimizadas para SEO, con dominio, hosting y mantenimiento.",
+    "Soporte informático y sistemas para empresas en Palma y Mallorca. Copias de seguridad, Microsoft 365, redes y servidores. Remoto o presencial.",
+  web: "Diseño y desarrollo web a medida en Palma y Mallorca para autónomos y pymes. Webs rápidas y optimizadas para SEO, con dominio, hosting y mantenimiento.",
+};
+
+/** Título SEO de cada página de servicio (sin marca; el <title> añade " · Ángel Fernández"). */
+export const SERVICE_TITLES: Record<string, string> = {
+  sistemas: "Soporte informático en Palma y Mallorca",
+  web: "Diseño web en Palma y Mallorca",
 };
 
 const PERSON_ID = `${SITE_URL}/#person`;
@@ -72,7 +82,8 @@ export function homeJsonLd() {
     {
       "@type": "WebSite",
       "@id": WEBSITE_ID,
-      name: HOME_TITLE,
+      name: SITE_NAME,
+      alternateName: PERSON_NAME,
       url: SITE_URL,
       description: HOME_DESCRIPTION,
       inLanguage: ["es", "en"],
@@ -111,6 +122,12 @@ export function homeJsonLd() {
         addressRegion: "Islas Baleares",
         addressCountry: "ES",
       },
+      // Solo nombre y emisor, como en la tira del hero (lib/certifications.ts).
+      hasCredential: CERTIFICATIONS.map((c) => ({
+        "@type": "EducationalOccupationalCredential",
+        name: c.name,
+        recognizedBy: { "@type": "Organization", name: c.issuer },
+      })),
       // El stack principal, el mismo que enseña "Sobre mí" (components/about.tsx).
       knowsAbout: [
         "Windows Server",
@@ -203,9 +220,9 @@ export function projectJsonLd(project: Project) {
   );
 }
 
-export const BLOG_TITLE = "Blog · Ángel Fernández";
+export const BLOG_TITLE = "Blog de sistemas y desarrollo web · Ángel Fernández";
 export const BLOG_DESCRIPTION =
-  "Artículos sobre administración de sistemas, backup, desarrollo web con Next.js y automatización. Guías prácticas desde Palma de Mallorca.";
+  "Guías prácticas de sistemas, copias de seguridad, desarrollo web con Next.js y automatización, para autónomos y pymes.";
 
 /** Listado del blog: Blog (con sus artículos) + BreadcrumbList (Inicio > Blog). */
 export function blogIndexJsonLd(posts: BlogPost[]) {

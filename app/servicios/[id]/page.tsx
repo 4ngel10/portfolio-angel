@@ -8,7 +8,7 @@ import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { PROJECTS, projectCard, type ProjectCard } from "@/lib/projects";
 import { SERVICES, getService } from "@/lib/services";
-import { SERVICE_DESCRIPTIONS, alternatesFor, serviceJsonLd } from "@/lib/seo";
+import { SERVICE_DESCRIPTIONS, SERVICE_TITLES, alternatesFor, serviceJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
 
 type Params = Promise<{ id: string }>;
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const service = getService((await params).id);
   if (!service) return {};
   const texts = es.services as Record<string, string>;
-  const title = texts[`${service.key}Title`];
+  const title = SERVICE_TITLES[service.id] ?? texts[`${service.key}Title`];
   const description = SERVICE_DESCRIPTIONS[service.id] ?? texts[`${service.key}Lead`];
   return {
     title: `${title} · Ángel Fernández`,
