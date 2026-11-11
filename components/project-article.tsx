@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { m, useScroll, useSpring } from "framer-motion";
+import { m, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { Reveal } from "./reveal";
 import { ProjectCover } from "./project-cover";
 import { ServiceCta } from "./service-cta";
@@ -159,7 +159,9 @@ export function Block({ block, dropCap = false }: { block: PostBlock; dropCap?: 
 /** Barra de progreso de lectura bajo la nav. Indica posición, no es decorativa. */
 export function ReadingProgress() {
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, mass: 0.3 });
+  const suavizado = useSpring(scrollYProgress, { stiffness: 200, damping: 30, mass: 0.3 });
+  // Con movimiento reducido la barra sigue al scroll sin el rebote del muelle.
+  const scaleX = useReducedMotion() ? scrollYProgress : suavizado;
   return (
     <m.div
       className="fixed top-[72px] right-0 left-0 z-40 h-[3px] origin-left"

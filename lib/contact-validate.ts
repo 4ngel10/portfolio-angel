@@ -14,12 +14,14 @@ export const SERVICIOS_CONTACTO = [
 /** Menos que esto entre que se abre la página y se envía solo lo hace un bot. */
 export const TIEMPO_MINIMO_MS = 3000;
 
+export type CampoContacto = "name" | "email" | "service" | "message";
+
 export type DatosContacto = { name: string; email: string; service: string; message: string };
 
 export type ResultadoValidacion =
   | { tipo: "ok"; datos: DatosContacto }
   | { tipo: "bot" }
-  | { tipo: "invalido" };
+  | { tipo: "invalido"; campo: CampoContacto };
 
 const EMAIL = /^[^\s@]+@[^\s@]+[.][^\s@]{2,}$/;
 // Sin saltos de línea ni caracteres de control en lo que va a cabeceras del correo.
@@ -41,12 +43,14 @@ export function validarContacto(campo: (k: string) => string, ahora: number): Re
   const service = campo("service").trim();
   const message = campo("message").trim();
 
-  if (name.length < 1 || name.length > 100 || CONTROL.test(name)) return { tipo: "invalido" };
-  if (email.length > 254 || CONTROL.test(email) || !EMAIL.test(email)) return { tipo: "invalido" };
+  if (name.length < 1 || name.length > 100 || CONTROL.test(name))
+    return { tipo: "invalido", campo: "name" };
+  if (email.length > 254 || CONTROL.test(email) || !EMAIL.test(email))
+    return { tipo: "invalido", campo: "email" };
   if (service !== "" && !(SERVICIOS_CONTACTO as readonly string[]).includes(service)) {
-    return { tipo: "invalido" };
+    return { tipo: "invalido", campo: "service" };
   }
-  if (message.length < 5 || message.length > 4000) return { tipo: "invalido" };
+  if (message.length < 5 || message.length > 4000) return { tipo: "invalido", campo: "message" };
   return { tipo: "ok", datos: { name, email, service, message } };
 }
 
@@ -61,7 +65,7 @@ export function crearLimitador(
   const porIp = new Map<string, number[]>();
   let global: number[] = [];
   const HORA = 60 * 60_000;
-  return function permitir(ip: string, ahora: number): boolean {
+  function permitir(ip: string, ahora: number): boolean {
     global = global.filter((t) => ahora - t < HORA);
     if (global.length >= opciones.maxGlobalHora) return false;
     // Evita que el mapa crezca sin límite.
@@ -78,5 +82,14 @@ export function crearLimitador(
     porIp.set(ip, mios);
     global.push(ahora);
     return true;
-  };
+  }
+  /** Devuelve el cupo de un envío que acabó en error: un fallo de Resend no debe gastar uno de los 3. */
+  function devolver(ip: string, ahora: number) {
+    const lista = porIp.get(ip);
+    const k = lista ? lista.lastIndexOf(ahora) : -1;
+    if (lista && k >= 0) lista.splice(k, 1);
+    const g = global.lastIndexOf(ahora);
+    if (g >= 0) global.splice(g, 1);
+  }
+  return Object.assign(permitir, { devolver });
 }

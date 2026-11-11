@@ -33,7 +33,14 @@ comprobar(
   con({ t: String(AHORA - (TIEMPO_MINIMO_MS - 1)) }).tipo === "bot",
   "envío en menos de 3 s es bot",
 );
-comprobar(con({ name: "" }).tipo === "invalido", "nombre vacío");
+const campoDe = (c: Record<string, string>) => {
+  const r = con(c);
+  return r.tipo === "invalido" ? r.campo : r.tipo;
+};
+comprobar(campoDe({ name: "" }) === "name", "nombre vacío señala el nombre");
+comprobar(campoDe({ email: "a@b" }) === "email", "correo malo señala el correo");
+comprobar(campoDe({ service: "Otra cosa" }) === "service", "servicio raro señala el servicio");
+comprobar(campoDe({ message: "hola" }) === "message", "mensaje corto señala el mensaje");
 comprobar(con({ name: "A\nBcc: x@y.es" }).tipo === "invalido", "salto de línea en el nombre");
 comprobar(con({ email: "no-es-un-correo" }).tipo === "invalido", "correo sin arroba");
 comprobar(con({ email: "a@b" }).tipo === "invalido", "correo sin dominio");
@@ -51,6 +58,23 @@ const permitir = crearLimitador({
 comprobar(
   [0, 1, 2].every((i) => permitir("1.1.1.1", AHORA + i)) && !permitir("1.1.1.1", AHORA + 3),
   "máximo 3 envíos por IP en 10 minutos",
+);
+comprobar(
+  (() => {
+    const l = crearLimitador({ ventanaMs: 600_000, maxVentana: 3, maxHora: 8, maxGlobalHora: 40 });
+    const r = [0, 1, 2, 3].map((i) => l("9.9.9.9", AHORA + i));
+    return r.join() === "true,true,true,false";
+  })(),
+  "deja pasar 3 y bloquea el 4.º",
+);
+comprobar(
+  (() => {
+    const l = crearLimitador({ ventanaMs: 600_000, maxVentana: 3, maxHora: 8, maxGlobalHora: 40 });
+    l("8.8.8.8", AHORA);
+    l.devolver("8.8.8.8", AHORA);
+    return [1, 2, 3, 4].map((i) => l("8.8.8.8", AHORA + i)).join() === "true,true,true,false";
+  })(),
+  "un envío fallido devuelve su cupo",
 );
 comprobar(permitir("2.2.2.2", AHORA + 4), "otra IP no se ve afectada");
 comprobar(permitir("1.1.1.1", AHORA + 601_000), "pasada la ventana vuelve a dejar enviar");

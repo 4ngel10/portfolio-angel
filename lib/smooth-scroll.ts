@@ -1,7 +1,7 @@
 /**
  * Scroll suave propio. No usamos scroll-behavior: smooth ni scrollTo({ behavior: "smooth" })
  * porque Chrome en Windows los desactiva cuando los "Efectos de animación" del sistema
- * están apagados, y Ángel quiere que la navegación interna deslice siempre.
+ * están apagados. Con prefers-reduced-motion: reduce no desliza: salta al destino al instante.
  */
 
 /** Altura de la nav sticky, para que el título de la sección no quede debajo. */
@@ -19,6 +19,12 @@ export function smoothScrollTo(targetY: number) {
   const endY = Math.max(0, Math.min(targetY, maxY));
   const distance = endY - startY;
   if (Math.abs(distance) < 1) return;
+
+  // Con movimiento reducido el salto es inmediato (el foco sí se mueve igualmente al destino).
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.scrollTo({ top: endY, behavior: "instant" });
+    return;
+  }
 
   // Más distancia, algo más de duración, entre 450 ms y 1100 ms.
   const duration = Math.min(1100, Math.max(450, Math.abs(distance) * 0.45));

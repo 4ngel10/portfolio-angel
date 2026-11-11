@@ -16,16 +16,27 @@ const OPTION = "bg-[var(--bg)] text-[var(--fg)]";
 
 const INICIAL: ContactoEstado = { status: "idle" };
 
-function ServiceSelect({ defaultValue }: { defaultValue: string }) {
+/** Mensaje de error de un campo: lo lee el lector de pantalla por aria-describedby. */
+function ErrorCampo({ id, texto }: { id: string; texto: string }) {
+  return (
+    <p id={`${id}-error`} className="mt-1.5 text-[13px] text-red-700 dark:text-red-400">
+      {texto}
+    </p>
+  );
+}
+
+function ServiceSelect({ defaultValue, invalido }: { defaultValue: string; invalido?: boolean }) {
   const { t } = useI18n();
   const [elegido, setElegido] = useState(defaultValue !== "");
   return (
     <select
       id="service"
       name="service"
+      aria-invalid={invalido || undefined}
+      aria-describedby={invalido ? "service-error" : undefined}
       defaultValue={defaultValue}
       onChange={(e) => setElegido(e.target.value !== "")}
-      className={`border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm ${elegido ? "" : "text-[var(--muted)]"} transition-colors outline-none focus:border-[var(--accent)]`}
+      className={`border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm ${elegido ? "" : "text-[var(--muted)]"} transition-colors focus:border-[var(--accent)]`}
     >
       <option value="" className={OPTION}>
         {t("contact.formServicePh")}
@@ -55,6 +66,12 @@ export function Contact() {
     setIntento(intento + 1);
   }
   const v = estado.values;
+  // Primer campo con error (solo cuando el resultado es "invalid" y no hay un envío en curso).
+  const campoError = status === "invalid" ? estado.campo : undefined;
+  // Al llegar un error de un campo, el foco va a ese campo; el lector lo anuncia con su descripción.
+  useEffect(() => {
+    if (estado.status === "invalid" && estado.campo) document.getElementById(estado.campo)?.focus();
+  }, [estado]);
 
   // Vías opcionales: solo salen si su dato está rellenado en CONTACT (lib/site.ts).
   const extra = [
@@ -254,14 +271,17 @@ export function Contact() {
                 <input
                   id="name"
                   name="name"
+                  aria-invalid={campoError === "name" || undefined}
+                  aria-describedby={campoError === "name" ? "name-error" : undefined}
                   type="text"
                   defaultValue={v?.name}
                   maxLength={100}
                   autoComplete="name"
                   required
                   placeholder={t("contact.formNamePh")}
-                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors focus:border-[var(--accent)]"
                 />
+                {campoError === "name" && <ErrorCampo id="name" texto={t("contact.formErrName")} />}
               </div>
               <div className="mb-4">
                 <label htmlFor="email" className="mb-1.5 block text-[13px] font-medium">
@@ -270,6 +290,8 @@ export function Contact() {
                 <input
                   id="email"
                   name="email"
+                  aria-invalid={campoError === "email" || undefined}
+                  aria-describedby={campoError === "email" ? "email-error" : undefined}
                   type="email"
                   defaultValue={v?.email}
                   maxLength={254}
@@ -278,8 +300,11 @@ export function Contact() {
                   autoCorrect="off"
                   required
                   placeholder={t("contact.formEmailPh")}
-                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors focus:border-[var(--accent)]"
                 />
+                {campoError === "email" && (
+                  <ErrorCampo id="email" texto={t("contact.formErrEmail")} />
+                )}
               </div>
               <div className="mb-4">
                 <label htmlFor="service" className="mb-1.5 block text-[13px] font-medium">
@@ -289,7 +314,11 @@ export function Contact() {
                   {/* El valor va siempre en español, para que el correo a Ángel se lea igual
                       venga de la web en el idioma que venga. Con key se rehace tras cada envío
                       (React vacía el formulario) y el color del placeholder se reinicia. */}
-                  <ServiceSelect key={intento} defaultValue={v?.service ?? ""} />
+                  <ServiceSelect
+                    key={intento}
+                    defaultValue={v?.service ?? ""}
+                    invalido={campoError === "service"}
+                  />
                   <svg
                     className="text-muted pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2"
                     width="16"
@@ -305,6 +334,9 @@ export function Contact() {
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </div>
+                {campoError === "service" && (
+                  <ErrorCampo id="service" texto={t("contact.formErrService")} />
+                )}
               </div>
               <div className="mb-5">
                 <label htmlFor="message" className="mb-1.5 block text-[13px] font-medium">
@@ -313,19 +345,29 @@ export function Contact() {
                 <textarea
                   id="message"
                   name="message"
+                  aria-invalid={campoError === "message" || undefined}
+                  aria-describedby={campoError === "message" ? "message-error" : undefined}
                   rows={5}
                   defaultValue={v?.message}
                   minLength={5}
                   maxLength={4000}
                   required
                   placeholder={t("contact.formMessagePh")}
-                  className="border-field min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors focus:border-[var(--accent)]"
                 />
+                {campoError === "message" && (
+                  <ErrorCampo id="message" texto={t("contact.formErrMessage")} />
+                )}
               </div>
               <button
                 type="submit"
-                disabled={status === "sending"}
-                className="btn-primary w-full disabled:opacity-70"
+                // aria-disabled y no disabled: un botón deshabilitado pierde el foco y el lector
+                // de pantalla deja de seguir el envío. El clic se ignora mientras se envía.
+                aria-disabled={status === "sending"}
+                onClick={(e) => {
+                  if (status === "sending") e.preventDefault();
+                }}
+                className={`btn-primary w-full ${status === "sending" ? "opacity-70" : ""}`}
               >
                 {status === "sending" ? t("contact.formSending") : t("contact.formSubmit")}
                 {status !== "sending" && (
@@ -357,13 +399,13 @@ export function Contact() {
               </p>
               {/* Región viva siempre presente: así el lector de pantalla anuncia el resultado
                   del envío cuando aparece el texto. */}
-              <div role="status" aria-live="polite">
+              <div role="status" aria-live="polite" aria-atomic="true">
                 {status === "ok" && (
                   <p className="mt-3 text-[13px] text-emerald-700 dark:text-emerald-400">
                     {t("contact.formOk")}
                   </p>
                 )}
-                {(status === "err" || status === "invalid") && (
+                {status === "err" && (
                   <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">
                     {t("contact.formErr")}
                   </p>
