@@ -33,7 +33,7 @@ gh repo create portfolio-angel --public --source=. --remote=origin --push
 
 Luego [vercel.com/new](https://vercel.com/new) → importar el repo → deploy. Framework detectado como Next.js.
 
-No hacen falta variables de entorno. El formulario de contacto envía los mensajes con [Web3Forms](https://web3forms.com) directamente desde el navegador, así que funciona en Vercel o en cualquier hosting estático. La clave y la URL pública están en `lib/site.ts`.
+El formulario de contacto envía los mensajes con una server action y [Resend](https://resend.com). Variables de entorno en Vercel: `RESEND_API_KEY`, `CONTACT_FROM` (remitente de un dominio verificado en Resend) y, opcional, `CONTACT_TO`. Ver `CLAUDE.md`.
 
 ## Trabajando con Claude Code
 

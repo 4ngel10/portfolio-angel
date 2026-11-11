@@ -9,8 +9,7 @@ import { BlogTeaser } from "@/components/blog-teaser";
 import { Contact } from "@/components/contact";
 import { Testimonials } from "@/components/testimonials";
 import { Footer } from "@/components/footer";
-import { BackToTop } from "@/components/back-to-top";
-import { MobileContactCta } from "@/components/mobile-contact-cta";
+import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { getLatestPosts } from "@/lib/blog-db";
 import { enlaceDe } from "@/lib/blog-types";
@@ -42,8 +41,7 @@ export default async function Page() {
         <Contact />
       </main>
       <Footer />
-      <MobileContactCta />
-      <BackToTop />
+      <Flotantes />
     </>
   );
 }

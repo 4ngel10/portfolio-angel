@@ -13,13 +13,6 @@ export const SITE_URL = "https://www.angel-fernandez.es";
 export const LAST_UPDATED = "2026-11-11";
 
 /**
- * Clave de acceso de Web3Forms (formulario de contacto -> Gmail de Ángel).
- * Es pública por diseño: Web3Forms la usa desde el navegador y solo permite enviar
- * correos a la cuenta que la registró. No es un secreto.
- */
-export const WEB3FORMS_KEY = "cbbda3f8-e741-4a3e-b07f-5a74db4663fa";
-
-/**
  * Datos del titular para el aviso legal (LSSI art. 10). Los datos del titular se muestran tal cual; si
  * alguno queda vacío, la página no muestra esa línea.
  */

@@ -175,11 +175,10 @@ export const LEGAL_PAGES: LegalPage[] = [
               "No vendo ni cedo tus datos. Para prestar el servicio uso proveedores que actúan como encargados del tratamiento:",
               {
                 list: [
-                  "**Web3Forms:** recibe el mensaje del formulario de contacto y lo reenvía a mi correo.",
-                  "**Google (Gmail):** buzón donde recibo esos mensajes.",
                   "**Supabase:** base de datos, autenticación y almacenamiento de archivos del área de clientes.",
-                  "**Vercel:** alojamiento de la web.",
-                  "**Resend:** envío de correos del servicio.",
+                  "**Vercel:** alojamiento de la web y medición anónima de su rendimiento (Speed Insights).",
+                  "**Resend:** envío de los correos del servicio y entrega del mensaje del formulario de contacto a mi correo.",
+                  "**IONOS:** alojamiento del correo en el que recibo esos mensajes.",
                 ],
               },
               "Algunos de estos proveedores pueden tratar datos fuera del Espacio Económico Europeo. En ese caso, la transferencia se ampara en garantías adecuadas, como las cláusulas contractuales tipo de la Comisión Europea o el Marco de Privacidad de Datos UE-EE. UU.",
@@ -239,11 +238,10 @@ export const LEGAL_PAGES: LegalPage[] = [
               "I do not sell or share your data. To provide the service I use providers acting as data processors:",
               {
                 list: [
-                  "**Web3Forms:** receives the contact form message and forwards it to my email.",
-                  "**Google (Gmail):** the mailbox where I receive those messages.",
                   "**Supabase:** database, authentication and file storage for the client area.",
-                  "**Vercel:** website hosting.",
-                  "**Resend:** sending of service emails.",
+                  "**Vercel:** website hosting and anonymous measurement of its performance (Speed Insights).",
+                  "**Resend:** sending of service emails and delivery of the contact form message to my email.",
+                  "**IONOS:** hosting of the mailbox where I receive those messages.",
                 ],
               },
               "Some of these providers may process data outside the European Economic Area. In that case the transfer relies on appropriate safeguards, such as the European Commission's standard contractual clauses or the EU-US Data Privacy Framework.",
@@ -308,8 +306,9 @@ export const LEGAL_PAGES: LegalPage[] = [
           {
             heading: "Servicios de terceros",
             blocks: [
-              "El formulario de contacto envía los datos a Web3Forms al pulsar enviar. No instala cookies en tu navegador. Más información en la [política de privacidad](/privacidad).",
+              "Al pulsar enviar, el formulario de contacto manda los datos a mi servidor y de ahí a Resend, que los entrega a mi correo. No instala cookies en tu navegador. Más información en la [política de privacidad](/privacidad).",
               "La web está alojada en Vercel. Como cualquier alojamiento, puede tratar datos técnicos de la conexión, como la dirección IP, en sus registros de servidor. Esto no instala cookies. Los detalles están en la [política de privacidad](/privacidad).",
+              "Vercel Speed Insights mide de forma anónima el rendimiento de las páginas públicas (tiempos de carga, tipo de dispositivo y navegador, país). No se usa para identificarte ni para hacer seguimiento entre sitios, y no se carga en el área privada.",
             ],
           },
           {
@@ -350,8 +349,9 @@ export const LEGAL_PAGES: LegalPage[] = [
           {
             heading: "Third-party services",
             blocks: [
-              "The contact form sends your data to Web3Forms when you press send. It sets no cookies in your browser. More information in the [privacy policy](/privacidad).",
+              "When you press send, the contact form sends your data to my server and from there to Resend, which delivers it to my email. It sets no cookies in your browser. More information in the [privacy policy](/privacidad).",
               "The website is hosted on Vercel. Like any hosting provider, it may process technical connection data, such as the IP address, in its server logs. This does not set cookies. Details are in the [privacy policy](/privacidad).",
+              "Vercel Speed Insights anonymously measures the performance of the public pages (load times, device type and browser, country). It is not used to identify you or to track you across sites, and it is not loaded in the private area.",
             ],
           },
           {

@@ -12,7 +12,7 @@ Estado: **solo informa (Report-Only)**. Ninguna política bloquea nada todavía.
 | Sesión (redirige a `/login` solo en `/portal` y `/admin`) | `lib/supabase/proxy.ts`, llamada desde `proxy.ts` |
 | Script del tema (en línea, sin nonce) | `lib/theme-script.ts`; su hash SHA-256 se calcula en `lib/csp.ts` y entra en el `script-src` privado |
 
-El host de Supabase sale de `NEXT_PUBLIC_SUPABASE_URL` (permite API, Auth y las subidas directas a Storage). Web3Forms está en `connect-src` y `form-action`.
+El host de Supabase sale de `NEXT_PUBLIC_SUPABASE_URL` (permite API, Auth y las subidas directas a Storage). El formulario de contacto es una server action de la propia web, así que `connect-src` y `form-action` solo llevan `'self'` (y Supabase en `connect-src`). Origenes de la web pública: `'self'`, Supabase y nada más; Speed Insights se sirve desde el propio dominio. Los informes de violaciones van a `/api/csp-report` (`report-uri` y `report-to`; los ves en los logs de Vercel buscando `[csp-report]`). Ojo en previews de Vercel: la barra de comentarios carga `vercel.live` y puede dar avisos falsos.
 
 Las páginas públicas siguen siendo estáticas: el nonce solo existe en las privadas, que ya son dinámicas porque leen cookies.
 
@@ -69,7 +69,7 @@ Edge headless con el protocolo de depuración, sin sesión, con la consola vigil
 
 Hace falta una sesión real y acciones con efectos, así que no se ejecutó:
 
-1. Enviar el formulario de contacto (Web3Forms, `connect-src` y `form-action`).
+1. Enviar el formulario de contacto (server action: `form-action 'self'`).
 2. `/mfa` con sesión de admin: el QR del TOTP es una data URL (`img-src data:`).
 3. `/admin` y `/portal` con sesión: navegar por las secciones, subir un archivo (subida directa a Supabase, `connect-src`), descargar uno y exportar CSV.
 4. Cambiar de tema y de idioma en la web pública y en el portal.

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { I18nProvider } from "@/lib/i18n";
 import { MotionProvider } from "@/lib/motion";
 import { SkipLink } from "@/components/skip-link";
+import { SpeedInsightsPublico } from "@/components/speed-insights";
 import { SITE_URL } from "@/lib/site";
 import { THEME_SCRIPT } from "@/lib/theme-script";
 import { HOME_DESCRIPTION, HOME_OG_IMAGE, HOME_TITLE, SITE_NAME } from "@/lib/seo";
@@ -75,6 +76,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <I18nProvider>
             <SkipLink />
             <MotionProvider>{children}</MotionProvider>
+            {/* Solo en producción (no en local ni en previews) y solo en rutas públicas. */}
+            {process.env.VERCEL_ENV === "production" && <SpeedInsightsPublico />}
           </I18nProvider>
         </ThemeProvider>
       </body>

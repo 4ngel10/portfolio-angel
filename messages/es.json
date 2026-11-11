@@ -217,6 +217,7 @@
     "formSending": "Enviando...",
     "formOk": "Mensaje enviado. Te contesto pronto.",
     "formErr": "No se ha podido enviar. Prueba por email.",
+    "formLimit": "Has enviado varios mensajes seguidos. Prueba de nuevo en un rato o escríbeme por email.",
     "formConsentPre": "Al enviar el mensaje aceptas la ",
     "formConsentLink": "política de privacidad",
     "formConsentPost": ". Usaré tus datos solo para responderte.",
