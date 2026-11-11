@@ -8,14 +8,14 @@ La web pública **no necesita banner de consentimiento**. Lo que guarda en el na
 
 - Cookie propia `locale` (1 año) y `localStorage` `locale` y `theme`. Solo se escriben cuando el visitante pulsa el selector de idioma o el de tema. La detección automática por `navigator.language` no guarda nada.
 - Cookies de sesión de Supabase: solo en `/login`, `/portal` y `/admin`, y solo si hay sesión. `proxy.ts` solo llama a `updateSession` en `/portal` y `/admin`; en las rutas públicas no crea ninguna cookie.
-- Terceros: solo Web3Forms, y únicamente al enviar el formulario (no instala cookies). Sin analítica, sin Vercel Analytics ni Speed Insights, sin fuentes externas (next/font self-hosted), sin iframes ni píxeles.
+- Terceros: solo Web3Forms, y únicamente al enviar el formulario (no instala cookies). Vercel Speed Insights (métricas de rendimiento anónimas, solo en producción y en rutas públicas; está descrito en `/privacidad` y `/cookies`). Sin analítica de visitas, sin Vercel Analytics, sin fuentes externas (next/font self-hosted), sin iframes ni píxeles.
 - `/cookies` informa de todo esto (`lib/legal.ts`) y `/privacidad` enlaza a ella.
 
 Lo que exige la ley es informar, y eso está hecho. Un banner sin cookies no esenciales sería innecesario, empeoraría el rendimiento y confundiría al visitante.
 
 ## Guardia contra regresiones
 
-`scripts/probar-cookies.ts` (corre con `npm test`) falla si aparece en `package.json`, `app/layout.tsx` o `components/` alguno de: `@vercel/analytics`, `@vercel/speed-insights`, `googletagmanager`, `gtag(`, `fbq(`, `hotjar`, `clarity.ms`, `plausible`, `youtube.com/embed` o `<iframe`. Si falla, hace falta el plan B de abajo antes de añadirlo. No se desactiva el test para salir del paso.
+`scripts/probar-cookies.ts` (corre con `npm test`) falla si aparece en `package.json`, `app/layout.tsx` o `components/` alguno de: `@vercel/analytics`, `googletagmanager`, `gtag(`, `fbq(`, `hotjar`, `clarity.ms`, `plausible`, `youtube.com/embed` o `<iframe`. Si falla, hace falta el plan B de abajo antes de añadirlo. No se desactiva el test para salir del paso.
 
 ## Plan B: si se añade analítica u otro servicio con cookies no esenciales
 

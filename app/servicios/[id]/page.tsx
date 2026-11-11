@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { Nav } from "@/components/nav";
 import { ServicePage } from "@/components/services-page";
 import { Footer } from "@/components/footer";
-import { BackToTop } from "@/components/back-to-top";
-import { MobileContactCta } from "@/components/mobile-contact-cta";
+import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { PROJECTS, projectCard, type ProjectCard } from "@/lib/projects";
 import { SERVICES, getService } from "@/lib/services";
@@ -56,8 +55,7 @@ export default async function Page({ params }: { params: Params }) {
       <Nav />
       <ServicePage service={service} other={{ id: otro.id, key: otro.key }} projects={proyectos} />
       <Footer />
-      <MobileContactCta />
-      <BackToTop />
+      <Flotantes />
     </>
   );
 }

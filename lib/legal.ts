@@ -178,7 +178,7 @@ export const LEGAL_PAGES: LegalPage[] = [
                   "**Web3Forms:** recibe el mensaje del formulario de contacto y lo reenvía a mi correo.",
                   "**Google (Gmail):** buzón donde recibo esos mensajes.",
                   "**Supabase:** base de datos, autenticación y almacenamiento de archivos del área de clientes.",
-                  "**Vercel:** alojamiento de la web.",
+                  "**Vercel:** alojamiento de la web y medición anónima de su rendimiento (Speed Insights).",
                   "**Resend:** envío de correos del servicio.",
                 ],
               },
@@ -242,7 +242,7 @@ export const LEGAL_PAGES: LegalPage[] = [
                   "**Web3Forms:** receives the contact form message and forwards it to my email.",
                   "**Google (Gmail):** the mailbox where I receive those messages.",
                   "**Supabase:** database, authentication and file storage for the client area.",
-                  "**Vercel:** website hosting.",
+                  "**Vercel:** website hosting and anonymous measurement of its performance (Speed Insights).",
                   "**Resend:** sending of service emails.",
                 ],
               },
@@ -310,6 +310,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               "El formulario de contacto envía los datos a Web3Forms al pulsar enviar. No instala cookies en tu navegador. Más información en la [política de privacidad](/privacidad).",
               "La web está alojada en Vercel. Como cualquier alojamiento, puede tratar datos técnicos de la conexión, como la dirección IP, en sus registros de servidor. Esto no instala cookies. Los detalles están en la [política de privacidad](/privacidad).",
+              "Vercel Speed Insights mide de forma anónima el rendimiento de las páginas públicas (tiempos de carga, tipo de dispositivo y navegador, país). No se usa para identificarte ni para hacer seguimiento entre sitios, y no se carga en el área privada.",
             ],
           },
           {
@@ -352,6 +353,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               "The contact form sends your data to Web3Forms when you press send. It sets no cookies in your browser. More information in the [privacy policy](/privacidad).",
               "The website is hosted on Vercel. Like any hosting provider, it may process technical connection data, such as the IP address, in its server logs. This does not set cookies. Details are in the [privacy policy](/privacidad).",
+              "Vercel Speed Insights anonymously measures the performance of the public pages (load times, device type and browser, country). It is not used to identify you or to track you across sites, and it is not loaded in the private area.",
             ],
           },
           {

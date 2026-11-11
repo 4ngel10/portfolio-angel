@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { Nav } from "@/components/nav";
 import { ProjectArticle } from "@/components/project-article";
 import { Footer } from "@/components/footer";
-import { BackToTop } from "@/components/back-to-top";
-import { MobileContactCta } from "@/components/mobile-contact-cta";
+import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { PROJECTS, getProject, projectCard } from "@/lib/projects";
 import { alternatesFor, projectJsonLd } from "@/lib/seo";
@@ -61,8 +60,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
         next={siguiente !== project ? projectCard(siguiente) : null}
       />
       <Footer />
-      <MobileContactCta />
-      <BackToTop />
+      <Flotantes />
     </>
   );
 }

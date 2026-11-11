@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
 import { BlogIndex } from "@/components/blog-index";
 import { Footer } from "@/components/footer";
-import { BackToTop } from "@/components/back-to-top";
-import { MobileContactCta } from "@/components/mobile-contact-cta";
+import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { getPublishedPosts } from "@/lib/blog-db";
 import { resumenDe } from "@/lib/blog-types";
@@ -34,8 +33,7 @@ export default async function BlogPage() {
       <Nav />
       <BlogIndex posts={posts.map(resumenDe)} />
       <Footer />
-      <MobileContactCta />
-      <BackToTop />
+      <Flotantes />
     </>
   );
 }

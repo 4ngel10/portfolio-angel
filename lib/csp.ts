@@ -1,8 +1,7 @@
 import { createHash } from "node:crypto";
 import { THEME_SCRIPT } from "./theme-script";
 
-/** Rutas con sesión o formularios de acceso: dinámicas, con nonce (las sirve proxy.ts). */
-export const RUTAS_PRIVADAS = ["admin", "portal", "login", "mfa", "contrasena", "auth"] as const;
+export { RUTAS_PRIVADAS } from "./rutas-privadas";
 
 const isDev = process.env.NODE_ENV === "development";
 
