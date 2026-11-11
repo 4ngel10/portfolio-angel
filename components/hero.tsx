@@ -43,7 +43,7 @@ export function Hero() {
           </h1>
 
           <div
-            style={{ animationDelay: "0.45s" }}
+            style={{ animationDelay: "0.1s" }}
             className="hero-fade text-muted mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:mt-8 md:text-lg"
           >
             <span style={{ color: "var(--accent)" }} aria-hidden>
@@ -58,7 +58,7 @@ export function Hero() {
           </div>
 
           <div className="mt-6 md:mt-10">
-            <div className="hero-fade" style={{ animationDelay: "0.55s" }}>
+            <div className="hero-fade" style={{ animationDelay: "0.15s" }}>
               <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-10">
                 <a href="#contact" className="btn-primary group">
@@ -91,7 +91,7 @@ export function Hero() {
             pantalla (allí aparece en Sobre mí). Sin tilt, zoom ni efectos, como las portadas. */}
         <div
           className="hero-fade hidden lg:col-span-4 lg:block"
-          style={{ animationDelay: "0.55s" }}
+          style={{ animationDelay: "0.15s" }}
         >
           {/* Foto recortada sin fondo sobre un brillo estático del acento. Sin card ni borde. */}
           <div className="relative ml-auto w-fit">
@@ -121,7 +121,7 @@ export function Hero() {
           botones de arriba ya llevan a las secciones. */}
       <a
         href="#services"
-        style={{ animationDelay: "0.9s" }}
+        style={{ animationDelay: "0.4s" }}
         className="hero-fade text-muted absolute bottom-6 left-1/2 hidden origin-top -translate-x-1/2 flex-col items-center gap-2.5 rounded-xl px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-110 hover:text-[var(--fg)] active:scale-105 md:flex"
       >
         {t("hero.scroll")}
