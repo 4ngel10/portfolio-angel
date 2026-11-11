@@ -53,8 +53,8 @@ export const SERVICES: ServiceDetail[] = [
       ],
     },
     closing: {
-      es: "Cuéntame qué tienes montado y qué te preocupa. Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
-      en: "Tell me what you have in place and what worries you. We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
+      es: "Cuéntame qué tienes montado y qué te preocupa. Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 horas.",
+      en: "Tell me what you have in place and what worries you. We start with a free 15-minute call and then I send you a quote. I reply within 24 hours.",
     },
     groups: {
       es: [
@@ -357,8 +357,8 @@ export const SERVICES: ServiceDetail[] = [
       ],
     },
     closing: {
-      es: "¿Quieres crear la web de tu negocio o renovar la que tienes? Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
-      en: "Want to build your business website or refresh the one you have? We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
+      es: "¿Quieres crear la web de tu negocio o renovar la que tienes? Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 horas.",
+      en: "Want to build your business website or refresh the one you have? We start with a free 15-minute call and then I send you a quote. I reply within 24 hours.",
     },
     groups: {
       es: [
