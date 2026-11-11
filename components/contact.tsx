@@ -61,9 +61,9 @@ export function Contact() {
 
   const links = [
     {
-      href: "mailto:angelfernandezgarriga@gmail.com",
+      href: "mailto:tecnico@angel-fernandez.es",
       label: t("contact.emailLabel"),
-      value: "angelfernandezgarriga@gmail.com",
+      value: "tecnico@angel-fernandez.es",
       icon: (
         <svg
           width="16"

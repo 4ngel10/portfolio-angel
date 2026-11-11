@@ -1,4 +1,4 @@
-Contact: mailto:angelfernandezgarriga@gmail.com
+Contact: mailto:tecnico@angel-fernandez.es
 Expires: 2027-11-10T00:00:00.000Z
 Preferred-Languages: es, en
 Canonical: https://www.angel-fernandez.es/.well-known/security.txt

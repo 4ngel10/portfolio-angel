@@ -25,7 +25,7 @@ export const WEB3FORMS_KEY = "cbbda3f8-e741-4a3e-b07f-5a74db4663fa";
  */
 export const LEGAL = {
   nombre: "Ángel Fernández Garriga",
-  email: "angelfernandezgarriga@gmail.com",
+  email: "tecnico@angel-fernandez.es",
   localidad: "Palma de Mallorca, Islas Baleares, España",
   nif: "45613752Z",
   domicilio: "Palma de Mallorca, Islas Baleares, España",
