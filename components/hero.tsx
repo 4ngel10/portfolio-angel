@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { CONTACT } from "@/lib/site";
+import { ProofStrip } from "./proof-strip";
 
 // Reduced motion: lo resuelve <MotionConfig reducedMotion="user"> (lib/motion.tsx).
 // No ramificar initial/animate con useReducedMotion: en SSR vale null y rompe la hidratación.
@@ -26,7 +26,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-[calc(100svh-72px)] flex-col justify-center overflow-hidden pt-12 pb-16 md:pt-24 md:pb-28"
+      className="relative flex flex-col justify-start overflow-hidden pt-10 pb-16 md:pt-16 md:pb-20 lg:justify-center lg:pt-14 lg:pb-16"
     >
       <div className="relative mx-auto grid w-full max-w-6xl px-6 md:px-8 lg:grid-cols-12 lg:items-center lg:gap-8">
         <div className="lg:col-span-8">
@@ -34,31 +34,14 @@ export function Hero() {
             <Line delay={0.05}>
               {t("hero.title1Pre")}
               <span className="text-accent">{t("hero.title1Accent")}</span>
+              {t("hero.title1Mid")}
+              <span className="text-accent">{t("hero.title1Accent2")}</span>
               {t("hero.title1Post")}
             </Line>
-            <Line delay={0.17}>
-              {t("hero.title2Pre")}
-              <span className="text-accent">{t("hero.title2Accent")}</span>
-              {t("hero.title2Post")}
-            </Line>
+            <Line delay={0.17}>{t("hero.title2")}</Line>
           </h1>
 
-          <div
-            style={{ animationDelay: "0.1s" }}
-            className="hero-fade text-muted mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:mt-8 md:text-lg"
-          >
-            <span style={{ color: "var(--accent)" }} aria-hidden>
-              ~/angel $
-            </span>
-            <span className="text-ink">{t("hero.terminal")}</span>
-            <span
-              className="caret -mb-[0.15em] inline-block h-[1.1em] w-[0.55em]"
-              style={{ background: "var(--accent)" }}
-              aria-hidden
-            />
-          </div>
-
-          {/* Foto en móvil y tablet, entre el terminal y el párrafo. Sin priority: el LCP debe
+          {/* Foto en móvil y tablet, entre el título y el párrafo. Sin priority: el LCP debe
               seguir siendo el párrafo y la foto no compite con él. */}
           <div className="hero-fade mt-6 mb-2 lg:hidden">
             <div className="relative mx-auto w-fit">
@@ -121,6 +104,7 @@ export function Hero() {
                   </a>
                 )}
               </div>
+              <ProofStrip />
             </div>
           </div>
         </div>
@@ -153,27 +137,6 @@ export function Hero() {
           </div>
         </div>
       </div>
-
-      {/* Solo en escritorio, centrado al pie del hero. En móvil ocupaba mucho alto y los
-          botones de arriba ya llevan a las secciones. */}
-      <a
-        href="#services"
-        style={{ animationDelay: "0.4s" }}
-        className="hero-fade text-muted absolute bottom-6 left-1/2 hidden origin-top -translate-x-1/2 flex-col items-center gap-2.5 rounded-xl px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-110 hover:text-[var(--fg)] active:scale-105 md:flex"
-      >
-        {t("hero.scroll")}
-        <span
-          className="relative block h-10 w-px overflow-hidden"
-          style={{ background: "var(--rule)" }}
-        >
-          <m.span
-            className="absolute top-0 left-0 h-1/2 w-px"
-            style={{ background: "var(--accent)" }}
-            animate={{ y: ["-100%", "200%"] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </span>
-      </a>
     </section>
   );
 }
