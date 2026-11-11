@@ -59,7 +59,7 @@ export function Hero() {
 
           {/* Foto en móvil y tablet, entre el terminal y el párrafo. Sin priority: el LCP debe
               seguir siendo el párrafo y la foto no compite con él. */}
-          <div className="hero-fade mt-6 mb-2 lg:hidden" style={{ animationDelay: "0.2s" }}>
+          <div className="hero-fade mt-6 mb-2 lg:hidden">
             <div className="relative mx-auto w-fit">
               <div
                 aria-hidden
@@ -84,7 +84,7 @@ export function Hero() {
           </div>
 
           <div className="mt-6 md:mt-10">
-            <div className="hero-fade" style={{ animationDelay: "0.15s" }}>
+            <div>
               <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-10">
                 <a href="#contact" className="btn-primary group">
