@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
+import { CONTACT } from "@/lib/site";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { WEB3FORMS_KEY } from "@/lib/site";
 
@@ -21,7 +22,8 @@ const SERVICE_OPTIONS = [
 ];
 
 export function Contact() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const [serviceChosen, setServiceChosen] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -32,7 +34,7 @@ export function Contact() {
     const data = new FormData(form);
     data.set(
       "subject",
-      `Nuevo mensaje del portfolio: ${data.get("name") ?? ""} (${data.get("service") ?? ""})`,
+      `Nuevo mensaje del portfolio: ${data.get("name") ?? ""} ${data.get("service") ? ` (${data.get("service")})` : ""}`,
     );
     try {
       // Web3Forms reenvía el mensaje al Gmail de Ángel. Se llama desde el navegador
@@ -59,7 +61,87 @@ export function Contact() {
     }
   }
 
+  // Vías opcionales: solo salen si su dato está rellenado en CONTACT (lib/site.ts).
+  const extra = [
+    ...(CONTACT.bookingUrl
+      ? [
+          {
+            href: CONTACT.bookingUrl,
+            label: t("contact.bookingLabel"),
+            value: t("contact.bookingValue"),
+            icon: (
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            ),
+          },
+        ]
+      : []),
+    ...(CONTACT.whatsapp
+      ? [
+          {
+            href: `https://wa.me/${CONTACT.whatsapp}`,
+            label: t("contact.whatsappLabel"),
+            value: `+${CONTACT.whatsapp}`,
+            icon: (
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.7-5.2A8.5 8.5 0 1 1 21 11.5z" />
+              </svg>
+            ),
+          },
+        ]
+      : []),
+    ...(CONTACT.phone && CONTACT.phone !== CONTACT.whatsapp
+      ? [
+          {
+            href: `tel:+${CONTACT.phone}`,
+            label: t("contact.phoneLabel"),
+            value: `+${CONTACT.phone}`,
+            icon: (
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.4-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" />
+              </svg>
+            ),
+          },
+        ]
+      : []),
+  ];
+
   const links = [
+    ...extra,
     {
       href: "mailto:tecnico@angel-fernandez.es",
       label: t("contact.emailLabel"),
@@ -114,6 +196,11 @@ export function Contact() {
             <p className="text-muted mt-5 mb-10 text-base leading-relaxed md:text-[17px]">
               {t("contact.lead")}
             </p>
+            {CONTACT.availability[locale] && (
+              <p className="text-muted -mt-6 mb-10 text-sm leading-relaxed">
+                {CONTACT.availability[locale]}
+              </p>
+            )}
             <RevealGroup className="flex flex-col gap-3" stagger={0.08}>
               {links.map((l) => (
                 <RevealItem key={l.href}>
@@ -217,11 +304,11 @@ export function Contact() {
                   <select
                     id="service"
                     name="service"
-                    required
                     defaultValue=""
-                    className="border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm transition-colors outline-none invalid:text-[var(--muted)] focus:border-[var(--accent)]"
+                    onChange={(e) => setServiceChosen(e.target.value !== "")}
+                    className={`border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm ${serviceChosen ? "" : "text-[var(--muted)]"} transition-colors outline-none focus:border-[var(--accent)]`}
                   >
-                    <option value="" disabled className={OPTION}>
+                    <option value="" className={OPTION}>
                       {t("contact.formServicePh")}
                     </option>
                     {SERVICE_OPTIONS.map((o, i) => (
