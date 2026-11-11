@@ -78,7 +78,7 @@ export function Hero() {
                 unoptimized
                 fetchPriority="low"
                 decoding="async"
-                className="hero-photo relative block aspect-[300/531] h-[220px] w-auto transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
+                className="hero-photo relative block h-[220px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
               />
             </div>
           </div>
