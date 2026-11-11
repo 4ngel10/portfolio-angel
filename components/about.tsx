@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { CountUp } from "./count-up";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
@@ -67,19 +66,6 @@ export function About() {
           <h2 className="max-w-4xl text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
             {t("about.title")}
           </h2>
-        </Reveal>
-
-        {/* Foto solo en móvil y tablet: en escritorio ya está en el hero, nunca repetida. */}
-        <Reveal>
-          <Image
-            src="/angel-square.webp"
-            alt={t("photo.alt")}
-            width={640}
-            height={640}
-            loading="lazy"
-            sizes="280px"
-            className="border-rule mt-10 aspect-square w-full max-w-[280px] rounded-2xl border object-cover lg:hidden"
-          />
         </Reveal>
 
         {/* Cifras: solo tipografía, sin iconos ni cards ni contador animado. */}

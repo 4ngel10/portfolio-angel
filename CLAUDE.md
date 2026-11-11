@@ -58,8 +58,8 @@ public/
   projects/             portadas WebP e imágenes para redes (1200x630)
   blog/                 solo los 5 <slug>-og.jpg antiguos (enlaces ya compartidos); las imágenes de los artículos están en el bucket `blog`
 assets/fonts/           .ttf y licencias OFL para la imagen social generada (next/og)
-  angel-cutout.webp     foto del hero (520x920, sin fondo, desde lg); no recortar ni reconvertir
-  angel-square.webp     foto de Sobre mí en móvil y tablet (640x640) y `image` del Person en JSON-LD
+  angel-cutout.webp     foto del hero (520x920, sin fondo, en todas las pantallas); no recortar ni reconvertir
+  angel-square.webp     solo el `image` del Person en JSON-LD (640x640)
 ```
 
 ## Convenciones de diseño
@@ -77,7 +77,7 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Radios**: tope en 16px para cards. Nada de 24px+.
 - **Botones**: `.btn-primary` y `.btn-secondary` en `globals.css`. Siempre `scale(0.97)` en `:active`.
 - **Imágenes (portadas de proyecto)**: al pasar el ratón solo hacen un zoom discreto (`scale-[1.03]`, 500 ms, en `project-cover.tsx`). Sin tilt ni elevación en las cards con portada (home, cabecera del proyecto y "Siguiente proyecto"); decisión de Ángel.
-- **Foto de Ángel**: hero en escritorio (`lg:`) y Sobre mí en móvil y tablet (`lg:hidden`), nunca las dos a la vez. El hero usa `angel-cutout.webp` (520x920, recortada sin fondo, de la cabeza a la cintura y fundida a transparente abajo), sin card, borde ni `rounded-2xl`, sobre un brillo radial estático del acento (`color-mix` al 22 %, `inset: 8% -10% 0 -10%`) detrás de la imagen (decisión de Ángel del 2026-11-09). Solo se permite ese brillo: nada de rejilla de puntos ni parallax, y no recortes ni reconviertas la imagen. Solo hace un zoom discreto al pasar el ratón sobre la foto (`scale-[1.03]`, 500 ms), también con reduced motion (clase `.hero-photo` excluida de la regla global); sin tilt ni sombra de color. La foto de Sobre mí (`angel-square.webp`) sigue con `rounded-2xl` y borde `var(--rule)`. `angel-portrait.webp` se borró (ya no se usaba).
+- **Foto de Ángel**: solo en el hero, en todas las pantallas: en móvil y tablet entre el terminal y el párrafo (bloque `lg:hidden`, 220 px de alto, 260 desde `sm`, brillo al 30 % (el de escritorio al 22 %), sin `priority` para no competir con el LCP, que es el párrafo `hero.lead`) y en `lg:` a la derecha. Sobre mí ya no lleva foto. El hero usa `angel-cutout.webp` (520x920, recortada sin fondo, de la cabeza a la cintura y fundida a transparente abajo), sin card, borde ni `rounded-2xl`, sobre un brillo radial estático del acento (`color-mix` al 22 %, `inset: 8% -10% 0 -10%`) detrás de la imagen (decisión de Ángel del 2026-11-09). Solo se permite ese brillo: nada de rejilla de puntos ni parallax, y no recortes ni reconviertas la imagen. Solo hace un zoom discreto al pasar el ratón sobre la foto (`scale-[1.03]`, 500 ms), también con reduced motion (clase `.hero-photo` excluida de la regla global); sin tilt ni sombra de color. `angel-square.webp` ya no se pinta en ninguna página. `angel-portrait.webp` se borró (ya no se usaba).
 - **Tilt 3D** (solo cards sin imagen: servicios y blog): gateado por `useReducedMotion`. Con ratón sigue al cursor; en táctil se inclina hacia el punto tocado y vuelve al soltar (decisión de Ángel: mismo efecto en móvil que en PC).
 - **Hover en móvil**: `@variant hover (&:hover)` en `globals.css` hace que `hover:` también se active al tocar (Tailwind v4 lo limita a `(hover: hover)` por defecto). No lo quites: Ángel quiere los mismos efectos en móvil que en PC.
 - **Enlaces externos**: siempre `target="_blank" rel="noopener noreferrer"`. LinkedIn con `www.` para que en móvil abra la app.

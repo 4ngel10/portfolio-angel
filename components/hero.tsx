@@ -57,6 +57,30 @@ export function Hero() {
             />
           </div>
 
+          {/* Foto en móvil y tablet, entre el terminal y el párrafo. Sin priority: el LCP debe
+              seguir siendo el párrafo y la foto no compite con él. */}
+          <div className="hero-fade mt-6 mb-2 lg:hidden" style={{ animationDelay: "0.2s" }}>
+            <div className="relative mx-auto w-fit">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute"
+                style={{
+                  inset: "8% -4% 0 -4%",
+                  background:
+                    "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 30%, transparent), transparent)",
+                }}
+              />
+              <Image
+                src="/angel-cutout.webp"
+                alt={t("photo.alt")}
+                width={520}
+                height={920}
+                sizes="(min-width: 1024px) 0px, 150px"
+                className="hero-photo relative block h-[220px] w-auto transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
+              />
+            </div>
+          </div>
+
           <div className="mt-6 md:mt-10">
             <div className="hero-fade" style={{ animationDelay: "0.15s" }}>
               <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
@@ -87,8 +111,7 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Foto solo desde lg: en móvil el H1 y los botones tienen que seguir en la primera
-            pantalla (allí aparece en Sobre mí). Sin tilt, zoom ni efectos, como las portadas. */}
+        {/* Foto de escritorio (desde lg). Sin tilt ni efectos, como las portadas. */}
         <div
           className="hero-fade hidden lg:col-span-4 lg:block"
           style={{ animationDelay: "0.15s" }}
