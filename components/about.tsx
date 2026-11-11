@@ -1,7 +1,6 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
-import { CountUp } from "./count-up";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 // Stack completo por área. La banda de components/stack-band.tsx solo muestra una selección
@@ -32,9 +31,6 @@ const STACK: { labelKey: string; items: string[] }[] = [
     ],
   },
 ];
-
-// Cifras de experiencia (las dio Ángel el 2026-11-08). Textos en about.stat{n}Value / Label.
-const STATS = [1, 2, 3, 4];
 
 function StackCategory({ cat }: { cat: (typeof STACK)[number] }) {
   const { t } = useI18n();
@@ -68,22 +64,7 @@ export function About() {
           </h2>
         </Reveal>
 
-        {/* Cifras: solo tipografía, sin iconos ni cards ni contador animado. */}
-        <Reveal>
-          <div className="border-rule mt-14 grid grid-cols-2 gap-x-6 gap-y-8 border-y py-8 md:grid-cols-4">
-            {STATS.map((n) => (
-              <div key={n}>
-                <p className="text-4xl leading-none font-semibold tracking-[-0.035em] md:text-5xl">
-                  <CountUp value={t(`about.stat${n}Value`)} />
-                </p>
-                <p className="text-muted mt-2 text-sm">{t(`about.stat${n}Label`)}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-muted mt-3 text-sm">{t("about.statsNote")}</p>
-        </Reveal>
-
-        <RevealGroup className="mt-12 max-w-3xl space-y-6" stagger={0.08}>
+        <RevealGroup className="mt-10 max-w-3xl space-y-6" stagger={0.08}>
           <RevealItem as="div">
             <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p1")}</p>
           </RevealItem>

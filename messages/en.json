@@ -9,24 +9,16 @@
     "blog": "Blog"
   },
   "hero": {
-    "title1Pre": "",
-    "title1Accent": "Systems",
-    "title1Post": " Administrator",
-    "title2Pre": "and ",
-    "title2Accent": "Web",
-    "title2Post": " Developer.",
-    "terminal": "systems + web",
+    "title1Pre": "Your ",
+    "title1Accent": "IT",
+    "title1Mid": " and your ",
+    "title1Accent2": "website",
+    "title1Post": ",",
+    "title2": "with the rigor of a hotel that can't stop.",
     "lead": "I work on the team that runs IT for more than 60 hotels. I apply that method to your business and your website.",
     "ctaPrimary": "Get a quote",
     "ctaBooking": "Book a 15-minute call",
     "ctaSecondary": "See services",
-    "scroll": "Scroll"
-  },
-  "marquee": {
-    "stack": "Technologies I work with"
-  },
-  "about": {
-    "title": "I'm Ángel, systems administrator and web developer.",
     "stat1Value": "+3",
     "stat1Label": "years in systems",
     "stat2Value": "+60",
@@ -36,6 +28,13 @@
     "stat4Value": "+1,000",
     "stat4Label": "users",
     "statsNote": "Figures from the systems team I work in.",
+    "certsLabel": "Certifications"
+  },
+  "marquee": {
+    "stack": "Technologies I work with"
+  },
+  "about": {
+    "title": "I'm Ángel, systems administrator and web developer.",
     "p1": "For the past 3 years I've been part of the systems team at an IT services company in Mallorca. We run the infrastructure of hotels, law and accounting firms, and businesses across many sectors. I look after servers, backups, remote desktops (RDS), networks and VLANs. A hotel can't stop, and if something breaks in the middle of the night the front desk still has to work.",
     "p2": "I bring that same way of working, with documentation, tested backups and planned changes, to freelancers, small businesses and new ventures, both for their IT and their website.",
     "stackDaily": "Every day I work with Windows Server, Active Directory, RDS, Hyper-V, Veeam, Fortinet, Next.js and Vercel.",
@@ -48,7 +47,7 @@
     "catWeb": "Web"
   },
   "services": {
-    "title": "Systems and web.",
+    "title": "Two services, one person on the phone.",
     "lead": "Your IT and your website managed in one place. I support freelancers and growing businesses by simplifying all of their technology.",
     "s1Title": "Systems Administration",
     "s1Lead": "I work on the team that runs IT for more than 60 hotels. That same method, tailored to your business.",
@@ -57,7 +56,7 @@
     "s1b3": "Networks, wifi and security",
     "s1b4": "Devices, servers and support",
     "s2Title": "Web Development",
-    "s2Lead": "A simple website, ready in a week. I handle the domain, hosting and maintenance, plus a database if you need one.",
+    "s2Lead": "A fast, well-built website, live in days rather than months. I take care of the domain, hosting and maintenance.",
     "s2b1": "Custom design and development",
     "s2b2": "Performance and SEO",
     "s2b3": "Domain, hosting and deployment",
@@ -115,7 +114,7 @@
   },
   "portfolio": {
     "title": "Projects.",
-    "lead": "Real work in systems and web.",
+    "lead": "Four concrete problems and how I solved them.",
     "p1Tag": "Automation",
     "p1Title": "Automatic printer mapping on RDS",
     "p1Desc": "GPO-launched PowerShell script that gives each user their printers, trays and default printer by reading Active Directory attributes.",
@@ -139,10 +138,22 @@
     "home": "Back to home",
     "quote": "Get a quote",
     "links": {
-      "sistemas": { "title": "Systems", "text": "Backups, networks, Microsoft 365 and support." },
-      "web": { "title": "Web development", "text": "Custom websites with domain and hosting." },
-      "projects": { "title": "Projects", "text": "Real work, explained." },
-      "blog": { "title": "Blog", "text": "What I apply in my work." }
+      "sistemas": {
+        "title": "Systems",
+        "text": "Backups, networks, Microsoft 365 and support."
+      },
+      "web": {
+        "title": "Web development",
+        "text": "Custom websites with domain and hosting."
+      },
+      "projects": {
+        "title": "Projects",
+        "text": "Real work, explained."
+      },
+      "blog": {
+        "title": "Blog",
+        "text": "What I apply in my work."
+      }
     }
   },
   "blog": {
@@ -178,8 +189,8 @@
     }
   },
   "contact": {
-    "title": "Got a project in mind? Let's talk.",
-    "lead": "Systems, web or both. We start with a free 15-minute call to get to know your business, and then I send you a quote. I reply within 24 hours.",
+    "title": "Tell me what's giving you a hard time. I reply within 24 hours.",
+    "lead": "Systems, web or both. We start with a free 15-minute call to get to know your business, and then I send you a quote.",
     "emailLabel": "Email",
     "linkedinLabel": "LinkedIn",
     "githubLabel": "GitHub",

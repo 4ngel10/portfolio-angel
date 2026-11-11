@@ -9,24 +9,16 @@
     "blog": "Blog"
   },
   "hero": {
-    "title1Pre": "Administrador de ",
-    "title1Accent": "Sistemas",
-    "title1Post": "",
-    "title2Pre": "y Desarrollador ",
-    "title2Accent": "Web",
-    "title2Post": ".",
-    "terminal": "sistemas + web",
+    "title1Pre": "Tu ",
+    "title1Accent": "informática",
+    "title1Mid": " y tu ",
+    "title1Accent2": "web",
+    "title1Post": ",",
+    "title2": "con el rigor de un hotel que no puede parar.",
     "lead": "Trabajo en el equipo que lleva la informática de más de 60 hoteles. Ese método lo aplico a tu empresa y a tu web.",
     "ctaPrimary": "Pedir presupuesto",
     "ctaBooking": "Reservar llamada de 15 min",
     "ctaSecondary": "Ver servicios",
-    "scroll": "Desliza"
-  },
-  "marquee": {
-    "stack": "Tecnologías con las que trabajo"
-  },
-  "about": {
-    "title": "Soy Ángel, administrador de sistemas y desarrollador web.",
     "stat1Value": "+3",
     "stat1Label": "años en sistemas",
     "stat2Value": "+60",
@@ -36,6 +28,13 @@
     "stat4Value": "+1.000",
     "stat4Label": "usuarios",
     "statsNote": "Cifras del equipo de sistemas en el que trabajo.",
+    "certsLabel": "Certificaciones"
+  },
+  "marquee": {
+    "stack": "Tecnologías con las que trabajo"
+  },
+  "about": {
+    "title": "Soy Ángel, administrador de sistemas y desarrollador web.",
     "p1": "Desde hace 3 años formo parte del equipo de sistemas de una empresa de servicios IT en Mallorca. Llevamos la infraestructura de hoteles, despachos y empresas de distintos sectores. Me ocupo de servidores, copias de seguridad, escritorios remotos (RDS) y redes. En un hotel no se puede parar, y si algo falla de madrugada la recepción tiene que seguir funcionando.",
     "p2": "Esa forma de trabajar, con documentación, copias probadas y cambios planificados, es la que llevo a autónomos, pymes y negocios que empiezan, tanto en su IT como en su página web.",
     "stackDaily": "Cada día trabajo con Windows Server, Active Directory, RDS, Hyper-V, Veeam, Fortinet, Next.js y Vercel.",
@@ -48,7 +47,7 @@
     "catWeb": "Web"
   },
   "services": {
-    "title": "Sistemas y web.",
+    "title": "Dos servicios, una sola persona al teléfono.",
     "lead": "Tu informática y tu web gestionadas en un mismo lugar. Acompaño a autónomos y empresas en crecimiento simplificando toda su tecnología.",
     "s1Title": "Administración de Sistemas",
     "s1Lead": "Trabajo en el equipo que lleva la informática de más de 60 hoteles. Ese mismo método, a la medida de tu negocio.",
@@ -57,7 +56,7 @@
     "s1b3": "Redes, wifi y seguridad",
     "s1b4": "Equipos, servidores y soporte",
     "s2Title": "Desarrollo Web",
-    "s2Lead": "Una web sencilla, lista en una semana. Dominio, hosting y mantenimiento de mi cuenta, y base de datos si la necesitas.",
+    "s2Lead": "Una web rápida y bien hecha, publicada en días y no en meses. Yo me encargo del dominio, el hosting y el mantenimiento.",
     "s2b1": "Diseño y desarrollo a medida",
     "s2b2": "Rendimiento y SEO",
     "s2b3": "Dominio, hosting y despliegue",
@@ -115,7 +114,7 @@
   },
   "portfolio": {
     "title": "Proyectos.",
-    "lead": "Trabajo real en sistemas y en web.",
+    "lead": "Cuatro problemas concretos y cómo los resolví.",
     "p1Tag": "Automatización",
     "p1Title": "Mapeo automático de impresoras en RDS",
     "p1Desc": "Script de PowerShell lanzado por GPO que asigna a cada usuario sus impresoras, bandejas y predeterminada leyendo atributos de Active Directory.",
@@ -139,10 +138,22 @@
     "home": "Volver al inicio",
     "quote": "Pedir presupuesto",
     "links": {
-      "sistemas": { "title": "Sistemas", "text": "Copias, redes, Microsoft 365 y soporte." },
-      "web": { "title": "Desarrollo web", "text": "Webs a medida con dominio y hosting." },
-      "projects": { "title": "Proyectos", "text": "Trabajos reales, explicados." },
-      "blog": { "title": "Blog", "text": "Lo que aplico en mi trabajo." }
+      "sistemas": {
+        "title": "Sistemas",
+        "text": "Copias, redes, Microsoft 365 y soporte."
+      },
+      "web": {
+        "title": "Desarrollo web",
+        "text": "Webs a medida con dominio y hosting."
+      },
+      "projects": {
+        "title": "Proyectos",
+        "text": "Trabajos reales, explicados."
+      },
+      "blog": {
+        "title": "Blog",
+        "text": "Lo que aplico en mi trabajo."
+      }
     }
   },
   "blog": {
@@ -178,8 +189,8 @@
     }
   },
   "contact": {
-    "title": "¿Tienes un proyecto en mente? Hablemos.",
-    "lead": "Sistemas, web o ambos. Empezamos con una llamada gratuita de 15 minutos para conocer tu negocio y después te envío un presupuesto. Respondo en 24 horas.",
+    "title": "Cuéntame qué te da guerra. Te respondo en 24 horas.",
+    "lead": "Sistemas, web o ambos. Empezamos con una llamada gratuita de 15 minutos para conocer tu negocio y después te envío un presupuesto.",
     "emailLabel": "Email",
     "linkedinLabel": "LinkedIn",
     "githubLabel": "GitHub",
