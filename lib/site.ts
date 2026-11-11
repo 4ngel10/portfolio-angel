@@ -30,3 +30,26 @@ export const LEGAL = {
   nif: "45613752Z",
   domicilio: "Palma de Mallorca, Islas Baleares, España",
 };
+
+/**
+ * Vías de contacto opcionales. Mientras un campo esté vacío, la web no muestra nada de él y el
+ * botón principal sigue siendo "Pedir presupuesto".
+ *
+ * - bookingUrl: URL de reserva (Cal.com o similar). Con ella, el botón principal del hero pasa a
+ *   "Reservar llamada de 15 min" y "Pedir presupuesto" queda como secundario.
+ * - whatsapp: número en formato internacional sin "+" ni espacios (p. ej. "34600000000").
+ *   Sale en la sección de contacto y en el botón flotante del móvil.
+ * - phone: igual que whatsapp, para llamadas. Si es el mismo número, no se repite.
+ * - availability: línea de disponibilidad junto al contacto (horario, urgencias).
+ */
+export const CONTACT: {
+  bookingUrl: string;
+  whatsapp: string;
+  phone: string;
+  availability: { es: string; en: string };
+} = {
+  bookingUrl: "",
+  whatsapp: "",
+  phone: "",
+  availability: { es: "", en: "" },
+};

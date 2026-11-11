@@ -80,6 +80,7 @@ export function About() {
               </div>
             ))}
           </div>
+          <p className="text-muted mt-3 text-sm">{t("about.statsNote")}</p>
         </Reveal>
 
         <RevealGroup className="mt-12 max-w-3xl space-y-6" stagger={0.08}>

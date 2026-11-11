@@ -45,16 +45,16 @@ export const SERVICES: ServiceDetail[] = [
     intro: {
       es: [
         "Me ocupo de la informática de tu empresa, desde las copias de seguridad y el correo hasta la red, los equipos y los servidores. Para autónomos, pymes y negocios que empiezan, en remoto o presencial.",
-        "Desde hace 3 años formo parte del equipo de sistemas de una empresa de servicios IT, con más de 60 hoteles, 120 servidores y 1.000 usuarios a cargo. Llevo esa misma forma de trabajar a tu negocio, con documentación, copias probadas y cambios planificados.",
+        "Desde hace 3 años formo parte del equipo de sistemas de una empresa de servicios IT que lleva más de 60 hoteles, 120 servidores y 1.000 usuarios. Llevo esa misma forma de trabajar a tu negocio, con documentación, copias probadas y cambios planificados.",
       ],
       en: [
         "I look after your company's IT, from backups and email to the network, devices and servers. For freelancers, small businesses and new ventures, remotely or on site.",
-        "For the past 3 years I've been part of the systems team at an IT services company, looking after more than 60 hotels, 120 servers and 1,000 users. I bring that same way of working to your business, with documentation, tested backups and planned changes.",
+        "For the past 3 years I've been part of the systems team at an IT services company that looks after more than 60 hotels, 120 servers and 1,000 users. I bring that same way of working to your business, with documentation, tested backups and planned changes.",
       ],
     },
     closing: {
-      es: "Cuéntame qué tienes montado y qué te preocupa. Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
-      en: "Tell me what you have in place and what worries you. We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
+      es: "Cuéntame qué tienes montado y qué te preocupa. Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 horas.",
+      en: "Tell me what you have in place and what worries you. We start with a free 15-minute call and then I send you a quote. I reply within 24 hours.",
     },
     groups: {
       es: [
@@ -357,8 +357,8 @@ export const SERVICES: ServiceDetail[] = [
       ],
     },
     closing: {
-      es: "¿Quieres crear la web de tu negocio o renovar la que tienes? Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
-      en: "Want to build your business website or refresh the one you have? We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
+      es: "¿Quieres crear la web de tu negocio o renovar la que tienes? Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 horas.",
+      en: "Want to build your business website or refresh the one you have? We start with a free 15-minute call and then I send you a quote. I reply within 24 hours.",
     },
     groups: {
       es: [

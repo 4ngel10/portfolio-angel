@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
+import { CONTACT } from "@/lib/site";
 
 // Reduced motion: lo resuelve <MotionConfig reducedMotion="user"> (lib/motion.tsx).
 // No ramificar initial/animate con useReducedMotion: en SSR vale null y rompe la hidratación.
@@ -87,8 +88,12 @@ export function Hero() {
             <div>
               <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-10">
-                <a href="#contact" className="btn-primary group">
-                  {t("hero.ctaPrimary")}
+                <a
+                  href={CONTACT.bookingUrl || "#contact"}
+                  {...(CONTACT.bookingUrl && { target: "_blank", rel: "noopener noreferrer" })}
+                  className="btn-primary group"
+                >
+                  {CONTACT.bookingUrl ? t("hero.ctaBooking") : t("hero.ctaPrimary")}
                   <svg
                     width="16"
                     height="16"
@@ -105,9 +110,16 @@ export function Hero() {
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
                 </a>
-                <a href="#services" className="btn-secondary">
-                  {t("hero.ctaSecondary")}
-                </a>
+                {/* Con reserva activa, el formulario pasa a ser la vía secundaria. */}
+                {CONTACT.bookingUrl ? (
+                  <a href="#contact" className="btn-secondary">
+                    {t("hero.ctaPrimary")}
+                  </a>
+                ) : (
+                  <a href="#services" className="btn-secondary">
+                    {t("hero.ctaSecondary")}
+                  </a>
+                )}
               </div>
             </div>
           </div>

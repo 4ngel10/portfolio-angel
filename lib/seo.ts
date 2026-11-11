@@ -21,7 +21,7 @@ export const HOME_TITLE = "Ángel Fernández · Administrador de Sistemas y Desa
 /** Imagen para redes de la home (1200x630). */
 export const HOME_OG_IMAGE = "/og-home.jpg";
 export const HOME_DESCRIPTION =
-  "Administrador de sistemas, 3 años en 60 hoteles, y desarrollador web para autónomos y pymes. En remoto y en Palma de Mallorca. Primera llamada gratuita.";
+  "Administrador de sistemas en un equipo que lleva más de 60 hoteles, y desarrollador web para autónomos y pymes. En Palma de Mallorca y en remoto.";
 
 /** Canonical + hreflang de una página (ruta relativa a metadataBase). */
 export function alternatesFor(path: string) {
