@@ -22,6 +22,9 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF primero (pesa menos que WebP con la misma calidad); WebP para navegadores sin AVIF.
     formats: ["image/avif", "image/webp"],
+    // Un año: las portadas tienen nombre fijo (si una cambia, cambia el nombre), así que lo
+    // optimizado no hace falta regenerarlo.
+    minimumCacheTTL: 31536000,
   },
   // Las imágenes del blog viven en el bucket público "blog" de Supabase y se sirven por este
   // dominio: /blog-img/<slug>/<archivo>. Así el navegador solo ve 'self' (img-src de la CSP no
