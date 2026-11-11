@@ -11,7 +11,7 @@ Portfolio personal single-page de Ángel Fernández Garriga (técnico de sistema
 - **Next.js 16** App Router (Turbopack), Server Components por defecto. Componentes interactivos marcados con `"use client"`.
 - **React 19**, **TypeScript strict**.
 - **Tailwind CSS v4** (4.0.0-beta.8): configuración en `app/globals.css` con `@theme`. No hay `tailwind.config.ts`. Las variantes propias van con `@variant` (esta beta no admite `@custom-variant`).
-- **Framer Motion 11** para el tilt 3D y entradas de hero.
+- **Framer Motion 11** para el tilt 3D y entradas de hero, con `LazyMotion` (`lib/motion.tsx`, funciones `domAnimation` en `lib/motion-features.ts`, que se descargan aparte tras hidratar). Con `strict`: usa siempre `m.div`, `m.span`... (de `framer-motion`), **nunca `motion.*`**, o falla. Si algo necesita drag o layout habría que pasar a `domMax`.
 - **next/font** (Space Grotesk + JetBrains Mono) self-hosted.
 - i18n cliente propio en `lib/i18n.tsx` (Context + JSON).
 - Theme toggle en `lib/theme.tsx`. Clase `.dark` en `<html>`, script bloqueante en `<head>` para prevenir flash.
@@ -142,7 +142,7 @@ Listado en rejilla de 2 columnas desde `md`, con cards de la misma altura y "Lee
 
 ## Portal y admin
 
-Zona privada: `/admin` (solo yo, con TOTP) y `/portal` (clientes). Código en `app/(admin)`, `app/(portal)`, `components/portal/**` y `lib/portal/**`. Esquema en `db/schema.ts`, migraciones con drizzle-kit en `db/migrations/` y políticas RLS y funciones en `db/rls.sql` (repetible). Nunca se ejecuta SQL contra Supabase desde aquí: se da el SQL a Ángel y lo lanza él, primero la migración y después `rls.sql`. Toda acción de admin empieza con `requireAdmin()`. Los textos del portal van en el bloque `portal` de los dos JSON (`getI18n()` en servidor, `usePT()` en cliente).
+Zona privada: `/admin` (solo yo, con TOTP) y `/portal` (clientes). Código en `app/(admin)`, `app/(portal)`, `components/portal/**` y `lib/portal/**`. Esquema en `db/schema.ts`, migraciones con drizzle-kit en `db/migrations/` y políticas RLS y funciones en `db/rls.sql` (repetible). Nunca se ejecuta SQL contra Supabase desde aquí: se da el SQL a Ángel y lo lanza él, primero la migración y después `rls.sql`. Toda acción de admin empieza con `requireAdmin()`. Los textos del portal van en `messages/portal.es.json` y `portal.en.json` (`getI18n()` en servidor, `usePT()` en cliente).
 
 - **Bolsa de horas**: `bolsa_horas` (horas con dos decimales, `numeric(7,2)`) y `bolsa_movimientos`, un registro por cada apunte (fecha, horas, proyecto opcional, concepto de 1 a 200 caracteres, negativo = corrección). La suma de movimientos cuadra con `horas_consumidas` porque los dos se escriben a la vez en la función de Postgres `registrar_horas()` (SECURITY DEFINER, exige `is_admin()`, bloquea la fila, no deja bajar de 0 ni apuntar a un proyecto de otra empresa). `registrarHoras` en `lib/portal/actions.ts` la llama por RPC. El cliente lee los movimientos de su empresa por RLS y no escribe nunca. La migración 0004 creó un movimiento "Saldo inicial" por cada bolsa con horas consumidas (se guarda en español y se traduce al mostrarlo).
 - **Aviso de bolsa baja**: al dejar la bolsa en el 20 % o menos de lo contratado se envía un solo correo a las personas de la empresa (`avisarBolsaBaja` en `lib/portal/email.ts`). `bolsa_horas.ultimo_aviso_bajo` evita repetirlo; se borra al ampliar las horas contratadas o si un apunte sube la bolsa por encima del 20 %. Si el correo falla, el apunte se guarda igual. Cada correo va en el idioma de la persona: `usuarios.idioma` (`es` por defecto), que se guarda al cambiar el idioma en las preferencias del portal (`guardarIdioma` en `lib/portal/actions.ts`).
@@ -161,7 +161,9 @@ Zona privada: `/admin` (solo yo, con TOTP) y `/portal` (clientes). Código en `a
 
 ## i18n
 
-Añadir una clave: edita **los dos** JSON (`messages/es.json` y `messages/en.json`) y úsala con `t("ruta.anidada")`. El `t()` cae a la ruta si falta la clave.
+Añadir una clave: edita **los dos** JSON (`messages/es.json` y `messages/en.json`) y úsala con `t("ruta.anidada")`. El `t()` cae a la ruta si falta la clave. **Los textos del portal y del admin van aparte, en `messages/portal.es.json` y `messages/portal.en.json`** (los lee `lib/portal/i18n.ts`): son el 80 % del peso y la web pública no debe cargarlos. No pongas en la web pública (`t()` de `lib/i18n.tsx`) una clave `portal.*`; si un componente público necesita un texto, ponlo en `es.json` y `en.json`.
+
+**Rendimiento (JS que llega al navegador)**: los componentes de cliente no importan datos grandes (`lib/projects.ts`, `lib/services.ts`, `lib/legal.ts`); las páginas (servidor) leen esos datos y pasan por props solo lo que se pinta (`projectCards()` y `ProjectCard` en `lib/projects.ts`, el proyecto o servicio de la propia página). No vuelvas a importar `PROJECTS`, `SERVICES` o `LEGAL_PAGES` desde un componente con `"use client"`. Medir con `npx next experimental-analyze -o` (Turbopack; escribe `.next/diagnostics/route-bundle-stats.json` con el "First Load JS" por ruta).
 
 Añadir un idioma: nuevo JSON + extiende el type `Locale` en `lib/i18n.tsx`.
 

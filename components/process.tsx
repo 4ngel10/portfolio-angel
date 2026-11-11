@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { Bullet } from "./bullet";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
@@ -105,7 +105,7 @@ function PortalMock({ service }: { service: ProcessService }) {
       <div className="mt-5">
         <div className="h-2 w-full rounded-full" style={{ background: "var(--rule)" }}>
           <div className="h-2 w-[60%] overflow-hidden rounded-full">
-            <motion.span
+            <m.span
               data-reveal
               className="block h-2 origin-left rounded-full"
               style={{ background: "var(--accent)" }}
@@ -127,7 +127,7 @@ function PortalMock({ service }: { service: ProcessService }) {
             color: "var(--accent)",
           }}
         >
-          {t("portal.status.yourTurn")}
+          {t("process.mockYourTurn")}
         </span>
         <span className="text-sm">{t(`process.mock.${service}.task`)}</span>
       </div>
@@ -170,7 +170,7 @@ export function Process({ service }: { service: ProcessService }) {
           className="absolute top-6 left-6 hidden h-px w-[calc((100%+1rem)*5/6)] lg:block"
           style={{ background: "var(--rule)" }}
         />
-        <motion.span
+        <m.span
           aria-hidden
           data-reveal
           className="absolute top-[23px] left-6 hidden h-0.5 w-[calc((100%+1rem)*5/6)] origin-left lg:block"
@@ -195,7 +195,7 @@ export function Process({ service }: { service: ProcessService }) {
                   className="absolute top-12 bottom-0 left-6 w-px lg:hidden"
                   style={{ background: "var(--rule)" }}
                 />
-                <motion.span
+                <m.span
                   aria-hidden
                   data-reveal
                   className="absolute top-12 bottom-0 left-[23px] w-0.5 origin-top lg:hidden"
@@ -213,7 +213,7 @@ export function Process({ service }: { service: ProcessService }) {
               style={{ background: "var(--bg)" }}
             >
               {/* Borde de acento que se enciende cuando la línea llega al nodo. */}
-              <motion.span
+              <m.span
                 aria-hidden
                 data-reveal
                 className="pointer-events-none absolute -inset-px rounded-xl border border-[var(--accent)]"

@@ -20,7 +20,7 @@ export default function PrivacidadPage() {
   return (
     <>
       <Nav />
-      <LegalPageView id="privacidad" />
+      <LegalPageView page={getLegalPage("privacidad")!} />
       <Footer />
       <BackToTop />
     </>

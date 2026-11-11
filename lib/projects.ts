@@ -674,3 +674,21 @@ export const PROJECTS: Project[] = [
 export function getProject(slug: string) {
   return PROJECTS.find((p) => p.slug === slug);
 }
+
+/**
+ * Lo que pintan las cards y portadas de un proyecto, sin el artículo. Los componentes de cliente
+ * reciben esto por props: así el texto completo de los proyectos no viaja en el JS de la home.
+ */
+export type ProjectCard = Pick<
+  Project,
+  "slug" | "key" | "tech" | "image" | "imageDark" | "cover" | "tint" | "coverAlt"
+>;
+
+export function projectCard(p: Project): ProjectCard {
+  const { slug, key, tech, image, imageDark, cover, tint, coverAlt } = p;
+  return { slug, key, tech, image, imageDark, cover, tint, coverAlt };
+}
+
+export function projectCards(): ProjectCard[] {
+  return PROJECTS.map(projectCard);
+}

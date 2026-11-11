@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
@@ -48,7 +48,7 @@ export function MobileContactCta() {
     <div className="lg:hidden">
       <AnimatePresence>
         {visible && (
-          <motion.a
+          <m.a
             href={isHome ? "#contact" : "/#contact"}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ export function MobileContactCta() {
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
-          </motion.a>
+          </m.a>
         )}
       </AnimatePresence>
     </div>

@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
 import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
-import { PROJECTS, getProject } from "@/lib/projects";
+import { PROJECTS, getProject, projectCard } from "@/lib/projects";
 import { alternatesFor, projectJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
 
@@ -50,12 +50,16 @@ export default async function ProjectPage({ params }: { params: Params }) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
+  const siguiente = PROJECTS[(PROJECTS.indexOf(project) + 1) % PROJECTS.length];
 
   return (
     <>
       <JsonLd data={projectJsonLd(project)} />
       <Nav />
-      <ProjectArticle slug={slug} />
+      <ProjectArticle
+        project={project}
+        next={siguiente !== project ? projectCard(siguiente) : null}
+      />
       <Footer />
       <MobileContactCta />
       <BackToTop />

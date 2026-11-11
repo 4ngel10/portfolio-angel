@@ -6,7 +6,6 @@ import { TiltCard } from "./tilt-card";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { SERVICE_ICONS } from "./service-icons";
 import { useI18n } from "@/lib/i18n";
-import { SERVICES } from "@/lib/services";
 
 // Apartado de la página de servicio al que lleva cada punto de la card (ids en lib/services.ts).
 const BULLET_ANCHORS: Record<string, string[]> = {
@@ -14,10 +13,11 @@ const BULLET_ANCHORS: Record<string, string[]> = {
   s2: ["diseno", "rendimiento", "despliegue", "mantenimiento"],
 };
 
-export function Services() {
+/** `items` llega de la página (servidor) con solo la clave y el id de cada servicio. */
+export function Services({ items }: { items: { key: string; id: string }[] }) {
   const { t } = useI18n();
 
-  const services = SERVICES.map((s) => ({
+  const services = items.map((s) => ({
     key: s.key,
     id: s.id,
     icon: SERVICE_ICONS[s.key],

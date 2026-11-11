@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { m, type Variants } from "framer-motion";
 
 // Reduced motion lo gestiona <MotionConfig reducedMotion="user"> en MotionProvider:
 // anula los transforms y conserva los fades. No ramificar aquí con useReducedMotion,
@@ -19,7 +19,7 @@ type Props = {
 /** Fade-up al entrar en viewport. data-reveal: sin JS se muestra igual (noscript del layout). */
 export function Reveal({ children, className, delay = 0, y = 24 }: Props) {
   return (
-    <motion.div
+    <m.div
       data-reveal
       className={className}
       initial={{ opacity: 0, y }}
@@ -28,7 +28,7 @@ export function Reveal({ children, className, delay = 0, y = 24 }: Props) {
       transition={{ duration: 0.5, delay, ease: EASE }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -46,7 +46,7 @@ export function RevealGroup({
   as?: "div" | "ul" | "ol";
   style?: React.CSSProperties;
 }) {
-  const Comp = as === "ul" ? motion.ul : as === "ol" ? motion.ol : motion.div;
+  const Comp = as === "ul" ? m.ul : as === "ol" ? m.ol : m.div;
   return (
     <Comp
       className={className}
@@ -80,7 +80,7 @@ export function RevealItem({
   /** Para anclas (#id) que apuntan a este elemento. */
   id?: string;
 }) {
-  const Comp = as === "li" ? motion.li : as === "span" ? motion.span : motion.div;
+  const Comp = as === "li" ? m.li : as === "span" ? m.span : m.div;
   return (
     <Comp data-reveal id={id} className={className} style={style} variants={itemVariants}>
       {children}

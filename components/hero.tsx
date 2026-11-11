@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 
 // Reduced motion: lo resuelve <MotionConfig reducedMotion="user"> (lib/motion.tsx).
@@ -129,7 +129,7 @@ export function Hero() {
           className="relative block h-10 w-px overflow-hidden"
           style={{ background: "var(--rule)" }}
         >
-          <motion.span
+          <m.span
             className="absolute top-0 left-0 h-1/2 w-px"
             style={{ background: "var(--accent)" }}
             animate={{ y: ["-100%", "200%"] }}

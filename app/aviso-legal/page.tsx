@@ -20,7 +20,7 @@ export default function AvisoLegalPage() {
   return (
     <>
       <Nav />
-      <LegalPageView id="aviso-legal" />
+      <LegalPageView page={getLegalPage("aviso-legal")!} />
       <Footer />
       <BackToTop />
     </>

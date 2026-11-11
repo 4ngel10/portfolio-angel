@@ -20,7 +20,7 @@ export default function CookiesPage() {
   return (
     <>
       <Nav />
-      <LegalPageView id="cookies" />
+      <LegalPageView page={getLegalPage("cookies")!} />
       <Footer />
       <BackToTop />
     </>

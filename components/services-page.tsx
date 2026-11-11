@@ -10,7 +10,8 @@ import { Process } from "./process";
 import { RealProjects } from "./real-projects";
 import { SERVICE_ICONS } from "./service-icons";
 import { useI18n } from "@/lib/i18n";
-import { SERVICES, getService } from "@/lib/services";
+import type { ProjectCard } from "@/lib/projects";
+import type { ServiceDetail } from "@/lib/services";
 
 const Arrow = ({ back = false }: { back?: boolean }) => (
   <svg
@@ -41,8 +42,19 @@ const TARGETED = "shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]";
 /** Altura de la nav fija más un poco de aire, para que el apartado no quede debajo. */
 const NAV_OFFSET = 88;
 
-/** Página de un servicio: /servicios/[id]. */
-export function ServicePage({ id }: { id: string }) {
+/**
+ * Página de un servicio: /servicios/[id]. Recibe por props solo este servicio, el otro (clave e id
+ * para la card final) y las cards de sus proyectos, para que el contenido del resto no viaje.
+ */
+export function ServicePage({
+  service,
+  other,
+  projects,
+}: {
+  service: ServiceDetail;
+  other: { id: string; key: string };
+  projects: (ProjectCard | "self")[];
+}) {
   const { t, locale } = useI18n();
   // Apartado al que se llega desde un punto de la home (#redes...). No se usa :target porque
   // la navegación de Next cambia el hash con pushState y el navegador no lo activa.
@@ -75,10 +87,6 @@ export function ServicePage({ id }: { id: string }) {
       timers.forEach(clearTimeout);
     };
   }, []);
-  // La ruta ya valida el id (notFound), aquí siempre existe.
-  const service = getService(id)!;
-  const idx = SERVICES.indexOf(service);
-  const other = SERVICES[(idx + 1) % SERVICES.length];
   const [lead, ...rest] = service.intro[locale];
   const modes = service.modes?.[locale];
   const faq = service.faq?.[locale];
@@ -179,10 +187,10 @@ export function ServicePage({ id }: { id: string }) {
         </div>
       </section>
 
-      {service.projects && (
+      {projects.length > 0 && (
         <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
           <div className="mx-auto max-w-6xl px-6 md:px-8">
-            <RealProjects title={t("servicesPage.projectsTitle")} items={service.projects} />
+            <RealProjects title={t("servicesPage.projectsTitle")} items={projects} />
           </div>
         </section>
       )}

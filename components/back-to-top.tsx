@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { focusTarget, smoothScrollTo } from "@/lib/smooth-scroll";
 
@@ -23,7 +23,7 @@ export function BackToTop() {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.button
+        <m.button
           type="button"
           aria-label={t("footer.backTop")}
           onClick={() => {
@@ -58,7 +58,7 @@ export function BackToTop() {
             <line x1="12" y1="19" x2="12" y2="5" />
             <polyline points="5 12 12 5 19 12" />
           </svg>
-        </motion.button>
+        </m.button>
       )}
     </AnimatePresence>
   );

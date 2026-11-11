@@ -1,7 +1,9 @@
 import "server-only";
 import { cookies, headers } from "next/headers";
-import es from "@/messages/es.json";
-import en from "@/messages/en.json";
+// Los textos del portal y del admin van en sus propios archivos (messages/portal.*.json) para que
+// no viajen en el JS de la web pública, que solo usa es.json y en.json.
+import esPortal from "@/messages/portal.es.json";
+import enPortal from "@/messages/portal.en.json";
 import {
   formatDate,
   formatDateTime,
@@ -16,7 +18,7 @@ import {
   type Vars,
 } from "./translate";
 
-const dictionaries = { es: es.portal, en: en.portal };
+const dictionaries = { es: esPortal, en: enPortal };
 
 /**
  * Idioma de la zona privada: la cookie "locale" (la escribe el botón ES / EN y también

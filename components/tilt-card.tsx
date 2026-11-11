@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
+import { m, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 type Props = {
@@ -70,7 +70,7 @@ export function TiltCard({
   };
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       onPointerMove={tiltTo}
       onPointerDown={tiltTo}
@@ -92,6 +92,6 @@ export function TiltCard({
       className={className}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

@@ -4,12 +4,14 @@ import Link from "next/link";
 import { Reveal } from "./reveal";
 import { Arrow, Block, SectionHeading, formatDate } from "./project-article";
 import { useI18n } from "@/lib/i18n";
-import { getLegalPage, type LegalId } from "@/lib/legal";
+import type { LegalPage } from "@/lib/legal";
 
-/** Página legal: /aviso-legal, /privacidad o /cookies. Misma maqueta que los artículos. */
-export function LegalPageView({ id }: { id: LegalId }) {
+/**
+ * Página legal: /aviso-legal, /privacidad o /cookies. Misma maqueta que los artículos. Recibe solo
+ * su página por props, así los textos de las otras dos no viajan.
+ */
+export function LegalPageView({ page }: { page: LegalPage }) {
   const { t, locale } = useI18n();
-  const page = getLegalPage(id)!;
   const content = page.content[locale];
 
   return (

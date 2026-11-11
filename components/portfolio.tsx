@@ -5,9 +5,9 @@ import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { ProjectCover } from "./project-cover";
 import { useI18n } from "@/lib/i18n";
-import { PROJECTS } from "@/lib/projects";
+import type { ProjectCard } from "@/lib/projects";
 
-export function Portfolio() {
+export function Portfolio({ projects }: { projects: ProjectCard[] }) {
   const { t, locale } = useI18n();
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
@@ -62,7 +62,7 @@ export function Portfolio() {
           style={{ scrollPaddingInline: "1.5rem" }}
         >
           <RevealGroup className="flex gap-5" stagger={0.08}>
-            {PROJECTS.map((p) => {
+            {projects.map((p) => {
               const title = t(`portfolio.${p.key}Title`);
               return (
                 <RevealItem

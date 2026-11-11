@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
-import { PROJECTS, type Project } from "@/lib/projects";
+import type { ProjectCard as DatosCard } from "@/lib/projects";
 import { ProjectCover } from "./project-cover";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
@@ -30,7 +30,7 @@ const Arrow = () => (
 );
 
 /** Card de un proyecto de PROJECTS: mismo diseño que las de la home, con zoom discreto y sin tilt. */
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project }: { project: DatosCard }) {
   const { t, locale } = useI18n();
   const title = t(`portfolio.${project.key}Title`);
   return (
@@ -142,7 +142,7 @@ function SelfCard() {
  * Proyectos reales de un servicio: tres cards en fila (una columna en móvil). `items` son slugs de
  * PROJECTS, o "self" para la card de esta misma web. Los textos salen de portfolio.* y no se copian.
  */
-export function RealProjects({ title, items }: { title: string; items: string[] }) {
+export function RealProjects({ title, items }: { title: string; items: (DatosCard | "self")[] }) {
   return (
     <>
       <Reveal>
@@ -154,14 +154,11 @@ export function RealProjects({ title, items }: { title: string; items: string[] 
         className="mt-10 grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3"
         stagger={0.08}
       >
-        {items.map((item) => {
-          const project = PROJECTS.find((p) => p.slug === item);
-          return (
-            <RevealItem key={item} className="h-full">
-              {item === "self" ? <SelfCard /> : project ? <ProjectCard project={project} /> : null}
-            </RevealItem>
-          );
-        })}
+        {items.map((item) => (
+          <RevealItem key={item === "self" ? "self" : item.slug} className="h-full">
+            {item === "self" ? <SelfCard /> : <ProjectCard project={item} />}
+          </RevealItem>
+        ))}
       </RevealGroup>
     </>
   );

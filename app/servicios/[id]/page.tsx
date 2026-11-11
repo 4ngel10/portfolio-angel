@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
 import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
+import { PROJECTS, projectCard, type ProjectCard } from "@/lib/projects";
 import { SERVICES, getService } from "@/lib/services";
 import { SERVICE_DESCRIPTIONS, alternatesFor, serviceJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
@@ -38,12 +39,22 @@ export default async function Page({ params }: { params: Params }) {
   const { id } = await params;
   const service = getService(id);
   if (!service) notFound();
+  const otro = SERVICES[(SERVICES.indexOf(service) + 1) % SERVICES.length];
+  // Las cards de los proyectos de este servicio ("self" es la card de esta misma web).
+  const proyectos: (ProjectCard | "self")[] = [];
+  for (const slug of service.projects ?? []) {
+    if (slug === "self") proyectos.push("self");
+    else {
+      const p = PROJECTS.find((x) => x.slug === slug);
+      if (p) proyectos.push(projectCard(p));
+    }
+  }
 
   return (
     <>
       <JsonLd data={serviceJsonLd(service)} />
       <Nav />
-      <ServicePage id={id} />
+      <ServicePage service={service} other={{ id: otro.id, key: otro.key }} projects={proyectos} />
       <Footer />
       <MobileContactCta />
       <BackToTop />

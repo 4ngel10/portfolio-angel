@@ -13,6 +13,8 @@ import { MobileContactCta } from "@/components/mobile-contact-cta";
 import { JsonLd } from "@/components/json-ld";
 import { getLatestPosts } from "@/lib/blog-db";
 import { enlaceDe } from "@/lib/blog-types";
+import { projectCards } from "@/lib/projects";
+import { SERVICES } from "@/lib/services";
 import { alternatesFor, homeJsonLd } from "@/lib/seo";
 
 // Canonical solo en la home: en el layout lo heredarían páginas como el 404.
@@ -29,9 +31,9 @@ export default async function Page() {
       <Nav />
       <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
         <Hero />
-        <Services />
+        <Services items={SERVICES.map(({ key, id }) => ({ key, id }))} />
         <StackBand />
-        <Portfolio />
+        <Portfolio projects={projectCards()} />
         <About />
         <BlogTeaser posts={ultimos.map(enlaceDe)} />
         <Contact />

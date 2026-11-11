@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { m, useScroll, useSpring } from "framer-motion";
 import { Reveal } from "./reveal";
 import { ProjectCover } from "./project-cover";
 import { ServiceCta } from "./service-cta";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { PROJECTS, getProject, type PostBlock, type PostSection } from "@/lib/projects";
+import type { PostBlock, PostSection, Project, ProjectCard } from "@/lib/projects";
 
 export const Arrow = ({ back = false }: { back?: boolean }) => (
   <svg
@@ -161,7 +161,7 @@ export function ReadingProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, mass: 0.3 });
   return (
-    <motion.div
+    <m.div
       className="fixed top-[72px] right-0 left-0 z-40 h-[3px] origin-left"
       style={{ scaleX, background: "var(--accent)" }}
       aria-hidden
@@ -178,7 +178,7 @@ export function SectionHeading({ n, children }: { n?: number; children: React.Re
           <span className="font-mono text-[12px] font-medium" style={{ color: "var(--accent)" }}>
             {String(n).padStart(2, "0")}
           </span>
-          <motion.span
+          <m.span
             className="h-px w-16 origin-left"
             style={{ background: "var(--accent)" }}
             initial={{ scaleX: 0 }}
@@ -196,15 +196,14 @@ export function SectionHeading({ n, children }: { n?: number; children: React.Re
   );
 }
 
-export function ProjectArticle({ slug }: { slug: string }) {
+/**
+ * Artículo de un proyecto. Recibe por props solo este proyecto completo y el siguiente como card
+ * (sin su artículo), así el texto de los demás proyectos no viaja en el JS de la página.
+ */
+export function ProjectArticle({ project, next }: { project: Project; next: ProjectCard | null }) {
   const { t, locale } = useI18n();
-  // La ruta ya valida el slug (notFound), aquí siempre existe.
-  const project = getProject(slug)!;
   const title = t(`portfolio.${project.key}Title`);
   const post = project.post[locale];
-
-  const idx = PROJECTS.indexOf(project);
-  const next = PROJECTS[(idx + 1) % PROJECTS.length];
 
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
@@ -308,7 +307,7 @@ export function ProjectArticle({ slug }: { slug: string }) {
 
       <ServiceCta service={project.service} />
 
-      {next !== project && (
+      {next && (
         <section className="border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
             <Link href={`/proyectos/${next.slug}`} className="block">
