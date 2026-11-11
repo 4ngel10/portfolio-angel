@@ -182,7 +182,9 @@ El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (sele
 ## SEO
 
 - Meta descriptions de home, servicios y blog en `lib/seo.ts`; las de proyectos y artículos salen de su contenido. `og:description` y `twitter:description` coinciden con la meta.
-- JSON-LD (`components/json-ld.tsx` + helpers de `lib/seo.ts`): home `WebSite` + `Person`; servicios `Service` + `BreadcrumbList`; proyectos `Article` + `BreadcrumbList`; blog `Blog` y `BlogPosting` + `BreadcrumbList`.
+- **Título de la home** (`HOME_TITLE`): máximo 60 caracteres, sin marca; la marca va en `SITE_NAME` (`og:site_name` y `name` del `WebSite`, que no debe colgar del título). `npm test` lo vigila (`scripts/probar-seo.ts`). El `og:title` en inglés no aplica mientras no haya rutas `/en/`: el HTML servido es siempre el español.
+- **Certificaciones** en un solo sitio, `lib/certifications.ts` (nombre y emisor): las usan la tira del hero y el `hasCredential` del `Person`. Sin fechas ni enlaces hasta que Ángel los dé.
+- JSON-LD (`components/json-ld.tsx` + helpers de `lib/seo.ts`): home `WebSite` + `ProfessionalService` + `Person`; servicios `Service` + `BreadcrumbList`; proyectos `Article` + `BreadcrumbList`; blog `Blog` y `BlogPosting` + `BreadcrumbList`.
 - **hreflang solo "es" y "x-default"** (`alternatesFor()` en `lib/seo.ts`, junto al canonical): el inglés se elige en el navegador sobre la misma URL, no hay URLs `/en/`. Un hreflang "en" hacia la página en español sería un error (decisión de Ángel), y por lo mismo no hay `og:locale:alternate`. Si algún día hay rutas `/en/...`, se añaden en `alternatesFor()`.
 - **Favicon e imagen para redes de la home**: `app/favicon.ico`, `app/icon.png` y `app/apple-icon.png` (convención de Next); la imagen OG de la home es `public/og-home.jpg` (`HOME_OG_IMAGE`), con `twitter:card` `summary_large_image`.
 - **404**: `app/not-found.tsx`, con la misma nav y footer que el resto; textos en `notFound.*` de los JSON.
