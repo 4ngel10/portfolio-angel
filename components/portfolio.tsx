@@ -54,20 +54,21 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
           </p>
         </Reveal>
 
-        {/* Una sola fila deslizable: 1 card en móvil, 2 en tablet y 3 en escritorio. El padding
-            vertical deja sitio a la sombra y al tilt, que el overflow recortaría. */}
+        {/* En móvil (menos de sm), lista apilada. Desde sm, una sola fila deslizable: 2 cards en
+            tablet y 3 en escritorio. El padding vertical deja sitio a la sombra, que el
+            overflow recortaría. */}
         <div
           ref={trackRef}
-          className="-mx-6 snap-x snap-mandatory overflow-x-auto px-6 py-8 [-ms-overflow-style:none] [scrollbar-width:none] md:-mx-8 md:px-8 [&::-webkit-scrollbar]:hidden"
+          className="py-2 sm:-mx-6 sm:snap-x sm:snap-mandatory sm:overflow-x-auto sm:px-6 sm:py-8 sm:[-ms-overflow-style:none] sm:[scrollbar-width:none] md:-mx-8 md:px-8 sm:[&::-webkit-scrollbar]:hidden"
           style={{ scrollPaddingInline: "1.5rem" }}
         >
-          <RevealGroup className="flex gap-5" stagger={0.08}>
+          <RevealGroup className="flex flex-col gap-5 sm:flex-row" stagger={0.08}>
             {projects.map((p) => {
               const title = t(`portfolio.${p.key}Title`);
               return (
                 <RevealItem
                   key={p.key}
-                  className="flex shrink-0 basis-full snap-start sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]"
+                  className="flex sm:shrink-0 sm:basis-[calc((100%-1.25rem)/2)] sm:snap-start lg:basis-[calc((100%-2.5rem)/3)]"
                 >
                   {/* Cada card abre la página del proyecto (app/proyectos/[slug]). */}
                   <Link
@@ -138,7 +139,7 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
         </div>
 
         {(canPrev || canNext) && (
-          <div className="flex justify-end gap-3">
+          <div className="hidden justify-end gap-3 sm:flex">
             {(["prev", "next"] as const).map((dir) => (
               <button
                 key={dir}

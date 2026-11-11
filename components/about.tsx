@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { CV } from "@/lib/site";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 // Stack completo por área. La banda de components/stack-band.tsx solo muestra una selección
@@ -53,7 +54,7 @@ function StackCategory({ cat }: { cat: (typeof STACK)[number] }) {
 }
 
 export function About() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <section id="about" className="bg-paper-alt scroll-mt-[72px] py-24 md:py-28">
@@ -71,6 +72,13 @@ export function About() {
           <RevealItem as="div">
             <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p2")}</p>
           </RevealItem>
+          {CV[locale] && (
+            <RevealItem as="div">
+              <a href={CV[locale]} download className="btn-secondary">
+                {t("about.cvLink")}
+              </a>
+            </RevealItem>
+          )}
         </RevealGroup>
 
         <div className="mt-16">

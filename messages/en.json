@@ -44,7 +44,8 @@
     "catNetwork": "Security and networking",
     "catBackup": "Backup",
     "catManagement": "Management and monitoring",
-    "catWeb": "Web"
+    "catWeb": "Web",
+    "cvLink": "Download my CV (PDF)"
   },
   "services": {
     "title": "Two services, one person on the phone.",
@@ -186,7 +187,13 @@
       "sistemasTitle": "Sound familiar?",
       "sistemasText": "I look after your company's systems, from backups to the network, so everything just works without you having to think about it.",
       "sistemasButton": "See the systems service"
-    }
+    },
+    "caseContext": "Context",
+    "caseRole": "My role",
+    "caseResults": "Before and after",
+    "caseBefore": "Before",
+    "caseAfter": "After",
+    "caseSnippet": "Snippet"
   },
   "contact": {
     "title": "Tell me what's giving you a hard time. I reply within 24 hours.",
@@ -228,7 +235,8 @@
     "legalNav": "Legal information",
     "legal": "Legal notice",
     "privacy": "Privacy",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "cv": "CV (PDF)"
   },
   "legal": {
     "updated": "Last reviewed:"
@@ -243,5 +251,8 @@
   },
   "photo": {
     "alt": "Ángel Fernández with his arms crossed in front of a grey perforated metal wall"
+  },
+  "testimonials": {
+    "title": "What clients say."
   }
 }

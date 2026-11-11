@@ -7,7 +7,7 @@ import { Reveal } from "./reveal";
 import { ProjectCover } from "./project-cover";
 import { ServiceCta } from "./service-cta";
 import { useI18n, type Locale } from "@/lib/i18n";
-import type { PostBlock, PostSection, Project, ProjectCard } from "@/lib/projects";
+import type { CaseStudy, PostBlock, PostSection, Project, ProjectCard } from "@/lib/projects";
 
 export const Arrow = ({ back = false }: { back?: boolean }) => (
   <svg
@@ -196,6 +196,79 @@ export function SectionHeading({ n, children }: { n?: number; children: React.Re
   );
 }
 
+/** Resumen estructurado del caso (Project.caseStudy). Solo pinta lo que tiene contenido. */
+function CaseSummary({ data }: { data: CaseStudy }) {
+  const { t } = useI18n();
+  const rows = [
+    { label: t("project.caseContext"), value: data.context },
+    { label: t("project.caseRole"), value: data.role },
+  ].filter((r) => r.value);
+  if (!rows.length && !data.results?.length && !data.snippet && !data.quote) return null;
+  return (
+    <Reveal className="border-rule mb-16 max-w-4xl rounded-2xl border p-6 md:p-8">
+      {rows.length > 0 && (
+        <dl className="grid gap-5 md:grid-cols-2 md:gap-8">
+          {rows.map((r) => (
+            <div key={r.label}>
+              <dt className="text-muted mb-1.5 text-[13px] font-medium">{r.label}</dt>
+              <dd className="text-[15px] leading-relaxed">{r.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {data.results && data.results.length > 0 && (
+        <div className="border-rule mt-6 overflow-x-auto border-t pt-6">
+          <table className="w-full text-left text-[15px]">
+            <caption className="sr-only">{t("project.caseResults")}</caption>
+            <thead>
+              <tr className="text-muted text-[13px]">
+                <th scope="col" className="pr-4 pb-2 font-medium" />
+                <th scope="col" className="pr-4 pb-2 font-medium">
+                  {t("project.caseBefore")}
+                </th>
+                <th scope="col" className="pb-2 font-medium">
+                  {t("project.caseAfter")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.results.map((r) => (
+                <tr key={r.label}>
+                  <th scope="row" className="py-1.5 pr-4 font-medium">
+                    {r.label}
+                  </th>
+                  <td className="text-muted py-1.5 pr-4">{r.before}</td>
+                  <td className="py-1.5 font-semibold">{r.after}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {data.snippet && (
+        <figure className="border-rule mt-6 border-t pt-6">
+          {data.snippet.title && (
+            <figcaption className="text-muted mb-2 text-[13px] font-medium">
+              {data.snippet.title}
+            </figcaption>
+          )}
+          <pre className="bg-chip overflow-x-auto rounded-xl p-4 font-mono text-[13px] leading-relaxed">
+            <code>{data.snippet.code}</code>
+          </pre>
+        </figure>
+      )}
+      {data.quote && (
+        <figure className="border-rule mt-6 border-t pt-6">
+          <blockquote className="text-[17px] leading-relaxed">
+            <p>{data.quote.text}</p>
+          </blockquote>
+          <figcaption className="text-muted mt-2 text-[13px]">{data.quote.author}</figcaption>
+        </figure>
+      )}
+    </Reveal>
+  );
+}
+
 /**
  * Artículo de un proyecto. Recibe por props solo este proyecto completo y el siguiente como card
  * (sin su artículo), así el texto de los demás proyectos no viaja en el JS de la página.
@@ -295,6 +368,7 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
       </div>
 
       <article className="mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-28">
+        {project.caseStudy && <CaseSummary data={project.caseStudy[locale]} />}
         {post.sections.map((section, s) => (
           <Reveal key={s} className="mb-16 max-w-4xl last:mb-0">
             {section.heading && <SectionHeading>{section.heading}</SectionHeading>}

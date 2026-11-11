@@ -44,7 +44,8 @@
     "catNetwork": "Seguridad y redes",
     "catBackup": "Backup",
     "catManagement": "Gestión y monitorización",
-    "catWeb": "Web"
+    "catWeb": "Web",
+    "cvLink": "Descargar mi CV (PDF)"
   },
   "services": {
     "title": "Dos servicios, una sola persona al teléfono.",
@@ -186,7 +187,13 @@
       "sistemasTitle": "¿Te suena este problema?",
       "sistemasText": "Me encargo de los sistemas de tu empresa, de las copias de seguridad a la red, para que todo funcione sin que tengas que pensar en ello.",
       "sistemasButton": "Ver el servicio de sistemas"
-    }
+    },
+    "caseContext": "Contexto",
+    "caseRole": "Mi papel",
+    "caseResults": "Antes y después",
+    "caseBefore": "Antes",
+    "caseAfter": "Después",
+    "caseSnippet": "Fragmento"
   },
   "contact": {
     "title": "Cuéntame qué te da guerra. Te respondo en 24 horas.",
@@ -228,7 +235,8 @@
     "legalNav": "Información legal",
     "legal": "Aviso legal",
     "privacy": "Privacidad",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "cv": "CV (PDF)"
   },
   "legal": {
     "updated": "Última revisión:"
@@ -243,5 +251,8 @@
   },
   "photo": {
     "alt": "Ángel Fernández con los brazos cruzados delante de una pared de metal perforado gris"
+  },
+  "testimonials": {
+    "title": "Lo que dicen los clientes."
   }
 }
