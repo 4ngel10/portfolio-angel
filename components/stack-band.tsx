@@ -1,10 +1,10 @@
 "use client";
 
-import { Carousel } from "./carousel";
+import { TechList } from "./tech-list";
 import { useI18n } from "@/lib/i18n";
 
 // Nombres propios: iguales en todos los idiomas.
-// Alternan sistemas y web.
+// Alternan sistemas y web. Lista estática (ver tech-list.tsx).
 const TECH = [
   "Windows Server",
   "Next.js",
@@ -29,9 +29,7 @@ export function StackBand() {
       className="border-y py-6 md:py-8"
       style={{ borderColor: "var(--rule)" }}
     >
-      <Carousel
-        direction="right"
-        speed={77}
+      <TechList
         gap="2.5rem"
         items={TECH}
         label={t("marquee.stack")}

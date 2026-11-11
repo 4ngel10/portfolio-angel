@@ -4,12 +4,19 @@ import "server-only";
 import { Resend } from "resend";
 import { LEGAL } from "./site";
 import { ipDelCliente } from "./portal/ip";
-import { crearLimitador, validarContacto, type DatosContacto } from "./contact-validate";
+import {
+  crearLimitador,
+  validarContacto,
+  type CampoContacto,
+  type DatosContacto,
+} from "./contact-validate";
 
 export type ContactoEstado = {
   status: "idle" | "ok" | "err" | "invalid" | "limit";
   /** Lo que escribió la persona, para no perderlo si el envío falla (React vacía el formulario). */
   values?: DatosContacto;
+  /** Con status "invalid": el primer campo con error, para marcarlo y llevar el foco. */
+  campo?: CampoContacto;
 };
 
 const permitir = crearLimitador();
@@ -46,16 +53,18 @@ export async function enviarContacto(
   const r = validarContacto(campo, Date.now());
   // A un bot se le contesta "enviado" para no darle pistas, pero no se manda nada.
   if (r.tipo === "bot") return { status: "ok" };
-  if (r.tipo === "invalido") return { status: "invalid", values: valores };
+  if (r.tipo === "invalido") return { status: "invalid", campo: r.campo, values: valores };
 
   const ip = (await ipDelCliente()) ?? "desconocida";
-  if (!permitir(ip, Date.now())) return { status: "limit", values: valores };
+  const ahora = Date.now();
+  if (!permitir(ip, ahora)) return { status: "limit", values: valores };
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM ?? process.env.RESEND_FROM;
   const to = process.env.CONTACT_TO ?? LEGAL.email;
   if (!apiKey || !from) {
     console.error("[contacto] Falta RESEND_API_KEY o CONTACT_FROM: no se puede enviar.");
+    permitir.devolver(ip, ahora);
     return { status: "err", values: valores };
   }
 
@@ -76,6 +85,7 @@ export async function enviarContacto(
     });
     if (error) {
       console.error("[contacto] Resend rechazó el envío:", error.message);
+      permitir.devolver(ip, ahora);
       return { status: "err", values: valores };
     }
     console.info(`[contacto] Enviado (Resend ${data?.id}).`);
@@ -85,6 +95,7 @@ export async function enviarContacto(
       "[contacto] No se pudo contactar con Resend:",
       e instanceof Error ? e.message : e,
     );
+    permitir.devolver(ip, ahora);
     return { status: "err", values: valores };
   }
 }
