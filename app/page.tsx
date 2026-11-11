@@ -7,6 +7,7 @@ import { Services } from "@/components/services";
 import { Portfolio } from "@/components/portfolio";
 import { BlogTeaser } from "@/components/blog-teaser";
 import { Contact } from "@/components/contact";
+import { Testimonials } from "@/components/testimonials";
 import { Footer } from "@/components/footer";
 import { BackToTop } from "@/components/back-to-top";
 import { MobileContactCta } from "@/components/mobile-contact-cta";
@@ -15,6 +16,7 @@ import { getLatestPosts } from "@/lib/blog-db";
 import { enlaceDe } from "@/lib/blog-types";
 import { projectCards } from "@/lib/projects";
 import { SERVICES } from "@/lib/services";
+import { TESTIMONIALS } from "@/lib/testimonials";
 import { alternatesFor, homeJsonLd } from "@/lib/seo";
 
 // Canonical solo en la home: en el layout lo heredarían páginas como el 404.
@@ -34,6 +36,7 @@ export default async function Page() {
         <Services items={SERVICES.map(({ key, id }) => ({ key, id }))} />
         <StackBand />
         <Portfolio projects={projectCards()} />
+        <Testimonials items={TESTIMONIALS.filter((t) => t.permission)} />
         <About />
         <BlogTeaser posts={ultimos.map(enlaceDe)} />
         <Contact />

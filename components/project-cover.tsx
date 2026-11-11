@@ -16,7 +16,7 @@ export function ProjectCover({
   priority = false,
   children,
 }: {
-  project: Pick<Project, "image" | "imageDark" | "cover" | "tint">;
+  project: Pick<Project, "image" | "imageDark" | "cover" | "tint" | "coverPosition">;
   alt: string;
   sizes: string;
   className?: string;
@@ -24,7 +24,9 @@ export function ProjectCover({
   priority?: boolean;
   children?: React.ReactNode;
 }) {
-  const { image, imageDark, cover, tint } = project;
+  const { image, imageDark, cover, tint, coverPosition = "center" } = project;
+  // Las capturas se anclan arriba (titular y cabecera visibles); las fotos, al centro.
+  const position = coverPosition === "top" ? "object-top" : "object-center";
   // Con una sola imagen se precarga en el <head>. Con versión oscura solo se ve una de las
   // dos según el tema, así que no se precarga ninguna: las dos se piden pronto y con prioridad.
   const load = !priority
@@ -48,7 +50,7 @@ export function ProjectCover({
             fill
             sizes={sizes}
             {...load}
-            className={`object-cover transition-transform duration-500 ${EASE} group-hover:scale-[1.03] ${imageDark ? "[.dark_&]:hidden" : ""}`}
+            className={`${position} object-cover transition-transform duration-500 ${EASE} group-hover:scale-[1.03] ${imageDark ? "[.dark_&]:hidden" : ""}`}
           />
           {imageDark && (
             <Image
@@ -57,7 +59,7 @@ export function ProjectCover({
               fill
               sizes={sizes}
               {...load}
-              className={`hidden object-cover transition-transform duration-500 ${EASE} group-hover:scale-[1.03] [.dark_&]:block`}
+              className={`hidden ${position} object-cover transition-transform duration-500 ${EASE} group-hover:scale-[1.03] [.dark_&]:block`}
             />
           )}
         </>
@@ -82,6 +84,11 @@ export function ProjectCover({
           </span>
         </div>
       )}
+      {/* Borde interior común: unifica el canto de capturas oscuras, claras y fotos. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 ring-1 ring-[var(--rule)] ring-inset"
+      />
       {children}
     </div>
   );

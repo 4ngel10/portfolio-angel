@@ -53,3 +53,9 @@ export const CONTACT: {
   phone: "",
   availability: { es: "", en: "" },
 };
+
+/**
+ * CV en PDF, uno por idioma (ruta en /public, p. ej. "/cv/angel-fernandez-es.pdf"). Vacío, no se
+ * muestra el enlace en Sobre mí ni en el footer.
+ */
+export const CV: { es: string; en: string } = { es: "", en: "" };

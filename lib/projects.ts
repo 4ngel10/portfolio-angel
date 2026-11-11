@@ -29,6 +29,24 @@ export type PostBlock = string | { h3: string } | { list: string[] } | { ol: str
 export type PostSection = { heading?: string; blocks: PostBlock[] };
 export type Post = { title?: string; seoTitle?: string; intro?: string; sections: PostSection[] };
 
+/**
+ * Resumen estructurado de un caso (plantilla de proyecto). Todo es opcional y solo se pinta lo que
+ * tiene contenido. Nada inventado: las cifras de `results` y la `quote` tienen que ser reales
+ * (la cita, con permiso del cliente); el `snippet` va sin datos del cliente.
+ */
+export type CaseStudy = {
+  /** Situación del cliente antes del proyecto. */
+  context?: string;
+  /** Qué hice yo en concreto. */
+  role?: string;
+  /** Cifras reales antes y después. */
+  results?: { label: string; before: string; after: string }[];
+  /** Fragmento de código o configuración, saneado. */
+  snippet?: { title?: string; code: string };
+  /** Cita del cliente, con su permiso. */
+  quote?: { text: string; author: string };
+};
+
 export type Project = {
   slug: string;
   /** Prefijo de las claves en messages/*.json: p1, p2, p3... */
@@ -44,10 +62,14 @@ export type Project = {
   imageDark?: string;
   /** Texto alternativo de la portada: qué se ve en la imagen (el título ya va en la card). */
   coverAlt?: Record<Locale, string>;
+  /** Encuadre de la portada: "top" para capturas de pantalla, "center" (por defecto) para fotos. */
+  coverPosition?: "top" | "center";
   /** Imagen para compartir en redes (Open Graph), 1200x630. */
   ogImage?: string;
   /** Fecha de publicación del artículo, AAAA-MM-DD. */
   date?: string;
+  /** Resumen estructurado del caso, al inicio del artículo. */
+  caseStudy?: Record<Locale, CaseStudy>;
   /** Ficha rápida de la cabecera, 3 datos. */
   facts?: Record<Locale, { label: string; value: string }[]>;
   /** Servicio al que lleva la llamada del final del artículo. */
@@ -70,6 +92,18 @@ export const PROJECTS: Project[] = [
     ogImage: "/projects/powershell-printer-og.jpg",
     date: "2026-10-17",
     service: "sistemas",
+    caseStudy: {
+      es: {
+        context:
+          "Cliente con varias sedes, unos 90 usuarios y entre 30 y 35 impresoras. Cada alta, cada cambio de puesto y cada impresora perdida obligaban a conectarse al equipo y añadirlas una a una, con sus bandejas y ajustes.",
+        role: "Planteé el enfoque, creé los atributos personalizados en Active Directory y desarrollé el script de PowerShell que lanza la GPO en el inicio de sesión. Va por la versión 6.0.",
+      },
+      en: {
+        context:
+          "A client with several sites, around 90 users and 30 to 35 printers. Every new hire, desk change and lost printer meant connecting to the machine and adding them one by one, with their trays and settings.",
+        role: "I came up with the approach, created the custom attributes in Active Directory and built the PowerShell script that the GPO runs at sign in. It is now at version 6.0.",
+      },
+    },
     facts: {
       es: [
         { label: "Tipo", value: "Proyecto para un cliente" },
@@ -203,6 +237,7 @@ export const PROJECTS: Project[] = [
     tech: ["Astro", "Stripe", "SEO"],
     url: "https://www.flexgrip.site/",
     image: "/projects/flexgrip.webp",
+    coverPosition: "top",
     coverAlt: {
       es: "Captura de FlexGrip: titular «Entrena en cualquier lugar por solo 14,99 €», botón de compra y un kit con cinco bandas elásticas de colores, un handgrip y una bolsa de malla.",
       en: "FlexGrip screenshot: headline “Entrena en cualquier lugar por solo 14,99 €”, a buy button and a kit with five colored resistance bands, a hand gripper and a mesh bag.",
@@ -278,6 +313,155 @@ export const PROJECTS: Project[] = [
               "For development I chose Astro, which makes it possible to generate an extremely light, fast static page optimized for conversion. To avoid complicating the infrastructure with a complex checkout process, purchases are handled through direct Stripe integrations.",
               "The interface uses a dark palette with lime green accents to highlight the calls to action, always prioritizing the experience and navigation on mobile.",
               "You can see the project running at [flexgrip.site](https://www.flexgrip.site/).",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "prompt-vault",
+    key: "p2",
+    cover: "AI",
+    tint: 14,
+    tech: ["React", "Supabase", "Tailwind", "PWA"],
+    url: "https://prompt-vault-three-xi.vercel.app/",
+    image: "/projects/prompt-vault.webp",
+    coverPosition: "top",
+    coverAlt: {
+      es: "Captura de Prompt Vault: buscador, filtros por tipo y categoría, y tarjetas de prompts y skills de IA con sus etiquetas.",
+      en: "Prompt Vault screenshot: search bar, filters by type and category, and cards of AI prompts and skills with their tags.",
+    },
+    ogImage: "/projects/prompt-vault-og.jpg",
+    imageDark: "/projects/prompt-vault-dark.webp",
+    date: "2026-10-16",
+    service: "web",
+    facts: {
+      es: [
+        { label: "Tipo", value: "Proyecto propio" },
+        { label: "Qué hice", value: "Diseño, desarrollo y base de datos" },
+        { label: "Estado", value: "Lo uso a diario, código público" },
+      ],
+      en: [
+        { label: "Type", value: "Personal project" },
+        { label: "What I did", value: "Design, development and database" },
+        { label: "Status", value: "In daily use, open source" },
+      ],
+    },
+    post: {
+      es: {
+        title: "Prompt Vault, mi bóveda personal de prompts",
+        seoTitle: "Prompt Vault, bóveda personal de prompts",
+        intro:
+          "Si usas modelos de IA con cierta frecuencia, acabas con prompts buenos repartidos por todas partes. Unos en notas del móvil. Otros en un documento de Google que abriste una vez. Los mejores, claro, perdidos en algún chat antiguo. Yo me hartaba de perder cinco minutos buscando entre capturas y mensajes cada vez que necesitaba uno. Así que me hice una app para tenerlos todos en un sitio.",
+        sections: [
+          {
+            heading: "Qué es Prompt Vault",
+            blocks: [
+              "Una web app donde guardo prompts, skills y plantillas organizados por categorías, con búsqueda rápida y copia en un clic. La quería usar igual desde el móvil que desde el portátil, así que la construí como PWA. Se instala como app nativa, se abre desde el icono, sin barra del navegador. Android, iOS, escritorio, funciona igual.",
+              "Tiene modo claro y oscuro con un botón en la cabecera, autenticación con Google o email, y todos los datos sincronizados en la nube. Si guardo un prompt desde el móvil, lo tengo al instante en el ordenador.",
+            ],
+          },
+          {
+            heading: "El stack",
+            blocks: [
+              "No quería complicarme con nada exótico. React 19 con Vite para el frontend, porque Vite arranca en milisegundos y React es terreno conocido. Tailwind CSS v4 para los estilos: cero archivos CSS sueltos, todo inline, todo consistente.",
+              "Supabase para el backend completo: autenticación, base de datos PostgreSQL con Row Level Security y almacenamiento. Es como tener un Firebase pero con SQL de verdad. Y Vercel para el despliegue: push a main y ya está en producción.",
+              "La tipografía es Plus Jakarta Sans, que le da un aire limpio sin recurrir a las de siempre.",
+            ],
+          },
+          {
+            heading: "Qué puedes hacer con ella",
+            blocks: [
+              "Cada prompt tiene un tipo y una categoría. Los tipos por defecto son “Prompt” y “Skill”, pero puedes crear los que quieras. La app ajusta el género gramatical: si creas un tipo que termina en -a, dice “nueva” en vez de “nuevo”. Un detallito tonto que mola.",
+              "Las categorías tienen su color de una paleta pastel con 10 tonos, todos con contraste AA. Bonitos y legibles.",
+              "Arriba hay una barra de búsqueda que filtra en tiempo real por título y contenido. Cuando tienes 50 o 100 prompts, esto marca la diferencia entre encontrar algo en 2 segundos o quedarte buscando.",
+              "Copiar es un clic. Aparece un “Copiado” durante 2 segundos y ya lo tienes en el portapapeles, listo para pegar donde quieras.",
+            ],
+          },
+          {
+            heading: "Compartir sin dramas",
+            blocks: [
+              "Puedes compartir de dos formas. Por email: escribes el correo y a la otra persona le aparece en su bóveda en solo lectura. O por enlace público: generas una URL y cualquiera puede verlo sin cuenta. Si cambias de idea, desactivas el enlace.",
+            ],
+          },
+          {
+            heading: "Papelera y seguridad",
+            blocks: [
+              "Cuando borras algo, va a la papelera. Tienes 6 segundos para darle a “Deshacer”. Y si no, sigue accesible desde tu avatar durante 30 días.",
+              "La seguridad no es decorativa. Cada usuario solo ve sus propios datos, y no porque haya un condicional en el frontend: está implementado con Row Level Security en la base de datos. La propia base rechaza cualquier consulta que intente tocar datos de otro.",
+            ],
+          },
+          {
+            heading: "Cómo lo construí",
+            blocks: [
+              "El proceso fue iterativo, que es como mejor salen estas cosas. Empecé con una versión mínima que guardaba prompts en localStorage, sin base de datos ni login. A partir de ahí fui añadiendo capas: primero las categorías y tipos personalizables con su paleta de colores, luego la migración a Supabase con autenticación real y Row Level Security, y por último las funciones de compartir, la papelera y la configuración PWA.",
+              "El repositorio está en GitHub y cada push a main despliega automáticamente en Vercel. Del commit a producción, todo automático.",
+            ],
+          },
+          {
+            heading: "Qué viene después",
+            blocks: [
+              "Prompt Vault ya la uso a diario y me ahorra tiempo de verdad. Pero tengo ideas: exportar e importar prompts en formatos estándar, carpetas para agrupar prompts relacionados y un historial de versiones para esos prompts que vas puliendo con el tiempo.",
+              "Si te interesa, el código es público en [GitHub](https://github.com/4ngel10/prompt-vault). Y si tú también andas con prompts repartidos por mil sitios, te recomiendo buscarte algún sistema. Da igual si es una app, una hoja de cálculo o una carpeta bien organizada. Tener tus prompts a mano cambia bastante el día a día.",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "Prompt Vault, my personal prompt vault",
+        intro:
+          "If you use AI models fairly often, you end up with good prompts scattered everywhere. Some in phone notes. Others in a Google Doc you opened once. The best ones, of course, lost in some old chat. I was tired of spending five minutes digging through screenshots and messages every time I needed one. So I built an app to keep them all in one place.",
+        sections: [
+          {
+            heading: "What Prompt Vault is",
+            blocks: [
+              "A web app where I keep prompts, skills and templates organized by category, with fast search and one-click copy. I wanted to use it the same way on my phone and on my laptop, so I built it as a PWA. It installs like a native app and opens from its icon, with no browser bar. Android, iOS or desktop, it works the same.",
+              "It has light and dark mode with a button in the header, sign-in with Google or email, and all data synced to the cloud. If I save a prompt on my phone, it is on my computer instantly.",
+            ],
+          },
+          {
+            heading: "The stack",
+            blocks: [
+              "I did not want anything exotic. React 19 with Vite for the frontend, because Vite starts in milliseconds and React is familiar ground. Tailwind CSS v4 for styling: zero loose CSS files, everything inline, everything consistent.",
+              "Supabase for the whole backend: authentication, a PostgreSQL database with Row Level Security, and storage. Like Firebase, but with real SQL. And Vercel for deployment: push to main and it is in production.",
+              "The typeface is Plus Jakarta Sans, which gives it a clean feel without falling back on the usual suspects.",
+            ],
+          },
+          {
+            heading: "What you can do with it",
+            blocks: [
+              "Every prompt has a type and a category. The default types are “Prompt” and “Skill”, but you can create any you like. In Spanish, the app adjusts grammatical gender: if a type ends in -a, it says “nueva” instead of “nuevo”. A silly little detail that I love.",
+              "Categories get a color from a 10-tone pastel palette, all of them meeting AA contrast. Pretty and readable.",
+              "A search bar at the top filters by title and content in real time. With 50 or 100 prompts, that is the difference between finding something in 2 seconds and hunting for it.",
+              "Copying is one click. A “Copied” label shows up for 2 seconds and it is on your clipboard, ready to paste anywhere.",
+            ],
+          },
+          {
+            heading: "Sharing, no drama",
+            blocks: [
+              "You can share in two ways. By email: type the address and the item shows up in the other person's vault, read-only. Or by public link: generate a URL and anyone can view it without an account. Change your mind, turn the link off.",
+            ],
+          },
+          {
+            heading: "Trash and security",
+            blocks: [
+              "When you delete something, it goes to the trash. You get 6 seconds to hit “Undo”. After that, it is still reachable from your avatar for 30 days.",
+              "Security is not decorative. Each user only sees their own data, and not because of a conditional in the frontend: it is enforced with Row Level Security in the database. The database itself rejects any query that tries to touch someone else's data.",
+            ],
+          },
+          {
+            heading: "How I built it",
+            blocks: [
+              "The process was iterative, which is how these things turn out best. I started with a minimal version that stored prompts in localStorage, with no database and no login. From there I added layers: first customizable categories and types with their color palette, then the move to Supabase with real authentication and Row Level Security, and finally sharing, the trash and the PWA setup.",
+              "The repository lives on GitHub and every push to main deploys to Vercel automatically. From commit to production, fully automated.",
+            ],
+          },
+          {
+            heading: "What comes next",
+            blocks: [
+              "I use Prompt Vault every day and it genuinely saves me time. But I have ideas: exporting and importing prompts in standard formats, folders to group related prompts, and version history for those prompts you keep refining over time.",
+              "If you are curious, the code is public on [GitHub](https://github.com/4ngel10/prompt-vault). And if your prompts are scattered across a thousand places too, I recommend finding yourself a system. It does not matter whether it is an app, a spreadsheet or a well-organized folder. Having your prompts at hand makes a real difference day to day.",
             ],
           },
         ],
@@ -521,154 +705,6 @@ export const PROJECTS: Project[] = [
       },
     },
   },
-  {
-    slug: "prompt-vault",
-    key: "p2",
-    cover: "AI",
-    tint: 14,
-    tech: ["React", "Supabase", "Tailwind", "PWA"],
-    url: "https://prompt-vault-three-xi.vercel.app/",
-    image: "/projects/prompt-vault.webp",
-    coverAlt: {
-      es: "Captura de Prompt Vault: buscador, filtros por tipo y categoría, y tarjetas de prompts y skills de IA con sus etiquetas.",
-      en: "Prompt Vault screenshot: search bar, filters by type and category, and cards of AI prompts and skills with their tags.",
-    },
-    ogImage: "/projects/prompt-vault-og.jpg",
-    imageDark: "/projects/prompt-vault-dark.webp",
-    date: "2026-10-16",
-    service: "web",
-    facts: {
-      es: [
-        { label: "Tipo", value: "Proyecto propio" },
-        { label: "Qué hice", value: "Diseño, desarrollo y base de datos" },
-        { label: "Estado", value: "Lo uso a diario, código público" },
-      ],
-      en: [
-        { label: "Type", value: "Personal project" },
-        { label: "What I did", value: "Design, development and database" },
-        { label: "Status", value: "In daily use, open source" },
-      ],
-    },
-    post: {
-      es: {
-        title: "Prompt Vault, mi bóveda personal de prompts",
-        seoTitle: "Prompt Vault, bóveda personal de prompts",
-        intro:
-          "Si usas modelos de IA con cierta frecuencia, acabas con prompts buenos repartidos por todas partes. Unos en notas del móvil. Otros en un documento de Google que abriste una vez. Los mejores, claro, perdidos en algún chat antiguo. Yo me hartaba de perder cinco minutos buscando entre capturas y mensajes cada vez que necesitaba uno. Así que me hice una app para tenerlos todos en un sitio.",
-        sections: [
-          {
-            heading: "Qué es Prompt Vault",
-            blocks: [
-              "Una web app donde guardo prompts, skills y plantillas organizados por categorías, con búsqueda rápida y copia en un clic. La quería usar igual desde el móvil que desde el portátil, así que la construí como PWA. Se instala como app nativa, se abre desde el icono, sin barra del navegador. Android, iOS, escritorio, funciona igual.",
-              "Tiene modo claro y oscuro con un botón en la cabecera, autenticación con Google o email, y todos los datos sincronizados en la nube. Si guardo un prompt desde el móvil, lo tengo al instante en el ordenador.",
-            ],
-          },
-          {
-            heading: "El stack",
-            blocks: [
-              "No quería complicarme con nada exótico. React 19 con Vite para el frontend, porque Vite arranca en milisegundos y React es terreno conocido. Tailwind CSS v4 para los estilos: cero archivos CSS sueltos, todo inline, todo consistente.",
-              "Supabase para el backend completo: autenticación, base de datos PostgreSQL con Row Level Security y almacenamiento. Es como tener un Firebase pero con SQL de verdad. Y Vercel para el despliegue: push a main y ya está en producción.",
-              "La tipografía es Plus Jakarta Sans, que le da un aire limpio sin recurrir a las de siempre.",
-            ],
-          },
-          {
-            heading: "Qué puedes hacer con ella",
-            blocks: [
-              "Cada prompt tiene un tipo y una categoría. Los tipos por defecto son “Prompt” y “Skill”, pero puedes crear los que quieras. La app ajusta el género gramatical: si creas un tipo que termina en -a, dice “nueva” en vez de “nuevo”. Un detallito tonto que mola.",
-              "Las categorías tienen su color de una paleta pastel con 10 tonos, todos con contraste AA. Bonitos y legibles.",
-              "Arriba hay una barra de búsqueda que filtra en tiempo real por título y contenido. Cuando tienes 50 o 100 prompts, esto marca la diferencia entre encontrar algo en 2 segundos o quedarte buscando.",
-              "Copiar es un clic. Aparece un “Copiado” durante 2 segundos y ya lo tienes en el portapapeles, listo para pegar donde quieras.",
-            ],
-          },
-          {
-            heading: "Compartir sin dramas",
-            blocks: [
-              "Puedes compartir de dos formas. Por email: escribes el correo y a la otra persona le aparece en su bóveda en solo lectura. O por enlace público: generas una URL y cualquiera puede verlo sin cuenta. Si cambias de idea, desactivas el enlace.",
-            ],
-          },
-          {
-            heading: "Papelera y seguridad",
-            blocks: [
-              "Cuando borras algo, va a la papelera. Tienes 6 segundos para darle a “Deshacer”. Y si no, sigue accesible desde tu avatar durante 30 días.",
-              "La seguridad no es decorativa. Cada usuario solo ve sus propios datos, y no porque haya un condicional en el frontend: está implementado con Row Level Security en la base de datos. La propia base rechaza cualquier consulta que intente tocar datos de otro.",
-            ],
-          },
-          {
-            heading: "Cómo lo construí",
-            blocks: [
-              "El proceso fue iterativo, que es como mejor salen estas cosas. Empecé con una versión mínima que guardaba prompts en localStorage, sin base de datos ni login. A partir de ahí fui añadiendo capas: primero las categorías y tipos personalizables con su paleta de colores, luego la migración a Supabase con autenticación real y Row Level Security, y por último las funciones de compartir, la papelera y la configuración PWA.",
-              "El repositorio está en GitHub y cada push a main despliega automáticamente en Vercel. Del commit a producción, todo automático.",
-            ],
-          },
-          {
-            heading: "Qué viene después",
-            blocks: [
-              "Prompt Vault ya la uso a diario y me ahorra tiempo de verdad. Pero tengo ideas: exportar e importar prompts en formatos estándar, carpetas para agrupar prompts relacionados y un historial de versiones para esos prompts que vas puliendo con el tiempo.",
-              "Si te interesa, el código es público en [GitHub](https://github.com/4ngel10/prompt-vault). Y si tú también andas con prompts repartidos por mil sitios, te recomiendo buscarte algún sistema. Da igual si es una app, una hoja de cálculo o una carpeta bien organizada. Tener tus prompts a mano cambia bastante el día a día.",
-            ],
-          },
-        ],
-      },
-      en: {
-        title: "Prompt Vault, my personal prompt vault",
-        intro:
-          "If you use AI models fairly often, you end up with good prompts scattered everywhere. Some in phone notes. Others in a Google Doc you opened once. The best ones, of course, lost in some old chat. I was tired of spending five minutes digging through screenshots and messages every time I needed one. So I built an app to keep them all in one place.",
-        sections: [
-          {
-            heading: "What Prompt Vault is",
-            blocks: [
-              "A web app where I keep prompts, skills and templates organized by category, with fast search and one-click copy. I wanted to use it the same way on my phone and on my laptop, so I built it as a PWA. It installs like a native app and opens from its icon, with no browser bar. Android, iOS or desktop, it works the same.",
-              "It has light and dark mode with a button in the header, sign-in with Google or email, and all data synced to the cloud. If I save a prompt on my phone, it is on my computer instantly.",
-            ],
-          },
-          {
-            heading: "The stack",
-            blocks: [
-              "I did not want anything exotic. React 19 with Vite for the frontend, because Vite starts in milliseconds and React is familiar ground. Tailwind CSS v4 for styling: zero loose CSS files, everything inline, everything consistent.",
-              "Supabase for the whole backend: authentication, a PostgreSQL database with Row Level Security, and storage. Like Firebase, but with real SQL. And Vercel for deployment: push to main and it is in production.",
-              "The typeface is Plus Jakarta Sans, which gives it a clean feel without falling back on the usual suspects.",
-            ],
-          },
-          {
-            heading: "What you can do with it",
-            blocks: [
-              "Every prompt has a type and a category. The default types are “Prompt” and “Skill”, but you can create any you like. In Spanish, the app adjusts grammatical gender: if a type ends in -a, it says “nueva” instead of “nuevo”. A silly little detail that I love.",
-              "Categories get a color from a 10-tone pastel palette, all of them meeting AA contrast. Pretty and readable.",
-              "A search bar at the top filters by title and content in real time. With 50 or 100 prompts, that is the difference between finding something in 2 seconds and hunting for it.",
-              "Copying is one click. A “Copied” label shows up for 2 seconds and it is on your clipboard, ready to paste anywhere.",
-            ],
-          },
-          {
-            heading: "Sharing, no drama",
-            blocks: [
-              "You can share in two ways. By email: type the address and the item shows up in the other person's vault, read-only. Or by public link: generate a URL and anyone can view it without an account. Change your mind, turn the link off.",
-            ],
-          },
-          {
-            heading: "Trash and security",
-            blocks: [
-              "When you delete something, it goes to the trash. You get 6 seconds to hit “Undo”. After that, it is still reachable from your avatar for 30 days.",
-              "Security is not decorative. Each user only sees their own data, and not because of a conditional in the frontend: it is enforced with Row Level Security in the database. The database itself rejects any query that tries to touch someone else's data.",
-            ],
-          },
-          {
-            heading: "How I built it",
-            blocks: [
-              "The process was iterative, which is how these things turn out best. I started with a minimal version that stored prompts in localStorage, with no database and no login. From there I added layers: first customizable categories and types with their color palette, then the move to Supabase with real authentication and Row Level Security, and finally sharing, the trash and the PWA setup.",
-              "The repository lives on GitHub and every push to main deploys to Vercel automatically. From commit to production, fully automated.",
-            ],
-          },
-          {
-            heading: "What comes next",
-            blocks: [
-              "I use Prompt Vault every day and it genuinely saves me time. But I have ideas: exporting and importing prompts in standard formats, folders to group related prompts, and version history for those prompts you keep refining over time.",
-              "If you are curious, the code is public on [GitHub](https://github.com/4ngel10/prompt-vault). And if your prompts are scattered across a thousand places too, I recommend finding yourself a system. It does not matter whether it is an app, a spreadsheet or a well-organized folder. Having your prompts at hand makes a real difference day to day.",
-            ],
-          },
-        ],
-      },
-    },
-  },
 ];
 
 export function getProject(slug: string) {
@@ -681,12 +717,12 @@ export function getProject(slug: string) {
  */
 export type ProjectCard = Pick<
   Project,
-  "slug" | "key" | "tech" | "image" | "imageDark" | "cover" | "tint" | "coverAlt"
+  "slug" | "key" | "tech" | "image" | "imageDark" | "cover" | "tint" | "coverAlt" | "coverPosition"
 >;
 
 export function projectCard(p: Project): ProjectCard {
-  const { slug, key, tech, image, imageDark, cover, tint, coverAlt } = p;
-  return { slug, key, tech, image, imageDark, cover, tint, coverAlt };
+  const { slug, key, tech, image, imageDark, cover, tint, coverAlt, coverPosition } = p;
+  return { slug, key, tech, image, imageDark, cover, tint, coverAlt, coverPosition };
 }
 
 export function projectCards(): ProjectCard[] {
