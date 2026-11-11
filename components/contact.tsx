@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import { CONTACT } from "@/lib/site";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
-import { WEB3FORMS_KEY } from "@/lib/site";
+import { enviarContacto, type ContactoEstado } from "@/lib/contact-action";
+import { SERVICIOS_CONTACTO } from "@/lib/contact-validate";
 
 /**
  * Fondo y color explícitos en cada <option>: el desplegable nativo (Chrome en Windows)
@@ -13,53 +14,47 @@ import { WEB3FORMS_KEY } from "@/lib/site";
  */
 const OPTION = "bg-[var(--bg)] text-[var(--fg)]";
 
-/** Valores del campo "service" tal como llegan en el correo (las etiquetas se traducen). */
-const SERVICE_OPTIONS = [
-  "Administración de sistemas",
-  "Desarrollo web",
-  "Ambos",
-  "Otro / No estoy seguro",
-];
+const INICIAL: ContactoEstado = { status: "idle" };
+
+function ServiceSelect({ defaultValue }: { defaultValue: string }) {
+  const { t } = useI18n();
+  const [elegido, setElegido] = useState(defaultValue !== "");
+  return (
+    <select
+      id="service"
+      name="service"
+      defaultValue={defaultValue}
+      onChange={(e) => setElegido(e.target.value !== "")}
+      className={`border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm ${elegido ? "" : "text-[var(--muted)]"} transition-colors outline-none focus:border-[var(--accent)]`}
+    >
+      <option value="" className={OPTION}>
+        {t("contact.formServicePh")}
+      </option>
+      {SERVICIOS_CONTACTO.map((o, i) => (
+        <option key={o} value={o} className={OPTION}>
+          {t(`contact.formServiceOpt${i + 1}`)}
+        </option>
+      ))}
+    </select>
+  );
+}
 
 export function Contact() {
   const { t, locale } = useI18n();
-  const [serviceChosen, setServiceChosen] = useState(false);
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus("sending");
-    const form = e.currentTarget;
-    // access_key y from_name ya van como campos ocultos del <form> (ver abajo).
-    const data = new FormData(form);
-    data.set(
-      "subject",
-      `Nuevo mensaje del portfolio: ${data.get("name") ?? ""} ${data.get("service") ? ` (${data.get("service")})` : ""}`,
-    );
-    try {
-      // Web3Forms reenvía el mensaje al Gmail de Ángel. Se llama desde el navegador
-      // (su plan gratuito no admite envíos desde servidor), así que funciona en cualquier hosting.
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
-      });
-      const json = (await res.json().catch(() => null)) as {
-        success?: boolean;
-        message?: string;
-      } | null;
-      const ok = res.ok && json?.success === true;
-      // El motivo exacto queda en consola (p. ej. "hCaptcha Token is mandatory" si alguien
-      // reactiva el captcha en el panel de Web3Forms).
-      if (!ok) console.error("[contacto] Web3Forms rechazó el envío:", res.status, json?.message);
-      setStatus(ok ? "ok" : "err");
-      if (ok) form.reset();
-    } catch (err) {
-      // Sin respuesta: red caída o un bloqueador cortando api.web3forms.com.
-      console.error("[contacto] No se pudo contactar con Web3Forms:", err);
-      setStatus("err");
-    }
+  // La acción corre en el servidor y funciona también sin JS (el formulario la usa como action).
+  const [estado, formAction, enviando] = useActionState(enviarContacto, INICIAL);
+  // Hora a la que se abrió el formulario: el servidor descarta envíos de menos de 3 s (bots).
+  const [abiertoEn, setAbiertoEn] = useState("");
+  useEffect(() => setAbiertoEn(String(Date.now())), []);
+  const status = enviando ? "sending" : estado.status;
+  // Un número nuevo por cada resultado, para rehacer el desplegable (ver ServiceSelect).
+  const [visto, setVisto] = useState(estado);
+  const [intento, setIntento] = useState(0);
+  if (visto !== estado) {
+    setVisto(estado);
+    setIntento(intento + 1);
   }
+  const v = estado.values;
 
   // Vías opcionales: solo salen si su dato está rellenado en CONTACT (lib/site.ts).
   const extra = [
@@ -243,26 +238,15 @@ export function Contact() {
 
           <Reveal delay={0.15}>
             <form
-              onSubmit={handleSubmit}
-              // Sin JS (o antes de que cargue) el navegador envía directamente a Web3Forms
-              // por POST. Sin esto hacía un GET a la propia web con nombre, email y mensaje en la URL.
-              action="https://api.web3forms.com/submit"
-              method="POST"
+              action={formAction}
               className="border-rule rounded-2xl border p-6 md:p-8"
               style={{ background: "var(--bg)" }}
             >
-              <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
-              <input type="hidden" name="from_name" value="Portfolio Ángel Fernández" />
-              <input type="hidden" name="subject" value="Nuevo mensaje del portfolio" />
-              {/* Honeypot antispam de Web3Forms: invisible para personas, los bots lo marcan. */}
-              <input
-                type="checkbox"
-                name="botcheck"
-                className="hidden"
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden
-              />
+              <input type="hidden" name="t" value={abiertoEn} />
+              {/* Honeypot: fuera de pantalla y fuera del tabulador. Las personas no lo ven; los bots lo rellenan. */}
+              <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                <input type="text" name="web" tabIndex={-1} autoComplete="off" />
+              </div>
               <div className="mb-4">
                 <label htmlFor="name" className="mb-1.5 block text-[13px] font-medium">
                   {t("contact.formName")}
@@ -271,6 +255,8 @@ export function Contact() {
                   id="name"
                   name="name"
                   type="text"
+                  defaultValue={v?.name}
+                  maxLength={100}
                   autoComplete="name"
                   required
                   placeholder={t("contact.formNamePh")}
@@ -285,6 +271,8 @@ export function Contact() {
                   id="email"
                   name="email"
                   type="email"
+                  defaultValue={v?.email}
+                  maxLength={254}
                   autoComplete="email"
                   autoCapitalize="none"
                   autoCorrect="off"
@@ -298,25 +286,10 @@ export function Contact() {
                   {t("contact.formService")}
                 </label>
                 <div className="relative">
-                  {/* Va en el envío a Web3Forms como "service" (FormData coge todos los campos).
-                      El valor siempre en español, para que el correo a Ángel se lea igual
-                      venga de la web en el idioma que venga. */}
-                  <select
-                    id="service"
-                    name="service"
-                    defaultValue=""
-                    onChange={(e) => setServiceChosen(e.target.value !== "")}
-                    className={`border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm ${serviceChosen ? "" : "text-[var(--muted)]"} transition-colors outline-none focus:border-[var(--accent)]`}
-                  >
-                    <option value="" className={OPTION}>
-                      {t("contact.formServicePh")}
-                    </option>
-                    {SERVICE_OPTIONS.map((o, i) => (
-                      <option key={o} value={o} className={OPTION}>
-                        {t(`contact.formServiceOpt${i + 1}`)}
-                      </option>
-                    ))}
-                  </select>
+                  {/* El valor va siempre en español, para que el correo a Ángel se lea igual
+                      venga de la web en el idioma que venga. Con key se rehace tras cada envío
+                      (React vacía el formulario) y el color del placeholder se reinicia. */}
+                  <ServiceSelect key={intento} defaultValue={v?.service ?? ""} />
                   <svg
                     className="text-muted pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2"
                     width="16"
@@ -341,6 +314,9 @@ export function Contact() {
                   id="message"
                   name="message"
                   rows={5}
+                  defaultValue={v?.message}
+                  minLength={5}
+                  maxLength={4000}
                   required
                   placeholder={t("contact.formMessagePh")}
                   className="border-field min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
@@ -387,9 +363,14 @@ export function Contact() {
                     {t("contact.formOk")}
                   </p>
                 )}
-                {status === "err" && (
+                {(status === "err" || status === "invalid") && (
                   <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">
                     {t("contact.formErr")}
+                  </p>
+                )}
+                {status === "limit" && (
+                  <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">
+                    {t("contact.formLimit")}
                   </p>
                 )}
               </div>

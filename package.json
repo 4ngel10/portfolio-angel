@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "tsx scripts/probar-blog.ts && tsx scripts/probar-cookies.ts && tsx scripts/probar-seo.ts",
+    "test": "tsx scripts/probar-blog.ts && tsx scripts/probar-cookies.ts && tsx scripts/probar-seo.ts && tsx scripts/probar-contacto.ts",
     "audit": "npm audit --omit=dev --audit-level=moderate",
     "format": "prettier --write ."
   },

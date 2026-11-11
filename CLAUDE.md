@@ -175,9 +175,7 @@ Añadir un idioma: nuevo JSON + extiende el type `Locale` en `lib/i18n.tsx`.
 
 **Vías de contacto opcionales** (`CONTACT` en `lib/site.ts`): `bookingUrl`, `whatsapp`, `phone` y `availability` (es y en). Vacíos, no se muestra nada y el botón principal del hero es "Pedir presupuesto". Con `bookingUrl` el principal pasa a "Reservar llamada de 15 min" (enlace externo) y "Pedir presupuesto" queda como secundario; con `whatsapp` o `phone` salen en Contacto y como botón redondo junto al "Contactar" flotante del móvil. El campo "servicio" del formulario es opcional.
 
-El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (select obligatorio "¿Qué servicio te interesa?", valor siempre en español) y `message` a **Web3Forms** desde el navegador (`https://api.web3forms.com/submit`), que lo reenvía al Gmail de Ángel. No hay endpoint propio ni variables de entorno: el plan gratuito de Web3Forms no admite envíos desde servidor. La clave (`WEB3FORMS_KEY`) es pública por diseño y vive en `lib/site.ts`. Incluye un honeypot `botcheck` antispam. El `<form>` tiene `action`/`method="POST"` a Web3Forms con `access_key` oculto, así funciona aunque no haya cargado el JS.
-
-**En el panel de Web3Forms, "Captcha Protection" debe estar en `None`.** Si se activa hCaptcha sin montarlo en el frontend, Web3Forms rechaza todos los envíos ("hCaptcha Token is mandatory"). El motivo de cualquier rechazo sale en la consola del navegador como `[contacto]`.
+El formulario (`components/contact.tsx`) usa una **server action** (`lib/contact-action.ts`) que envía el mensaje por **Resend** a Ángel, con reply-to al correo del visitante. Campos: `name`, `email`, `service` (select opcional, valor siempre en español), `message`. Validación y límite en `lib/contact-validate.ts` (probados en `scripts/probar-contacto.ts`): honeypot `web` (campo fuera de pantalla), tiempo mínimo de 3 s si el navegador manda la hora de apertura (`t`; sin JS no existe y no se exige) y límite por IP en memoria (3 cada 10 minutos, 8 por hora; mejor esfuerzo porque cada instancia serverless tiene el suyo; `lib/portal/rate-limit.ts` cuenta filas de tablas y no sirve para anónimos). A un bot se le contesta "enviado" sin mandar nada. Funciona sin JS (el `<form action>` es la acción) y no registra el mensaje ni el correo en los logs. Variables de entorno en Vercel: `RESEND_API_KEY`, `CONTACT_FROM` (remitente de un dominio verificado en Resend, p. ej. del subdominio `send.angel-fernandez.es`; si falta se usa `RESEND_FROM`) y, opcional, `CONTACT_TO` (por defecto `LEGAL.email`). Sin remitente verificado el envío falla y el visitante ve el mensaje de error.
 
 ## SEO
 
@@ -196,6 +194,9 @@ El formulario (`components/contact.tsx`) envía `name`, `email`, `service` (sele
 `SITE_URL` en `lib/site.ts` es la URL pública que usan metadata, `sitemap.xml` y `robots.txt`. Es `https://www.angel-fernandez.es` (con `www`, que es el dominio principal en Vercel). Si cambia, se modifica solo ahí. Los correos (`RESEND_FROM`) salen de `portal@angel-fernandez.es`, así que el dominio tiene que estar verificado en Resend.
 
 ## Seguridad
+
+- **HSTS sin preload (decisión de Ángel, 2026-11-11):** la cabecera es `max-age=63072000; includeSubDomains` y no se toca. Preload descartado porque el apex `angel-fernandez.es` redirige a `www` con el redireccionamiento de Vercel (responde `max-age` sin `includeSubDomains` ni `preload`, y esa cabecera no la controla `next.config.ts`) y porque `autodiscover.angel-fernandez.es` (IONOS, correo) no sirve HTTPS. El DNS está en IONOS, no en Vercel.
+- **Informes de la CSP:** `app/api/csp-report` recibe `report-uri` y `report-to` (cabecera `Reporting-Endpoints` en `next.config.ts`), limita tamaño (8 KB) y frecuencia y escribe en los logs de Vercel (`[csp-report]`), sin base de datos ni IP. La CSP sigue en Report-Only.
 
 - Toda server action y toda página del admin empieza con `requireAdmin()` (las rutas de API, con `comprobarAdmin()`).
 - El cliente con service role (`createAdminClient`) solo se usa en código con `server-only`, y siempre después de comprobar permisos. Nunca en componentes de cliente.

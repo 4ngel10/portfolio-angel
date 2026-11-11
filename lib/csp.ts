@@ -19,7 +19,7 @@ const hashDelTema = `'sha256-${createHash("sha256").update(THEME_SCRIPT).digest(
 /** Directivas comunes. Solo cambia script-src según la ruta. */
 function directivas(scriptSrc: string): string {
   const supabase = origenSupabase();
-  const connect = ["'self'", supabase, "https://api.web3forms.com"].filter(Boolean).join(" ");
+  const connect = ["'self'", supabase].filter(Boolean).join(" ");
   return [
     "default-src 'self'",
     `script-src ${scriptSrc}${isDev ? " 'unsafe-eval'" : ""}`,
@@ -27,10 +27,14 @@ function directivas(scriptSrc: string): string {
     "img-src 'self' data: blob:",
     "font-src 'self'",
     "style-src 'self' 'unsafe-inline'",
-    "form-action 'self' https://api.web3forms.com",
+    "form-action 'self'",
     "base-uri 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
+    // Informes de violaciones a /api/csp-report (logs de Vercel). report-uri es el formato clásico
+    // (Firefox, Safari); report-to usa el endpoint "csp-endpoint" de la cabecera Reporting-Endpoints.
+    "report-uri /api/csp-report",
+    "report-to csp-endpoint",
     // upgrade-insecure-requests se ignora en Report-Only (el navegador avisa). Añadirlo al pasar a enforce.
   ].join("; ");
 }
