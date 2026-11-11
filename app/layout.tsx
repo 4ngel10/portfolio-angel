@@ -8,6 +8,7 @@ import { SkipLink } from "@/components/skip-link";
 import { SITE_URL } from "@/lib/site";
 import { THEME_SCRIPT } from "@/lib/theme-script";
 import { HOME_DESCRIPTION, HOME_OG_IMAGE, HOME_TITLE } from "@/lib/seo";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <MotionProvider>{children}</MotionProvider>
           </I18nProvider>
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
