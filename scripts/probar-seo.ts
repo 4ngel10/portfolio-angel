@@ -8,7 +8,16 @@
  * de lib/certifications.ts como hasCredential, solo con nombre y emisor.
  */
 import { CERTIFICATIONS } from "../lib/certifications";
-import { HOME_DESCRIPTION, HOME_TITLE, SITE_NAME, homeJsonLd } from "../lib/seo";
+import {
+  BLOG_DESCRIPTION,
+  BLOG_TITLE,
+  HOME_DESCRIPTION,
+  HOME_TITLE,
+  SERVICE_DESCRIPTIONS,
+  SERVICE_TITLES,
+  SITE_NAME,
+  homeJsonLd,
+} from "../lib/seo";
 
 let fallos = 0;
 function comprobar(ok: boolean, texto: string) {
@@ -16,12 +25,42 @@ function comprobar(ok: boolean, texto: string) {
   if (!ok) fallos++;
 }
 
-comprobar(HOME_TITLE.length <= 60, `título de la home de ${HOME_TITLE.length} caracteres (máx. 60)`);
+comprobar(
+  HOME_TITLE.length <= 60,
+  `título de la home de ${HOME_TITLE.length} caracteres (máx. 60)`,
+);
 comprobar(
   !/[—:]/.test(HOME_TITLE + HOME_DESCRIPTION),
   "título y descripción de la home sin em dashes ni dos puntos",
 );
-comprobar(HOME_DESCRIPTION.length <= 160, `descripción de ${HOME_DESCRIPTION.length} caracteres (máx. 160)`);
+comprobar(
+  HOME_DESCRIPTION.length <= 160,
+  `descripción de ${HOME_DESCRIPTION.length} caracteres (máx. 160)`,
+);
+
+// Servicios y blog: el <title> de los servicios lleva " · Ángel Fernández" detrás.
+const MARCA = " · Ángel Fernández";
+const titulos: [string, string][] = [
+  ...Object.entries(SERVICE_TITLES).map(([id, s]): [string, string] => [
+    `servicio ${id}`,
+    s + MARCA,
+  ]),
+  ["blog", BLOG_TITLE],
+];
+const descripciones: [string, string][] = [
+  ...Object.entries(SERVICE_DESCRIPTIONS).map(([id, s]): [string, string] => [`servicio ${id}`, s]),
+  ["blog", BLOG_DESCRIPTION],
+];
+for (const [n, s] of titulos)
+  comprobar(
+    s.length <= 60 && !/[—:]/.test(s),
+    `título de ${n}: ${s.length} caracteres (máx. 60), sin em dash ni dos puntos`,
+  );
+for (const [n, s] of descripciones)
+  comprobar(
+    s.length <= 160 && !/[—:]/.test(s),
+    `descripción de ${n}: ${s.length} caracteres (máx. 160), sin em dash ni dos puntos`,
+  );
 
 type Nodo = Record<string, unknown> & { "@type": string };
 const nodos = (homeJsonLd() as { "@graph": Nodo[] })["@graph"];

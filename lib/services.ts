@@ -20,7 +20,8 @@ export type ServiceGroup = {
   tools?: string[];
 };
 
-export type ServiceMode = { title: string; text: string };
+/** `id` opcional: ancla de la card (/servicios/sistemas#mantenimiento). */
+export type ServiceMode = { id?: string; title: string; text: string };
 export type ServiceFaq = { q: string; a: string };
 
 export type ServiceDetail = {
@@ -241,8 +242,9 @@ export const SERVICES: ServiceDetail[] = [
             text: "Horas de soporte que se descuentan según se usan y no caducan. Las ves en tu área de clientes.",
           },
           {
-            title: "Mantenimiento continuo",
-            text: "Reviso cada mes que todo siga en orden, con actualizaciones y copias comprobadas.",
+            id: "mantenimiento",
+            title: "Mantenimiento informático en Palma",
+            text: "Reviso cada mes que todo siga en orden, con actualizaciones y copias comprobadas. En Palma y Mallorca, en remoto o presencial.",
           },
           {
             title: "Auditoría y mejoras",
@@ -272,8 +274,9 @@ export const SERVICES: ServiceDetail[] = [
             text: "Support hours used as you need them, with no expiry. You can track them in your client area.",
           },
           {
-            title: "Ongoing maintenance",
-            text: "Every month I check everything is in order, with updates and verified backups.",
+            id: "mantenimiento",
+            title: "IT maintenance in Palma",
+            text: "Every month I check everything is in order, with updates and verified backups. In Palma and across Mallorca, remotely or on site.",
           },
           {
             title: "Audit and improvements",
@@ -350,10 +353,12 @@ export const SERVICES: ServiceDetail[] = [
       es: [
         "Diseño y desarrollo webs a medida para autónomos, pymes y negocios que empiezan. Una web sencilla puede estar lista en una semana, y me encargo del dominio, el hosting y el mantenimiento.",
         "Tratas siempre con la misma persona, de la primera idea a la publicación. Y como también soy administrador de sistemas, la parte que no se ve, el servidor, la seguridad y las copias, queda igual de bien resuelta.",
+        "Trabajo desde Palma y atiendo a negocios de toda Mallorca, en remoto y también en persona. Una web local bien hecha ayuda a que te encuentren los clientes de tu zona.",
       ],
       en: [
         "I design and build custom websites for freelancers, small businesses and new ventures. A simple site can be ready in a week, and I take care of the domain, hosting and maintenance.",
         "You always deal with the same person, from the first idea to launch. And since I'm also a systems administrator, the part you don't see, the server, security and backups, is just as well looked after.",
+        "I work from Palma and look after businesses across Mallorca, remotely and in person. A well-made local website helps customers in your area find you.",
       ],
     },
     closing: {
@@ -578,6 +583,10 @@ export const SERVICES: ServiceDetail[] = [
             a: "Puedo encargarme del mantenimiento, con cambios y mejoras cuando los necesites o con una bolsa de horas.",
           },
           {
+            q: "¿Haces webs para negocios en Mallorca?",
+            a: "Sí. Trabajo desde Palma y hago webs para autónomos y pymes de toda la isla, en remoto y, si hace falta, en persona. También trabajo con negocios de fuera de Mallorca.",
+          },
+          {
             q: "¿Puedes renovar mi web actual?",
             a: "Sí. Reviso la que tienes y te propongo qué mantener y qué mejorar.",
           },
@@ -601,6 +610,10 @@ export const SERVICES: ServiceDetail[] = [
           {
             q: "What happens after launch?",
             a: "I can take care of maintenance, with changes and improvements when you need them or with an hour bank.",
+          },
+          {
+            q: "Do you build websites for businesses in Mallorca?",
+            a: "Yes. I work from Palma and build websites for freelancers and small businesses across the island, remotely and, if needed, in person. I also work with businesses outside Mallorca.",
           },
           {
             q: "Can you redesign my current website?",

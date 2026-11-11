@@ -35,8 +35,14 @@ export function alternatesFor(path: string) {
 /** Meta description de cada página de servicio, por id. */
 export const SERVICE_DESCRIPTIONS: Record<string, string> = {
   sistemas:
-    "Administración de sistemas en Palma de Mallorca. Copias de seguridad, Microsoft 365, redes, equipos, servidores y soporte IT para autónomos y pymes.",
-  web: "Desarrollo web a medida para autónomos y pymes, en remoto y en Palma de Mallorca. Webs rápidas y optimizadas para SEO, con dominio, hosting y mantenimiento.",
+    "Soporte informático y sistemas para empresas en Palma y Mallorca. Copias de seguridad, Microsoft 365, redes y servidores. Remoto o presencial.",
+  web: "Diseño y desarrollo web a medida en Palma y Mallorca para autónomos y pymes. Webs rápidas y optimizadas para SEO, con dominio, hosting y mantenimiento.",
+};
+
+/** Título SEO de cada página de servicio (sin marca; el <title> añade " · Ángel Fernández"). */
+export const SERVICE_TITLES: Record<string, string> = {
+  sistemas: "Soporte informático en Palma y Mallorca",
+  web: "Diseño web en Palma y Mallorca",
 };
 
 const PERSON_ID = `${SITE_URL}/#person`;
@@ -214,9 +220,9 @@ export function projectJsonLd(project: Project) {
   );
 }
 
-export const BLOG_TITLE = "Blog · Ángel Fernández";
+export const BLOG_TITLE = "Blog de sistemas y desarrollo web · Ángel Fernández";
 export const BLOG_DESCRIPTION =
-  "Artículos sobre administración de sistemas, backup, desarrollo web con Next.js y automatización. Guías prácticas desde Palma de Mallorca.";
+  "Guías prácticas de sistemas, copias de seguridad, desarrollo web con Next.js y automatización, para autónomos y pymes.";
 
 /** Listado del blog: Blog (con sus artículos) + BreadcrumbList (Inicio > Blog). */
 export function blogIndexJsonLd(posts: BlogPost[]) {
