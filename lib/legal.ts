@@ -24,7 +24,7 @@ export type LegalPage = {
   content: Record<Locale, LegalContent>;
 };
 
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-11";
 
 const holderEs = [
   `**Titular:** ${LEGAL.nombre}`,
@@ -294,11 +294,13 @@ export const LEGAL_PAGES: LegalPage[] = [
           {
             heading: "Qué se guarda en tu navegador",
             blocks: [
+              "El idioma y el tema solo se guardan cuando los cambias tú con sus selectores. Si no los tocas, no se guarda nada. La web detecta el idioma de tu navegador al cargar, pero no lo almacena.",
               {
                 list: [
-                  "**locale** (cookie propia, 1 año): recuerda el idioma elegido (ES o EN).",
-                  "**locale** y **theme** (almacenamiento local, sin caducidad): idioma y tema claro u oscuro que elegiste.",
-                  "**Cookies de sesión de Supabase** (propias, solo si inicias sesión en el área de clientes o en la administración): mantienen tu sesión abierta y son imprescindibles para ese servicio.",
+                  "**locale**, cookie propia (técnica, de preferencia). Recuerda el idioma que eliges, ES o EN. Dura 1 año.",
+                  "**locale**, almacenamiento local propio (técnico, de preferencia). Es la misma preferencia de idioma. No caduca hasta que la borres.",
+                  "**theme**, almacenamiento local propio (técnico, de preferencia). Recuerda si eliges el tema claro o el oscuro. No caduca hasta que la borres.",
+                  "**Cookies de sesión de Supabase**, propias (técnicas, necesarias). Solo se crean si inicias sesión en el área de clientes o en la administración, y mantienen tu sesión abierta. Duran lo que dure la sesión.",
                 ],
               },
             ],
@@ -307,6 +309,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             heading: "Servicios de terceros",
             blocks: [
               "El formulario de contacto envía los datos a Web3Forms al pulsar enviar. No instala cookies en tu navegador. Más información en la [política de privacidad](/privacidad).",
+              "La web está alojada en Vercel. Como cualquier alojamiento, puede tratar datos técnicos de la conexión, como la dirección IP, en sus registros de servidor. Esto no instala cookies. Los detalles están en la [política de privacidad](/privacidad).",
             ],
           },
           {
@@ -333,11 +336,13 @@ export const LEGAL_PAGES: LegalPage[] = [
           {
             heading: "What is stored in your browser",
             blocks: [
+              "Language and theme are only saved when you change them yourself with their selectors. If you do not touch them, nothing is saved. The site detects your browser language on load, but does not store it.",
               {
                 list: [
-                  "**locale** (first-party cookie, 1 year): remembers the language you chose (ES or EN).",
-                  "**locale** and **theme** (local storage, no expiry): the language and light or dark theme you chose.",
-                  "**Supabase session cookies** (first-party, only if you sign in to the client area or administration): keep your session open and are strictly necessary for that service.",
+                  "**locale**, first-party cookie (technical, preference). Remembers the language you choose, ES or EN. Lasts 1 year.",
+                  "**locale**, first-party local storage (technical, preference). The same language preference. It does not expire until you delete it.",
+                  "**theme**, first-party local storage (technical, preference). Remembers whether you choose the light or the dark theme. It does not expire until you delete it.",
+                  "**Supabase session cookies**, first-party (technical, necessary). Only created if you sign in to the client area or administration, and they keep your session open. They last as long as the session.",
                 ],
               },
             ],
@@ -346,6 +351,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             heading: "Third-party services",
             blocks: [
               "The contact form sends your data to Web3Forms when you press send. It sets no cookies in your browser. More information in the [privacy policy](/privacidad).",
+              "The website is hosted on Vercel. Like any hosting provider, it may process technical connection data, such as the IP address, in its server logs. This does not set cookies. Details are in the [privacy policy](/privacidad).",
             ],
           },
           {
