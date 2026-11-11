@@ -71,12 +71,14 @@ export function Hero() {
                 }}
               />
               <Image
-                src="/angel-cutout.webp"
+                src="/angel-cutout-sm.webp"
                 alt={t("photo.alt")}
-                width={520}
-                height={920}
-                sizes="(min-width: 1024px) 0px, 150px"
-                className="hero-photo relative block h-[220px] w-auto transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
+                width={300}
+                height={531}
+                unoptimized
+                fetchPriority="low"
+                decoding="async"
+                className="hero-photo relative block aspect-[300/531] h-[220px] w-auto transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
               />
             </div>
           </div>
