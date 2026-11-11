@@ -25,13 +25,13 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-[calc(100svh-72px)] flex-col justify-center overflow-hidden pt-12 pb-16 md:pt-24 md:pb-28"
+      className="relative flex flex-col justify-start overflow-hidden pt-10 pb-16 md:pt-24 md:pb-28 lg:min-h-[calc(100svh-72px)] lg:justify-center"
     >
       <div className="relative mx-auto grid w-full max-w-6xl px-6 md:px-8 lg:grid-cols-12 lg:items-center lg:gap-8">
         <div className="lg:col-span-8">
           {/* Hasta lg: H1 a la izquierda y foto a la derecha, alineada al borde inferior. */}
           <div className="flex items-end gap-3 lg:block">
-            <h1 className="min-w-0 flex-1 text-[clamp(1.45rem,6.4vw,2.6rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance lg:text-[52px] xl:text-[60px]">
+            <h1 className="min-w-0 flex-1 text-[clamp(1.4rem,7vw,2.6rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance lg:text-[52px] xl:text-[60px]">
               <Line delay={0.05}>
                 {t("hero.title1Pre")}
                 <span className="text-accent">{t("hero.title1Accent")}</span>
@@ -46,7 +46,7 @@ export function Hero() {
 
             {/* Foto en móvil y tablet. Sin priority: el LCP sigue siendo el párrafo. Alto fijo y
               w-auto, sin aspect-*: la fila no cambia de alto al cargar la foto. */}
-            <div className="hero-fade shrink-0 lg:hidden">
+            <div className="hero-fade -mr-6 shrink-0 md:-mr-8 lg:hidden">
               <div className="relative w-fit">
                 <div
                   aria-hidden
@@ -65,7 +65,7 @@ export function Hero() {
                   unoptimized
                   fetchPriority="low"
                   decoding="async"
-                  className="hero-photo relative block h-[190px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[240px]"
+                  className="hero-photo relative block h-[240px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
                 />
               </div>
             </div>
