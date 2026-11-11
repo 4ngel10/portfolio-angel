@@ -23,7 +23,7 @@ entre landmarks, `F` entre campos y `Insert + F7` abre la lista de elementos.
 1. Cabecera: `Tab` por logo, Servicios, Proyectos, Sobre mí, Blog, Contacto, ES/EN, tema y
    "Pedir presupuesto". El enlace de la página actual se anuncia como "ubicación actual".
 2. Cambia el idioma con ES/EN y el tema con el botón de luna o sol. Deben anunciarse con nombre y estado.
-3. Marquesina de tecnologías: el lector la lee una sola vez (nombre "marquee" y la lista).
+3. Banda de tecnologías: es una lista estática (nunca se mueve, con o sin movimiento reducido). El lector la anuncia como lista con su nombre y cada tecnología como elemento.
 4. Enlaces internos (`Intro` sobre "Contacto"): la página se desplaza y el foco queda en la sección.
 5. **Formulario**
    - Envía vacío: el navegador marca el primer campo obligatorio y el lector lo anuncia.
@@ -63,7 +63,7 @@ entre landmarks, `F` entre campos y `Insert + F7` abre la lista de elementos.
 
 Activa Windows, Configuración, Accesibilidad, Efectos visuales, "Efectos de animación" en desactivado.
 
-1. Recarga. La marquesina no se mueve: se ve la lista entera, centrada y en varias líneas.
+1. Recarga. La banda de tecnologías es igual que sin movimiento reducido: lista entera, centrada y en varias líneas.
 2. El título del hero no sube ni se desvanece al cargar.
 3. Un enlace interno (por ejemplo "Contacto") salta a la sección sin deslizarse.
 4. Al pasar el ratón por la foto del hero o por una card no hay animación.
