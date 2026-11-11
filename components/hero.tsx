@@ -29,18 +29,47 @@ export function Hero() {
     >
       <div className="relative mx-auto grid w-full max-w-6xl px-6 md:px-8 lg:grid-cols-12 lg:items-center lg:gap-8">
         <div className="lg:col-span-8">
-          <h1 className="text-[clamp(1.9rem,6vw,5.25rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance lg:text-[52px] xl:text-[60px]">
-            <Line delay={0.05}>
-              {t("hero.title1Pre")}
-              <span className="text-accent">{t("hero.title1Accent")}</span>
-              {t("hero.title1Post")}
-            </Line>
-            <Line delay={0.17}>
-              {t("hero.title2Pre")}
-              <span className="text-accent">{t("hero.title2Accent")}</span>
-              {t("hero.title2Post")}
-            </Line>
-          </h1>
+          {/* Hasta lg: H1 a la izquierda y foto a la derecha, alineada al borde inferior. */}
+          <div className="flex items-end gap-3 lg:block">
+            <h1 className="min-w-0 flex-1 text-[clamp(1.45rem,6.4vw,2.6rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance lg:text-[52px] xl:text-[60px]">
+              <Line delay={0.05}>
+                {t("hero.title1Pre")}
+                <span className="text-accent">{t("hero.title1Accent")}</span>
+                {t("hero.title1Post")}
+              </Line>
+              <Line delay={0.17}>
+                {t("hero.title2Pre")}
+                <span className="text-accent">{t("hero.title2Accent")}</span>
+                {t("hero.title2Post")}
+              </Line>
+            </h1>
+
+            {/* Foto en móvil y tablet. Sin priority: el LCP sigue siendo el párrafo. Alto fijo y
+              w-auto, sin aspect-*: la fila no cambia de alto al cargar la foto. */}
+            <div className="hero-fade shrink-0 lg:hidden">
+              <div className="relative w-fit">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute"
+                  style={{
+                    inset: "8% -4% 0 -4%",
+                    background:
+                      "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 30%, transparent), transparent)",
+                  }}
+                />
+                <Image
+                  src="/angel-cutout-sm.webp"
+                  alt={t("photo.alt")}
+                  width={300}
+                  height={531}
+                  unoptimized
+                  fetchPriority="low"
+                  decoding="async"
+                  className="hero-photo relative block h-[190px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[240px]"
+                />
+              </div>
+            </div>
+          </div>
 
           <div
             style={{ animationDelay: "0.1s" }}
@@ -55,32 +84,6 @@ export function Hero() {
               style={{ background: "var(--accent)" }}
               aria-hidden
             />
-          </div>
-
-          {/* Foto en móvil y tablet, entre el terminal y el párrafo. Sin priority: el LCP debe
-              seguir siendo el párrafo y la foto no compite con él. */}
-          <div className="hero-fade mt-6 mb-2 lg:hidden">
-            <div className="relative mx-auto w-fit">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute"
-                style={{
-                  inset: "8% -4% 0 -4%",
-                  background:
-                    "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 30%, transparent), transparent)",
-                }}
-              />
-              <Image
-                src="/angel-cutout-sm.webp"
-                alt={t("photo.alt")}
-                width={300}
-                height={531}
-                unoptimized
-                fetchPriority="low"
-                decoding="async"
-                className="hero-photo relative block h-[220px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
-              />
-            </div>
           </div>
 
           <div className="mt-6 md:mt-10">
