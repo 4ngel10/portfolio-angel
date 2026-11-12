@@ -55,19 +55,12 @@ export const CV: { es: string; en: string } = { es: "", en: "" };
 
 /** Mensaje que aparece escrito al abrir el chat de WhatsApp, según el idioma. */
 const WHATSAPP_MENSAJE = {
-  es: "Hola Ángel, te escribo desde tu web.",
-  en: "Hi Ángel, I'm writing from your website.",
+  es: "Hola Ángel, vengo de tu web y me gustaría recibir información sobre tus servicios. ¿Podemos hablar?",
+  en: "Hi Ángel, I found you through your website and I'd like to know more about your services. Can we talk?",
 } as const;
 
 /** Enlace wa.me con el mensaje inicial prerrellenado. Cadena vacía si no hay número. */
 export function whatsappUrl(locale: "es" | "en"): string {
   if (!CONTACT.whatsapp) return "";
   return `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(WHATSAPP_MENSAJE[locale])}`;
-}
-
-/** Número de WhatsApp para mostrarlo, con el formato +34 639 67 58 31 (números de España). */
-export function whatsappDisplay(): string {
-  const n = CONTACT.whatsapp;
-  const m = /^34([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{2})$/.exec(n);
-  return m ? `+34 ${m[1]} ${m[2]} ${m[3]} ${m[4]}` : `+${n}`;
 }
