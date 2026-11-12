@@ -54,21 +54,21 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
           </p>
         </Reveal>
 
-        {/* En móvil (menos de sm), lista apilada. Desde sm, una sola fila deslizable: 2 cards en
+        {/* Una sola fila deslizable con botones: 1 card y un asomo de la siguiente en móvil, 2 en
             tablet y 3 en escritorio. El padding vertical deja sitio a la sombra, que el
             overflow recortaría. */}
         <div
           ref={trackRef}
-          className="py-2 sm:-mx-6 sm:snap-x sm:snap-mandatory sm:overflow-x-auto sm:px-6 sm:py-8 sm:[-ms-overflow-style:none] sm:[scrollbar-width:none] md:-mx-8 md:px-8 sm:[&::-webkit-scrollbar]:hidden"
+          className="-mx-6 snap-x snap-mandatory overflow-x-auto px-6 py-8 [-ms-overflow-style:none] [scrollbar-width:none] md:-mx-8 md:px-8 [&::-webkit-scrollbar]:hidden"
           style={{ scrollPaddingInline: "1.5rem" }}
         >
-          <RevealGroup className="flex flex-col gap-5 sm:flex-row" stagger={0.08}>
+          <RevealGroup className="flex gap-5" stagger={0.08}>
             {projects.map((p) => {
               const title = t(`portfolio.${p.key}Title`);
               return (
                 <RevealItem
                   key={p.key}
-                  className="flex sm:shrink-0 sm:basis-[calc((100%-1.25rem)/2)] sm:snap-start lg:basis-[calc((100%-2.5rem)/3)]"
+                  className="flex shrink-0 basis-[85%] snap-start sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]"
                 >
                   {/* Cada card abre la página del proyecto (app/proyectos/[slug]). */}
                   <Link
@@ -82,7 +82,7 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
                       <ProjectCover
                         project={p}
                         alt={p.coverAlt?.[locale] ?? title}
-                        sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
+                        sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 85vw"
                         className="h-52"
                       />
                       <div className="flex flex-1 flex-col p-6">
@@ -139,7 +139,7 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
         </div>
 
         {(canPrev || canNext) && (
-          <div className="hidden justify-end gap-3 sm:flex">
+          <div className="flex justify-end gap-3">
             {(["prev", "next"] as const).map((dir) => (
               <button
                 key={dir}
