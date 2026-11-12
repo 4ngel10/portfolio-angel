@@ -163,6 +163,8 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               { h3: "Formulario de contacto" },
               "Datos: nombre, correo electrónico, servicio de interés y mensaje. Finalidad: responder a tu consulta. Base legal: tu consentimiento, que das al enviar el formulario (art. 6.1.a RGPD).",
+              { h3: "WhatsApp" },
+              "Si me escribes por WhatsApp, tu mensaje, tu número de teléfono y tu nombre de perfil los trata WhatsApp (Meta) según su propia política de privacidad. Solo uso esos datos para responderte. Base legal: tu consentimiento, que das al iniciar la conversación (art. 6.1.a RGPD).",
               { h3: "Área de clientes" },
               "Datos: los de tu cuenta (correo, nombre), los de tu empresa, proyectos, incidencias, presupuestos (incluida su aceptación o firma), horas y archivos que subas. Finalidad: prestar el servicio contratado y gestionar la relación con el cliente. Base legal: ejecución del contrato o de medidas precontractuales (art. 6.1.b RGPD) y obligaciones legales, como las fiscales y contables (art. 6.1.c).",
               { h3: "Correos del servicio" },
@@ -226,6 +228,8 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               { h3: "Contact form" },
               "Data: name, email, service of interest and message. Purpose: answering your enquiry. Legal basis: your consent, given when you submit the form (art. 6.1.a GDPR).",
+              { h3: "WhatsApp" },
+              "If you message me on WhatsApp, your message, phone number and profile name are processed by WhatsApp (Meta) under its own privacy policy. I only use that data to reply to you. Legal basis: your consent, given when you start the conversation (art. 6.1.a GDPR).",
               { h3: "Client area" },
               "Data: your account details (email, name), your company, projects, issues, quotes (including their acceptance or signature), hours and files you upload. Purpose: providing the contracted service and managing the client relationship. Legal basis: performance of a contract or pre-contractual measures (art. 6.1.b GDPR) and legal obligations such as tax and accounting (art. 6.1.c).",
               { h3: "Service emails" },
