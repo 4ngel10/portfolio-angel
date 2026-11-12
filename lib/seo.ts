@@ -18,8 +18,8 @@ import type { ServiceDetail as Service } from "./services";
 import type { BlogPost } from "./blog-types";
 import es from "@/messages/es.json";
 
-/** Título de la home (47 caracteres, tope de 60). Sin marca: va en SITE_NAME (og:site_name y WebSite). */
-export const HOME_TITLE = "Informático para empresas y hoteles en Mallorca";
+/** Título de la home (49 caracteres, tope de 60). Sin marca: va en SITE_NAME (og:site_name y WebSite). */
+export const HOME_TITLE = "Informático para empresas y autónomos en Mallorca";
 /** Nombre del sitio, para og:site_name y el WebSite del JSON-LD (no el título largo de la home). */
 export const SITE_NAME = "Ángel Fernández";
 /** Imagen para redes de la home (1200x630). */

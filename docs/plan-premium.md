@@ -13,8 +13,7 @@ no se inventa nada.
 - Servicios: "Dos servicios, una sola persona al teléfono." Sistemas ya va primero.
 - Orden de la home: hero, servicios, tecnologías, proyectos, testimonios (oculta), sobre mí, blog, contacto.
 - Lo que más pesa en credibilidad es de sistemas: 3 años, 60 hoteles, 120 servidores, 1.000 usuarios del
-  equipo y tres certificaciones. El título SEO de la home ya es de sistemas ("Informático para empresas y
-  hoteles en Mallorca").
+  equipo y tres certificaciones. El título SEO de la home ya es de sistemas ("Informático para empresas y autónomos en Mallorca").
 - Las ofertas de empleo que buscas, técnico de sistemas, piden justo eso: experiencia, certificaciones,
   stack y un CV.
 
