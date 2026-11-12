@@ -112,7 +112,7 @@
   },
   "portfolio": {
     "title": "Proyectos.",
-    "lead": "Cuatro problemas concretos y cómo los resolví.",
+    "lead": "Problemas concretos y cómo los resolví, entre webs y servidores para clientes, redes y mis propios proyectos.",
     "p1Tag": "Automatización",
     "p1Title": "Mapeo automático de impresoras en RDS",
     "p1Desc": "Script de PowerShell lanzado por GPO que asigna a cada usuario sus impresoras, bandejas y predeterminada leyendo atributos de Active Directory.",
