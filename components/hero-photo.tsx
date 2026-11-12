@@ -2,6 +2,7 @@
 
 import { useI18n } from "@/lib/i18n";
 import { srcSetFoto } from "@/lib/hero-foto";
+import { srcSetFotoMovil } from "@/lib/hero-foto-movil";
 
 // Pixel transparente: es el `src` del <img> cuando ningún <source> aplica. Así cada bloque (móvil y
 // escritorio, uno de los dos siempre oculto) solo descarga su foto y el oculto no pide nada.
@@ -25,24 +26,26 @@ export function HeroPhoto({ variante }: { variante: keyof typeof PANTALLA }) {
   const { t } = useI18n();
   const escritorio = variante === "escritorio";
   const media = PANTALLA[variante];
-  // Tamaño real en pantalla: 340 px como máximo en escritorio y 160 o 184 px en móvil y tablet.
-  const sizes = escritorio ? "340px" : "(min-width: 640px) 184px, 160px";
+  // Tamaño real en pantalla: 340 px como máximo en escritorio; en móvil y tablet la foto es apaisada
+  // (3:2, lib/hero-foto-movil.ts) a todo el ancho con un tope de 448 px.
+  const sizes = escritorio ? "340px" : "(min-width: 496px) 448px, calc(100vw - 48px)";
+  const srcSet = escritorio ? srcSetFoto : srcSetFotoMovil;
 
   return (
     <div
       className={`group relative overflow-hidden rounded-2xl ${
-        escritorio ? "ml-auto w-full max-w-[340px]" : "mx-auto w-[160px] sm:w-[184px]"
+        escritorio ? "ml-auto w-full max-w-[340px]" : "mx-auto w-full max-w-[448px]"
       }`}
-      style={{ aspectRatio: "4 / 5" }}
+      style={{ aspectRatio: escritorio ? "4 / 5" : "3 / 2" }}
     >
       <picture>
-        <source media={media} type="image/avif" srcSet={srcSetFoto("avif")} sizes={sizes} />
-        <source media={media} type="image/webp" srcSet={srcSetFoto("webp")} sizes={sizes} />
+        <source media={media} type="image/avif" srcSet={srcSet("avif")} sizes={sizes} />
+        <source media={media} type="image/webp" srcSet={srcSet("webp")} sizes={sizes} />
         <img
           src={VACIA}
           alt={t("photo.alt")}
-          width={680}
-          height={850}
+          width={escritorio ? 680 : 840}
+          height={escritorio ? 850 : 560}
           fetchPriority={escritorio ? "high" : "low"}
           decoding={escritorio ? undefined : "async"}
           className="hero-photo block h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.03]"
