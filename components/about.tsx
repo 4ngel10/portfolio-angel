@@ -52,7 +52,7 @@ export function About() {
           </h2>
         </Reveal>
 
-        {/* Desde lg, el recorte va a la derecha del texto y de la frase del stack, alineado abajo. En
+        {/* Desde lg, el recorte va a la derecha del texto, alineado abajo con el último párrafo. En
             móvil y tablet va justo debajo del título (order-first), como la foto del hero. */}
         <div className="mt-10 grid gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:gap-y-0">
           <div className="lg:col-span-8">
@@ -75,12 +75,6 @@ export function About() {
                 </RevealItem>
               )}
             </RevealGroup>
-
-            <Reveal>
-              <p className="text-muted mt-16 max-w-3xl text-[15px] leading-relaxed">
-                {t("about.stackDaily")}
-              </p>
-            </Reveal>
           </div>
 
           {/* Recorte con fondo transparente. Carga diferida y sin priority: está lejos del primer
