@@ -14,6 +14,8 @@ const securityHeaders = [
   // Solo HTTPS durante dos años. Sin preload a propósito.
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  // Destino del report-to de la CSP (ver lib/csp.ts y app/api/csp-report).
+  { key: "Reporting-Endpoints", value: 'csp-endpoint="/api/csp-report"' },
 ];
 
 const nextConfig: NextConfig = {

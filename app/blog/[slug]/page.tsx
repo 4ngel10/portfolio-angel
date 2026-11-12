@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { Nav } from "@/components/nav";
 import { BlogArticle } from "@/components/blog-article";
 import { Footer } from "@/components/footer";
-import { BackToTop } from "@/components/back-to-top";
-import { MobileContactCta } from "@/components/mobile-contact-cta";
+import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog-db";
 import { resumenDe, siguienteDe } from "@/lib/blog-types";
@@ -55,8 +54,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
       <Nav />
       <BlogArticle post={post} next={siguiente ? resumenDe(siguiente) : null} />
       <Footer />
-      <MobileContactCta />
-      <BackToTop />
+      <Flotantes />
     </>
   );
 }

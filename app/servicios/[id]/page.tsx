@@ -3,12 +3,11 @@ import { notFound } from "next/navigation";
 import { Nav } from "@/components/nav";
 import { ServicePage } from "@/components/services-page";
 import { Footer } from "@/components/footer";
-import { BackToTop } from "@/components/back-to-top";
-import { MobileContactCta } from "@/components/mobile-contact-cta";
+import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { PROJECTS, projectCard, type ProjectCard } from "@/lib/projects";
 import { SERVICES, getService } from "@/lib/services";
-import { SERVICE_DESCRIPTIONS, alternatesFor, serviceJsonLd } from "@/lib/seo";
+import { SERVICE_DESCRIPTIONS, SERVICE_TITLES, alternatesFor, serviceJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
 
 type Params = Promise<{ id: string }>;
@@ -24,7 +23,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const service = getService((await params).id);
   if (!service) return {};
   const texts = es.services as Record<string, string>;
-  const title = texts[`${service.key}Title`];
+  const title = SERVICE_TITLES[service.id] ?? texts[`${service.key}Title`];
   const description = SERVICE_DESCRIPTIONS[service.id] ?? texts[`${service.key}Lead`];
   return {
     title: `${title} · Ángel Fernández`,
@@ -56,8 +55,7 @@ export default async function Page({ params }: { params: Params }) {
       <Nav />
       <ServicePage service={service} other={{ id: otro.id, key: otro.key }} projects={proyectos} />
       <Footer />
-      <MobileContactCta />
-      <BackToTop />
+      <Flotantes />
     </>
   );
 }

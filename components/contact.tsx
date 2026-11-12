@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
+import { CONTACT } from "@/lib/site";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
-import { WEB3FORMS_KEY } from "@/lib/site";
+import { enviarContacto, type ContactoEstado } from "@/lib/contact-action";
+import { SERVICIOS_CONTACTO } from "@/lib/contact-validate";
 
 /**
  * Fondo y color explícitos en cada <option>: el desplegable nativo (Chrome en Windows)
@@ -12,54 +14,146 @@ import { WEB3FORMS_KEY } from "@/lib/site";
  */
 const OPTION = "bg-[var(--bg)] text-[var(--fg)]";
 
-/** Valores del campo "service" tal como llegan en el correo (las etiquetas se traducen). */
-const SERVICE_OPTIONS = [
-  "Administración de sistemas",
-  "Desarrollo web",
-  "Ambos",
-  "Otro / No estoy seguro",
-];
+const INICIAL: ContactoEstado = { status: "idle" };
+
+/** Mensaje de error de un campo: lo lee el lector de pantalla por aria-describedby. */
+function ErrorCampo({ id, texto }: { id: string; texto: string }) {
+  return (
+    <p id={`${id}-error`} className="mt-1.5 text-[13px] text-red-700 dark:text-red-400">
+      {texto}
+    </p>
+  );
+}
+
+function ServiceSelect({ defaultValue, invalido }: { defaultValue: string; invalido?: boolean }) {
+  const { t } = useI18n();
+  const [elegido, setElegido] = useState(defaultValue !== "");
+  return (
+    <select
+      id="service"
+      name="service"
+      aria-invalid={invalido || undefined}
+      aria-describedby={invalido ? "service-error" : undefined}
+      defaultValue={defaultValue}
+      onChange={(e) => setElegido(e.target.value !== "")}
+      className={`border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm ${elegido ? "" : "text-[var(--muted)]"} transition-colors focus:border-[var(--accent)]`}
+    >
+      <option value="" className={OPTION}>
+        {t("contact.formServicePh")}
+      </option>
+      {SERVICIOS_CONTACTO.map((o, i) => (
+        <option key={o} value={o} className={OPTION}>
+          {t(`contact.formServiceOpt${i + 1}`)}
+        </option>
+      ))}
+    </select>
+  );
+}
 
 export function Contact() {
-  const { t } = useI18n();
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus("sending");
-    const form = e.currentTarget;
-    // access_key y from_name ya van como campos ocultos del <form> (ver abajo).
-    const data = new FormData(form);
-    data.set(
-      "subject",
-      `Nuevo mensaje del portfolio: ${data.get("name") ?? ""} (${data.get("service") ?? ""})`,
-    );
-    try {
-      // Web3Forms reenvía el mensaje al Gmail de Ángel. Se llama desde el navegador
-      // (su plan gratuito no admite envíos desde servidor), así que funciona en cualquier hosting.
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
-      });
-      const json = (await res.json().catch(() => null)) as {
-        success?: boolean;
-        message?: string;
-      } | null;
-      const ok = res.ok && json?.success === true;
-      // El motivo exacto queda en consola (p. ej. "hCaptcha Token is mandatory" si alguien
-      // reactiva el captcha en el panel de Web3Forms).
-      if (!ok) console.error("[contacto] Web3Forms rechazó el envío:", res.status, json?.message);
-      setStatus(ok ? "ok" : "err");
-      if (ok) form.reset();
-    } catch (err) {
-      // Sin respuesta: red caída o un bloqueador cortando api.web3forms.com.
-      console.error("[contacto] No se pudo contactar con Web3Forms:", err);
-      setStatus("err");
-    }
+  const { t, locale } = useI18n();
+  // La acción corre en el servidor y funciona también sin JS (el formulario la usa como action).
+  const [estado, formAction, enviando] = useActionState(enviarContacto, INICIAL);
+  // Hora a la que se abrió el formulario: el servidor descarta envíos de menos de 3 s (bots).
+  const [abiertoEn, setAbiertoEn] = useState("");
+  useEffect(() => setAbiertoEn(String(Date.now())), []);
+  const status = enviando ? "sending" : estado.status;
+  // Un número nuevo por cada resultado, para rehacer el desplegable (ver ServiceSelect).
+  const [visto, setVisto] = useState(estado);
+  const [intento, setIntento] = useState(0);
+  if (visto !== estado) {
+    setVisto(estado);
+    setIntento(intento + 1);
   }
+  const v = estado.values;
+  // Primer campo con error (solo cuando el resultado es "invalid" y no hay un envío en curso).
+  const campoError = status === "invalid" ? estado.campo : undefined;
+  // Al llegar un error de un campo, el foco va a ese campo; el lector lo anuncia con su descripción.
+  useEffect(() => {
+    if (estado.status === "invalid" && estado.campo) document.getElementById(estado.campo)?.focus();
+  }, [estado]);
+
+  // Vías opcionales: solo salen si su dato está rellenado en CONTACT (lib/site.ts).
+  const extra = [
+    ...(CONTACT.bookingUrl
+      ? [
+          {
+            href: CONTACT.bookingUrl,
+            label: t("contact.bookingLabel"),
+            value: t("contact.bookingValue"),
+            icon: (
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            ),
+          },
+        ]
+      : []),
+    ...(CONTACT.whatsapp
+      ? [
+          {
+            href: `https://wa.me/${CONTACT.whatsapp}`,
+            label: t("contact.whatsappLabel"),
+            value: `+${CONTACT.whatsapp}`,
+            icon: (
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.7-5.2A8.5 8.5 0 1 1 21 11.5z" />
+              </svg>
+            ),
+          },
+        ]
+      : []),
+    ...(CONTACT.phone && CONTACT.phone !== CONTACT.whatsapp
+      ? [
+          {
+            href: `tel:+${CONTACT.phone}`,
+            label: t("contact.phoneLabel"),
+            value: `+${CONTACT.phone}`,
+            icon: (
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.4-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" />
+              </svg>
+            ),
+          },
+        ]
+      : []),
+  ];
 
   const links = [
+    ...extra,
     {
       href: "mailto:tecnico@angel-fernandez.es",
       label: t("contact.emailLabel"),
@@ -108,12 +202,17 @@ export function Contact() {
       <div className="mx-auto max-w-6xl px-6 md:px-8">
         <div className="grid grid-cols-1 items-start gap-14 md:gap-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <Reveal>
-            <h2 className="text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em]">
+            <h2 className="text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-balance">
               {t("contact.title")}
             </h2>
             <p className="text-muted mt-5 mb-10 text-base leading-relaxed md:text-[17px]">
               {t("contact.lead")}
             </p>
+            {CONTACT.availability[locale] && (
+              <p className="text-muted -mt-6 mb-10 text-sm leading-relaxed">
+                {CONTACT.availability[locale]}
+              </p>
+            )}
             <RevealGroup className="flex flex-col gap-3" stagger={0.08}>
               {links.map((l) => (
                 <RevealItem key={l.href}>
@@ -156,26 +255,15 @@ export function Contact() {
 
           <Reveal delay={0.15}>
             <form
-              onSubmit={handleSubmit}
-              // Sin JS (o antes de que cargue) el navegador envía directamente a Web3Forms
-              // por POST. Sin esto hacía un GET a la propia web con nombre, email y mensaje en la URL.
-              action="https://api.web3forms.com/submit"
-              method="POST"
+              action={formAction}
               className="border-rule rounded-2xl border p-6 md:p-8"
               style={{ background: "var(--bg)" }}
             >
-              <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
-              <input type="hidden" name="from_name" value="Portfolio Ángel Fernández" />
-              <input type="hidden" name="subject" value="Nuevo mensaje del portfolio" />
-              {/* Honeypot antispam de Web3Forms: invisible para personas, los bots lo marcan. */}
-              <input
-                type="checkbox"
-                name="botcheck"
-                className="hidden"
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden
-              />
+              <input type="hidden" name="t" value={abiertoEn} />
+              {/* Honeypot: fuera de pantalla y fuera del tabulador. Las personas no lo ven; los bots lo rellenan. */}
+              <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                <input type="text" name="web" tabIndex={-1} autoComplete="off" />
+              </div>
               <div className="mb-4">
                 <label htmlFor="name" className="mb-1.5 block text-[13px] font-medium">
                   {t("contact.formName")}
@@ -183,12 +271,17 @@ export function Contact() {
                 <input
                   id="name"
                   name="name"
+                  aria-invalid={campoError === "name" || undefined}
+                  aria-describedby={campoError === "name" ? "name-error" : undefined}
                   type="text"
+                  defaultValue={v?.name}
+                  maxLength={100}
                   autoComplete="name"
                   required
                   placeholder={t("contact.formNamePh")}
-                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors focus:border-[var(--accent)]"
                 />
+                {campoError === "name" && <ErrorCampo id="name" texto={t("contact.formErrName")} />}
               </div>
               <div className="mb-4">
                 <label htmlFor="email" className="mb-1.5 block text-[13px] font-medium">
@@ -197,39 +290,35 @@ export function Contact() {
                 <input
                   id="email"
                   name="email"
+                  aria-invalid={campoError === "email" || undefined}
+                  aria-describedby={campoError === "email" ? "email-error" : undefined}
                   type="email"
+                  defaultValue={v?.email}
+                  maxLength={254}
                   autoComplete="email"
                   autoCapitalize="none"
                   autoCorrect="off"
                   required
                   placeholder={t("contact.formEmailPh")}
-                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field w-full rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors focus:border-[var(--accent)]"
                 />
+                {campoError === "email" && (
+                  <ErrorCampo id="email" texto={t("contact.formErrEmail")} />
+                )}
               </div>
               <div className="mb-4">
                 <label htmlFor="service" className="mb-1.5 block text-[13px] font-medium">
                   {t("contact.formService")}
                 </label>
                 <div className="relative">
-                  {/* Va en el envío a Web3Forms como "service" (FormData coge todos los campos).
-                      El valor siempre en español, para que el correo a Ángel se lea igual
-                      venga de la web en el idioma que venga. */}
-                  <select
-                    id="service"
-                    name="service"
-                    required
-                    defaultValue=""
-                    className="border-field w-full cursor-pointer appearance-none rounded-xl border bg-[var(--bg)] py-3 pr-10 pl-3.5 text-sm transition-colors outline-none invalid:text-[var(--muted)] focus:border-[var(--accent)]"
-                  >
-                    <option value="" disabled className={OPTION}>
-                      {t("contact.formServicePh")}
-                    </option>
-                    {SERVICE_OPTIONS.map((o, i) => (
-                      <option key={o} value={o} className={OPTION}>
-                        {t(`contact.formServiceOpt${i + 1}`)}
-                      </option>
-                    ))}
-                  </select>
+                  {/* El valor va siempre en español, para que el correo a Ángel se lea igual
+                      venga de la web en el idioma que venga. Con key se rehace tras cada envío
+                      (React vacía el formulario) y el color del placeholder se reinicia. */}
+                  <ServiceSelect
+                    key={intento}
+                    defaultValue={v?.service ?? ""}
+                    invalido={campoError === "service"}
+                  />
                   <svg
                     className="text-muted pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2"
                     width="16"
@@ -245,6 +334,9 @@ export function Contact() {
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </div>
+                {campoError === "service" && (
+                  <ErrorCampo id="service" texto={t("contact.formErrService")} />
+                )}
               </div>
               <div className="mb-5">
                 <label htmlFor="message" className="mb-1.5 block text-[13px] font-medium">
@@ -253,16 +345,29 @@ export function Contact() {
                 <textarea
                   id="message"
                   name="message"
+                  aria-invalid={campoError === "message" || undefined}
+                  aria-describedby={campoError === "message" ? "message-error" : undefined}
                   rows={5}
+                  defaultValue={v?.message}
+                  minLength={5}
+                  maxLength={4000}
                   required
                   placeholder={t("contact.formMessagePh")}
-                  className="border-field min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors outline-none focus:border-[var(--accent)]"
+                  className="border-field min-h-[110px] w-full resize-y rounded-xl border bg-transparent px-3.5 py-3 text-sm transition-colors focus:border-[var(--accent)]"
                 />
+                {campoError === "message" && (
+                  <ErrorCampo id="message" texto={t("contact.formErrMessage")} />
+                )}
               </div>
               <button
                 type="submit"
-                disabled={status === "sending"}
-                className="btn-primary w-full disabled:opacity-70"
+                // aria-disabled y no disabled: un botón deshabilitado pierde el foco y el lector
+                // de pantalla deja de seguir el envío. El clic se ignora mientras se envía.
+                aria-disabled={status === "sending"}
+                onClick={(e) => {
+                  if (status === "sending") e.preventDefault();
+                }}
+                className={`btn-primary w-full ${status === "sending" ? "opacity-70" : ""}`}
               >
                 {status === "sending" ? t("contact.formSending") : t("contact.formSubmit")}
                 {status !== "sending" && (
@@ -294,7 +399,7 @@ export function Contact() {
               </p>
               {/* Región viva siempre presente: así el lector de pantalla anuncia el resultado
                   del envío cuando aparece el texto. */}
-              <div role="status" aria-live="polite">
+              <div role="status" aria-live="polite" aria-atomic="true">
                 {status === "ok" && (
                   <p className="mt-3 text-[13px] text-emerald-700 dark:text-emerald-400">
                     {t("contact.formOk")}
@@ -303,6 +408,11 @@ export function Contact() {
                 {status === "err" && (
                   <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">
                     {t("contact.formErr")}
+                  </p>
+                )}
+                {status === "limit" && (
+                  <p className="mt-3 text-[13px] text-red-700 dark:text-red-400">
+                    {t("contact.formLimit")}
                   </p>
                 )}
               </div>

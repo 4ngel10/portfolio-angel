@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
+import { CV } from "@/lib/site";
 import { NavLink } from "./nav";
 
 /** Pie de todas las páginas. Fuera de la home, las anclas apuntan a la home (/#about). */
 export function Footer() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const isHome = usePathname() === "/";
   const home = (hash: string) => (isHome ? hash : `/${hash}`);
 
@@ -131,6 +132,15 @@ export function Footer() {
               {l.label}
             </Link>
           ))}
+          {CV[locale] && (
+            <a
+              href={CV[locale]}
+              download
+              className="inline-flex min-h-11 items-center transition-colors hover:text-white"
+            >
+              {t("footer.cv")}
+            </a>
+          )}
         </nav>
       </div>
     </footer>

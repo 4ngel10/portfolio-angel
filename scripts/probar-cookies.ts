@@ -13,9 +13,11 @@ import { join, relative } from "node:path";
 
 const RAIZ = process.cwd();
 
+// @vercel/speed-insights está permitido a propósito (decisión de Ángel, 2026-11-11): mide Web Vitals
+// de forma anónima y solo se carga en producción y en rutas públicas (components/speed-insights.tsx).
+// Está descrito en /privacidad y /cookies (lib/legal.ts).
 const PROHIBIDOS = [
   "@vercel/analytics",
-  "@vercel/speed-insights",
   "googletagmanager",
   "gtag(",
   "fbq(",

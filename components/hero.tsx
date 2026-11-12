@@ -1,8 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
+import { CONTACT } from "@/lib/site";
+import { ProofStrip } from "./proof-strip";
+import { HeroPhoto } from "./hero-photo";
 
 // Reduced motion: lo resuelve <MotionConfig reducedMotion="user"> (lib/motion.tsx).
 // No ramificar initial/animate con useReducedMotion: en SSR vale null y rompe la hidratación.
@@ -25,7 +26,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-[calc(100svh-72px)] flex-col justify-center overflow-hidden pt-12 pb-16 md:pt-24 md:pb-28"
+      className="relative flex flex-col justify-start overflow-hidden pt-10 pb-16 md:pt-16 md:pb-20 lg:justify-center lg:pt-14 lg:pb-16"
     >
       <div className="relative mx-auto grid w-full max-w-6xl px-6 md:px-8 lg:grid-cols-12 lg:items-center lg:gap-8">
         <div className="lg:col-span-8">
@@ -33,62 +34,29 @@ export function Hero() {
             <Line delay={0.05}>
               {t("hero.title1Pre")}
               <span className="text-accent">{t("hero.title1Accent")}</span>
+              {t("hero.title1Mid")}
+              <span className="text-accent">{t("hero.title1Accent2")}</span>
               {t("hero.title1Post")}
             </Line>
-            <Line delay={0.17}>
-              {t("hero.title2Pre")}
-              <span className="text-accent">{t("hero.title2Accent")}</span>
-              {t("hero.title2Post")}
-            </Line>
+            <Line delay={0.17}>{t("hero.title2")}</Line>
           </h1>
 
-          <div
-            style={{ animationDelay: "0.1s" }}
-            className="hero-fade text-muted mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[15px] md:mt-8 md:text-lg"
-          >
-            <span style={{ color: "var(--accent)" }} aria-hidden>
-              ~/angel $
-            </span>
-            <span className="text-ink">{t("hero.terminal")}</span>
-            <span
-              className="caret -mb-[0.15em] inline-block h-[1.1em] w-[0.55em]"
-              style={{ background: "var(--accent)" }}
-              aria-hidden
-            />
-          </div>
-
-          {/* Foto en móvil y tablet, entre el terminal y el párrafo. Sin priority: el LCP debe
-              seguir siendo el párrafo y la foto no compite con él. */}
+          {/* Foto en móvil y tablet, entre el título y el párrafo. Prioridad baja: el LCP debe
+              seguir siendo el párrafo y la foto no compite con él (ver hero-photo.tsx). */}
           <div className="hero-fade mt-6 mb-2 lg:hidden">
-            <div className="relative mx-auto w-fit">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute"
-                style={{
-                  inset: "8% -4% 0 -4%",
-                  background:
-                    "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 30%, transparent), transparent)",
-                }}
-              />
-              <Image
-                src="/angel-cutout-sm.webp"
-                alt={t("photo.alt")}
-                width={300}
-                height={531}
-                unoptimized
-                fetchPriority="low"
-                decoding="async"
-                className="hero-photo relative block h-[220px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
-              />
-            </div>
+            <HeroPhoto variante="movil" />
           </div>
 
           <div className="mt-6 md:mt-10">
             <div>
               <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-10">
-                <a href="#contact" className="btn-primary group">
-                  {t("hero.ctaPrimary")}
+                <a
+                  href={CONTACT.bookingUrl || "#contact"}
+                  {...(CONTACT.bookingUrl && { target: "_blank", rel: "noopener noreferrer" })}
+                  className="btn-primary group"
+                >
+                  {CONTACT.bookingUrl ? t("hero.ctaBooking") : t("hero.ctaPrimary")}
                   <svg
                     width="16"
                     height="16"
@@ -105,63 +73,30 @@ export function Hero() {
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
                 </a>
-                <a href="#services" className="btn-secondary">
-                  {t("hero.ctaSecondary")}
-                </a>
+                {/* Con reserva activa, el formulario pasa a ser la vía secundaria. */}
+                {CONTACT.bookingUrl ? (
+                  <a href="#contact" className="btn-secondary">
+                    {t("hero.ctaPrimary")}
+                  </a>
+                ) : (
+                  <a href="#services" className="btn-secondary">
+                    {t("hero.ctaSecondary")}
+                  </a>
+                )}
               </div>
+              <ProofStrip />
             </div>
           </div>
         </div>
 
-        {/* Foto de escritorio (desde lg). Sin tilt ni efectos, como las portadas. */}
+        {/* Foto de escritorio (desde lg), con prioridad alta: es el LCP. Sin tilt ni halo. */}
         <div
           className="hero-fade hidden lg:col-span-4 lg:block"
           style={{ animationDelay: "0.15s" }}
         >
-          {/* Foto recortada sin fondo sobre un brillo estático del acento. Sin card ni borde. */}
-          <div className="relative ml-auto w-fit">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute"
-              style={{
-                inset: "8% -10% 0 -10%",
-                background:
-                  "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 22%, transparent), transparent)",
-              }}
-            />
-            <Image
-              src="/angel-cutout.webp"
-              alt={t("photo.alt")}
-              width={520}
-              height={920}
-              priority
-              sizes="(min-width: 1024px) 280px, 0px"
-              className="hero-photo relative h-[470px] w-auto transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] xl:h-[520px]"
-            />
-          </div>
+          <HeroPhoto variante="escritorio" />
         </div>
       </div>
-
-      {/* Solo en escritorio, centrado al pie del hero. En móvil ocupaba mucho alto y los
-          botones de arriba ya llevan a las secciones. */}
-      <a
-        href="#services"
-        style={{ animationDelay: "0.4s" }}
-        className="hero-fade text-muted absolute bottom-6 left-1/2 hidden origin-top -translate-x-1/2 flex-col items-center gap-2.5 rounded-xl px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase transition-[color,scale] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-110 hover:text-[var(--fg)] active:scale-105 md:flex"
-      >
-        {t("hero.scroll")}
-        <span
-          className="relative block h-10 w-px overflow-hidden"
-          style={{ background: "var(--rule)" }}
-        >
-          <m.span
-            className="absolute top-0 left-0 h-1/2 w-px"
-            style={{ background: "var(--accent)" }}
-            animate={{ y: ["-100%", "200%"] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </span>
-      </a>
     </section>
   );
 }

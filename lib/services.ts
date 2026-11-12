@@ -20,7 +20,8 @@ export type ServiceGroup = {
   tools?: string[];
 };
 
-export type ServiceMode = { title: string; text: string };
+/** `id` opcional: ancla de la card (/servicios/sistemas#mantenimiento). */
+export type ServiceMode = { id?: string; title: string; text: string };
 export type ServiceFaq = { q: string; a: string };
 
 export type ServiceDetail = {
@@ -45,16 +46,16 @@ export const SERVICES: ServiceDetail[] = [
     intro: {
       es: [
         "Me ocupo de la informática de tu empresa, desde las copias de seguridad y el correo hasta la red, los equipos y los servidores. Para autónomos, pymes y negocios que empiezan, en remoto o presencial.",
-        "Desde hace 3 años formo parte del equipo de sistemas de una empresa de servicios IT, con más de 60 hoteles, 120 servidores y 1.000 usuarios a cargo. Llevo esa misma forma de trabajar a tu negocio, con documentación, copias probadas y cambios planificados.",
+        "Desde hace 3 años formo parte del equipo de sistemas de una empresa de servicios IT que lleva más de 60 hoteles, 120 servidores y 1.000 usuarios. Llevo esa misma forma de trabajar a tu negocio, con documentación, copias probadas y cambios planificados.",
       ],
       en: [
         "I look after your company's IT, from backups and email to the network, devices and servers. For freelancers, small businesses and new ventures, remotely or on site.",
-        "For the past 3 years I've been part of the systems team at an IT services company, looking after more than 60 hotels, 120 servers and 1,000 users. I bring that same way of working to your business, with documentation, tested backups and planned changes.",
+        "For the past 3 years I've been part of the systems team at an IT services company that looks after more than 60 hotels, 120 servers and 1,000 users. I bring that same way of working to your business, with documentation, tested backups and planned changes.",
       ],
     },
     closing: {
-      es: "Cuéntame qué tienes montado y qué te preocupa. Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
-      en: "Tell me what you have in place and what worries you. We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
+      es: "Cuéntame qué tienes montado y qué te preocupa. Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 horas.",
+      en: "Tell me what you have in place and what worries you. We start with a free 15-minute call and then I send you a quote. I reply within 24 hours.",
     },
     groups: {
       es: [
@@ -241,8 +242,9 @@ export const SERVICES: ServiceDetail[] = [
             text: "Horas de soporte que se descuentan según se usan y no caducan. Las ves en tu área de clientes.",
           },
           {
+            id: "mantenimiento",
             title: "Mantenimiento continuo",
-            text: "Reviso cada mes que todo siga en orden, con actualizaciones y copias comprobadas.",
+            text: "Reviso cada mes que todo siga en orden, con actualizaciones y copias comprobadas. En Palma y Mallorca, en remoto o presencial.",
           },
           {
             title: "Auditoría y mejoras",
@@ -272,8 +274,9 @@ export const SERVICES: ServiceDetail[] = [
             text: "Support hours used as you need them, with no expiry. You can track them in your client area.",
           },
           {
+            id: "mantenimiento",
             title: "Ongoing maintenance",
-            text: "Every month I check everything is in order, with updates and verified backups.",
+            text: "Every month I check that everything is in order, with updates and verified backups. In Palma and across Mallorca, remotely or in person.",
           },
           {
             title: "Audit and improvements",
@@ -350,15 +353,17 @@ export const SERVICES: ServiceDetail[] = [
       es: [
         "Diseño y desarrollo webs a medida para autónomos, pymes y negocios que empiezan. Una web sencilla puede estar lista en una semana, y me encargo del dominio, el hosting y el mantenimiento.",
         "Tratas siempre con la misma persona, de la primera idea a la publicación. Y como también soy administrador de sistemas, la parte que no se ve, el servidor, la seguridad y las copias, queda igual de bien resuelta.",
+        "Trabajo desde Palma y atiendo a negocios de toda Mallorca, en remoto y también en persona. Una web local bien hecha ayuda a que te encuentren los clientes de tu zona.",
       ],
       en: [
         "I design and build custom websites for freelancers, small businesses and new ventures. A simple site can be ready in a week, and I take care of the domain, hosting and maintenance.",
         "You always deal with the same person, from the first idea to launch. And since I'm also a systems administrator, the part you don't see, the server, security and backups, is just as well looked after.",
+        "I work from Palma and look after businesses across Mallorca, remotely and in person. A well-made local website helps customers in your area find you.",
       ],
     },
     closing: {
-      es: "¿Quieres crear la web de tu negocio o renovar la que tienes? Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 a 48 horas.",
-      en: "Want to build your business website or refresh the one you have? We start with a free 15-minute call and then I send you a quote. I reply within 24 to 48 hours.",
+      es: "¿Quieres crear la web de tu negocio o renovar la que tienes? Empezamos con una llamada gratuita de 15 minutos y después te envío un presupuesto. Respondo en 24 horas.",
+      en: "Want to build your business website or refresh the one you have? We start with a free 15-minute call and then I send you a quote. I reply within 24 hours.",
     },
     groups: {
       es: [
@@ -578,6 +583,10 @@ export const SERVICES: ServiceDetail[] = [
             a: "Puedo encargarme del mantenimiento, con cambios y mejoras cuando los necesites o con una bolsa de horas.",
           },
           {
+            q: "¿Haces webs para negocios en Mallorca?",
+            a: "Sí. Trabajo desde Palma y hago webs para autónomos y pymes de toda la isla, en remoto y, si hace falta, en persona. También trabajo con negocios de fuera de Mallorca.",
+          },
+          {
             q: "¿Puedes renovar mi web actual?",
             a: "Sí. Reviso la que tienes y te propongo qué mantener y qué mejorar.",
           },
@@ -601,6 +610,10 @@ export const SERVICES: ServiceDetail[] = [
           {
             q: "What happens after launch?",
             a: "I can take care of maintenance, with changes and improvements when you need them or with an hour bank.",
+          },
+          {
+            q: "Do you build websites for businesses in Mallorca?",
+            a: "Yes. I work from Palma and build websites for freelancers and small businesses across the island, remotely and, if needed, in person. I also work with businesses outside Mallorca.",
           },
           {
             q: "Can you redesign my current website?",

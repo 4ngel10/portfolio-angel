@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
 import { LegalPageView } from "@/components/legal-page";
 import { Footer } from "@/components/footer";
-import { BackToTop } from "@/components/back-to-top";
+import { Flotantes } from "@/components/flotantes";
 import { getLegalPage } from "@/lib/legal";
 import { alternatesFor } from "@/lib/seo";
 
@@ -22,7 +22,7 @@ export default function CookiesPage() {
       <Nav />
       <LegalPageView page={getLegalPage("cookies")!} />
       <Footer />
-      <BackToTop />
+      <Flotantes contacto={false} />
     </>
   );
 }

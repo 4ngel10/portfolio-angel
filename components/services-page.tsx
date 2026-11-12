@@ -212,7 +212,7 @@ export function ServicePage({
               style={{ perspective: "1200px" }}
             >
               {modes.items.map((m) => (
-                <RevealItem key={m.title} className="h-full">
+                <RevealItem key={m.title} id={m.id} className="h-full scroll-mt-24">
                   <TiltCard lift className={`${CARD} p-6`} style={CARD_BG}>
                     <h3 className="text-[17px] font-semibold tracking-tight">
                       <span className={TITLE_HOVER}>{m.title}</span>
