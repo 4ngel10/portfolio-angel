@@ -38,7 +38,6 @@ export function Hero() {
               <span className="text-accent">{t("hero.title1Accent2")}</span>
               {t("hero.title1Post")}
             </Line>
-            <Line delay={0.17}>{t("hero.title2")}</Line>
           </h1>
 
           {/* Foto en móvil y tablet, entre el título y el párrafo. Prioridad baja: el LCP debe
