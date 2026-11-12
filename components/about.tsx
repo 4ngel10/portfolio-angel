@@ -5,6 +5,10 @@ import { CV } from "@/lib/site";
 import { srcSetSobreMi } from "@/lib/sobre-mi-foto";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
+// Degradado sutil en el borde inferior de la foto: el último 14 % se funde con el fondo.
+const FUNDIDO = "linear-gradient(to bottom, #000 86%, transparent 100%)";
+const FUNDIDO_ABAJO = { maskImage: FUNDIDO, WebkitMaskImage: FUNDIDO } as const;
+
 // Stack completo por área.
 const STACK: { labelKey: string; items: string[] }[] = [
   {
@@ -117,6 +121,7 @@ export function About() {
                     loading="lazy"
                     decoding="async"
                     className="relative block h-auto w-full origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.03]"
+                    style={FUNDIDO_ABAJO}
                   />
                 </picture>
               ))}
