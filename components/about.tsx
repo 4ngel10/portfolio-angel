@@ -7,29 +7,16 @@ import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 // Stack completo por área.
 const STACK: { labelKey: string; items: string[] }[] = [
-  { labelKey: "about.catVirt", items: ["Hyper-V", "VMware", "Proxmox", "Docker"] },
   {
     labelKey: "about.catSystems",
-    items: ["Windows Server", "Active Directory", "PowerShell", "Azure"],
+    items: ["Windows Server", "Active Directory", "PowerShell", "Hyper-V", "VMware", "Proxmox"],
   },
-  {
-    labelKey: "about.catNetwork",
-    items: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Hornetsecurity"],
-  },
-  { labelKey: "about.catBackup", items: ["Nakivo", "Veeam", "Acronis"] },
-  { labelKey: "about.catManagement", items: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"] },
+  { labelKey: "about.catM365", items: ["Microsoft 365", "Intune", "Hornetsecurity"] },
+  { labelKey: "about.catNetwork", items: ["Fortinet", "UniFi", "pfSense"] },
+  { labelKey: "about.catBackup", items: ["Veeam", "Nakivo", "NinjaOne"] },
   {
     labelKey: "about.catWeb",
-    items: [
-      "Next.js",
-      "TypeScript",
-      "Vercel",
-      "Shopify",
-      "Google Ads",
-      "GitLab",
-      "Nginx",
-      "Apache",
-    ],
+    items: ["Next.js", "TypeScript", "Vercel", "Supabase", "Shopify", "Stripe"],
   },
 ];
 

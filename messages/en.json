@@ -26,7 +26,7 @@
     "stat3Label": "servers",
     "stat4Value": "+1,000",
     "stat4Label": "users",
-    "statsNote": "Figures from the systems team I work in.",
+    "statsNote": "Hotels, servers and users are figures from the systems team I work on.",
     "certsLabel": "Certifications"
   },
   "about": {
@@ -36,11 +36,10 @@
     "stackDaily": "Every day I work with Windows Server, Active Directory, RDS, Hyper-V, Veeam, Fortinet, Next.js and Vercel.",
     "stackOpen": "See full stack",
     "photoAlt": "Ángel with his arms crossed, facing the camera and wearing a dark grey polo shirt",
-    "catVirt": "Virtualization",
-    "catSystems": "Systems",
-    "catNetwork": "Security and networking",
-    "catBackup": "Backup",
-    "catManagement": "Management and monitoring",
+    "catSystems": "Systems and virtualization",
+    "catM365": "Microsoft 365 and email",
+    "catNetwork": "Network and security",
+    "catBackup": "Backups and management",
     "catWeb": "Web",
     "cvLink": "Download my CV (PDF)"
   },
@@ -48,7 +47,7 @@
     "title": "Two services, one person on the phone.",
     "lead": "One point of contact for your IT and your website, from the backup to the domain.",
     "s1Title": "Systems Administration",
-    "s1Lead": "Servers, backups, email and network, with remote or on-site support.",
+    "s1Lead": "Servers, backups, email and network, with remote or in-person support.",
     "s1b1": "Backups and business continuity",
     "s1b2": "Microsoft 365 and email",
     "s1b3": "Networks, wifi and security",
