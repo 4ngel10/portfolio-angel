@@ -111,7 +111,7 @@
   },
   "portfolio": {
     "title": "Projects.",
-    "lead": "Concrete problems and how I solved them, across websites and servers for clients, networks and my own projects.",
+    "lead": "Client work and personal projects, explained step by step.",
     "p1Tag": "Automation",
     "p1Title": "Automatic printer mapping on RDS",
     "p1Desc": "GPO-launched PowerShell script that gives each user their printers, trays and default printer by reading Active Directory attributes.",
