@@ -49,8 +49,9 @@ y es lo más barato de recuperar si cambias de idea.
 - **Visibilidad discreta:** CV descargable en Sobre mí y en el footer, y LinkedIn con "Open to work" fuera
   de la web. Un aviso "busco empleo" en la portada puede restar confianza a un cliente que quiere
   continuidad.
-- **Contrato:** revisa pluriempleo y no competencia. Ofreces servicios a hoteles en Mallorca y tu empresa
-  atiende hoteles en Mallorca. La web ya aclara que las cifras son del equipo, pero conviene tenerlo claro.
+- **Contrato:** revisa pluriempleo y no competencia en servicios informáticos en general, porque ofreces
+  servicios de sistemas y web mientras trabajas en una empresa de servicios IT. La web ya aclara que las
+  cifras son del equipo, pero conviene tenerlo claro.
 - **Redacción en presente:** si cambias de empresa hay que reescribir "Trabajo en el equipo..." y la tira
   de cifras.
 - **Pie de página:** "Disponible para nuevos proyectos" puede leerse como autónomo. Decide si lo cambias o
@@ -71,13 +72,13 @@ y es lo más barato de recuperar si cambias de idea.
 
 Una ruta `/demo` que se ve igual que el portal de un cliente, con una banda fija "Demo. Datos inventados".
 
-| Pantalla       | Contenido de ejemplo                                                    |
-| -------------- | ----------------------------------------------------------------------- |
-| Resumen        | Empresa "Ejemplo Hotelero S.L. (demo)" y 2 proyectos con hitos y estado |
-| Incidencias    | 3 incidencias, una con respuesta, con prioridades distintas             |
-| Bolsa de horas | 20 h contratadas, movimientos que descuentan y el aviso al 20 %         |
-| Presupuestos   | Uno enviado y uno aceptado, con la firma simulada                       |
-| Archivos       | Lista de documentos ficticios, sin descarga                             |
+| Pantalla       | Contenido de ejemplo                                                     |
+| -------------- | ------------------------------------------------------------------------ |
+| Resumen        | Empresa "Ejemplo Servicios S.L. (demo)" y 2 proyectos con hitos y estado |
+| Incidencias    | 3 incidencias, una con respuesta, con prioridades distintas              |
+| Bolsa de horas | 20 h contratadas, movimientos que descuentan y el aviso al 20 %          |
+| Presupuestos   | Uno enviado y uno aceptado, con la firma simulada                        |
+| Archivos       | Lista de documentos ficticios, sin descarga                              |
 
 Datos marcados como falsos: emails `@ejemplo.invalid`, NIF `B00000000`, importes redondos y nada que se
 parezca a un cliente real. Sustituye la maqueta estática de la sección "Cómo trabajo".
@@ -111,7 +112,7 @@ Esfuerzo estimado: 1 día. No toca RLS ni la CSP.
 
 - [ ] **D7.** Hacer la demo con la opción A.
 - [ ] **D8.** Ubicación en `/demo`, enlazada desde "Cómo trabajo" y desde `/servicios/sistemas`.
-- [ ] **D9.** Pantallas y datos de la tabla (dime si quieres otro hotel o sector de ejemplo).
+- [ ] **D9.** Pantallas y datos de la tabla (dime si quieres otro sector de ejemplo).
 
 ## 3. Scripts de PowerShell en GitHub
 
@@ -176,26 +177,32 @@ para publicarlo.
 
 Impacto = efecto en conseguir clientes o entrevistas por el esfuerzo que cuesta.
 
-| #   | Qué                                                                 | Para qué                                         | Qué necesito de ti                                                                                                                  | Dónde entra                                   |
-| --- | ------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| 1   | CV en PDF (ES y EN)                                                 | Búsqueda de empleo                               | Los dos PDF                                                                                                                         | `CV` en `lib/site.ts`                         |
-| 2   | Perfil de empresa de Google                                         | Aparecer en Maps y en el SEO local               | Verificarlo (código postal o vídeo), categoría, zona de servicio y si ocultas la dirección                                          | Fuera de la web, y `sameAs` del JSON-LD       |
-| 3   | Reserva de llamada (Cal.com u otra)                                 | Convierte mejor que el formulario                | La URL                                                                                                                              | `CONTACT.bookingUrl` (cambia el CTA del hero) |
-| 4   | Teléfono y WhatsApp                                                 | Contacto inmediato en local                      | Decidir si los publicas y el número                                                                                                 | `CONTACT.phone` y `whatsapp`                  |
-| 5   | Texto de disponibilidad                                             | Fija expectativas (horario, urgencias, empleo)   | Una frase en ES y EN                                                                                                                | `CONTACT.availability`                        |
-| 6   | Casos reales (migración de Microsoft 365 y restauración de copia)   | Prueba real y desbloquea la página local de M365 | Datos reales y permiso del cliente                                                                                                  | `lib/cases.ts` (hoy en borrador, noindex)     |
-| 7   | Cifras del caso RDS (tiempo por alta, incidencias, antes y después) | Convierte una anécdota en prueba                 | Números reales de tu empresa o estimados sin inventar                                                                               | `caseStudy.results` del proyecto              |
-| 8   | Testimonios                                                         | Prueba social                                    | Textos con permiso expreso                                                                                                          | `lib/testimonials.ts` con `permission: true`  |
-| 9   | Permiso y lista de scripts                                          | Desbloquea la sección 3                          | Sí o no de tu empresa y los scripts                                                                                                 | Repos nuevos                                  |
-| 10  | Foto                                                                | Confianza                                        | Dime a qué te refieres: la del hero ya sirve; la captura `this-site.webp` es del hero antiguo y la rehago yo cuando decidas D1 a D3 | `public/`                                     |
-| 11  | Certificaciones: fechas e identificadores                           | Credibilidad verificable                         | Fecha y enlace de cada una                                                                                                          | `lib/certifications.ts` y el JSON-LD          |
+| #   | Qué                                                                 | Para qué                                         | Qué necesito de ti                                                                         | Dónde entra                                                                                                                                  |
+| --- | ------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | CV en PDF (ES y EN)                                                 | Búsqueda de empleo                               | Los dos PDF                                                                                | `CV` en `lib/site.ts`                                                                                                                        |
+| 2   | Perfil de empresa de Google                                         | Aparecer en Maps y en el SEO local               | Verificarlo (código postal o vídeo), categoría, zona de servicio y si ocultas la dirección | Fuera de la web, y `sameAs` del JSON-LD                                                                                                      |
+| 3   | Reserva de llamada (Cal.com u otra)                                 | Convierte mejor que el formulario                | La URL                                                                                     | `CONTACT.bookingUrl` (cambia el CTA del hero)                                                                                                |
+| 4   | Teléfono y WhatsApp                                                 | Contacto inmediato en local                      | Decidir si los publicas y el número                                                        | `CONTACT.phone` y `whatsapp`                                                                                                                 |
+| 5   | Texto de disponibilidad                                             | Fija expectativas (horario, urgencias, empleo)   | Una frase en ES y EN                                                                       | `CONTACT.availability`                                                                                                                       |
+| 6   | Casos reales (migración de Microsoft 365 y restauración de copia)   | Prueba real y desbloquea la página local de M365 | Datos reales y permiso del cliente                                                         | `lib/cases.ts` (hoy en borrador, noindex)                                                                                                    |
+| 7   | Cifras del caso RDS (tiempo por alta, incidencias, antes y después) | Convierte una anécdota en prueba                 | Números reales de tu empresa o estimados sin inventar                                      | `caseStudy.results` del proyecto                                                                                                             |
+| 8   | Testimonios                                                         | Prueba social                                    | Textos con permiso expreso                                                                 | `lib/testimonials.ts` con `permission: true`                                                                                                 |
+| 9   | Permiso y lista de scripts                                          | Desbloquea la sección 3                          | Sí o no de tu empresa y los scripts                                                        | Repos nuevos                                                                                                                                 |
+| 10  | Foto nueva tuya para el hero                                        | Confianza y primera impresión                    | La foto (idealmente la misma luz y encuadre de cintura para arriba)                        | `public/angel-cutout*.webp` (hay que recortarla sin fondo, 520x920, y la móvil de 300x531; hoy no se recortan ni reconvierten sin consultar) |
+| 11  | Certificaciones: fechas e identificadores                           | Credibilidad verificable                         | Fecha y enlace de cada una                                                                 | `lib/certifications.ts` y el JSON-LD                                                                                                         |
 
-Pendiente técnico mío tras tus decisiones: los cinco PR de Dependabot (#3 a #7) contra `main`, el paso de la CSP a
-enforce cuando haya informes limpios, y rehacer la captura del hero.
+Pendiente técnico tras tus decisiones y tras el merge a `main`:
+
+- **Rehacer `this-site.webp` y `this-site-dark.webp`.** Son una captura del hero antiguo (con la foto en
+  rectángulo). Se rehacen tras el merge a `main` y, si cambia el hero (D1 a D3) o llega la foto nueva,
+  mejor después de eso.
+- **Dependabot:** los cinco PR (#3 a #7) siguen abiertos contra `main` a propósito. Los regeneras tú tras
+  el merge de `mejoras` a `main`, para que partan del código actual. No se tocan antes.
+- Paso de la CSP a enforce cuando haya informes limpios en los logs.
 
 ## Orden de trabajo propuesto
 
-1. D1 a D6 (identidad): medio día, solo textos y orden. Después, la captura de `this-site.webp`.
+1. D1 a D6 (identidad): medio día, solo textos y orden. Después, la foto nueva y la captura de `this-site.webp`.
 2. Pendientes 1, 3 y 5 en cuanto los tengas (minutos de código cada uno).
 3. D7 a D9 (demo): 1 día.
 4. D10 a D13 (scripts): según el permiso, 1 día por repo.
