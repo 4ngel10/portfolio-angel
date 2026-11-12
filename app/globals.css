@@ -300,3 +300,11 @@
     opacity: 0;
   }
 }
+
+/* Textos del hero en los dos idiomas (components/hero.tsx). El script del <head> pone data-loc
+   antes de pintar, así el idioma correcto se ve desde el primer fotograma y la hidratación no
+   cambia la altura del título ni del párrafo (CLS). Sin JS se ve el español. */
+html[data-loc="en"] .loc-es,
+html:not([data-loc="en"]) .loc-en {
+  display: none;
+}

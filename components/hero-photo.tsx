@@ -18,8 +18,8 @@ const PANTALLA = {
  * interior que las portadas. Sin halo ni brillo.
  *
  * Prioridad (decisión de Ángel): en escritorio la foto es el LCP, así que carga con prioridad alta;
- * en móvil va con prioridad baja, porque ahí el LCP es el párrafo del hero y la foto no debe competir
- * con él. Los <source> con `media` evitan que el bloque oculto descargue nada.
+ * en móvil también va con prioridad alta: desde la foto apaisada es el LCP (con prioridad baja el retraso de carga era de 1 s);
+ * los <source> con `media` evitan que el bloque oculto descargue nada.
  * Variantes AVIF y WebP en public/hero (scripts/generar-foto-hero.ts, lib/hero-foto.ts).
  */
 export function HeroPhoto({ variante }: { variante: keyof typeof PANTALLA }) {
@@ -46,8 +46,9 @@ export function HeroPhoto({ variante }: { variante: keyof typeof PANTALLA }) {
           alt={t("photo.alt")}
           width={escritorio ? 680 : 840}
           height={escritorio ? 850 : 560}
-          fetchPriority={escritorio ? "high" : "low"}
-          decoding={escritorio ? undefined : "async"}
+          fetchPriority="high"
+          loading={escritorio ? undefined : "eager"}
+          decoding={escritorio ? undefined : "sync"}
           className="hero-photo block h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.03]"
         />
       </picture>
