@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
 import { Hero } from "@/components/hero";
-import { StackBand } from "@/components/stack-band";
 import { About } from "@/components/about";
 import { Services } from "@/components/services";
 import { Portfolio } from "@/components/portfolio";
@@ -33,7 +32,6 @@ export default async function Page() {
       <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
         <Hero />
         <Services items={SERVICES.map(({ key, id }) => ({ key, id }))} />
-        <StackBand />
         <Portfolio projects={projectCards()} />
         <Testimonials items={TESTIMONIALS.filter((t) => t.permission)} />
         <About />

@@ -5,8 +5,7 @@ import { CV } from "@/lib/site";
 import { srcSetSobreMi } from "@/lib/sobre-mi-foto";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
-// Stack completo por área. La banda de components/stack-band.tsx solo muestra una selección
-// de 12 (alternando sistemas y web), así que aquí hay más herramientas que allí.
+// Stack completo por área.
 const STACK: { labelKey: string; items: string[] }[] = [
   { labelKey: "about.catVirt", items: ["Hyper-V", "VMware", "Proxmox", "Docker"] },
   {
