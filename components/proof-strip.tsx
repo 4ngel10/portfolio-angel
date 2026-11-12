@@ -2,9 +2,10 @@
 
 import { useI18n } from "@/lib/i18n";
 import { CERTIFICATIONS } from "@/lib/certifications";
+import { CountUp } from "./count-up";
 
 // Cifras del equipo de sistemas en el que trabaja Ángel (las dio él el 2026-11-08). Textos en
-// hero.stat{n}Value / Label. Van estáticas, sin contador: el hero no debe depender del JS.
+// hero.stat{n}Value / Label. El HTML lleva el valor final y el contador (count-up.tsx) solo lo anima en cliente: el hero no debe depender del JS.
 const STATS = [1, 2, 3, 4];
 
 // Certificaciones: lib/certifications.ts (la misma lista alimenta el JSON-LD).
@@ -21,7 +22,7 @@ export function ProofStrip() {
           <div key={n} className="flex flex-col-reverse">
             <dt className="text-muted mt-1.5 text-[13px]">{t(`hero.stat${n}Label`)}</dt>
             <dd className="text-[28px] leading-none font-semibold tracking-[-0.035em] md:text-3xl">
-              {t(`hero.stat${n}Value`)}
+              <CountUp value={t(`hero.stat${n}Value`)} />
             </dd>
           </div>
         ))}
