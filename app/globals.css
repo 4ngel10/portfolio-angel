@@ -251,6 +251,15 @@
   .hero-rise {
     animation: hero-rise 0.9s var(--ease-out) backwards;
   }
+  /* Foto de Sobre mí: una por tema. La del otro tema no se pinta ni se descarga. */
+  .sobre-foto-oscura,
+  :root.dark .sobre-foto-clara {
+    display: none;
+  }
+  :root.dark .sobre-foto-oscura {
+    display: inline;
+  }
+
   .hero-fade {
     animation: hero-fade 0.35s ease-out backwards;
   }

@@ -92,27 +92,34 @@ export function About() {
                     "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 10%, transparent), transparent)",
                 }}
               />
-              <picture>
-                <source
-                  type="image/avif"
-                  srcSet={srcSetSobreMi("avif")}
-                  sizes="(min-width: 1024px) 208px, 168px"
-                />
-                <source
-                  type="image/webp"
-                  srcSet={srcSetSobreMi("webp")}
-                  sizes="(min-width: 1024px) 208px, 168px"
-                />
-                <img
-                  src="/angel-cutout-sm.webp"
-                  alt={t("about.photoAlt")}
-                  width={520}
-                  height={920}
-                  loading="lazy"
-                  decoding="async"
-                  className="relative block h-auto w-full origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.03]"
-                />
-              </picture>
+              {/* Dos fotos, una por tema (la clase .dark va en <html>, no hay media query que sirva). El
+                  <picture> del otro tema queda en display:none y el navegador no descarga su imagen. */}
+              {([false, true] as const).map((oscuro) => (
+                <picture
+                  key={String(oscuro)}
+                  className={oscuro ? "sobre-foto-oscura" : "sobre-foto-clara"}
+                >
+                  <source
+                    type="image/avif"
+                    srcSet={srcSetSobreMi("avif", oscuro)}
+                    sizes="(min-width: 1024px) 208px, 168px"
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet={srcSetSobreMi("webp", oscuro)}
+                    sizes="(min-width: 1024px) 208px, 168px"
+                  />
+                  <img
+                    src={oscuro ? "/sobre-mi/angel-oscuro-224.webp" : "/angel-cutout-sm.webp"}
+                    alt={t("about.photoAlt")}
+                    width={520}
+                    height={1056}
+                    loading="lazy"
+                    decoding="async"
+                    className="relative block h-auto w-full origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.03]"
+                  />
+                </picture>
+              ))}
             </div>
           </Reveal>
         </div>
