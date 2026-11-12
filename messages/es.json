@@ -39,6 +39,7 @@
     "p2": "Esa forma de trabajar, con documentación, copias probadas y cambios planificados, es la que llevo a autónomos, pymes y negocios que empiezan, tanto en su IT como en su página web.",
     "stackDaily": "Cada día trabajo con Windows Server, Active Directory, RDS, Hyper-V, Veeam, Fortinet, Next.js y Vercel.",
     "stackOpen": "Ver stack completo",
+    "photoAlt": "Ángel con los brazos cruzados, de frente y mirando a cámara, con un polo gris oscuro",
     "catVirt": "Virtualización",
     "catSystems": "Sistemas",
     "catNetwork": "Seguridad y redes",
@@ -255,7 +256,7 @@
     "footerNav": "Secciones de la página"
   },
   "photo": {
-    "alt": "Ángel Fernández con los brazos cruzados delante de una pared de metal perforado gris"
+    "alt": "Ángel trabajando en su puesto de oficina, visto de perfil, con la mano sobre el ratón y varios monitores al fondo"
   },
   "testimonials": {
     "title": "Lo que dicen los clientes."

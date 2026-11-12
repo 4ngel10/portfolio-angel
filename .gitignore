@@ -40,3 +40,18 @@ next-env.d.ts
 .claude/settings.json
 .claude/settings.local.json
 .claude/skills/impeccable/scripts/bin/
+
+# originales de cámara: no van en public/ (se despliegan tal cual y pesan MB). Las imágenes finales se
+# generan optimizadas (ver scripts/generar-foto-hero.ts). Solo el nivel superior; og-home.jpg es la
+# imagen para redes de la home y se mantiene.
+public/*.jpg
+public/*.JPG
+public/*.jpeg
+public/*.JPEG
+public/*.heic
+public/*.HEIC
+!public/og-home.jpg
+
+# originales de cámara (van aquí, nunca en public/); solo se sigue el LEEME
+originales/*
+!originales/LEEME.md
