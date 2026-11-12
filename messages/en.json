@@ -29,9 +29,6 @@
     "statsNote": "Figures from the systems team I work in.",
     "certsLabel": "Certifications"
   },
-  "marquee": {
-    "stack": "Technologies I work with"
-  },
   "about": {
     "title": "I'm Ángel, systems administrator and web developer.",
     "p1": "For the past 3 years I've been part of the systems team at an IT services company in Mallorca. We run the infrastructure of hotels, law and accounting firms, and businesses across many sectors. I look after servers, backups, remote desktops (RDS), networks and VLANs. A hotel can't stop, and if something breaks in the middle of the night the front desk still has to work.",

@@ -29,9 +29,6 @@
     "statsNote": "Cifras del equipo de sistemas en el que trabajo.",
     "certsLabel": "Certificaciones"
   },
-  "marquee": {
-    "stack": "Tecnologías con las que trabajo"
-  },
   "about": {
     "title": "Soy Ángel, administrador de sistemas y desarrollador web.",
     "p1": "Desde hace 3 años formo parte del equipo de sistemas de una empresa de servicios IT en Mallorca. Llevamos la infraestructura de hoteles, despachos y empresas de distintos sectores. Me ocupo de servidores, copias de seguridad, escritorios remotos (RDS) y redes. En un hotel no se puede parar, y si algo falla de madrugada la recepción tiene que seguir funcionando.",

@@ -1,7 +1,6 @@
 "use client";
 
 import { TechList } from "./tech-list";
-import { useI18n } from "@/lib/i18n";
 
 // Nombres propios: iguales en todos los idiomas.
 // Alternan sistemas y web. Lista estática (ver tech-list.tsx).
@@ -21,14 +20,11 @@ const TECH = [
 ];
 
 export function StackBand() {
-  const { t } = useI18n();
-
   return (
     <section className="border-y py-6 md:py-8" style={{ borderColor: "var(--rule)" }}>
       <TechList
         gap="2.5rem"
         items={TECH}
-        label={t("marquee.stack")}
         separator={
           <svg
             width="14"
