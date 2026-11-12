@@ -1,6 +1,8 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import es from "@/messages/es.json";
+import en from "@/messages/en.json";
 import { CONTACT } from "@/lib/site";
 import { ProofStrip } from "./proof-strip";
 import { HeroPhoto } from "./hero-photo";
@@ -21,6 +23,22 @@ function Line({ children, delay }: { children: React.ReactNode; delay: number })
   );
 }
 
+const HERO = { es: es.hero, en: en.hero } as const;
+
+/** Título en ES y EN a la vez: el CSS (.loc-es / .loc-en) enseña solo uno, sin esperar al JS. */
+function Titulo({ loc }: { loc: keyof typeof HERO }) {
+  const h = HERO[loc];
+  return (
+    <span lang={loc} className={`loc-${loc}`}>
+      {h.title1Pre}
+      <span className="text-accent">{h.title1Accent}</span>
+      {h.title1Mid}
+      <span className="text-accent">{h.title1Accent2}</span>
+      {h.title1Post}
+    </span>
+  );
+}
+
 export function Hero() {
   const { t } = useI18n();
   return (
@@ -32,23 +50,27 @@ export function Hero() {
         <div className="lg:col-span-8">
           <h1 className="text-[clamp(1.9rem,6vw,5.25rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance lg:text-[52px] xl:text-[60px]">
             <Line delay={0.05}>
-              {t("hero.title1Pre")}
-              <span className="text-accent">{t("hero.title1Accent")}</span>
-              {t("hero.title1Mid")}
-              <span className="text-accent">{t("hero.title1Accent2")}</span>
-              {t("hero.title1Post")}
+              <Titulo loc="es" />
+              <Titulo loc="en" />
             </Line>
           </h1>
 
           {/* Foto en móvil y tablet, entre el título y el párrafo. Prioridad baja: el LCP debe
               seguir siendo el párrafo y la foto no compite con él (ver hero-photo.tsx). */}
-          <div className="hero-fade mt-6 mb-2 lg:hidden">
+          <div className="mt-6 mb-2 lg:hidden">
             <HeroPhoto variante="movil" />
           </div>
 
           <div className="mt-6 md:mt-10">
             <div>
-              <p className="text-muted max-w-xl text-lg leading-relaxed">{t("hero.lead")}</p>
+              <p className="text-muted max-w-xl text-lg leading-relaxed">
+                <span lang="es" className="loc-es">
+                  {HERO.es.lead}
+                </span>
+                <span lang="en" className="loc-en">
+                  {HERO.en.lead}
+                </span>
+              </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-10">
                 <a
                   href={CONTACT.bookingUrl || "#contact"}

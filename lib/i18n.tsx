@@ -34,8 +34,10 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       if (saved === "es" || saved === "en") {
         setLocaleState(saved);
         saveLocaleCookie(saved);
+        document.documentElement.dataset.loc = saved;
       } else if (typeof navigator !== "undefined" && navigator.language.startsWith("en")) {
         setLocaleState("en");
+        document.documentElement.dataset.loc = "en";
       }
     } catch {}
   }, []);
@@ -46,28 +48,30 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
-    try { localStorage.setItem("locale", l); } catch {}
+    document.documentElement.dataset.loc = l;
+    try {
+      localStorage.setItem("locale", l);
+    } catch {}
     saveLocaleCookie(l);
   }, []);
 
-  const t = useCallback((path: string) => {
-    const parts = path.split(".");
-    let cursor: unknown = messages[locale];
-    for (const p of parts) {
-      if (cursor && typeof cursor === "object" && p in (cursor as Record<string, unknown>)) {
-        cursor = (cursor as Record<string, unknown>)[p];
-      } else {
-        return path;
+  const t = useCallback(
+    (path: string) => {
+      const parts = path.split(".");
+      let cursor: unknown = messages[locale];
+      for (const p of parts) {
+        if (cursor && typeof cursor === "object" && p in (cursor as Record<string, unknown>)) {
+          cursor = (cursor as Record<string, unknown>)[p];
+        } else {
+          return path;
+        }
       }
-    }
-    return typeof cursor === "string" ? cursor : path;
-  }, [locale]);
-
-  return (
-    <I18nContext.Provider value={{ locale, setLocale, t }}>
-      {children}
-    </I18nContext.Provider>
+      return typeof cursor === "string" ? cursor : path;
+    },
+    [locale],
   );
+
+  return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>;
 }
 
 export function useI18n() {
