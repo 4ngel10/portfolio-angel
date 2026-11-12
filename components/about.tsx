@@ -2,6 +2,7 @@
 
 import { useI18n } from "@/lib/i18n";
 import { CV } from "@/lib/site";
+import { srcSetSobreMi } from "@/lib/sobre-mi-foto";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 // Stack completo por área. La banda de components/stack-band.tsx solo muestra una selección
@@ -65,29 +66,78 @@ export function About() {
           </h2>
         </Reveal>
 
-        <RevealGroup className="mt-10 max-w-3xl space-y-6" stagger={0.08}>
-          <RevealItem as="div">
-            <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p1")}</p>
-          </RevealItem>
-          <RevealItem as="div">
-            <p className="text-muted text-base leading-[1.75] md:text-[17px]">{t("about.p2")}</p>
-          </RevealItem>
-          {CV[locale] && (
-            <RevealItem as="div">
-              <a href={CV[locale]} download className="btn-secondary">
-                {t("about.cvLink")}
-              </a>
-            </RevealItem>
-          )}
-        </RevealGroup>
+        {/* Desde lg, el recorte va a la derecha del texto y de la frase del stack, alineado abajo. En
+            móvil y tablet va justo debajo del título (order-first), como la foto del hero. */}
+        <div className="mt-10 grid gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:gap-y-0">
+          <div className="lg:col-span-8">
+            <RevealGroup className="max-w-3xl space-y-6" stagger={0.08}>
+              <RevealItem as="div">
+                <p className="text-muted text-base leading-[1.75] md:text-[17px]">
+                  {t("about.p1")}
+                </p>
+              </RevealItem>
+              <RevealItem as="div">
+                <p className="text-muted text-base leading-[1.75] md:text-[17px]">
+                  {t("about.p2")}
+                </p>
+              </RevealItem>
+              {CV[locale] && (
+                <RevealItem as="div">
+                  <a href={CV[locale]} download className="btn-secondary">
+                    {t("about.cvLink")}
+                  </a>
+                </RevealItem>
+              )}
+            </RevealGroup>
 
-        <div className="mt-16">
-          <Reveal>
-            <p className="text-muted mb-6 max-w-3xl text-[15px] leading-relaxed">
-              {t("about.stackDaily")}
-            </p>
+            <Reveal>
+              <p className="text-muted mt-16 max-w-3xl text-[15px] leading-relaxed">
+                {t("about.stackDaily")}
+              </p>
+            </Reveal>
+          </div>
+
+          {/* Recorte con fondo transparente. Carga diferida y sin priority: está lejos del primer
+              pantallazo. Los anchos de srcset y sizes cubren 168 px (móvil) y 208 px (escritorio) a 1x, 2x
+              y 3x, así que cada pantalla baja una sola variante (lib/sobre-mi-foto.ts). */}
+          <Reveal className="order-first lg:order-none lg:col-span-4 lg:justify-self-end">
+            <div className="relative mx-auto w-[168px] lg:mx-0 lg:w-[208px]">
+              {/* Halo muy sutil, para que el polo oscuro no se pierda sobre el fondo. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute"
+                style={{
+                  inset: "12% -6% 0 -6%",
+                  background:
+                    "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 10%, transparent), transparent)",
+                }}
+              />
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={srcSetSobreMi("avif")}
+                  sizes="(min-width: 1024px) 208px, 168px"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={srcSetSobreMi("webp")}
+                  sizes="(min-width: 1024px) 208px, 168px"
+                />
+                <img
+                  src="/angel-cutout-sm.webp"
+                  alt={t("about.photoAlt")}
+                  width={520}
+                  height={920}
+                  loading="lazy"
+                  decoding="async"
+                  className="relative block h-auto w-full"
+                />
+              </picture>
+            </div>
           </Reveal>
+        </div>
 
+        <div className="mt-6">
           {/* Desde md, el stack se ve abierto. Por debajo, plegado en un <details> nativo
               (funciona sin JS y con teclado). Dos bloques, uno oculto con display:none según
               el ancho, para no depender de forzar el estado "open" por CSS o JS. */}
