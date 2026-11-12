@@ -23,7 +23,7 @@ const Arrow = ({ back = false }: { back?: boolean }) => (
     strokeWidth={2}
     strokeLinecap="round"
     strokeLinejoin="round"
-    className={`shrink-0 ${back ? "rotate-180" : ""}`}
+    className={`shrink-0 transition-transform duration-200 ${back ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}
     aria-hidden
   >
     <line x1="5" y1="12" x2="19" y2="12" />
@@ -31,10 +31,12 @@ const Arrow = ({ back = false }: { back?: boolean }) => (
   </svg>
 );
 
-// Mismo lenguaje de hover que las cards de la home: borde de acento, sombra y sin cambios de título.
+// Mismo lenguaje de hover que las cards de la home: borde de acento, sombra y título que crece.
 const CARD =
   "group border-rule h-full rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]";
 const CARD_BG = { background: "var(--bg)" };
+const TITLE_HOVER =
+  "inline-block origin-left transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold";
 // Tarjeta a la que se ha llegado por ancla: se queda con el aspecto del hover.
 const TARGETED = "shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]";
 /** Altura de la nav fija más un poco de aire, para que el apartado no quede debajo. */
@@ -104,7 +106,7 @@ export function ServicePage({
             {t("servicesPage.back")}
           </Link>
 
-          <div className="mt-10 flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)]">
+          <div className="mt-10 flex h-12 w-12 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 hover:scale-110 hover:-rotate-6 hover:bg-[var(--accent)] hover:text-white dark:hover:text-[#0a0f1c]">
             {SERVICE_ICONS[service.key]}
           </div>
 
@@ -140,14 +142,17 @@ export function ServicePage({
                   style={target === g.id ? { ...CARD_BG, borderColor: "var(--accent)" } : CARD_BG}
                 >
                   <h2 className="text-[19px] leading-snug font-semibold tracking-tight">
-                    {g.title}
+                    <span className={TITLE_HOVER}>{g.title}</span>
                   </h2>
                   {g.lead && (
                     <p className="text-muted mt-2 text-[15px] leading-relaxed">{g.lead}</p>
                   )}
                   <ul className="mt-4 flex flex-col gap-3">
                     {g.items.map((item, i) => (
-                      <li key={i} className="text-muted flex gap-3 text-[15px] leading-relaxed">
+                      <li
+                        key={i}
+                        className="text-muted flex gap-3 text-[15px] leading-relaxed transition-[transform,color] duration-200 hover:translate-x-1 hover:text-[var(--fg)]"
+                      >
                         <Bullet />
                         <span>
                           <Inline text={item} />
@@ -200,7 +205,9 @@ export function ServicePage({
               {modes.items.map((m) => (
                 <RevealItem key={m.title} id={m.id} className="h-full scroll-mt-24">
                   <ZoomCard className={`${CARD} p-6`} style={CARD_BG}>
-                    <h3 className="text-[17px] font-semibold tracking-tight">{m.title}</h3>
+                    <h3 className="text-[17px] font-semibold tracking-tight">
+                      <span className={TITLE_HOVER}>{m.title}</span>
+                    </h3>
                     <p className="text-muted mt-2 text-[14px] leading-relaxed">{m.text}</p>
                   </ZoomCard>
                 </RevealItem>
@@ -263,7 +270,7 @@ export function ServicePage({
               style={CARD_BG}
             >
               <span className="flex items-center gap-5">
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)]">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)] transition-[background-color,color,transform] duration-300 group-hover:-rotate-6 group-hover:bg-[var(--accent)] group-hover:text-white dark:group-hover:text-[#0a0f1c]">
                   {SERVICE_ICONS[other.key]}
                 </span>
                 <span>

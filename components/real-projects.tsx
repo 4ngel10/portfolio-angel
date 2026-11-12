@@ -21,6 +21,7 @@ const Arrow = () => (
     strokeWidth={2}
     strokeLinecap="round"
     strokeLinejoin="round"
+    className="transition-transform duration-200 group-hover:translate-x-1"
     aria-hidden
   >
     <line x1="5" y1="12" x2="19" y2="12" />
@@ -51,7 +52,9 @@ function ProjectCard({ project }: { project: DatosCard }) {
           >
             {t(`portfolio.${project.key}Tag`)}
           </span>
-          <h3 className="mb-2 text-[17px] leading-snug font-semibold tracking-tight">{title}</h3>
+          <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
+            {title}
+          </h3>
           <p className="text-muted mb-4 text-[13px] leading-relaxed">
             {t(`portfolio.${project.key}Desc`)}
           </p>
@@ -108,7 +111,7 @@ function SelfCard() {
           >
             {t("portfolio.p2Tag")}
           </span>
-          <h3 className="mb-2 text-[17px] leading-snug font-semibold tracking-tight">
+          <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
             {t("servicesPage.thisSiteTitle")}
           </h3>
           <p className="text-muted mb-4 text-[13px] leading-relaxed">
