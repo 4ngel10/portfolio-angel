@@ -42,7 +42,7 @@ export const CONTACT: {
   availability: { es: string; en: string };
 } = {
   bookingUrl: "",
-  whatsapp: "",
+  whatsapp: "34639675831",
   phone: "",
   availability: { es: "", en: "" },
 };
@@ -52,3 +52,15 @@ export const CONTACT: {
  * muestra el enlace en Sobre mí ni en el footer.
  */
 export const CV: { es: string; en: string } = { es: "", en: "" };
+
+/** Mensaje que aparece escrito al abrir el chat de WhatsApp, según el idioma. */
+const WHATSAPP_MENSAJE = {
+  es: "Hola Ángel, vengo de tu web y me gustaría recibir información sobre tus servicios. ¿Podemos hablar?",
+  en: "Hi Ángel, I found you through your website and I'd like to know more about your services. Can we talk?",
+} as const;
+
+/** Enlace wa.me con el mensaje inicial prerrellenado. Cadena vacía si no hay número. */
+export function whatsappUrl(locale: "es" | "en"): string {
+  if (!CONTACT.whatsapp) return "";
+  return `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(WHATSAPP_MENSAJE[locale])}`;
+}

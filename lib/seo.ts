@@ -47,6 +47,7 @@ export const SERVICE_TITLES: Record<string, string> = {
 
 const PERSON_ID = `${SITE_URL}/#person`;
 const BUSINESS_ID = `${SITE_URL}/#business`;
+const TELEFONO = "+34 639 67 58 31";
 const WEBSITE_ID = `${SITE_URL}/#website`;
 const PERSON_NAME = "Ángel Fernández Garriga";
 
@@ -96,6 +97,7 @@ export function homeJsonLd() {
       description: HOME_DESCRIPTION,
       url: SITE_URL,
       email: LEGAL.email,
+      telephone: TELEFONO,
       image: `${SITE_URL}${HOME_OG_IMAGE}`,
       founder: { "@id": PERSON_ID },
       areaServed: { "@type": "City", name: "Palma de Mallorca" },
@@ -115,6 +117,7 @@ export function homeJsonLd() {
       url: SITE_URL,
       image: `${SITE_URL}/angel-square.webp`,
       email: LEGAL.email,
+      telephone: TELEFONO,
       sameAs: ["https://www.linkedin.com/in/angelfernandezgarriga", "https://github.com/4ngel10"],
       address: {
         "@type": "PostalAddress",

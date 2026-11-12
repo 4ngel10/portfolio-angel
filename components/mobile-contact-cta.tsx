@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, m } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
-import { CONTACT } from "@/lib/site";
+import { CONTACT, whatsappUrl } from "@/lib/site";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
 
@@ -15,13 +15,13 @@ const EASE = [0.23, 1, 0.32, 1] as const;
  * Es un enlace a #contact: el scroll suave y el foco los pone lib/smooth-scroll.ts.
  */
 export function MobileContactCta() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [visible, setVisible] = useState(false);
   // Fuera de la home no hay sección de contacto: el botón lleva a la de la home.
   const isHome = usePathname() === "/";
   // Atajo de contacto directo (WhatsApp o llamada) solo si hay número en CONTACT.
   const quick = CONTACT.whatsapp
-    ? { href: `https://wa.me/${CONTACT.whatsapp}`, label: t("contact.quickContact") }
+    ? { href: whatsappUrl(locale), label: t("contact.quickContact") }
     : CONTACT.phone
       ? { href: `tel:+${CONTACT.phone}`, label: t("contact.quickCall") }
       : null;

@@ -7,29 +7,16 @@ import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 // Stack completo por área.
 const STACK: { labelKey: string; items: string[] }[] = [
-  { labelKey: "about.catVirt", items: ["Hyper-V", "VMware", "Proxmox", "Docker"] },
   {
     labelKey: "about.catSystems",
-    items: ["Windows Server", "Active Directory", "PowerShell", "Azure"],
+    items: ["Windows Server", "Active Directory", "PowerShell", "Hyper-V", "VMware", "Proxmox"],
   },
-  {
-    labelKey: "about.catNetwork",
-    items: ["Fortinet", "pfSense", "OPNsense", "UniFi", "Hornetsecurity"],
-  },
-  { labelKey: "about.catBackup", items: ["Nakivo", "Veeam", "Acronis"] },
-  { labelKey: "about.catManagement", items: ["NinjaOne", "Intune", "SOTI", "Zabbix", "Grafana"] },
+  { labelKey: "about.catM365", items: ["Microsoft 365", "Intune", "Hornetsecurity"] },
+  { labelKey: "about.catNetwork", items: ["Fortinet", "UniFi", "pfSense"] },
+  { labelKey: "about.catBackup", items: ["Veeam", "Nakivo", "NinjaOne"] },
   {
     labelKey: "about.catWeb",
-    items: [
-      "Next.js",
-      "TypeScript",
-      "Vercel",
-      "Shopify",
-      "Google Ads",
-      "GitLab",
-      "Nginx",
-      "Apache",
-    ],
+    items: ["Next.js", "TypeScript", "Vercel", "Supabase", "Shopify", "Stripe"],
   },
 ];
 
@@ -100,7 +87,7 @@ export function About() {
               pantallazo. Los anchos de srcset y sizes cubren 168 px (móvil) y 208 px (escritorio) a 1x, 2x
               y 3x, así que cada pantalla baja una sola variante (lib/sobre-mi-foto.ts). */}
           <Reveal className="order-first lg:order-none lg:col-span-4 lg:justify-self-end">
-            <div className="relative mx-auto w-[168px] lg:mx-0 lg:w-[208px]">
+            <div className="group relative mx-auto w-[168px] lg:mx-0 lg:w-[208px]">
               {/* Halo muy sutil, para que el polo oscuro no se pierda sobre el fondo. */}
               <div
                 aria-hidden
@@ -129,7 +116,7 @@ export function About() {
                   height={920}
                   loading="lazy"
                   decoding="async"
-                  className="relative block h-auto w-full"
+                  className="relative block h-auto w-full origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.03]"
                 />
               </picture>
             </div>

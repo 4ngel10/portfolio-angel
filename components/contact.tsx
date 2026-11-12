@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
-import { CONTACT } from "@/lib/site";
+import { CONTACT, whatsappUrl } from "@/lib/site";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { enviarContacto, type ContactoEstado } from "@/lib/contact-action";
 import { SERVICIOS_CONTACTO } from "@/lib/contact-validate";
@@ -105,9 +105,9 @@ export function Contact() {
     ...(CONTACT.whatsapp
       ? [
           {
-            href: `https://wa.me/${CONTACT.whatsapp}`,
+            href: whatsappUrl(locale),
             label: t("contact.whatsappLabel"),
-            value: `+${CONTACT.whatsapp}`,
+            value: t("contact.whatsappValue"),
             icon: (
               <svg
                 width="16"
