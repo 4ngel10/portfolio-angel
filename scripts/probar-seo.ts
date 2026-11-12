@@ -9,10 +9,10 @@
  */
 import { CERTIFICATIONS } from "../lib/certifications";
 import {
-  BLOG_DESCRIPTION,
-  BLOG_TITLE,
-  HOME_DESCRIPTION,
-  HOME_TITLE,
+  BLOG_DESCRIPTIONS,
+  BLOG_TITLES,
+  HOME_DESCRIPTIONS,
+  HOME_TITLES,
   SERVICE_DESCRIPTIONS,
   SERVICE_TITLES,
   SITE_NAME,
@@ -25,42 +25,40 @@ function comprobar(ok: boolean, texto: string) {
   if (!ok) fallos++;
 }
 
-comprobar(
-  HOME_TITLE.length <= 60,
-  `título de la home de ${HOME_TITLE.length} caracteres (máx. 60)`,
-);
-comprobar(
-  !/[—:]/.test(HOME_TITLE + HOME_DESCRIPTION),
-  "título y descripción de la home sin em dashes ni dos puntos",
-);
-comprobar(
-  HOME_DESCRIPTION.length <= 160,
-  `descripción de ${HOME_DESCRIPTION.length} caracteres (máx. 160)`,
-);
-
-// Servicios y blog: el <title> de los servicios lleva " · Ángel Fernández" detrás.
+const LANGS = ["es", "en"] as const;
 const MARCA = " · Ángel Fernández";
-const titulos: [string, string][] = [
-  ...Object.entries(SERVICE_TITLES).map(([id, s]): [string, string] => [
-    `servicio ${id}`,
-    s + MARCA,
-  ]),
-  ["blog", BLOG_TITLE],
-];
-const descripciones: [string, string][] = [
-  ...Object.entries(SERVICE_DESCRIPTIONS).map(([id, s]): [string, string] => [`servicio ${id}`, s]),
-  ["blog", BLOG_DESCRIPTION],
-];
-for (const [n, s] of titulos)
+const SIN_PUNTUACION = /[—:]/;
+
+for (const lang of LANGS) {
+  const titulo = HOME_TITLES[lang];
+  const desc = HOME_DESCRIPTIONS[lang];
+  comprobar(titulo.length <= 60, `[${lang}] título de la home de ${titulo.length} caracteres (máx. 60)`);
   comprobar(
-    s.length <= 60 && !/[—:]/.test(s),
-    `título de ${n}: ${s.length} caracteres (máx. 60), sin em dash ni dos puntos`,
+    !SIN_PUNTUACION.test(titulo + desc),
+    `[${lang}] título y descripción de la home sin em dashes ni dos puntos`,
   );
-for (const [n, s] of descripciones)
-  comprobar(
-    s.length <= 160 && !/[—:]/.test(s),
-    `descripción de ${n}: ${s.length} caracteres (máx. 160), sin em dash ni dos puntos`,
-  );
+  comprobar(desc.length <= 160, `[${lang}] descripción de la home de ${desc.length} caracteres (máx. 160)`);
+
+  // Servicios y blog: el <title> de los servicios lleva " · Ángel Fernández" detrás.
+  const titulos: [string, string][] = [
+    ...Object.entries(SERVICE_TITLES[lang]).map(([id, t]): [string, string] => [`servicio ${id}`, t + MARCA]),
+    ["blog", BLOG_TITLES[lang]],
+  ];
+  const descripciones: [string, string][] = [
+    ...Object.entries(SERVICE_DESCRIPTIONS[lang]).map(([id, t]): [string, string] => [`servicio ${id}`, t]),
+    ["blog", BLOG_DESCRIPTIONS[lang]],
+  ];
+  for (const [n, t] of titulos)
+    comprobar(
+      t.length <= 60 && !SIN_PUNTUACION.test(t),
+      `[${lang}] título de ${n}: ${t.length} caracteres (máx. 60), sin em dash ni dos puntos`,
+    );
+  for (const [n, t] of descripciones)
+    comprobar(
+      t.length <= 160 && !SIN_PUNTUACION.test(t),
+      `[${lang}] descripción de ${n}: ${t.length} caracteres (máx. 160), sin em dash ni dos puntos`,
+    );
+}
 
 type Nodo = Record<string, unknown> & { "@type": string };
 const nodos = (homeJsonLd() as { "@graph": Nodo[] })["@graph"];

@@ -9,14 +9,14 @@ import type { BlogPostSummary } from "@/lib/blog-types";
 
 /** Listado del blog: /blog. Mismo lenguaje de cards que proyectos y servicios. */
 export function BlogIndex({ posts }: { posts: BlogPostSummary[] }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
 
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
       <header className="mx-auto max-w-6xl px-6 pt-14 pb-16 md:px-8 md:pt-20 md:pb-20">
         <Reveal>
           <Link
-            href="/"
+            href={l("/")}
             className="group text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[var(--fg)]"
           >
             <Arrow back />
@@ -39,7 +39,7 @@ export function BlogIndex({ posts }: { posts: BlogPostSummary[] }) {
             return (
               <RevealItem key={p.slug} className="h-full">
                 <Link
-                  href={`/blog/${p.slug}`}
+                  href={l(`/blog/${p.slug}`)}
                   className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
                 >
                   <ZoomCard

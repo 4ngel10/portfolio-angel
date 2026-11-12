@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
+import { stripLocale } from "@/lib/rutas";
 import { CV } from "@/lib/site";
 import { NavLink } from "./nav";
 
 /** Pie de todas las páginas. Fuera de la home, las anclas apuntan a la home (/#about). */
 export function Footer() {
-  const { t, locale } = useI18n();
-  const isHome = usePathname() === "/";
-  const home = (hash: string) => (isHome ? hash : `/${hash}`);
+  const { t, locale, l } = useI18n();
+  const isHome = stripLocale(usePathname()) === "/";
+  const home = (hash: string) => (isHome ? hash : l(`/${hash}`));
 
   const links = [
     { href: home("#services"), label: t("nav.services") },
@@ -119,9 +120,9 @@ export function Footer() {
           className="mx-auto mt-2 flex max-w-6xl flex-wrap gap-x-5 px-6 text-[13px] text-slate-400 md:px-8"
         >
           {[
-            { href: "/aviso-legal", label: t("footer.legal") },
-            { href: "/privacidad", label: t("footer.privacy") },
-            { href: "/cookies", label: t("footer.cookies") },
+            { href: l("/aviso-legal"), label: t("footer.legal") },
+            { href: l("/privacidad"), label: t("footer.privacy") },
+            { href: l("/cookies"), label: t("footer.cookies") },
             { href: "/login", label: t("nav.ctaClients") },
           ].map((l) => (
             <Link

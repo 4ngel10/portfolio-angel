@@ -163,3 +163,14 @@ export function madridLocalAUtc(local: string): Date | null {
   resultado = new Date(nominal - desfaseMadridMin(resultado) * 60000);
   return resultado;
 }
+
+/**
+ * ¿Tiene el artículo contenido completo en inglés? Solo entonces existe /en/blog/<slug>, entra en el
+ * sitemap y lleva hreflang. Si no, esa URL devuelve 404 (nunca una página en español bajo /en).
+ */
+export function tieneIngles(post: BlogPost): boolean {
+  const c = post.post.en;
+  if (!c) return false;
+  const lleno = (t: string | undefined) => (t ?? "").trim() !== "";
+  return lleno(c.title) && lleno(c.description) && lleno(c.excerpt) && lleno(c.intro) && c.sections.length > 0;
+}

@@ -44,7 +44,7 @@ const LINKS = [
 
 /** Contenido de la página 404 (app/not-found.tsx), con el mismo lenguaje que las páginas interiores. */
 export function NotFoundContent() {
-  const { t } = useI18n();
+  const { t, l } = useI18n();
 
   return (
     <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
@@ -72,21 +72,21 @@ export function NotFoundContent() {
         </p>
 
         <ul className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {LINKS.map((l) => (
-            <li key={l.key}>
+          {LINKS.map((link) => (
+            <li key={link.key}>
               <Link
-                href={l.href}
+                href={l(link.href)}
                 className="group border-rule flex h-full flex-col gap-3 rounded-2xl border p-5 transition-[border-color,box-shadow] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
                 style={{ background: "var(--bg)" }}
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--accent)]">
-                  {l.icon}
+                  {link.icon}
                 </span>
                 <span className="text-[17px] leading-snug font-semibold tracking-tight">
-                  {t(`notFound.links.${l.key}.title`)}
+                  {t(`notFound.links.${link.key}.title`)}
                 </span>
                 <span className="text-muted text-sm leading-relaxed">
-                  {t(`notFound.links.${l.key}.text`)}
+                  {t(`notFound.links.${link.key}.text`)}
                 </span>
               </Link>
             </li>
@@ -94,12 +94,12 @@ export function NotFoundContent() {
         </ul>
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-          <Link href="/" className="btn-primary group self-start">
+          <Link href={l("/")} className="btn-primary group self-start">
             <Arrow back />
             {t("notFound.home")}
           </Link>
           <Link
-            href="/#contact"
+            href={l("/#contact")}
             className="text-sm font-medium text-[var(--accent)] underline decoration-1 underline-offset-4 transition-colors hover:text-[var(--fg)]"
           >
             {t("notFound.quote")}

@@ -11,7 +11,7 @@ import type { LegalPage } from "@/lib/legal";
  * su página por props, así los textos de las otras dos no viajan.
  */
 export function LegalPageView({ page }: { page: LegalPage }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
   const content = page.content[locale];
 
   return (
@@ -19,7 +19,7 @@ export function LegalPageView({ page }: { page: LegalPage }) {
       <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
           <Link
-            href="/"
+            href={l("/")}
             className="group text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[var(--fg)]"
           >
             <Arrow back />

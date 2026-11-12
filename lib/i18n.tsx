@@ -1,105 +1,72 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import es from "@/messages/es.json";
-import en from "@/messages/en.json";
+import React, { createContext, useContext, useCallback } from "react";
+import { localizedHref, type Lang } from "./rutas";
 
-export type Locale = "es" | "en";
-type Messages = typeof es;
-
-const messages: Record<Locale, Messages> = { es, en };
-
-type I18nContextValue = {
-  locale: Locale;
-  setLocale: (l: Locale) => void;
-  t: (path: string) => string;
-};
-
-const I18nContext = createContext<I18nContextValue | null>(null);
+export type Locale = Lang;
 
 /**
- * La zona privada (portal y admin) pinta en el servidor y no puede leer localStorage:
- * lee el idioma de esta cookie, que se mantiene igual que el valor guardado en el navegador.
+ * Textos de la web pública. El servidor elige el idioma por la URL (`/` es español, `/en` inglés),
+ * lee `messages/<lang>.json` y se lo pasa al provider por props: así el HTML ya sale en el idioma
+ * correcto y al navegador solo llega un idioma. El portal y el admin usan `lib/i18n-privado.tsx`
+ * (idioma por cookie) y la vista previa del blog `lib/i18n-fijo.tsx`; ninguno entra en el bundle público.
  */
-function saveLocaleCookie(l: Locale) {
-  document.cookie = `locale=${l}; path=/; max-age=31536000; samesite=lax`;
+export type Messages = Record<string, unknown>;
+
+export type I18nContextValue = {
+  locale: Locale;
+  /** Solo el idioma por cookie de la zona privada lo cambia; en la web pública se cambia de URL. */
+  setLocale: (l: Locale) => void;
+  t: (path: string) => string;
+  /** Ruta interna de la web pública en el idioma actual (`l("/blog")` es `/en/blog` en inglés). */
+  l: (ruta: string) => string;
+};
+
+export const I18nContext = createContext<I18nContextValue | null>(null);
+
+/** Busca una ruta con puntos (`hero.title1Pre`) en los mensajes; si falta devuelve la propia ruta. */
+export function traducir(messages: Messages, path: string): string {
+  let cursor: unknown = messages;
+  for (const p of path.split(".")) {
+    if (cursor && typeof cursor === "object" && p in (cursor as Record<string, unknown>)) {
+      cursor = (cursor as Record<string, unknown>)[p];
+    } else {
+      return path;
+    }
+  }
+  return typeof cursor === "string" ? cursor : path;
 }
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("es");
+/**
+ * La zona privada (portal y admin) pinta en el servidor y lee el idioma de esta cookie. La web
+ * pública la escribe al cambiar de idioma con el selector, para que el portal y los correos sigan
+ * el mismo idioma.
+ */
+export function guardarIdioma(l: Locale) {
+  try {
+    document.cookie = `locale=${l}; path=/; max-age=31536000; samesite=lax`;
+  } catch {}
+}
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("locale") as Locale | null;
-      if (saved === "es" || saved === "en") {
-        setLocaleState(saved);
-        saveLocaleCookie(saved);
-        document.documentElement.dataset.loc = saved;
-      } else if (typeof navigator !== "undefined" && navigator.language.startsWith("en")) {
-        setLocaleState("en");
-        document.documentElement.dataset.loc = "en";
-      }
-    } catch {}
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
-
-  const setLocale = useCallback((l: Locale) => {
-    setLocaleState(l);
-    document.documentElement.dataset.loc = l;
-    try {
-      localStorage.setItem("locale", l);
-    } catch {}
-    saveLocaleCookie(l);
-  }, []);
-
-  const t = useCallback(
-    (path: string) => {
-      const parts = path.split(".");
-      let cursor: unknown = messages[locale];
-      for (const p of parts) {
-        if (cursor && typeof cursor === "object" && p in (cursor as Record<string, unknown>)) {
-          cursor = (cursor as Record<string, unknown>)[p];
-        } else {
-          return path;
-        }
-      }
-      return typeof cursor === "string" ? cursor : path;
-    },
-    [locale],
+export function I18nProvider({
+  locale,
+  messages,
+  children,
+}: {
+  locale: Locale;
+  messages: Messages;
+  children: React.ReactNode;
+}) {
+  const t = useCallback((path: string) => traducir(messages, path), [messages]);
+  const l = useCallback((ruta: string) => localizedHref(locale, ruta), [locale]);
+  const setLocale = useCallback((nuevo: Locale) => guardarIdioma(nuevo), []);
+  return (
+    <I18nContext.Provider value={{ locale, setLocale, t, l }}>{children}</I18nContext.Provider>
   );
-
-  return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>;
 }
 
 export function useI18n() {
   const ctx = useContext(I18nContext);
   if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
   return ctx;
-}
-
-/**
- * Pinta a sus hijos en un idioma fijo, sin tocar la cookie ni el idioma del resto de la página.
- * La vista previa del panel del blog lo usa para enseñar un artículo en español o en inglés.
- */
-export function FixedLocale({ locale, children }: { locale: Locale; children: React.ReactNode }) {
-  const parent = useContext(I18nContext);
-  const t = useCallback(
-    (path: string) => {
-      let cursor: unknown = messages[locale];
-      for (const p of path.split(".")) {
-        if (cursor && typeof cursor === "object" && p in (cursor as Record<string, unknown>)) {
-          cursor = (cursor as Record<string, unknown>)[p];
-        } else {
-          return path;
-        }
-      }
-      return typeof cursor === "string" ? cursor : path;
-    },
-    [locale],
-  );
-  const setLocale = parent?.setLocale ?? (() => {});
-  return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>;
 }

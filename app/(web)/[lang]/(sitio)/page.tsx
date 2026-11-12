@@ -10,29 +10,37 @@ import { Testimonials } from "@/components/testimonials";
 import { Footer } from "@/components/footer";
 import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
-import { getLatestPosts } from "@/lib/blog-db";
-import { enlaceDe } from "@/lib/blog-types";
-import { projectCards } from "@/lib/projects";
+import { getLatestPosts, getPublishedPosts } from "@/lib/blog-db";
+import { enlaceDe, tieneIngles } from "@/lib/blog-types";
+import { getProject, projectCards, proyectoTieneIngles } from "@/lib/projects";
 import { SERVICES } from "@/lib/services";
 import { TESTIMONIALS } from "@/lib/testimonials";
 import { alternatesFor, homeJsonLd } from "@/lib/seo";
+import { parseLang } from "@/lib/rutas";
 
 // Canonical solo en la home: en el layout lo heredarían páginas como el 404.
-export const metadata: Metadata = { alternates: alternatesFor("/") };
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  return { alternates: alternatesFor("/", parseLang((await params).lang)) };
+}
 
 // Estática; se regenera cada hora y al publicar desde el panel por el teaser del blog.
 export const revalidate = 3600;
 
-export default async function Page() {
-  const ultimos = await getLatestPosts(2);
+export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
+  const lang = parseLang((await params).lang);
+  // En inglés solo salen los artículos que tienen traducción completa.
+  const ultimos =
+    lang === "en"
+      ? (await getPublishedPosts()).filter(tieneIngles).slice(0, 2)
+      : await getLatestPosts(2);
   return (
     <>
-      <JsonLd data={homeJsonLd()} />
+      <JsonLd data={homeJsonLd(lang)} />
       <Nav />
       <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
         <Hero />
         <Services items={SERVICES.map(({ key, id }) => ({ key, id }))} />
-        <Portfolio projects={projectCards()} />
+        <Portfolio projects={projectCards().filter((c) => lang === "es" || proyectoTieneIngles(getProject(c.slug)!))} />
         <Testimonials items={TESTIMONIALS.filter((t) => t.permission)} />
         <About />
         <BlogTeaser posts={ultimos.map(enlaceDe)} />

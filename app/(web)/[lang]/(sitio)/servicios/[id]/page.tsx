@@ -1,3 +1,4 @@
+import { LOCALES, parseLang } from "@/lib/rutas";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Nav } from "@/components/nav";
@@ -7,35 +8,39 @@ import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { PROJECTS, projectCard, type ProjectCard } from "@/lib/projects";
 import { SERVICES, getService } from "@/lib/services";
-import { SERVICE_DESCRIPTIONS, SERVICE_TITLES, alternatesFor, serviceJsonLd } from "@/lib/seo";
+import { OG_LOCALE, SERVICE_DESCRIPTIONS, SERVICE_TITLES, alternatesFor, serviceJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
+import en from "@/messages/en.json";
 
-type Params = Promise<{ id: string }>;
+type Params = Promise<{ lang: string; id: string }>;
 
 // Una página estática por servicio; cualquier otro id da 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return SERVICES.map((s) => ({ id: s.id }));
+  return LOCALES.flatMap((lang) => SERVICES.map((s) => ({ lang, id: s.id })));
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const service = getService((await params).id);
+  const { lang: l, id } = await params;
+  const lang = parseLang(l);
+  const service = getService(id);
   if (!service) return {};
-  const texts = es.services as Record<string, string>;
-  const title = SERVICE_TITLES[service.id] ?? texts[`${service.key}Title`];
-  const description = SERVICE_DESCRIPTIONS[service.id] ?? texts[`${service.key}Lead`];
+  const texts = (lang === "en" ? en : es).services as Record<string, string>;
+  const title = SERVICE_TITLES[lang][service.id] ?? texts[`${service.key}Title`];
+  const description = SERVICE_DESCRIPTIONS[lang][service.id] ?? texts[`${service.key}Lead`];
   return {
     title: `${title} · Ángel Fernández`,
     description,
-    alternates: alternatesFor(`/servicios/${service.id}`),
-    openGraph: { title, description, type: "website", locale: "es_ES" },
+    alternates: alternatesFor(`/servicios/${service.id}`, lang),
+    openGraph: { title, description, type: "website", locale: OG_LOCALE[lang] },
     twitter: { card: "summary", title, description },
   };
 }
 
 export default async function Page({ params }: { params: Params }) {
-  const { id } = await params;
+  const { lang: l, id } = await params;
+  const lang = parseLang(l);
   const service = getService(id);
   if (!service) notFound();
   const otro = SERVICES[(SERVICES.indexOf(service) + 1) % SERVICES.length];
@@ -51,7 +56,7 @@ export default async function Page({ params }: { params: Params }) {
 
   return (
     <>
-      <JsonLd data={serviceJsonLd(service)} />
+      <JsonLd data={serviceJsonLd(service, lang)} />
       <Nav />
       <ServicePage service={service} other={{ id: otro.id, key: otro.key }} projects={proyectos} />
       <Footer />

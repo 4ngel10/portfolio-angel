@@ -1,6 +1,8 @@
+import { LOCALES } from "@/lib/rutas";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { getPublishedPost, getPublishedPosts } from "@/lib/blog-db";
+import { tieneIngles } from "@/lib/blog-types";
 import { crearImagenSocial, TAMANO_IMAGEN_SOCIAL } from "@/lib/blog-og-imagen";
 
 /**
@@ -21,7 +23,10 @@ export const contentType = "image/png";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return (await getPublishedPosts()).map((p) => ({ slug: p.slug }));
+  const posts = await getPublishedPosts();
+  return LOCALES.flatMap((lang) =>
+    posts.filter((p) => lang === "es" || tieneIngles(p)).map((p) => ({ lang, slug: p.slug })),
+  );
 }
 
 /** La imagen propia del artículo (og_image), si se puede leer. */

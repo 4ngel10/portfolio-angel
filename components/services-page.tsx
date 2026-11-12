@@ -55,7 +55,7 @@ export function ServicePage({
   other: { id: string; key: string };
   projects: (ProjectCard | "self")[];
 }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
   // Apartado al que se llega desde un punto de la home (#redes...). No se usa :target porque
   // la navegación de Next cambia el hash con pushState y el navegador no lo activa.
   const [target, setTarget] = useState<string | null>(null);
@@ -99,7 +99,7 @@ export function ServicePage({
       <header className="mx-auto max-w-6xl px-6 pt-14 pb-20 md:px-8 md:pt-20 md:pb-24">
         <Reveal>
           <Link
-            href="/#services"
+            href={l("/#services")}
             className="group text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[var(--fg)]"
           >
             <Arrow back />
@@ -120,7 +120,7 @@ export function ServicePage({
             </p>
           ))}
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
-            <Link href="/#contact" className="btn-primary group self-start">
+            <Link href={l("/#contact")} className="btn-primary group self-start">
               {t("nav.ctaContact")}
               <Arrow />
             </Link>
@@ -264,7 +264,7 @@ export function ServicePage({
 
       <section className={`border-rule ${bg()} border-t`}>
         <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-          <Link href={`/servicios/${other.id}`} className="block">
+          <Link href={l(`/servicios/${other.id}`)} className="block">
             <ZoomCard
               className={`${CARD} flex flex-col gap-6 p-7 md:flex-row md:items-center md:justify-between md:p-10`}
               style={CARD_BG}
@@ -299,7 +299,7 @@ export function ServicePage({
           <p className="text-muted mx-auto mt-5 max-w-xl text-[17px] leading-relaxed">
             {service.closing[locale]}
           </p>
-          <Link href="/#contact" className="btn-primary group mt-10">
+          <Link href={l("/#contact")} className="btn-primary group mt-10">
             {t("nav.ctaContact")}
             <Arrow />
           </Link>

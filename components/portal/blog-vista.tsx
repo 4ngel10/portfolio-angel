@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { BlogArticle } from "@/components/blog-article";
-import { FixedLocale, type Locale } from "@/lib/i18n";
+import { type Locale } from "@/lib/i18n";
+import { FixedLocale } from "@/lib/i18n-fijo";
 import type { BlogPost } from "@/lib/blog-types";
 import { usePT } from "./i18n-provider";
 
