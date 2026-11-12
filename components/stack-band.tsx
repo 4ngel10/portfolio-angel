@@ -24,11 +24,7 @@ export function StackBand() {
   const { t } = useI18n();
 
   return (
-    <section
-      aria-label={t("marquee.stack")}
-      className="border-y py-6 md:py-8"
-      style={{ borderColor: "var(--rule)" }}
-    >
+    <section className="border-y py-6 md:py-8" style={{ borderColor: "var(--rule)" }}>
       <TechList
         gap="2.5rem"
         items={TECH}
