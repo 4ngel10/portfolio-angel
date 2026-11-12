@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { Bullet } from "./bullet";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
-import { TiltCard } from "./tilt-card";
+import { ZoomCard } from "./zoom-card";
 import { Inline } from "./project-article";
 import { Process } from "./process";
 import { RealProjects } from "./real-projects";
@@ -131,17 +131,12 @@ export function ServicePage({
 
       <section className={`border-rule ${bg()} border-t py-20 md:py-28`}>
         <div className="mx-auto max-w-6xl px-6 md:px-8">
-          <RevealGroup
-            className="grid gap-5 md:grid-cols-2"
-            stagger={0.06}
-            style={{ perspective: "1200px" }}
-          >
+          <RevealGroup className="grid gap-5 md:grid-cols-2" stagger={0.06}>
             {service.groups[locale].map((g) => (
               // id = ancla del apartado: los puntos de la home enlazan aquí (/servicios/sistemas#redes).
               // scroll-mt deja sitio a la nav fija; :target resalta la tarjeta a la que se llega.
               <RevealItem key={g.id} id={g.id} className="h-full scroll-mt-24">
-                <TiltCard
-                  lift
+                <ZoomCard
                   className={`${CARD} relative flex flex-col p-7 md:p-8 ${target === g.id ? TARGETED : ""}`}
                   // El borde va en línea: la clase border-rule de CARD pisaría a una utilidad.
                   style={target === g.id ? { ...CARD_BG, borderColor: "var(--accent)" } : CARD_BG}
@@ -180,7 +175,7 @@ export function ServicePage({
                       ))}
                     </p>
                   )}
-                </TiltCard>
+                </ZoomCard>
               </RevealItem>
             ))}
           </RevealGroup>
@@ -206,19 +201,15 @@ export function ServicePage({
                 {modes.lead}
               </p>
             </Reveal>
-            <RevealGroup
-              className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-              stagger={0.07}
-              style={{ perspective: "1200px" }}
-            >
+            <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" stagger={0.07}>
               {modes.items.map((m) => (
                 <RevealItem key={m.title} id={m.id} className="h-full scroll-mt-24">
-                  <TiltCard lift className={`${CARD} p-6`} style={CARD_BG}>
+                  <ZoomCard className={`${CARD} p-6`} style={CARD_BG}>
                     <h3 className="text-[17px] font-semibold tracking-tight">
                       <span className={TITLE_HOVER}>{m.title}</span>
                     </h3>
                     <p className="text-muted mt-2 text-[14px] leading-relaxed">{m.text}</p>
-                  </TiltCard>
+                  </ZoomCard>
                 </RevealItem>
               ))}
             </RevealGroup>
@@ -273,10 +264,8 @@ export function ServicePage({
 
       <section className={`border-rule ${bg()} border-t`}>
         <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-          <Link href={`/servicios/${other.id}`} className="block" style={{ perspective: "1200px" }}>
-            <TiltCard
-              lift
-              maxTilt={4}
+          <Link href={`/servicios/${other.id}`} className="block">
+            <ZoomCard
               className={`${CARD} flex flex-col gap-6 p-7 md:flex-row md:items-center md:justify-between md:p-10`}
               style={CARD_BG}
             >
@@ -297,7 +286,7 @@ export function ServicePage({
                 {t("servicesPage.more")}
                 <Arrow />
               </span>
-            </TiltCard>
+            </ZoomCard>
           </Link>
         </div>
       </section>

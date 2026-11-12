@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
-import { TiltCard } from "./tilt-card";
+import { ZoomCard } from "./zoom-card";
 import { Arrow, formatDate } from "./project-article";
 import { useI18n } from "@/lib/i18n";
 import type { BlogPostSummary } from "@/lib/blog-types";
@@ -33,7 +33,6 @@ export function BlogIndex({ posts }: { posts: BlogPostSummary[] }) {
         <RevealGroup
           className="mx-auto grid max-w-6xl grid-cols-1 gap-5 px-6 md:grid-cols-2 md:px-8"
           stagger={0.08}
-          style={{ perspective: "1200px" }}
         >
           {posts.map((p) => {
             const content = p[locale];
@@ -43,8 +42,7 @@ export function BlogIndex({ posts }: { posts: BlogPostSummary[] }) {
                   href={`/blog/${p.slug}`}
                   className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
                 >
-                  <TiltCard
-                    maxTilt={3}
+                  <ZoomCard
                     className="group border-rule h-full rounded-2xl border p-7 transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)]"
                     style={{ background: "var(--bg)" }}
                   >
@@ -83,7 +81,7 @@ export function BlogIndex({ posts }: { posts: BlogPostSummary[] }) {
                         <Arrow />
                       </span>
                     </article>
-                  </TiltCard>
+                  </ZoomCard>
                 </Link>
               </RevealItem>
             );

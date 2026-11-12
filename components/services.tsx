@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Bullet } from "./bullet";
-import { TiltCard } from "./tilt-card";
+import { ZoomCard } from "./zoom-card";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { SERVICE_ICONS } from "./service-icons";
 import { useI18n } from "@/lib/i18n";
@@ -41,14 +41,10 @@ export function Services({ items }: { items: { key: string; id: string }[] }) {
           </p>
         </Reveal>
 
-        <RevealGroup
-          className="grid gap-5 md:grid-cols-2"
-          stagger={0.08}
-          style={{ perspective: "1200px" }}
-        >
+        <RevealGroup className="grid gap-5 md:grid-cols-2" stagger={0.08}>
           {services.map((s) => (
             <RevealItem key={s.key} className="h-full">
-              <TiltCard
+              <ZoomCard
                 className="group border-rule relative flex h-full flex-col rounded-2xl border p-8 transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)] md:p-10"
                 style={{ background: "var(--bg)" }}
               >
@@ -110,7 +106,7 @@ export function Services({ items }: { items: { key: string; id: string }[] }) {
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
                 </span>
-              </TiltCard>
+              </ZoomCard>
             </RevealItem>
           ))}
         </RevealGroup>

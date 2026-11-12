@@ -11,7 +11,7 @@ Portfolio personal single-page de Ángel Fernández Garriga (técnico de sistema
 - **Next.js 16** App Router (Turbopack), Server Components por defecto. Componentes interactivos marcados con `"use client"`.
 - **React 19**, **TypeScript strict**.
 - **Tailwind CSS v4** (4.0.0-beta.8): configuración en `app/globals.css` con `@theme`. No hay `tailwind.config.ts`. Las variantes propias van con `@variant` (esta beta no admite `@custom-variant`).
-- **Framer Motion 11** para el tilt 3D y entradas de hero, con `LazyMotion` (`lib/motion.tsx`, funciones `domAnimation` en `lib/motion-features.ts`, que se descargan aparte tras hidratar). Con `strict`: usa siempre `m.div`, `m.span`... (de `framer-motion`), **nunca `motion.*`**, o falla. Si algo necesita drag o layout habría que pasar a `domMax`.
+- **Framer Motion 11** para el zoom de las cards y entradas de hero, con `LazyMotion` (`lib/motion.tsx`, funciones `domAnimation` en `lib/motion-features.ts`, que se descargan aparte tras hidratar). Con `strict`: usa siempre `m.div`, `m.span`... (de `framer-motion`), **nunca `motion.*`**, o falla. Si algo necesita drag o layout habría que pasar a `domMax`.
 - **next/font** (Space Grotesk + JetBrains Mono) self-hosted.
 - i18n cliente propio en `lib/i18n.tsx` (Context + JSON).
 - Theme toggle en `lib/theme.tsx`. Clase `.dark` en `<html>`, script bloqueante en `<head>` para prevenir flash.
@@ -46,7 +46,7 @@ components/
   nav / footer          comunes a todas las páginas
   hero / about / services / portfolio / blog-teaser / contact   secciones de la home
   project-article / services-page / blog-index / blog-article                páginas interiores
-  tilt-card / reveal / project-cover / json-ld / skip-link / mobile-contact-cta / back-to-top
+  zoom-card / reveal / project-cover / json-ld / skip-link / mobile-contact-cta / back-to-top
 lib/
   projects.ts services.ts           contenido (ES y EN)
   blog-*.ts                         blog en Supabase (db, types, validate, markup, actions, save, imagenes, svg, og, api-auth, claves-actions, revalidate; ver sección Blog)
@@ -75,7 +75,6 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Fondos**: paper `#fbfaf7` + alt `#f3f1ec` (light). Dark: `#0a0f1c` + `#0f1629`.
 - **Em dashes (—)**: cero. Usa comas o puntos.
 - **Dos puntos y guiones como puntuación**: cero en los textos visibles de la home (preferencia de Ángel). Se mantienen los guiones que forman parte de una palabra (Hyper-V, "15 minutos") y el separador " · " de los resultados de los casos. Para rangos: "24 a 48 horas", no "24-48".
-- **Cards de servicios**: el icono y el título no llevan `translateZ`. Con la perspectiva del tilt se ensanchaban y quedaban unos 6px a la izquierda del lead y los bullets (medido). Si se añade profundidad, que sea a todos los hijos por igual.
 - **Eyebrows**: cero. Las secciones se abren con su H2.
 - **Radios**: tope en 16px para cards. Nada de 24px+.
 - **Botones**: `.btn-primary` y `.btn-secondary` en `globals.css`. Siempre `scale(0.97)` en `:active`.
@@ -83,7 +82,7 @@ Las decisiones de estilo son deliberadas, no las deshagas:
 - **Fotos de Ángel** (decisión de Ángel del 2026-11-12; la del hero sustituye al recorte con halo del 2026-11-09). Hay dos, cada una en su sitio: la foto entera en el hero (abajo) y el recorte transparente en Sobre mí (al final de este punto).
   **Hero**: Foto entera con su fondo, recorte vertical 4:5, esquinas de 16 px (`rounded-2xl`, el tope de las cards) y el borde interior de las portadas (`ring-[var(--rule)]`), **sin halo, brillo, card ni sombra**. `components/hero-photo.tsx` pinta un `<picture>` con AVIF y WebP (`public/hero/angel-<ancho>.{avif,webp}`, anchos en `lib/hero-foto.ts`), generados con `npx tsx scripts/generar-foto-hero.ts [nombre-del-original]`, que lee el original de `originales/`. En móvil y tablet va entre el título y el párrafo (160 px de ancho, 184 desde `sm`) con `fetchPriority="low"`: ahí el LCP es el párrafo y la foto no debe pasar a serlo (mantén su área por debajo de la del párrafo). En `lg:` va a la derecha (340 px como máximo) con `fetchPriority="high"`: es el LCP. Los `<source media>` hacen que cada bloque solo descargue su foto; el `<img src>` es un pixel transparente a propósito. Alt en `photo.alt` (describe la escena, sin marcas, lugar ni empresa). Solo un zoom discreto al pasar el ratón (`scale-[1.03]`, 500 ms; instantáneo con reduced motion), sin tilt. `angel-square.webp` sigue solo para el `image` del Person en JSON-LD.
   **Sobre mí**: el recorte con fondo transparente (`public/angel-cutout.webp`, 520x920, es la fuente; `public/angel-cutout-sm.webp` es el `src` de reserva del `<img>`). `components/about.tsx` lo pinta con `<picture>` AVIF y WebP (`public/sobre-mi/angel-<ancho>.{avif,webp}`, anchos en `lib/sobre-mi-foto.ts`, generados con `npx tsx scripts/generar-foto-sobre-mi.ts`). Tamaño moderado (168 px en móvil, 208 px desde `lg`) para no quitar protagonismo al texto ni a la foto del hero; `loading="lazy"`, sin priority y `sizes="(min-width: 1024px) 208px, 168px"`, así cada pantalla baja una sola variante. En `lg:` a la derecha del texto y alineado abajo con la frase del stack; en móvil y tablet justo debajo del título (`order-first`). Halo del acento al 10 %, solo para que el polo oscuro no se pierda en el tema oscuro; no lo agrandes. Al pasar el ratón hace el mismo zoom discreto que la del hero (`scale-[1.03]`, 500 ms, origen abajo para que no se despegue de la frase del stack). Alt en `about.photoAlt`. No recortes ni reconviertas `angel-cutout.webp`.
-- **Tilt 3D** (solo cards sin imagen: servicios y blog): gateado por `useReducedMotion`. Con ratón sigue al cursor; en táctil se inclina hacia el punto tocado y vuelve al soltar (decisión de Ángel: mismo efecto en móvil que en PC).
+- **Cards sin tilt** (decisión de Ángel, 2026-11-12): ninguna card se mueve ni se inclina siguiendo el cursor. Al pasar el ratón (o tocar en móvil) solo se ilumina el reborde en el acento y hacen un zoom discreto (`ZoomCard` en `components/zoom-card.tsx`, `scale` 1.02 con `whileHover` y `whileTap`; el reborde y la sombra los pone la clase de cada card). No vuelvas a añadir tilt, perspectiva ni elevación.
 - **Hover en móvil**: `@variant hover (&:hover)` en `globals.css` hace que `hover:` también se active al tocar (Tailwind v4 lo limita a `(hover: hover)` por defecto). No lo quites: Ángel quiere los mismos efectos en móvil que en PC.
 - **Enlaces externos**: siempre `target="_blank" rel="noopener noreferrer"`. LinkedIn con `www.` para que en móvil abra la app.
 - **Icon system**: inline SVG stroke 2px, 24x24 viewBox. No instales lucide ni heroicons sin consultar.

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Reveal } from "./reveal";
-import { TiltCard } from "./tilt-card";
+import { ZoomCard } from "./zoom-card";
 import { Arrow, Block, ReadingProgress, SectionHeading, formatDate } from "./project-article";
 import { ServiceCta } from "./service-cta";
 import { useI18n } from "@/lib/i18n";
@@ -86,10 +86,8 @@ export function BlogArticle({
       {next && (
         <section className="border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-            <Link href={`/blog/${next.slug}`} className="block" style={{ perspective: "1200px" }}>
-              <TiltCard
-                lift
-                maxTilt={4}
+            <Link href={`/blog/${next.slug}`} className="block">
+              <ZoomCard
                 className="group border-rule flex flex-col gap-3 rounded-2xl border p-7 transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)] md:p-10"
                 style={{ background: "var(--bg)" }}
               >
@@ -101,7 +99,7 @@ export function BlogArticle({
                   {t("blog.read")}
                   <Arrow />
                 </span>
-              </TiltCard>
+              </ZoomCard>
             </Link>
           </div>
         </section>
