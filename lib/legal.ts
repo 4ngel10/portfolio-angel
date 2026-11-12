@@ -24,7 +24,7 @@ export type LegalPage = {
   content: Record<Locale, LegalContent>;
 };
 
-const UPDATED = "2026-11-11";
+const UPDATED = "2026-11-12";
 
 const holderEs = [
   `**Titular:** ${LEGAL.nombre}`,
@@ -308,7 +308,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               "Al pulsar enviar, el formulario de contacto manda los datos a mi servidor y de ahí a Resend, que los entrega a mi correo. No instala cookies en tu navegador. Más información en la [política de privacidad](/privacidad).",
               "La web está alojada en Vercel. Como cualquier alojamiento, puede tratar datos técnicos de la conexión, como la dirección IP, en sus registros de servidor. Esto no instala cookies. Los detalles están en la [política de privacidad](/privacidad).",
-              "Vercel Speed Insights mide de forma anónima el rendimiento de las páginas públicas (tiempos de carga, tipo de dispositivo y navegador, país). No se usa para identificarte ni para hacer seguimiento entre sitios, y no se carga en el área privada.",
+              "Vercel Speed Insights mide de forma anónima el rendimiento de las páginas públicas (tiempos de carga, tipo de dispositivo y navegador, país). No se usa para identificarte ni para hacer seguimiento entre sitios, no crea cookies en tu navegador y no se carga en el área privada.",
             ],
           },
           {
@@ -351,7 +351,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               "When you press send, the contact form sends your data to my server and from there to Resend, which delivers it to my email. It sets no cookies in your browser. More information in the [privacy policy](/privacidad).",
               "The website is hosted on Vercel. Like any hosting provider, it may process technical connection data, such as the IP address, in its server logs. This does not set cookies. Details are in the [privacy policy](/privacidad).",
-              "Vercel Speed Insights anonymously measures the performance of the public pages (load times, device type and browser, country). It is not used to identify you or to track you across sites, and it is not loaded in the private area.",
+              "Vercel Speed Insights anonymously measures the performance of the public pages (load times, device type and browser, country). It is not used to identify you or to track you across sites, it sets no cookies in your browser and it is not loaded in the private area.",
             ],
           },
           {
