@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { CONTACT } from "@/lib/site";
 import { ProofStrip } from "./proof-strip";
+import { HeroPhoto } from "./hero-photo";
 
 // Reduced motion: lo resuelve <MotionConfig reducedMotion="user"> (lib/motion.tsx).
 // No ramificar initial/animate con useReducedMotion: en SSR vale null y rompe la hidratación.
@@ -41,30 +41,10 @@ export function Hero() {
             <Line delay={0.17}>{t("hero.title2")}</Line>
           </h1>
 
-          {/* Foto en móvil y tablet, entre el título y el párrafo. Sin priority: el LCP debe
-              seguir siendo el párrafo y la foto no compite con él. */}
+          {/* Foto en móvil y tablet, entre el título y el párrafo. Prioridad baja: el LCP debe
+              seguir siendo el párrafo y la foto no compite con él (ver hero-photo.tsx). */}
           <div className="hero-fade mt-6 mb-2 lg:hidden">
-            <div className="relative mx-auto w-fit">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute"
-                style={{
-                  inset: "8% -4% 0 -4%",
-                  background:
-                    "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 30%, transparent), transparent)",
-                }}
-              />
-              <Image
-                src="/angel-cutout-sm.webp"
-                alt={t("photo.alt")}
-                width={300}
-                height={531}
-                unoptimized
-                fetchPriority="low"
-                decoding="async"
-                className="hero-photo relative block h-[220px] w-auto max-w-none transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] sm:h-[260px]"
-              />
-            </div>
+            <HeroPhoto variante="movil" />
           </div>
 
           <div className="mt-6 md:mt-10">
@@ -109,32 +89,12 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Foto de escritorio (desde lg). Sin tilt ni efectos, como las portadas. */}
+        {/* Foto de escritorio (desde lg), con prioridad alta: es el LCP. Sin tilt ni halo. */}
         <div
           className="hero-fade hidden lg:col-span-4 lg:block"
           style={{ animationDelay: "0.15s" }}
         >
-          {/* Foto recortada sin fondo sobre un brillo estático del acento. Sin card ni borde. */}
-          <div className="relative ml-auto w-fit">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute"
-              style={{
-                inset: "8% -10% 0 -10%",
-                background:
-                  "radial-gradient(closest-side, color-mix(in oklab, var(--accent) 22%, transparent), transparent)",
-              }}
-            />
-            <Image
-              src="/angel-cutout.webp"
-              alt={t("photo.alt")}
-              width={520}
-              height={920}
-              priority
-              sizes="(min-width: 1024px) 280px, 0px"
-              className="hero-photo relative h-[470px] w-auto transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03] xl:h-[520px]"
-            />
-          </div>
+          <HeroPhoto variante="escritorio" />
         </div>
       </div>
     </section>
