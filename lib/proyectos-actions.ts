@@ -415,7 +415,14 @@ export async function moverProyecto(
 
   const supabase = await createClient();
   const { error } = await supabase.rpc("mover_proyecto", { p_id: fila.id, p_dir: direccion });
-  if (error) return { ok: false, error: t("portfolio.err.moveFailed") };
+  if (error) {
+    // PGRST202 / 42883: la función no existe todavía en la BD (falta lanzar db/rls.sql).
+    const falta =
+      error.code === "PGRST202" ||
+      error.code === "42883" ||
+      (error.message ?? "").includes("mover_proyecto");
+    return { ok: false, error: falta ? t("portfolio.err.moveMissing") : t("portfolio.err.moveFailed") };
+  }
 
   revalidarPortfolio(fila.slug);
   return { ok: true, id: fila.id, slug: fila.slug };

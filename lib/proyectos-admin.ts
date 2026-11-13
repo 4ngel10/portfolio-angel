@@ -1,6 +1,9 @@
 import "server-only";
+import { createClient } from "@/lib/supabase/server";
+import { isUuid } from "@/lib/portal/validate";
+import { partesMadrid } from "./blog-db";
 import type { CamposComunes, VersionProyecto } from "./proyectos-editor";
-import type { ProyectoContent, ProyectoServicio } from "./proyectos-types";
+import type { Proyecto, ProyectoContent, ProyectoServicio } from "./proyectos-types";
 import type { ProyectoParaValidar } from "./proyectos-validate";
 
 /**
@@ -98,5 +101,83 @@ export function paraValidar(
     datosProvisionales: fila.datos_provisionales,
     es: fila.content.es,
     en: fila.content.en,
+  };
+}
+
+export type VersionListada = { id: string; created_at: string; titulo: string | null };
+
+/** Todos los proyectos por `orden`, también borradores y programados. */
+export async function listarProyectosAdmin(): Promise<FilaProyecto[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("portfolio_projects")
+    .select("*")
+    .order("orden", { ascending: true })
+    .order("slug", { ascending: true });
+  if (error) throw new Error(`[proyectos-admin] ${error.message}`);
+  return (data ?? []) as FilaProyecto[];
+}
+
+export async function obtenerProyectoAdmin(id: string): Promise<FilaProyecto | null> {
+  if (!isUuid(id)) return null;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("portfolio_projects")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`[proyectos-admin] ${error.message}`);
+  return (data as FilaProyecto | null) ?? null;
+}
+
+export async function listarVersionesProyecto(projectId: string): Promise<VersionListada[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("portfolio_project_versions")
+    .select("id, created_at, titulo:content->content->es->>title")
+    .eq("project_id", projectId)
+    .order("created_at", { ascending: false })
+    .limit(20);
+  if (error) throw new Error(`[proyectos-admin] ${error.message}`);
+  return (data ?? []) as unknown as VersionListada[];
+}
+
+/** Lo que pide acción en el Resumen: borradores y proyectos publicados con cifras provisionales. */
+export async function proyectosPendientes(): Promise<{
+  borradores: FilaProyecto[];
+  provisionales: FilaProyecto[];
+}> {
+  const filas = await listarProyectosAdmin();
+  const ahora = Date.now();
+  return {
+    borradores: filas.filter((f) => f.status === "borrador"),
+    provisionales: filas.filter((f) => f.datos_provisionales && estadoDe(f, ahora) !== "borrador"),
+  };
+}
+
+/** Una fila como `Proyecto`, para la vista previa con los componentes reales de la web. */
+export function filaAProyecto(fila: FilaProyecto): Proyecto {
+  const publicado = fila.published_at ?? new Date().toISOString();
+  return {
+    id: fila.id,
+    slug: fila.slug,
+    tech: fila.tech,
+    cover: fila.cover,
+    tint: fila.tint,
+    ...(fila.url && { url: fila.url }),
+    ...(fila.image && { image: fila.image }),
+    ...(fila.image_dark && { imageDark: fila.image_dark }),
+    ...(fila.cover_position && { coverPosition: fila.cover_position }),
+    ...(fila.og_image && { ogImage: fila.og_image }),
+    date: partesMadrid(new Date(publicado)).dia,
+    service: fila.service,
+    orden: fila.orden,
+    status: fila.status,
+    publishedAt: fila.published_at,
+    updatedAt: fila.updated_at,
+    enServicios: fila.en_servicios,
+    ejemplo: fila.ejemplo,
+    datosProvisionales: fila.datos_provisionales,
+    content: fila.content,
   };
 }

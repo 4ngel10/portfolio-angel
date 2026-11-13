@@ -282,12 +282,21 @@ function CaseSummary({ data }: { data: CaseStudy }) {
  * Artículo de un proyecto. Recibe por props solo este proyecto completo y el siguiente como card
  * (sin su artículo), así el texto de los demás proyectos no viaja en el JS de la página.
  */
-export function ProjectArticle({ project, next }: { project: ProyectoArticulo; next: ProyectoCard | null }) {
+export function ProjectArticle({
+  project,
+  next,
+  comoDiv = false,
+}: {
+  project: ProyectoArticulo;
+  next: ProyectoCard | null;
+  /** Pinta un <div> en vez de <main id="main">, para la vista previa del admin (que ya tiene su <main>). */
+  comoDiv?: boolean;
+}) {
   const { t, locale, l } = useI18n();
   const { title, tag, desc, coverAlt, post, facts, caseStudy } = project.texto;
 
   return (
-    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
+    <Contenedor comoDiv={comoDiv}>
       <ReadingProgress />
       <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
@@ -418,6 +427,15 @@ export function ProjectArticle({ project, next }: { project: ProyectoArticulo; n
           </div>
         </section>
       )}
+    </Contenedor>
+  );
+}
+
+function Contenedor({ comoDiv, children }: { comoDiv: boolean; children: React.ReactNode }) {
+  if (comoDiv) return <div>{children}</div>;
+  return (
+    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
+      {children}
     </main>
   );
 }
