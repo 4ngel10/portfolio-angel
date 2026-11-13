@@ -42,13 +42,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       type: "article",
       locale: OG_LOCALE[lang],
       publishedTime: project.date,
-      ...(project.ogImage && { images: [{ url: project.ogImage, width: 1200, height: 630 }] }),
+      // La imagen sale de opengraph-image.tsx (la propia del proyecto, o una generada).
     },
     twitter: {
-      card: project.ogImage ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title,
       description,
-      ...(project.ogImage && { images: [project.ogImage] }),
     },
   };
 }

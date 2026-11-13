@@ -4,7 +4,8 @@ import path from "node:path";
 import { ajustarTitulo, ANCHO_TITULO, ETIQUETA_CATEGORIA } from "./blog-og";
 
 /**
- * Dibuja la imagen para redes de un artículo, 1200x630. La plantilla es la de las imágenes de
+ * Dibuja la imagen para redes de un artículo o de un proyecto del portfolio, 1200x630 (el rótulo es
+ * "BLOG" o "PROYECTO"). La plantilla es la de las imágenes de
  * public/blog/*-og.jpg: fondo #0a0f1c con brillo naranja arriba a la derecha, raya y "BLOG ·
  * CATEGORÍA" en mono naranja, título en blanco y pie con el nombre y la especialidad. Sin zona
  * geográfica. No sabe nada de la base de datos, así se puede probar con un título cualquiera.
@@ -18,9 +19,13 @@ const RAIZ_FUENTES = path.join(process.cwd(), "assets", "fonts");
 const fuenteTitulo = readFile(path.join(RAIZ_FUENTES, "SpaceGrotesk-Medium.ttf"));
 const fuenteMono = readFile(path.join(RAIZ_FUENTES, "JetBrainsMono-SemiBold.ttf"));
 
-export async function crearImagenSocial(titulo: string, categoria: string): Promise<ImageResponse> {
+export async function crearImagenSocial(
+  titulo: string,
+  categoria: string,
+  rotulo: "BLOG" | "PROYECTO" = "BLOG",
+): Promise<ImageResponse> {
   const { texto, tamano } = ajustarTitulo(titulo.trim());
-  const etiqueta = `BLOG · ${ETIQUETA_CATEGORIA[categoria] ?? categoria.toUpperCase()}`;
+  const etiqueta = `${rotulo} · ${ETIQUETA_CATEGORIA[categoria] ?? categoria.toUpperCase()}`;
   const [datosTitulo, datosMono] = await Promise.all([fuenteTitulo, fuenteMono]);
 
   return new ImageResponse(

@@ -18,6 +18,9 @@ export function revalidarPortfolio(slug?: string) {
   if (slug) {
     revalidatePath(`/proyectos/${slug}`);
     revalidatePath(`/en/proyectos/${slug}`);
+    // La imagen para redes (app/(web)/[lang]/(sitio)/proyectos/[slug]/opengraph-image.tsx).
+    revalidatePath(`/proyectos/${slug}/opengraph-image`);
+    revalidatePath(`/en/proyectos/${slug}/opengraph-image`);
   }
   revalidatePath("/sitemap.xml");
 }

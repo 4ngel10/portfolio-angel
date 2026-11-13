@@ -257,7 +257,7 @@ export function projectJsonLd(project: ProyectoPublicado, lang: Lang = "es") {
       inLanguage: lang,
       datePublished: project.publishedAt,
       dateModified: project.updatedAt,
-      ...(project.ogImage && { image: `${SITE_URL}${project.ogImage}` }),
+      image: `${SITE_URL}${project.ogImage ?? `/proyectos/${project.slug}/opengraph-image`}`,
       author: personRef,
       publisher: personRef,
     },

@@ -1,31 +1,31 @@
 /**
  * Pruebas de los proyectos del portfolio:
  *
- * 1. El comprobador (lib/proyectos-validate.ts): acepta los 6 proyectos reales y un caso de ejemplo
- *    bien formado, y detecta cada regla rota.
+ * 1. El comprobador (lib/proyectos-validate.ts): acepta dos proyectos de prueba (scripts/fixtures) y
+ *    un caso de ejemplo bien formado, y detecta cada regla rota.
  * 2. El conversor de texto a bloques y el del editor (lib/proyectos-editor.ts), de ida y vuelta y
- *    sin pérdidas con los 6 artículos en los dos idiomas.
- * 3. Que lo que hay en Supabase (portfolio_projects) es lo mismo que lib/projects.ts y los textos
- *    portfolio.* de messages/*.json: la migración no ha perdido nada. Lee con la clave anon, como la
- *    web, así que solo ve los publicados. Necesita NEXT_PUBLIC_SUPABASE_URL y
+ *    sin pérdidas con los proyectos de prueba y con los reales.
+ * 3. Los proyectos reales: los publicados en Supabase (portfolio_projects) pasan el comprobador sin
+ *    errores y su contenido hace la ida y vuelta del conversor y del editor sin pérdidas. Lee con la
+ *    clave anon, como la web, así que solo ve los publicados. Necesita NEXT_PUBLIC_SUPABASE_URL y
  *    NEXT_PUBLIC_SUPABASE_ANON_KEY (de .env.local); sin ellas se omite, para que `npm test` siga
- *    funcionando sin red. Esta parte desaparece con lib/projects.ts (fase 6).
+ *    funcionando sin red. Con PORTFOLIO_EXPORT=<json de /api/admin/portfolio/exportar> prueba en su
+ *    lugar los proyectos de esa copia de seguridad (los publicados, igual que la web):
+ *
+ *   PORTFOLIO_EXPORT=C:/ruta/portfolio-2026-11-14.json npx tsx scripts/probar-proyectos.ts
  *
  *   npx tsx scripts/probar-proyectos.ts
  */
-import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { bloquesATexto, imagenesConocidas, textoABloques } from "../lib/blog-markup";
-import { PROJECTS, type Project } from "../lib/projects";
 import {
   contenidoAEditor,
   editorAContenido,
   esEditorProyecto,
   type EditorProyecto,
 } from "../lib/proyectos-editor";
-import type { ProyectoLocale } from "../lib/proyectos-types";
+import type { ProyectoContent, ProyectoLocale } from "../lib/proyectos-types";
 import {
   EJEMPLO,
   parsearPalabrasProhibidas,
@@ -33,6 +33,7 @@ import {
   validarProyecto,
   type ProyectoParaValidar,
 } from "../lib/proyectos-validate";
+import { PROYECTOS_PRUEBA, type ProyectoPrueba } from "./fixtures/proyectos-prueba";
 
 try {
   process.loadEnvFile(".env.local");
@@ -54,8 +55,6 @@ function comprobar(nombre: string, condicion: boolean, detalle?: string) {
 }
 
 const clonar = <T>(valor: T): T => JSON.parse(JSON.stringify(valor)) as T;
-/** JSON ida y vuelta: quita los undefined, como hace la base de datos. */
-const limpio = <T>(v: T): T => (v === undefined ? v : JSON.parse(JSON.stringify(v)));
 
 function canonico(valor: unknown): string {
   if (Array.isArray(valor)) return `[${valor.map(canonico).join(",")}]`;
@@ -69,25 +68,12 @@ function canonico(valor: unknown): string {
   return JSON.stringify(valor) ?? "null";
 }
 
-const leerJson = (lang: string) =>
-  JSON.parse(readFileSync(join(__dirname, "..", "messages", `${lang}.json`), "utf8"))
-    .portfolio as Record<string, string>;
-const msg = { es: leerJson("es"), en: leerJson("en") };
-
-/** El contenido de un proyecto de lib/projects.ts en un idioma, con los textos de la card. */
-function localeDe(p: Project, lang: "es" | "en"): ProyectoLocale {
-  return {
-    title: msg[lang][`${p.key}Title`],
-    tag: msg[lang][`${p.key}Tag`],
-    desc: msg[lang][`${p.key}Desc`],
-    ...(p.coverAlt?.[lang] ? { coverAlt: p.coverAlt[lang] } : {}),
-    post: clonar(p.post[lang]),
-    facts: clonar(p.facts?.[lang] ?? []),
-    ...(p.caseStudy?.[lang] ? { caseStudy: clonar(p.caseStudy[lang]) } : {}),
-  };
+/** El contenido de un proyecto de prueba en un idioma. */
+function localeDe(p: ProyectoPrueba, lang: "es" | "en"): ProyectoLocale {
+  return clonar(p[lang]);
 }
 
-function paraValidar(p: Project): ProyectoParaValidar {
+function paraValidar(p: ProyectoPrueba): ProyectoParaValidar {
   return {
     slug: p.slug,
     service: p.service,
@@ -98,7 +84,7 @@ function paraValidar(p: Project): ProyectoParaValidar {
     imageDark: p.imageDark ?? null,
     ogImage: p.ogImage ?? null,
     ejemplo: false,
-    datosProvisionales: p.slug === "mapeo-impresoras-rds",
+    datosProvisionales: p.datosProvisionales,
     es: localeDe(p, "es"),
     en: localeDe(p, "en"),
   };
@@ -155,7 +141,7 @@ const detalle = (p: ProyectoParaValidar) =>
     .join(" | ");
 
 console.log("Comprobador, lo que tiene que aceptar");
-for (const p of PROJECTS) {
+for (const p of PROYECTOS_PRUEBA) {
   const r = paraValidar(p);
   comprobar(`${p.slug} no tiene errores`, errores(r).length === 0, detalle(r));
 }
@@ -165,17 +151,17 @@ comprobar(
   detalle(ejemploBase()),
 );
 comprobar(
-  "los proyectos reales sin inglés solo avisan",
+  "un proyecto sin inglés solo avisa",
   (() => {
-    const r = paraValidar(PROJECTS[0]);
+    const r = paraValidar(PROYECTOS_PRUEBA[0]);
     r.en = { title: "", tag: "", desc: "", post: { sections: [] }, facts: [] };
     const res = validarProyecto(r, { publicar: true });
     return res.errores.length === 0 && res.avisos.some((a) => a.ruta === "en");
   })(),
 );
 comprobar(
-  "las cifras provisionales de RDS salen como aviso",
-  validarProyecto(paraValidar(PROJECTS[0]), { publicar: true }).avisos.some(
+  "las cifras provisionales salen como aviso",
+  validarProyecto(paraValidar(PROYECTOS_PRUEBA[0]), { publicar: true }).avisos.some(
     (a) => a.ruta === "datosProvisionales",
   ),
 );
@@ -236,7 +222,7 @@ console.log("Comprobador, lo que tiene que detectar");
   m.es.post.sections[0].blocks = ["Otro párrafo."];
   comprobar("un ejemplo sin el aviso como primer párrafo", hay(m, "es.post.sections[0].blocks[0]"));
 
-  const n = paraValidar(PROJECTS[1]);
+  const n = paraValidar(PROYECTOS_PRUEBA[1]);
   n.es.caseStudy = { quote: { text: "Muy bien.", author: "Cliente" } };
   comprobar("cita sin permiso del cliente", hay(n, "es.caseStudy.quote"));
   n.es.caseStudy = { quote: { text: "Muy bien.", author: "Cliente", permiso: true } };
@@ -385,34 +371,33 @@ console.log("Comprobador, lo que tiene que detectar");
   );
 }
 
+/** Ida y vuelta del conversor de texto a bloques con el contenido de un idioma. */
+function probarConversor(nombre: string, contenido: ProyectoLocale, idioma: string) {
+  const secciones = contenido.post.sections;
+  const texto = bloquesATexto(secciones);
+  const vuelta = textoABloques(texto, imagenesConocidas(secciones));
+  comprobar(`${nombre} (${idioma}) bloques a texto y de vuelta`, canonico(vuelta) === canonico(secciones));
+  comprobar(`${nombre} (${idioma}) texto a bloques y de vuelta`, bloquesATexto(vuelta) === texto);
+}
+
+/** Ida y vuelta del editor con el contenido de un idioma. */
+function probarEditor(nombre: string, contenido: ProyectoLocale, idioma: string) {
+  const campos = contenidoAEditor(contenido);
+  const vuelta = editorAContenido(campos, imagenesConocidas(contenido.post.sections));
+  comprobar(`${nombre} (${idioma}) contenido a editor y de vuelta`, canonico(vuelta) === canonico(contenido));
+}
+
 console.log("Conversor texto y bloques, ida y vuelta");
-for (const p of PROJECTS) {
-  for (const idioma of ["es", "en"] as const) {
-    const secciones = p.post[idioma].sections;
-    const texto = bloquesATexto(secciones);
-    const vuelta = textoABloques(texto, imagenesConocidas(secciones));
-    comprobar(
-      `${p.slug} (${idioma}) bloques a texto y de vuelta`,
-      canonico(vuelta) === canonico(secciones),
-    );
-    comprobar(`${p.slug} (${idioma}) texto a bloques y de vuelta`, bloquesATexto(vuelta) === texto);
-  }
+for (const p of PROYECTOS_PRUEBA) {
+  for (const idioma of ["es", "en"] as const) probarConversor(p.slug, p[idioma], idioma);
 }
 
 console.log("Editor, ida y vuelta");
-for (const p of PROJECTS) {
-  for (const idioma of ["es", "en"] as const) {
-    const original = localeDe(p, idioma);
-    const campos = contenidoAEditor(original);
-    const vuelta = editorAContenido(campos, imagenesConocidas(original.post.sections));
-    comprobar(
-      `${p.slug} (${idioma}) contenido a editor y de vuelta`,
-      canonico(vuelta) === canonico(original),
-    );
-  }
+for (const p of PROYECTOS_PRUEBA) {
+  for (const idioma of ["es", "en"] as const) probarEditor(p.slug, p[idioma], idioma);
 }
 {
-  const p = PROJECTS[0];
+  const p = PROYECTOS_PRUEBA[0];
   const editor: EditorProyecto = {
     id: null,
     slug: p.slug,
@@ -479,62 +464,56 @@ for (const p of PROJECTS) {
   );
 }
 
-/** Compara la BD con lib/projects.ts. Solo si hay claves de Supabase. */
-async function compararConBd() {
+type FilaReal = {
+  slug: string;
+  status: string;
+  service: ProyectoParaValidar["service"];
+  tech: string[];
+  image: string | null;
+  image_dark: string | null;
+  og_image: string | null;
+  en_servicios: string[];
+  ejemplo: boolean;
+  datos_provisionales: boolean;
+  published_at: string | null;
+  content: ProyectoContent;
+};
+
+const COLUMNAS_REALES =
+  "slug, status, service, tech, image, image_dark, og_image, en_servicios, ejemplo, datos_provisionales, published_at, content";
+
+/** Proyectos reales: de una copia de seguridad (PORTFOLIO_EXPORT) o de Supabase con la clave anon. */
+async function cargarReales(): Promise<{ filas: FilaReal[]; origen: string } | null> {
+  const exportado = process.env.PORTFOLIO_EXPORT;
+  if (exportado) {
+    const json = JSON.parse(readFileSync(exportado, "utf8")) as { proyectos?: FilaReal[] };
+    const publicadas = (json.proyectos ?? []).filter((f) => f.status === "publicado");
+    return { filas: publicadas, origen: `copia de seguridad (${exportado})` };
+  }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const clave = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !clave) {
-    console.log("\nBD, omitido (faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY).");
-    return;
-  }
-  console.log("\nBD frente a lib/projects.ts");
+  if (!url || !clave) return null;
   const { data, error } = await createClient(url, clave, { auth: { persistSession: false } })
     .from("portfolio_projects")
-    .select(
-      "slug, status, orden, service, tech, cover, tint, url, image, image_dark, og_image, cover_position, en_servicios, ejemplo, datos_provisionales, published_at, content",
-    )
+    .select(COLUMNAS_REALES)
     .eq("status", "publicado")
     .order("orden", { ascending: true });
   if (error) throw new Error(error.message);
-  const filas = data ?? [];
+  return { filas: (data ?? []) as FilaReal[], origen: "Supabase (clave anon)" };
+}
 
-  assert.equal(
-    filas.length,
-    PROJECTS.length,
-    `filas en la BD (${filas.length}) y en PROJECTS (${PROJECTS.length})`,
-  );
-  let comprobaciones = 0;
-  PROJECTS.forEach((p, i) => {
-    const f = filas[i];
-    const donde = p.slug;
-    assert.equal(f.slug, p.slug, `orden ${i}: ${f.slug} y ${p.slug}`);
-    assert.equal(f.orden, (i + 1) * 10, `${donde}: orden`);
-    assert.equal(f.service, p.service, `${donde}: service`);
-    assert.deepEqual(f.tech, p.tech, `${donde}: tech`);
-    assert.equal(f.cover, p.cover, `${donde}: cover`);
-    assert.equal(f.tint, p.tint, `${donde}: tint`);
-    assert.equal(f.url ?? undefined, p.url, `${donde}: url`);
-    assert.equal(f.image ?? undefined, p.image, `${donde}: image`);
-    assert.equal(f.image_dark ?? undefined, p.imageDark, `${donde}: imageDark`);
-    assert.equal(f.og_image ?? undefined, p.ogImage, `${donde}: ogImage`);
-    assert.equal(f.cover_position ?? undefined, p.coverPosition, `${donde}: coverPosition`);
-    assert.equal(f.ejemplo, false, `${donde}: ejemplo`);
-    for (const lang of ["es", "en"] as const) {
-      const c = f.content[lang];
-      assert.equal(c.title, msg[lang][`${p.key}Title`], `${donde} ${lang}: title`);
-      assert.equal(c.tag, msg[lang][`${p.key}Tag`], `${donde} ${lang}: tag`);
-      assert.equal(c.desc, msg[lang][`${p.key}Desc`], `${donde} ${lang}: desc`);
-      assert.equal(c.coverAlt, p.coverAlt?.[lang], `${donde} ${lang}: coverAlt`);
-      assert.deepEqual(c.post, limpio(p.post[lang]), `${donde} ${lang}: post`);
-      assert.deepEqual(c.facts, limpio(p.facts?.[lang] ?? []), `${donde} ${lang}: facts`);
-      assert.deepEqual(c.caseStudy, limpio(p.caseStudy?.[lang]), `${donde} ${lang}: caseStudy`);
-      comprobaciones += 7;
-    }
-    const dia = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(
-      new Date(f.published_at),
-    );
-    assert.equal(dia, p.date, `${donde}: published_at`);
-    // Y lo que hay en la BD también pasa el comprobador.
+async function probarReales() {
+  const reales = await cargarReales();
+  if (!reales) {
+    console.log("\nProyectos reales, omitido (faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY).");
+    return;
+  }
+  console.log(`\nProyectos reales, ${reales.origen}`);
+  comprobar("hay al menos un proyecto publicado", reales.filas.length > 0);
+  for (const f of reales.filas) {
+    const dia = f.published_at
+      ? new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date(f.published_at))
+      : undefined;
     const r = validarProyecto(
       {
         slug: f.slug,
@@ -552,27 +531,21 @@ async function compararConBd() {
       },
       { publicar: true },
     );
-    assert.equal(
-      r.errores.length,
-      0,
-      `${donde}: el comprobador da errores en la BD, ${JSON.stringify(r.errores)}`,
+    comprobar(
+      `${f.slug} pasa el comprobador sin errores`,
+      r.errores.length === 0,
+      r.errores.map((e) => `${e.ruta}: ${e.mensaje}`).join(" | "),
     );
-  });
-  comprobar(
-    `${PROJECTS.length} proyectos iguales en la BD y en lib/projects.ts (${comprobaciones} comprobaciones de texto)`,
-    true,
-  );
-  comprobar(
-    "en_servicios: flexgrip y prompt-vault en web, el resto vacío",
-    filas.every((f) =>
-      ["flexgrip", "prompt-vault"].includes(f.slug)
-        ? canonico(f.en_servicios) === canonico(["web"])
-        : f.en_servicios.length === 0,
-    ),
-  );
+    for (const idioma of ["es", "en"] as const) {
+      const c = f.content[idioma];
+      if (c.post.sections.length === 0) continue; // sin inglés: no hay nada que convertir
+      probarConversor(f.slug, c, idioma);
+      probarEditor(f.slug, c, idioma);
+    }
+  }
 }
 
-compararConBd()
+probarReales()
   .catch((e) => {
     fallos++;
     console.error(e);

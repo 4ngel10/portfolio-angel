@@ -1,7 +1,7 @@
 /**
  * Tipos de los proyectos del portfolio sin dependencias de servidor: los pueden importar los
- * componentes de cliente. El contenido vive en Supabase (`portfolio_projects`); hasta la fase 6
- * `lib/projects.ts` sigue como respaldo y reutiliza estos tipos.
+ * componentes de cliente. El contenido vive en Supabase (`portfolio_projects`) y se gestiona en
+ * /admin/portfolio; la lectura pública está en lib/proyectos-db.ts.
  *
  * Dentro del texto de los artículos: **negrita** y [enlace](https://...). Sin em dashes.
  */

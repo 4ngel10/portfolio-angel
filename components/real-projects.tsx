@@ -108,7 +108,7 @@ function SelfCard() {
             className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
             style={{ color: "var(--accent)" }}
           >
-            {t("portfolio.p2Tag")}
+            {t("servicesPage.thisSiteTag")}
           </span>
           <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
             {t("servicesPage.thisSiteTitle")}
