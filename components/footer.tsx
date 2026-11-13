@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { stripLocale } from "@/lib/rutas";
-import { cvLink } from "@/lib/site";
+import { cvHref, cvLink } from "@/lib/site";
 import { NavLink } from "./nav";
 
 /** Pie de todas las páginas. Fuera de la home, las anclas apuntan a la home (/#about). */
@@ -136,7 +136,7 @@ export function Footer() {
           ))}
           {cv && (
             <a
-              href={cv.href}
+              href={cvHref(locale)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center transition-colors hover:text-white"
