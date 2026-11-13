@@ -1,0 +1,63 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="1200" height="630" fill="#0a0f1c"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#glow)"/>
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0" stop-color="#fb923c" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#fb923c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- enlaces: una línea por red -->
+  <g stroke="#fb923c" stroke-width="3" stroke-dasharray="2 10">
+    <path d="M520 275 L330 180"/>
+    <path d="M680 275 L870 180"/>
+    <path d="M520 355 L330 450"/>
+    <path d="M680 355 L870 450"/>
+  </g>
+
+  <!-- router central -->
+  <rect x="490" y="250" width="220" height="130" rx="16" fill="#0f1629" stroke="#fb923c" stroke-width="3"/>
+  <path d="M520 340 H680" stroke="#2a3552" stroke-width="3"/>
+  <circle cx="530" cy="361" r="5" fill="#fb923c" stroke="none"/>
+  <circle cx="554" cy="361" r="5" fill="#fb923c" stroke="none"/>
+  <circle cx="578" cy="361" r="5" fill="#2a3552" stroke="none"/>
+  <path d="M570 300 a42 42 0 0 1 60 0" stroke="#e8ecf5" stroke-width="3"/>
+  <path d="M580 311 a28 28 0 0 1 40 0" stroke="#e8ecf5" stroke-width="3"/>
+  <circle cx="600" cy="322" r="4" fill="#e8ecf5" stroke="none"/>
+
+  <!-- nodo superior izquierdo, wifi de clientes -->
+  <g>
+    <rect x="190" y="110" width="200" height="140" rx="16" fill="#0f1629" stroke="#2a3552" stroke-width="3"/>
+    <path d="M250 185 a64 64 0 0 1 80 0" stroke="#e8ecf5" stroke-width="3"/>
+    <path d="M263 203 a42 42 0 0 1 54 0" stroke="#e8ecf5" stroke-width="3"/>
+    <path d="M277 221 a22 22 0 0 1 26 0" stroke="#e8ecf5" stroke-width="3"/>
+    <circle cx="290" cy="232" r="4" fill="#fb923c" stroke="none"/>
+  </g>
+
+  <!-- nodo superior derecho, TPV -->
+  <g>
+    <rect x="810" y="110" width="200" height="140" rx="16" fill="#0f1629" stroke="#2a3552" stroke-width="3"/>
+    <rect x="850" y="135" width="120" height="70" rx="8" stroke="#e8ecf5" stroke-width="3"/>
+    <path d="M850 160 H970" stroke="#e8ecf5" stroke-width="3"/>
+    <path d="M868 185 H900" stroke="#fb923c" stroke-width="3"/>
+    <path d="M900 205 V222 M870 224 H930" stroke="#e8ecf5" stroke-width="3"/>
+  </g>
+
+  <!-- nodo inferior izquierdo, cámaras -->
+  <g>
+    <rect x="190" y="380" width="200" height="140" rx="16" fill="#0f1629" stroke="#2a3552" stroke-width="3"/>
+    <rect x="228" y="418" width="88" height="46" rx="10" stroke="#e8ecf5" stroke-width="3"/>
+    <path d="M316 434 L352 418 V464 L316 450" stroke="#e8ecf5" stroke-width="3"/>
+    <circle cx="262" cy="441" r="9" stroke="#fb923c" stroke-width="3"/>
+    <path d="M240 482 H340" stroke="#e8ecf5" stroke-width="3"/>
+  </g>
+
+  <!-- nodo inferior derecho, oficina -->
+  <g>
+    <rect x="810" y="380" width="200" height="140" rx="16" fill="#0f1629" stroke="#2a3552" stroke-width="3"/>
+    <rect x="850" y="410" width="120" height="72" rx="8" stroke="#e8ecf5" stroke-width="3"/>
+    <path d="M880 432 H940 M880 452 H920" stroke="#fb923c" stroke-width="3"/>
+    <path d="M910 482 V498 M880 500 H940" stroke="#e8ecf5" stroke-width="3"/>
+  </g>
+</svg>

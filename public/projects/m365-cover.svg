@@ -1,0 +1,35 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.35" r="0.6">
+      <stop offset="0" stop-color="#fb923c" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#fb923c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0a0f1c"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- enlaces de la nube a cada servicio -->
+  <g stroke="#fb923c" stroke-width="3" stroke-dasharray="2 10">
+    <path d="M570 235 C470 290 340 300 290 360"/>
+    <path d="M600 245 V360"/>
+    <path d="M630 235 C730 290 860 300 910 360"/>
+  </g>
+
+  <!-- nube central -->
+  <path d="M520 235 a38 38 0 0 1 -2 -76 a62 62 0 0 1 118 -14 a44 44 0 0 1 24 90 Z" fill="#0f1629" stroke="#fb923c" stroke-width="3"/>
+
+  <!-- correo -->
+  <rect x="190" y="360" width="200" height="140" rx="16" fill="#0f1629" stroke="#2a3552" stroke-width="3"/>
+  <rect x="245" y="392" width="90" height="62" rx="8" stroke="#e8ecf5" stroke-width="3"/>
+  <path d="M249 400 L290 432 L331 400" stroke="#fb923c" stroke-width="3"/>
+
+  <!-- archivos -->
+  <rect x="500" y="360" width="200" height="140" rx="16" fill="#0f1629" stroke="#2a3552" stroke-width="3"/>
+  <path d="M556 402 h26 l10 10 h52 v48 h-88 z" stroke="#e8ecf5" stroke-width="3"/>
+  <path d="M556 426 h88" stroke="#fb923c" stroke-width="3"/>
+
+  <!-- seguridad -->
+  <rect x="810" y="360" width="200" height="140" rx="16" fill="#0f1629" stroke="#2a3552" stroke-width="3"/>
+  <path d="M910 392 L950 406 V436 C950 456 930 470 910 478 C890 470 870 456 870 436 V406 Z" stroke="#e8ecf5" stroke-width="3"/>
+  <path d="M893 434 l12 12 l22 -24" stroke="#fb923c" stroke-width="3"/>
+</svg>

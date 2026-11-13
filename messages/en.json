@@ -125,6 +125,12 @@
     "p4Tag": "Web development",
     "p4Title": "FlexGrip, product landing page and direct sales",
     "p4Desc": "Online store for my own product, a fitness kit with resistance bands and a hand gripper, with Stripe checkout and guarantees in plain sight.",
+    "p5Tag": "Infrastructure",
+    "p5Title": "A professional network for a bar",
+    "p5Desc": "Network segmentation for a bar with guest wifi isolated from the till, cameras and back office.",
+    "p6Tag": "Infrastructure",
+    "p6Title": "Migrating to Microsoft 365",
+    "p6Desc": "Migration of email and 420 GB of files for a 24 person company to Microsoft 365 with zero downtime.",
     "prev": "Previous project",
     "next": "Next project"
   },
