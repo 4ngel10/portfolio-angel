@@ -19,7 +19,7 @@ const NAVEGADORES = [
   "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
   "C:/Program Files/Google/Chrome/Application/chrome.exe",
 ];
-const navegador = NAVEGADORES.find((n) => existsSync(n));
+const navegador: string = NAVEGADORES.find((n) => existsSync(n)) ?? "";
 if (!navegador) throw new Error("No hay Edge ni Chrome");
 
 const fuente = (f: string) => pathToFileURL(path.join(RAIZ, "assets", "fonts", f)).href;
