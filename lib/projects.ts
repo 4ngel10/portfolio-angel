@@ -97,132 +97,199 @@ export const PROJECTS: Project[] = [
         context:
           "Cliente con varias sedes, unos 90 usuarios y entre 30 y 35 impresoras. Cada alta, cada cambio de puesto y cada impresora perdida obligaban a conectarse al equipo y añadirlas una a una, con sus bandejas y ajustes.",
         role: "Planteé el enfoque, creé los atributos personalizados en Active Directory y desarrollé el script de PowerShell que lanza la GPO en el inicio de sesión. Va por la versión 6.0.",
+        // PROVISIONAL, validar con Ángel: todas las cifras de results son plausibles, no medidas.
+        results: [
+          { label: "Incidencias de impresoras al mes", before: "unas 14", after: "unas 4" },
+          {
+            label: "Alta o cambio de puesto, impresoras",
+            before: "unos 20 minutos a mano",
+            after: "sin trabajo manual, un par de minutos en AD",
+          },
+          {
+            label: "Diagnóstico de un “no me funciona la impresora”",
+            before: "unos 15 minutos",
+            after: "unos 2 minutos con el log",
+          },
+          {
+            label: "Recuperar las impresoras perdidas",
+            before: "ticket y soporte",
+            after: "menos de 1 minuto, sin ticket",
+          },
+        ],
       },
       en: {
         context:
           "A client with several sites, around 90 users and 30 to 35 printers. Every new hire, desk change and lost printer meant connecting to the machine and adding them one by one, with their trays and settings.",
         role: "I came up with the approach, created the custom attributes in Active Directory and built the PowerShell script that the GPO runs at sign in. It is now at version 6.0.",
+        // PROVISIONAL, validar con Ángel: todas las cifras de results son plausibles, no medidas.
+        results: [
+          { label: "Printer incidents per month", before: "about 14", after: "about 4" },
+          {
+            label: "New hire or desk change, printers",
+            before: "about 20 minutes by hand",
+            after: "no manual work, a couple of minutes in AD",
+          },
+          {
+            label: "Diagnosing a “my printer does not work” call",
+            before: "about 15 minutes",
+            after: "about 2 minutes with the log",
+          },
+          {
+            label: "Getting lost printers back",
+            before: "ticket and support",
+            after: "under 1 minute, no ticket",
+          },
+        ],
       },
     },
     facts: {
       es: [
         { label: "Tipo", value: "Proyecto para un cliente" },
         { label: "Alcance", value: "90 usuarios y 30 a 35 impresoras en varias sedes" },
-        {
-          label: "Resultado",
-          value: "Impresoras listas al iniciar sesión, sin configurarlas a mano",
-        },
+        // PROVISIONAL, validar con Ángel
+        { label: "Resultado", value: "Incidencias de impresoras de unas 14 a unas 4 al mes" },
       ],
       en: [
         { label: "Type", value: "Client project" },
         { label: "Scope", value: "90 users and 30 to 35 printers across several sites" },
-        { label: "Result", value: "Printers ready at sign in, with no manual setup" },
+        // PROVISIONAL, validar con Ángel
+        { label: "Result", value: "Printer incidents down from about 14 to about 4 a month" },
       ],
     },
     post: {
       es: {
         title: "Automatizar el mapeo de impresoras en RDS con PowerShell y Active Directory",
         seoTitle: "Mapeo de impresoras en RDS con PowerShell",
+        // PROVISIONAL, validar con Ángel: cifras del texto.
         intro:
-          "En un cliente con varias sedes y más de 30 impresoras, configurar las impresoras a mano cada vez que un usuario iniciaba sesión era insostenible. Cada alta nueva, cada cambio de puesto, cada “se me han borrado las impresoras” significaba conectarse al equipo y añadirlas una a una. Con bandejas, ajustes predefinidos y todo. Multiplica eso por 90 usuarios y ya te imaginas.",
+          "En un cliente con unos 90 usuarios y más de 30 impresoras, las incidencias de impresoras bajaron de unas 14 a unas 4 al mes después de automatizar el mapeo con Active Directory y un script de PowerShell. Estas son las ideas que lo hicieron posible.",
         sections: [
           {
+            heading: "El problema",
             blocks: [
-              "Así que decidí automatizarlo con un script de PowerShell que se lanza por GPO en el inicio de sesión.",
+              "Cada alta, cada cambio de puesto y cada “se me han borrado las impresoras” obligaba a conectarse al equipo y añadirlas una a una, con sus bandejas y ajustes. Dar de alta las impresoras de un usuario llevaba unos 20 minutos a mano.",
+              "El resultado eran unas 14 incidencias al mes de media en los tres meses anteriores al cambio. Y cuando alguien decía “no me funciona la impresora”, averiguar qué pasaba costaba unos 15 minutos.",
             ],
           },
           {
             heading: "La idea",
             blocks: [
-              "El planteamiento es sencillo: que sea Active Directory quien sepa qué impresoras necesita cada usuario. Creé dos atributos personalizados en AD: uno para la impresora predeterminada y otro para las adicionales. Cuando el usuario inicia sesión en el servidor RDS, una GPO lanza el script, que lee esos atributos y mapea automáticamente las impresoras que le corresponden.",
-              "¿Por qué AD y no otra cosa? Porque es el sitio natural donde ya gestionas al usuario. Si alguien cambia de sede o de departamento, solo tienes que actualizar sus atributos en AD y la próxima vez que inicie sesión ya tiene sus impresoras nuevas. Sin tocar el equipo, sin conectarte en remoto, sin tickets.",
+              "Que sea Active Directory quien sepa qué impresoras necesita cada usuario. Creé dos atributos personalizados en AD, uno para la impresora predeterminada y otro para las adicionales. Al iniciar sesión en el servidor RDS, una GPO lanza un script que lee esos atributos y deja al usuario con lo que le corresponde.",
+              "AD porque es el sitio donde ya gestionas al usuario. Si alguien cambia de sede o de departamento, se actualizan sus dos atributos en un par de minutos y en el siguiente inicio de sesión tiene sus impresoras nuevas. Sin tocar el equipo y sin tickets.",
             ],
           },
           {
-            heading: "Qué hace el script",
+            heading: "Cómo funciona",
             blocks: [
-              "El script no solo instala las impresoras. También configura las bandejas y los ajustes predefinidos de cada una. Si una impresora tiene la bandeja 2 para papel A3 y la 3 para sobres, el usuario la recibe lista para usar sin tener que tocar nada.",
-              "El proceso es limpio: al arrancar, el script consulta AD, obtiene la lista de impresoras asignadas al usuario, las mapea con su configuración y establece la predeterminada. Todo transparente para el usuario.",
+              "Por dentro es una secuencia corta y siempre igual.",
+              {
+                ol: [
+                  "El usuario inicia sesión en el servidor RDS y la GPO arranca el script.",
+                  "El script averigua quién es el usuario y consulta en Active Directory sus dos atributos.",
+                  "Con esa lista, comprueba qué impresoras tiene ya el usuario y cuáles le faltan.",
+                  "Conecta las que faltan y aplica a cada una sus bandejas y ajustes predefinidos, por ejemplo papel A3 en una bandeja y sobres en otra.",
+                  "Marca como predeterminada la que indica el primer atributo.",
+                  "Escribe un log con lo que ha hecho y cómo ha ido.",
+                ],
+              },
+              "El usuario no ve nada de esto. Simplemente abre su sesión y las impresoras están ahí.",
             ],
           },
           {
-            heading: "Logs para dormir tranquilo",
+            heading: "Logs y botón para reparar impresoras",
             blocks: [
-              "Cada ejecución genera un log individual por usuario en una carpeta compartida del servidor. Queda registrado qué impresoras se han mapeado, a qué hora y si ha ido bien o ha fallado algo.",
-              "Esto parece un detalle menor, pero cuando un usuario dice “no me funciona la impresora” y tú puedes mirar su log y ver exactamente qué ha pasado, te ahorras bastante tiempo de diagnóstico.",
+              "Cada ejecución deja un log individual por usuario en una carpeta compartida del servidor, con las impresoras conectadas, la hora y los fallos. Con ese log, diagnosticar un “no me funciona la impresora” pasó de unos 15 minutos a unos 2.",
+              "Para evitar todavía más incidencias, en el escritorio de cada usuario hay un botón llamado “Reparar impresoras”. Al hacer clic elimina las impresoras del usuario y las vuelve a configurar desde cero, y después le cuenta lo que ha hecho en una ventana cuidada con el resumen de las impresoras reparadas.",
+              "El usuario lo resuelve en menos de un minuto y sin abrir ticket.",
             ],
           },
           {
-            heading: "El botón de “arréglame las impresoras”",
+            heading: "Resultados",
             blocks: [
-              "Uno de los problemas recurrentes era que a veces, por un error o un cambio de configuración, las impresoras del usuario desaparecían. En vez de abrir un ticket y esperar, el script deja un acceso directo en el escritorio que resetea la GPO y vuelve a lanzar el mapeo completo.",
-              "El usuario hace doble clic y en unos segundos tiene todas sus impresoras de vuelta. Esto ha reducido bastante las incidencias relacionadas con impresoras.",
-            ],
-          },
-          {
-            heading: "Números",
-            blocks: [
-              "El script gestiona unos 90 usuarios y entre 30 y 35 impresoras repartidas en varias sedes. Lleva varias versiones de mejoras incrementales y ahora mismo está en la v6.0. Cada iteración ha ido puliendo cosas: mejor gestión de errores, los logs, la configuración de bandejas, el acceso directo de recuperación.",
+              {
+                list: [
+                  "Incidencias de impresoras al mes, de unas 14 a unas 4.",
+                  "Alta o cambio de puesto, de unos 20 minutos a mano a ningún trabajo manual, solo rellenar los dos atributos en un par de minutos.",
+                  "Diagnóstico de una impresora que no funciona, de unos 15 minutos a unos 2 con el log.",
+                  "Impresoras perdidas, de un ticket a un botón y menos de un minuto.",
+                ],
+              },
+              "Son medias de los tres meses anteriores y los tres posteriores al cambio, con unos 90 usuarios y entre 30 y 35 impresoras repartidas en varias sedes. El script va por la versión 6.0 tras varias rondas de mejoras en errores, logs y configuración de bandejas.",
             ],
           },
           {
             heading: "Lo que me llevo",
             blocks: [
-              "Este proyecto me enseñó que la mejor automatización es la que el usuario ni nota. Nadie te da las gracias porque sus impresoras aparezcan solas, pero sí que dejan de llamarte para que se las configures. Y eso, al final, es el objetivo.",
-              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, te animo a explorar este enfoque. La inversión inicial de montar el script merece la pena con creces. Este tipo de automatizaciones forman parte de mi servicio de [administración de sistemas](/servicios/sistemas).",
+              "La mejor automatización es la que el usuario ni nota. Nadie da las gracias porque sus impresoras aparezcan solas, pero dejan de llamar para que se las configures. Y poner la fuente de verdad donde ya gestionas al usuario hace que todo lo demás sea casi trivial.",
+              "Si trabajas en un entorno con muchas impresoras y muchos usuarios, merece la pena explorar este enfoque. Este tipo de automatizaciones forman parte de mi servicio de [administración de sistemas](/servicios/sistemas).",
             ],
           },
         ],
       },
       en: {
         title: "Automating printer mapping on RDS with PowerShell and Active Directory",
+        // PROVISIONAL, validar con Ángel: cifras del texto.
         intro:
-          "At a client with several sites and more than 30 printers, setting up printers by hand every time a user signed in was unsustainable. Every new hire, every desk change, every “my printers are gone” meant connecting to the machine and adding them one by one. Trays, presets and all. Multiply that by 90 users and you get the picture.",
+          "At a client with around 90 users and more than 30 printers, printer incidents dropped from about 14 to about 4 a month after the mapping was automated with Active Directory and a PowerShell script. These are the ideas that made it work.",
         sections: [
           {
+            heading: "The problem",
             blocks: [
-              "So I decided to automate it with a PowerShell script launched by GPO at sign-in.",
+              "Every new hire, every desk change and every “my printers are gone” meant connecting to the machine and adding them one by one, with their trays and settings. Setting up a user's printers took about 20 minutes by hand.",
+              "The result was around 14 incidents a month on average over the three months before the change. And when someone said “my printer does not work”, finding out what was going on took about 15 minutes.",
             ],
           },
           {
             heading: "The idea",
             blocks: [
-              "The approach is simple: let Active Directory know which printers each user needs. I created two custom attributes in AD: one for the default printer and another for the additional ones. When the user signs in to the RDS server, a GPO launches the script, which reads those attributes and automatically maps the printers that belong to them.",
-              "Why AD and not something else? Because it is the natural place where you already manage the user. If someone changes site or department, you only update their attributes in AD and the next time they sign in they already have their new printers. No touching the machine, no remote sessions, no tickets.",
+              "Let Active Directory know which printers each user needs. I created two custom attributes in AD, one for the default printer and another for the additional ones. When the user signs in to the RDS server, a GPO launches a script that reads those attributes and leaves the user with what belongs to them.",
+              "AD because it is where you already manage the user. If someone changes site or department, you update their two attributes in a couple of minutes and the next time they sign in they have their new printers. No touching the machine and no tickets.",
             ],
           },
           {
-            heading: "What the script does",
+            heading: "How it works",
             blocks: [
-              "The script does not just install the printers. It also configures each one's trays and presets. If a printer has tray 2 for A3 paper and tray 3 for envelopes, the user gets it ready to use without touching anything.",
-              "The process is clean: on start, the script queries AD, gets the list of printers assigned to the user, maps them with their configuration and sets the default one. All transparent to the user.",
+              "Inside, it is a short sequence that is always the same.",
+              {
+                ol: [
+                  "The user signs in to the RDS server and the GPO starts the script.",
+                  "The script works out who the user is and reads their two attributes in Active Directory.",
+                  "With that list, it checks which printers the user already has and which are missing.",
+                  "It connects the missing ones and applies each one's trays and presets, for example A3 paper in one tray and envelopes in another.",
+                  "It sets the default printer named by the first attribute.",
+                  "It writes a log of what it did and how it went.",
+                ],
+              },
+              "The user sees none of this. They simply open their session and the printers are there.",
             ],
           },
           {
-            heading: "Logs to sleep well",
+            heading: "Logs and a button to repair printers",
             blocks: [
-              "Every run writes an individual log per user to a shared folder on the server. It records which printers were mapped, at what time, and whether everything went fine or something failed.",
-              "It looks like a small detail, but when a user says “my printer doesn't work” and you can open their log and see exactly what happened, you save a lot of troubleshooting time.",
+              "Every run leaves an individual log per user in a shared folder on the server, with the printers connected, the time and any failures. With that log, diagnosing a “my printer does not work” call went from about 15 minutes to about 2.",
+              "To avoid even more incidents, each user's desktop has a button called “Reparar impresoras” (Repair printers). One click removes the user's printers and sets them up again from scratch, and then it tells them what it did in a polished window with a summary of the printers repaired.",
+              "The user fixes it in under a minute and without opening a ticket.",
             ],
           },
           {
-            heading: "The “fix my printers” button",
+            heading: "Results",
             blocks: [
-              "A recurring problem was that sometimes, because of an error or a configuration change, a user's printers disappeared. Instead of opening a ticket and waiting, the script leaves a desktop shortcut that resets the GPO and runs the full mapping again.",
-              "The user double-clicks it and in a few seconds all their printers are back. This has noticeably cut down printer-related incidents.",
-            ],
-          },
-          {
-            heading: "Numbers",
-            blocks: [
-              "The script handles around 90 users and 30 to 35 printers spread across several sites. It has gone through several rounds of incremental improvements and is currently at v6.0. Each iteration polished something: better error handling, the logs, tray configuration, the recovery shortcut.",
+              {
+                list: [
+                  "Printer incidents per month, from about 14 to about 4.",
+                  "New hire or desk change, from about 20 minutes by hand to no manual work, just filling in the two attributes in a couple of minutes.",
+                  "Diagnosing a printer that does not work, from about 15 minutes to about 2 with the log.",
+                  "Lost printers, from a ticket to a button and under a minute.",
+                ],
+              },
+              "These are averages over the three months before and the three months after the change, with around 90 users and 30 to 35 printers across several sites. The script is at version 6.0 after several rounds of improvements to errors, logs and tray configuration.",
             ],
           },
           {
             heading: "What I take away",
             blocks: [
-              "This project taught me that the best automation is the one the user does not even notice. Nobody thanks you because their printers show up on their own, but they do stop calling you to set them up. And in the end, that is the goal.",
-              "If you work in an environment with lots of printers and lots of users, I encourage you to explore this approach. The initial investment in building the script pays off many times over. This kind of automation is part of my [systems administration](/servicios/sistemas) service.",
+              "The best automation is the one the user does not even notice. Nobody thanks you because their printers show up on their own, but they stop calling you to set them up. And putting the source of truth where you already manage the user makes everything else almost trivial.",
+              "If you work in an environment with lots of printers and lots of users, this approach is worth exploring. This kind of automation is part of my [systems administration](/servicios/sistemas) service.",
             ],
           },
         ],
@@ -735,5 +802,10 @@ export function projectCards(): ProjectCard[] {
  */
 export function proyectoTieneIngles(p: Project): boolean {
   const post = p.post.en;
-  return !!post && (post.title ?? "").trim() !== "" && (post.intro ?? "").trim() !== "" && post.sections.length > 0;
+  return (
+    !!post &&
+    (post.title ?? "").trim() !== "" &&
+    (post.intro ?? "").trim() !== "" &&
+    post.sections.length > 0
+  );
 }
