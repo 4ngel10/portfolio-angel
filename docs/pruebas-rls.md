@@ -35,12 +35,13 @@ Lanza `db/verificar-rls.sql`, una consulta cada vez, y compara con lo que dice c
 
 - (a) 0 filas.
 - (b) 0 filas.
-- (c) Solo políticas `admin_all`, `cliente_select` y los tres `cliente_insert` esperados, más `publicado_select` en `blog_posts` (la única que nombra a `anon`).
+- (c) Solo políticas `admin_all`, `cliente_select` y los tres `cliente_insert` esperados, más `publicado_select` en `blog_posts` y en `portfolio_projects` (las únicas que nombran a `anon`).
 - (d) `anon_execute` y `public_execute` en `false` en todas las funciones.
-- (e) El bucket `archivos` con `publico = false` y el bucket `blog` con `publico = true`, 5242880 bytes y solo tipos de imagen. Sin políticas de `anon` en `storage.objects`.
+- (e) El bucket `archivos` con `publico = false` y los buckets `blog` y `portfolio` con `publico = true`, 5242880 bytes y solo tipos de imagen. Sin políticas de `anon` en `storage.objects`.
 - (f) 0 filas.
-- (g) Solo `blog_posts`, con 9 columnas (sin `created_by`).
+- (g) Solo `blog_posts` (9 columnas) y `portfolio_projects` (20 columnas), sin `created_by` en ninguna.
 - (h) Una fila: `publicado`, `visible_para_visitantes = true`, 5 artículos (tras el seed del blog).
+- (i) Una fila: `publicado`, `visible_para_visitantes = true`, 6 proyectos (tras el seed del portfolio), 1 con cifras provisionales.
 
 Si algo no cuadra, no sigas hasta entender por qué.
 
@@ -301,3 +302,80 @@ Bucket `blog`: abre en el navegador la URL pública de una imagen subida (`<SUPA
 - Si todo ha salido como se describe, borra las empresas de prueba (archivar y eliminar desde la ficha).
 - Si alguna prueba de "debe fallar" ha funcionado, o alguna de "0 filas" ha devuelto datos, no despliegues. Anota qué consulta fue y qué devolvió.
 - Repite el paso 1 después de cada cambio en `db/rls.sql`.
+
+## 6. El portfolio: los visitantes solo ven lo publicado
+
+Mismo patrón que el blog. Cada bloque se deshace con `rollback`; lánzalos por separado.
+
+```sql
+begin;
+insert into public.portfolio_projects (slug, orden, service, tech, cover, tint, status, published_at, content, created_by) values
+  ('prueba-publicado',  900, 'web', array['a','b','c'], 'X', 8, 'publicado', now() - interval '1 day', '{}'::jsonb, 'prueba'),
+  ('prueba-programado', 901, 'web', array['a','b','c'], 'X', 8, 'publicado', now() + interval '1 day', '{}'::jsonb, 'prueba'),
+  ('prueba-borrador',   902, 'web', array['a','b','c'], 'X', 8, 'borrador',  null,                     '{}'::jsonb, 'prueba');
+
+set local role anon;
+
+-- 6.1 Un visitante solo ve el publicado con fecha pasada.
+-- Debe devolver 1 fila (prueba-publicado), sin el programado ni el borrador.
+select slug from public.portfolio_projects where slug like 'prueba-%';
+rollback;
+
+begin;
+insert into public.portfolio_projects (slug, orden, service, tech, cover, tint, status, published_at, content, created_by) values
+  ('prueba-publicado', 900, 'web', array['a','b','c'], 'X', 8, 'publicado', now() - interval '1 day', '{}'::jsonb, 'prueba');
+set local role anon;
+
+-- 6.2 created_by no se puede leer como visitante. Debe fallar con "permission denied".
+select created_by from public.portfolio_projects;
+rollback;
+
+begin;
+set local role anon;
+-- 6.3 Un visitante no puede escribir. Debe fallar con "permission denied".
+insert into public.portfolio_projects (slug, orden, service, tech, cover, tint, content, created_by)
+values ('intruso', 1, 'web', array['a','b','c'], 'X', 8, '{}'::jsonb, 'anon');
+rollback;
+
+begin;
+set local role anon;
+-- 6.4 Ni leer las versiones. Debe fallar con "permission denied".
+select * from public.portfolio_project_versions;
+rollback;
+
+begin;
+insert into public.portfolio_projects (slug, orden, service, tech, cover, tint, status, published_at, content, created_by) values
+  ('prueba-publicado', 900, 'web', array['a','b','c'], 'X', 8, 'publicado', now() - interval '1 day', '{}'::jsonb, 'prueba'),
+  ('prueba-borrador',  902, 'web', array['a','b','c'], 'X', 8, 'borrador',  null,                     '{}'::jsonb, 'prueba');
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"UUID_A","role":"authenticated"}', true);
+
+-- 6.5 Cliente (sin ser admin): 1 fila (solo el publicado) y 0 filas en las versiones.
+select slug from public.portfolio_projects where slug like 'prueba-%';
+select id from public.portfolio_project_versions;
+rollback;
+```
+
+En Storage, el bucket `portfolio` debe aparecer como público, de 5 MB y con solo webp, jpeg y png. Un cliente no puede subir ni borrar archivos (solo el admin).
+
+### 6.6 Ordenar proyectos
+
+`mover_proyecto` es SECURITY DEFINER y exige `is_admin()`. Un cliente no puede llamarla:
+
+```sql
+begin;
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"UUID_A","role":"authenticated"}', true);
+
+-- Debe fallar con "solo el administrador puede ordenar los proyectos" (42501).
+select public.mover_proyecto((select id from public.portfolio_projects limit 1), 'arriba');
+rollback;
+
+begin;
+set local role anon;
+-- Debe fallar con "permission denied for function mover_proyecto".
+select public.mover_proyecto(gen_random_uuid(), 'arriba');
+rollback;
+```
+
+Para confirmar que el admin sí puede, usa las flechas del panel (fase 4), porque `is_admin()` depende de la sesión.

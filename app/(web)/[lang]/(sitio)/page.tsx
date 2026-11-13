@@ -12,7 +12,7 @@ import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
 import { getLatestPosts, getPublishedPosts } from "@/lib/blog-db";
 import { enlaceDe, tieneIngles } from "@/lib/blog-types";
-import { getProject, projectCards, proyectoTieneIngles } from "@/lib/projects";
+import { getProyectoCards } from "@/lib/proyectos-db";
 import { SERVICES } from "@/lib/services";
 import { TESTIMONIALS } from "@/lib/testimonials";
 import { alternatesFor, homeJsonLd } from "@/lib/seo";
@@ -33,6 +33,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     lang === "en"
       ? (await getPublishedPosts()).filter(tieneIngles).slice(0, 2)
       : await getLatestPosts(2);
+  const proyectos = await getProyectoCards(lang);
   return (
     <>
       <JsonLd data={homeJsonLd(lang)} />
@@ -40,7 +41,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
         <Hero />
         <Services items={SERVICES.map(({ key, id }) => ({ key, id }))} />
-        <Portfolio projects={projectCards().filter((c) => lang === "es" || proyectoTieneIngles(getProject(c.slug)!))} />
+        <Portfolio projects={proyectos} />
         <Testimonials items={TESTIMONIALS.filter((t) => t.permission)} />
         <About />
         <BlogTeaser posts={ultimos.map(enlaceDe)} />

@@ -29,6 +29,7 @@ import {
   PERIODICIDADES,
 } from "../lib/portal/finanzas";
 import type { BlogPostContent } from "../lib/blog-types";
+import type { ProyectoContent } from "../lib/proyectos-types";
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
@@ -613,4 +614,82 @@ export const blogApiUso = pgTable(
     index("blog_api_uso_token_idx").on(t.tokenId, t.tipo, t.createdAt.desc()),
     check("blog_api_uso_tipo_check", enLista(t.tipo, ["articulo", "imagen"] as const)),
   ],
+);
+
+/* ------------------------------------------------------------------ */
+/* Proyectos del portfolio (panel /admin/portfolio; ver db/rls.sql, apartado 11) */
+/* No confundir con `proyectos`, que son los proyectos de los clientes del portal. */
+/* ------------------------------------------------------------------ */
+
+const SERVICIOS_PORTFOLIO = ["web", "sistemas"] as const;
+const ESTADOS_PORTFOLIO = ["borrador", "publicado"] as const;
+const ENCUADRES_PORTFOLIO = ["top", "center"] as const;
+
+export const portfolioProjects = pgTable(
+  "portfolio_projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: text("slug").notNull().unique(),
+    status: text("status", { enum: ESTADOS_PORTFOLIO }).notNull().default("borrador"),
+    // Con fecha futura el proyecto está programado: RLS no lo enseña hasta que llega su hora.
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    // Posición en la home (de menor a mayor). Se deja hueco entre valores para insertar entre medias.
+    orden: integer("orden").notNull(),
+    service: text("service", { enum: SERVICIOS_PORTFOLIO }).notNull(),
+    tech: text("tech").array().notNull(),
+    cover: text("cover").notNull(),
+    tint: integer("tint").notNull(),
+    url: text("url"),
+    image: text("image"),
+    imageDark: text("image_dark"),
+    ogImage: text("og_image"),
+    coverPosition: text("cover_position", { enum: ENCUADRES_PORTFOLIO }),
+    // Páginas de servicio donde sale el proyecto (/servicios/web, /servicios/sistemas), elegido en el panel.
+    enServicios: text("en_servicios")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
+    // Caso de ejemplo inventado, no un cliente real.
+    ejemplo: boolean("ejemplo").notNull().default(false),
+    // Cifras sin validar: el panel avisa hasta que se marquen como validadas.
+    datosProvisionales: boolean("datos_provisionales").notNull().default(false),
+    content: jsonb("content").$type<ProyectoContent>().notNull(),
+    // Email del admin, "migracion" o "seed".
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("portfolio_projects_status_orden_idx").on(t.status, t.orden),
+    check("portfolio_projects_slug_check", sql`${t.slug} ~ '^[a-z0-9]+(-[a-z0-9]+)*$'`),
+    check("portfolio_projects_status_check", enLista(t.status, ESTADOS_PORTFOLIO)),
+    check("portfolio_projects_service_check", enLista(t.service, SERVICIOS_PORTFOLIO)),
+    check(
+      "portfolio_projects_en_servicios_check",
+      sql`${t.enServicios} <@ array['web', 'sistemas']::text[]`,
+    ),
+    check(
+      "portfolio_projects_cover_position_check",
+      sql`${t.coverPosition} is null or ${t.coverPosition} in ('top', 'center')`,
+    ),
+    check(
+      "portfolio_projects_publicado_fecha_check",
+      sql`${t.status} <> 'publicado' or ${t.publishedAt} is not null`,
+    ),
+  ],
+);
+
+/** Versiones anteriores de cada proyecto (el panel conserva las 20 últimas). */
+export const portfolioProjectVersions = pgTable(
+  "portfolio_project_versions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => portfolioProjects.id, { onDelete: "cascade" }),
+    // El contenido por idioma más los campos comunes (slug, tech, portada...).
+    content: jsonb("content").$type<Record<string, unknown>>().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("portfolio_project_versions_project_idx").on(t.projectId, t.createdAt.desc())],
 );

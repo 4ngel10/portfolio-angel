@@ -7,7 +7,13 @@ import { Reveal } from "./reveal";
 import { ProjectCover } from "./project-cover";
 import { ServiceCta } from "./service-cta";
 import { useI18n, type Locale } from "@/lib/i18n";
-import type { CaseStudy, PostBlock, PostSection, Project, ProjectCard } from "@/lib/projects";
+import type {
+  CaseStudy,
+  PostBlock,
+  PostSection,
+  ProyectoArticulo,
+  ProyectoCard,
+} from "@/lib/proyectos-types";
 
 export const Arrow = ({ back = false }: { back?: boolean }) => (
   <svg
@@ -276,13 +282,21 @@ function CaseSummary({ data }: { data: CaseStudy }) {
  * Artículo de un proyecto. Recibe por props solo este proyecto completo y el siguiente como card
  * (sin su artículo), así el texto de los demás proyectos no viaja en el JS de la página.
  */
-export function ProjectArticle({ project, next }: { project: Project; next: ProjectCard | null }) {
+export function ProjectArticle({
+  project,
+  next,
+  comoDiv = false,
+}: {
+  project: ProyectoArticulo;
+  next: ProyectoCard | null;
+  /** Pinta un <div> en vez de <main id="main">, para la vista previa del admin (que ya tiene su <main>). */
+  comoDiv?: boolean;
+}) {
   const { t, locale, l } = useI18n();
-  const title = t(`portfolio.${project.key}Title`);
-  const post = project.post[locale];
+  const { title, tag, desc, coverAlt, post, facts, caseStudy } = project.texto;
 
   return (
-    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
+    <Contenedor comoDiv={comoDiv}>
       <ReadingProgress />
       <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
@@ -298,12 +312,12 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
             {post.title ?? title}
           </h1>
           <p className="text-muted mt-6 max-w-4xl text-[19px] leading-relaxed">
-            {post.intro ?? t(`portfolio.${project.key}Desc`)}
+            {post.intro ?? desc}
           </p>
 
-          {project.facts && (
+          {facts.length > 0 && (
             <dl className="border-rule mt-8 grid grid-cols-1 gap-x-8 gap-y-5 border-y py-6 md:grid-cols-3">
-              {project.facts[locale].map((f) => (
+              {facts.map((f) => (
                 <div key={f.label} className="min-w-0">
                   <dt className="text-muted font-mono text-[11px]">{f.label}</dt>
                   <dd className="mt-1.5 text-[15px] leading-snug font-semibold">{f.value}</dd>
@@ -326,7 +340,7 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
               className="font-mono text-[11px] font-semibold tracking-wider uppercase"
               style={{ color: "var(--accent)" }}
             >
-              {t(`portfolio.${project.key}Tag`)}
+              {tag}
             </span>
             <div className="flex flex-wrap gap-1.5">
               {project.tech.map((tt) => (
@@ -361,7 +375,7 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
           <div className="group border-rule overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_40px_80px_-35px_rgba(194,65,12,0.35)]">
             <ProjectCover
               project={project}
-              alt={project.coverAlt?.[locale] ?? title}
+              alt={coverAlt ?? title}
               sizes="(min-width: 1152px) 1088px, 100vw"
               priority
               className="aspect-[16/9]"
@@ -371,7 +385,7 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
       </div>
 
       <article className="mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-28">
-        {project.caseStudy && <CaseSummary data={project.caseStudy[locale]} />}
+        {caseStudy && <CaseSummary data={caseStudy} />}
         {post.sections.map((section, s) => (
           <Reveal key={s} className="mb-16 max-w-4xl last:mb-0">
             {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
@@ -394,14 +408,14 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
               >
                 <ProjectCover
                   project={next}
-                  alt={next.coverAlt?.[locale] ?? t(`portfolio.${next.key}Title`)}
+                  alt={next.coverAlt ?? next.title}
                   sizes="(min-width: 768px) 320px, 100vw"
                   className="h-44 shrink-0 md:h-auto md:w-80"
                 />
                 <span className="flex flex-1 flex-col justify-center gap-3 p-7 md:p-10">
                   <span className="text-muted block text-sm font-medium">{t("project.next")}</span>
                   <span className="block text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[1.05] font-semibold tracking-[-0.035em] transition-colors duration-200 group-hover:text-[var(--accent)]">
-                    {t(`portfolio.${next.key}Title`)}
+                    {next.title}
                   </span>
                   <span className="text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200 group-hover:text-[var(--accent)]">
                     {t("project.read")}
@@ -413,6 +427,15 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
           </div>
         </section>
       )}
+    </Contenedor>
+  );
+}
+
+function Contenedor({ comoDiv, children }: { comoDiv: boolean; children: React.ReactNode }) {
+  if (comoDiv) return <div>{children}</div>;
+  return (
+    <main id="main" tabIndex={-1} className="scroll-mt-[72px] outline-none">
+      {children}
     </main>
   );
 }

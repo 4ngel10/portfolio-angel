@@ -1,7 +1,7 @@
 /** Entradas del sitemap por URL e idioma. Pura (sin red): app/sitemap.ts le pasa los artículos. */
 import type { MetadataRoute } from "next";
 import { SITE_URL, LAST_UPDATED } from "@/lib/site";
-import { PROJECTS, proyectoTieneIngles } from "@/lib/projects";
+import { proyectoTieneIngles, type ProyectoPublicado } from "@/lib/proyectos-types";
 import { SERVICES } from "@/lib/services";
 import { tieneIngles, type BlogPost } from "@/lib/blog-types";
 import { LEGAL_PAGES } from "@/lib/legal";
@@ -33,7 +33,10 @@ function entradas(
   }));
 }
 
-export function construirSitemap(posts: BlogPost[]): MetadataRoute.Sitemap {
+export function construirSitemap(
+  posts: BlogPost[],
+  proyectos: ProyectoPublicado[] = [],
+): MetadataRoute.Sitemap {
   // updatedAt es ISO con desfase y todos llevan el mismo formato, así que compara bien como texto.
   const latestPost = posts.reduce(
     (max, p) => (p.updatedAt > max ? p.updatedAt : max),
@@ -54,9 +57,9 @@ export function construirSitemap(posts: BlogPost[]): MetadataRoute.Sitemap {
         priority: 0.8,
       }),
     ),
-    ...PROJECTS.flatMap((p) =>
+    ...proyectos.flatMap((p) =>
       entradas(`/proyectos/${p.slug}`, proyectoTieneIngles(p) ? ambos : ["es"], {
-        lastModified: new Date(p.date ?? LAST_UPDATED),
+        lastModified: new Date(p.updatedAt),
         changeFrequency: "monthly",
         priority: 0.7,
       }),

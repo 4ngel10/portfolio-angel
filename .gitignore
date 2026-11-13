@@ -55,3 +55,6 @@ public/*.HEIC
 # originales de cámara (van aquí, nunca en public/); solo se sigue el LEEME
 originales/*
 !originales/LEEME.md
+
+# Restauración del portfolio generada desde una copia (lleva los textos reales)
+db/restaurar-proyectos.sql

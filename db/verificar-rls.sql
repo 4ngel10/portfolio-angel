@@ -46,7 +46,8 @@ order by 1, 2;
 --   * Nunca debe haber una política con cmd UPDATE o DELETE para clientes,
 --     ni ninguna con el rol {public} o {anon}.
 --   * bolsa_historial, ajustes, cobros, pagos, suscripciones y gastos: solo admin_all.
---   * blog_post_versions, blog_api_tokens y blog_api_uso: solo admin_all.
+--   * blog_post_versions, blog_api_tokens, blog_api_uso y portfolio_project_versions: solo admin_all.
+--   * portfolio_projects: igual que blog_posts (admin_all y publicado_select, misma condición).
 --   * blog_posts: admin_all y publicado_select (SELECT, {anon,authenticated}). Es la ÚNICA
 --     política que puede nombrar a anon. Su condición debe ser: status = 'publicado' and
 --     published_at is not null and published_at <= now().
@@ -68,6 +69,7 @@ order by tablename, policyname;
 --   * registrar_horas: authenticated_execute = true es normal, pero la función exige
 --     is_admin() dentro y falla con 'forbidden' (42501) para un cliente.
 --     Se comprueba en docs/pruebas-rls.md.
+--   * mover_proyecto: igual que registrar_horas (exige is_admin() y falla con 42501 para un cliente).
 --   * Cualquier otra función que salga aquí hay que revisarla a mano.
 -- ---------------------------------------------------------------------
 select p.proname as funcion,
@@ -99,8 +101,8 @@ order by id;
 
 -- Complemento de (e): políticas sobre storage.objects.
 -- CORRECTO: archivos_select (SELECT, authenticated; primer segmento de la ruta = su empresa,
--- o admin), archivos_admin_write, finanzas_admin y blog_admin_write (ALL, solo admin).
--- Ninguna para anon ni para {public}: el bucket "blog" es público por URL, no por política.
+-- o admin), archivos_admin_write, finanzas_admin, blog_admin_write y portfolio_admin_write (ALL, solo admin).
+-- Ninguna para anon ni para {public}: los buckets "blog" y "portfolio" son públicos por URL, no por política.
 select policyname as politica, cmd as comando, roles, qual as condicion, with_check as con_check
 from pg_policies
 where schemaname = 'storage' and tablename = 'objects'
@@ -118,8 +120,14 @@ where storage_path not like empresa_id::text || '/' || proyecto_id::text || '/%'
 
 -- ---------------------------------------------------------------------
 -- (g) Columnas de public que puede leer el rol anon.
--- CORRECTO: solo blog_posts, con estas 9 columnas: id, slug, category, status, published_at,
--- content, og_image, created_at y updated_at. Ni created_by ni ninguna otra tabla.
+-- CORRECTO: solo blog_posts y portfolio_projects.
+--   * blog_posts, 9 columnas: id, slug, category, status, published_at, content, og_image,
+--     created_at y updated_at.
+--   * portfolio_projects, 20 columnas: id, slug, status, published_at, orden, service, tech, cover,
+--     tint, url, image, image_dark, og_image, cover_position, en_servicios, ejemplo,
+--     datos_provisionales,
+--     content, created_at y updated_at.
+-- Ni created_by ni ninguna otra tabla.
 -- ---------------------------------------------------------------------
 select table_name as tabla, column_name as columna, privilege_type as permiso
 from information_schema.role_column_grants
@@ -136,5 +144,19 @@ select status,
        (status = 'publicado' and published_at is not null and published_at <= now()) as visible_para_visitantes,
        count(*) as articulos
 from public.blog_posts
+group by 1, 2
+order by 1, 2;
+
+-- ---------------------------------------------------------------------
+-- (i) Portfolio: proyectos por estado (informativa, se ejecuta como admin).
+-- Tras el seed deben salir 6 proyectos publicados con visible_para_visitantes = true y 1 con
+-- cifras provisionales. Un publicado con fecha futura sale con visible_para_visitantes = false:
+-- está programado. La prueba de lo que ve un visitante de verdad está en docs/pruebas-rls.md (6).
+-- ---------------------------------------------------------------------
+select status,
+       (status = 'publicado' and published_at is not null and published_at <= now()) as visible_para_visitantes,
+       count(*) as proyectos,
+       count(*) filter (where datos_provisionales) as con_cifras_provisionales
+from public.portfolio_projects
 group by 1, 2
 order by 1, 2;

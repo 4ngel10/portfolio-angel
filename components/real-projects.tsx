@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
-import type { ProjectCard as DatosCard } from "@/lib/projects";
+import type { ProyectoCard as DatosCard } from "@/lib/proyectos-types";
 import { ProjectCover } from "./project-cover";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
@@ -29,10 +29,9 @@ const Arrow = () => (
   </svg>
 );
 
-/** Card de un proyecto de PROJECTS: mismo diseño que las de la home, con zoom discreto y sin tilt. */
+/** Card de un proyecto del portfolio: mismo diseño que las de la home, con zoom discreto y sin tilt. */
 function ProjectCard({ project }: { project: DatosCard }) {
-  const { t, locale, l } = useI18n();
-  const title = t(`portfolio.${project.key}Title`);
+  const { t, l } = useI18n();
   return (
     <Link
       href={l(`/proyectos/${project.slug}`)}
@@ -41,7 +40,7 @@ function ProjectCard({ project }: { project: DatosCard }) {
       <div className={`${CARD} ${CARD_LINK}`} style={{ background: "var(--bg)" }}>
         <ProjectCover
           project={project}
-          alt={project.coverAlt?.[locale] ?? title}
+          alt={project.coverAlt ?? project.title}
           sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
           className="h-52"
         />
@@ -50,13 +49,13 @@ function ProjectCard({ project }: { project: DatosCard }) {
             className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
             style={{ color: "var(--accent)" }}
           >
-            {t(`portfolio.${project.key}Tag`)}
+            {project.tag}
           </span>
           <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
-            {title}
+            {project.title}
           </h3>
           <p className="text-muted mb-4 text-[13px] leading-relaxed">
-            {t(`portfolio.${project.key}Desc`)}
+            {project.desc}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {project.tech.map((tt) => (
@@ -109,7 +108,7 @@ function SelfCard() {
             className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
             style={{ color: "var(--accent)" }}
           >
-            {t("portfolio.p2Tag")}
+            {t("servicesPage.thisSiteTag")}
           </span>
           <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
             {t("servicesPage.thisSiteTitle")}
@@ -139,8 +138,8 @@ function SelfCard() {
 }
 
 /**
- * Proyectos reales de un servicio: tres cards en fila (una columna en móvil). `items` son slugs de
- * PROJECTS, o "self" para la card de esta misma web. Los textos salen de portfolio.* y no se copian.
+ * Proyectos reales de un servicio: tres cards en fila (una columna en móvil). `items` son las cards de los
+ * proyectos que se eligen en el panel (`en_servicios`), o "self" para la card de esta misma web.
  */
 export function RealProjects({ title, items }: { title: string; items: (DatosCard | "self")[] }) {
   return (

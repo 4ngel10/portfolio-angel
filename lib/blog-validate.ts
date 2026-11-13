@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from "./i18n";
-import type { PostBlock, PostImage } from "./projects";
+import type { PostBlock, PostImage } from "./proyectos-types";
 import type { BlogCategory, BlogPostContent } from "./blog-types";
 
 export type Fallo = { ruta: string; mensaje: string };

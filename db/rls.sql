@@ -312,3 +312,98 @@ drop policy if exists blog_admin_write on storage.objects;
 create policy blog_admin_write on storage.objects for all to authenticated
   using (bucket_id = 'blog' and public.is_admin())
   with check (bucket_id = 'blog' and public.is_admin());
+
+-- ---------------------------------------------------------------------
+-- 11. Proyectos del portfolio: portfolio_projects y portfolio_project_versions.
+-- Misma lógica que el blog. Los visitantes (anon) y las cuentas con sesión solo leen los
+-- proyectos publicados cuya fecha ya pasó (con fecha futura está programado y no se ve). Todo lo
+-- demás es del admin (is_admin() exige aal2). Las versiones no tienen política para nadie más.
+-- anon solo puede leer columnas concretas de portfolio_projects: created_by queda fuera. Por eso la
+-- web pública tiene que pedir las columnas por nombre, nunca select(*).
+-- No hay API pública ni claves: los proyectos se escriben solo desde el panel de admin.
+-- ---------------------------------------------------------------------
+do $$
+declare t text;
+begin
+  foreach t in array array['portfolio_projects','portfolio_project_versions'] loop
+    execute format('alter table public.%I enable row level security', t);
+    execute format('revoke all on public.%I from anon', t);
+    execute format('drop policy if exists admin_all on public.%I', t);
+    execute format(
+      'create policy admin_all on public.%I for all to authenticated
+         using (public.is_admin()) with check (public.is_admin())', t);
+  end loop;
+end $$;
+
+grant select (id, slug, status, published_at, orden, service, tech, cover, tint, url, image,
+              image_dark, og_image, cover_position, en_servicios, ejemplo, datos_provisionales, content,
+              created_at, updated_at)
+  on public.portfolio_projects to anon;
+
+drop policy if exists publicado_select on public.portfolio_projects;
+create policy publicado_select on public.portfolio_projects for select to anon, authenticated
+  using (status = 'publicado' and published_at is not null and published_at <= now());
+
+-- Bucket "portfolio": portadas e imágenes de los artículos. Público para leer por URL (se sirven
+-- por /portfolio-img/... desde la web), 5 MB por archivo y solo imágenes. Sin política de select
+-- para anon: la URL pública funciona sin ella y así nadie puede listar el bucket. Escribir, solo
+-- el admin.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('portfolio', 'portfolio', true, 5242880,
+        array['image/webp', 'image/jpeg', 'image/png'])
+on conflict (id) do update
+  set public = true, file_size_limit = 5242880,
+      allowed_mime_types = array['image/webp', 'image/jpeg', 'image/png'];
+
+drop policy if exists portfolio_admin_write on storage.objects;
+create policy portfolio_admin_write on storage.objects for all to authenticated
+  using (bucket_id = 'portfolio' and public.is_admin())
+  with check (bucket_id = 'portfolio' and public.is_admin());
+
+-- Ordenar los proyectos de la home desde el panel (flechas subir y bajar). Una sola operación:
+-- renumera todos por (orden, slug) como 10, 20, 30... con los dos vecinos intercambiados, así no
+-- quedan empates ni estados a medias. SECURITY DEFINER y exige is_admin(); la acción del panel la
+-- llama por RPC con la sesión del admin.
+create or replace function public.mover_proyecto(p_id uuid, p_dir text)
+returns void
+language plpgsql security definer set search_path = ''
+as $$
+declare
+  v_ids uuid[];
+  v_pos int;
+  v_otro int;
+  v_tmp uuid;
+begin
+  if not public.is_admin() then
+    raise exception 'solo el administrador puede ordenar los proyectos' using errcode = '42501';
+  end if;
+  if p_dir not in ('arriba', 'abajo') then
+    raise exception 'direccion no valida: %', p_dir;
+  end if;
+
+  perform pg_advisory_xact_lock(hashtext('mover_proyecto'));
+
+  select array_agg(id order by orden, slug) into v_ids from public.portfolio_projects;
+  v_pos := array_position(v_ids, p_id);
+  if v_pos is null then
+    raise exception 'proyecto no encontrado';
+  end if;
+
+  v_otro := case when p_dir = 'arriba' then v_pos - 1 else v_pos + 1 end;
+  -- Ya está en el extremo: no hay nada que mover.
+  if v_otro < 1 or v_otro > array_length(v_ids, 1) then
+    return;
+  end if;
+
+  v_tmp := v_ids[v_pos];
+  v_ids[v_pos] := v_ids[v_otro];
+  v_ids[v_otro] := v_tmp;
+
+  update public.portfolio_projects p
+     set orden = n.pos * 10
+    from unnest(v_ids) with ordinality as n(id, pos)
+   where p.id = n.id;
+end $$;
+
+revoke all on function public.mover_proyecto(uuid, text) from public, anon;
+grant execute on function public.mover_proyecto(uuid, text) to authenticated;

@@ -31,6 +31,7 @@ export async function Shell({
         { href: "/admin/presupuestos", label: t("nav.quotes") },
         { href: "/admin/finanzas", label: t("nav.finance") },
         { href: "/admin/blog", label: t("nav.blog") },
+        { href: "/admin/portfolio", label: t("nav.portfolio") },
       ]
     : [
         { href: "/portal", label: t("nav.projects"), exact: true },
@@ -68,6 +69,7 @@ export async function Shell({
                     { href: "/admin/finanzas/cobros#nuevo", label: t("nav.newCharge") },
                     { href: "/admin/finanzas/gastos#nuevo", label: t("nav.newExpense") },
                     { href: "/admin/blog/nuevo", label: t("nav.newPost") },
+                    { href: "/admin/portfolio/nuevo", label: t("nav.newPortfolio") },
                   ]}
                 />
               ) : null}

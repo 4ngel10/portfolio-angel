@@ -12,6 +12,7 @@ import {
 } from "@/lib/portal/queries";
 import { requireAdmin } from "@/lib/portal/auth";
 import { borradoresDeApi } from "@/lib/blog-admin";
+import { proyectosPendientes } from "@/lib/proyectos-admin";
 import { cobrosConEstado, listarGastos, listarPagos } from "@/lib/portal/finanzas-queries";
 import {
   diasEntre,
@@ -62,6 +63,7 @@ export default async function AdminPage() {
     pagos,
     gastos,
     borradoresApi,
+    portfolioPendiente,
   ] = await Promise.all([
     listarEmpresas(),
     listarProyectos(),
@@ -73,6 +75,7 @@ export default async function AdminPage() {
     listarPagos(),
     listarGastos(),
     borradoresDeApi(),
+    proyectosPendientes(),
   ]);
 
   // Los clientes archivados no salen en el Resumen ni en "Pendiente de ti". Sus cobros y pagos
@@ -214,6 +217,22 @@ export default async function AdminPage() {
       icono: "articulo",
       texto: t("blog.pendingApi", { title: b.content.es.title || t("blog.untitled") }),
       href: `/admin/blog/${b.id}`,
+    });
+  }
+
+  // Proyectos del portfolio: borradores sin publicar y publicados con cifras sin validar.
+  for (const b of portfolioPendiente.borradores) {
+    pendiente.push({
+      icono: "articulo",
+      texto: t("portfolio.pendingDraft", { title: b.content.es.title || t("portfolio.untitled") }),
+      href: `/admin/portfolio/${b.id}`,
+    });
+  }
+  for (const b of portfolioPendiente.provisionales) {
+    pendiente.push({
+      icono: "articulo",
+      texto: t("portfolio.pendingProvisional", { title: b.content.es.title || t("portfolio.untitled") }),
+      href: `/admin/portfolio/${b.id}`,
     });
   }
 

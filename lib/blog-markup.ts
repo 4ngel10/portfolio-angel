@@ -1,5 +1,5 @@
 /**
- * Conversión entre el cuerpo de un artículo (secciones y bloques de lib/projects.ts) y el texto con
+ * Conversión entre el cuerpo de un artículo (secciones y bloques de lib/proyectos-types.ts) y el texto con
  * marcas que se edita en el panel. Sin pérdidas, y sin expresiones regulares.
  *
  *   ## Título           H2, abre una sección
@@ -13,7 +13,7 @@
  * La entradilla (`intro`) no va aquí, tiene su propio campo.
  */
 
-import type { PostBlock, PostImage, PostSection } from "./projects";
+import type { PostBlock, PostImage, PostSection } from "./proyectos-types";
 
 export type TamanoImagen = { width: number; height: number };
 

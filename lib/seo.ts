@@ -12,7 +12,7 @@
 
 import { LEGAL, SITE_URL } from "./site";
 import { CERTIFICATIONS } from "./certifications";
-import type { Project } from "./projects";
+import type { ProyectoPublicado } from "./proyectos-types";
 import type { ServiceDetail as Service } from "./services";
 import type { BlogPost } from "./blog-types";
 import { LOCALES, localizedHref, type Lang } from "./rutas";
@@ -87,11 +87,6 @@ const PERSON_NAME = "Ángel Fernández Garriga";
 
 /** Referencia al Person de la home, para author y provider en el resto de páginas. */
 const personRef = { "@type": "Person", "@id": PERSON_ID, name: PERSON_NAME, url: SITE_URL };
-
-/** Fecha AAAA-MM-DD a ISO 8601 con hora y zona horaria, como pide Google en datePublished/dateModified. */
-function isoDate(date: string) {
-  return `${date}T09:00:00+01:00`;
-}
 
 /** URL absoluta de una ruta en español sin prefijo, en el idioma pedido. */
 function abs(lang: Lang, path: string) {
@@ -246,9 +241,8 @@ export function serviceJsonLd(service: Service, lang: Lang = "es") {
 }
 
 /** Página de proyecto: Article + BreadcrumbList (Inicio > Proyectos > proyecto). */
-export function projectJsonLd(project: Project, lang: Lang = "es") {
-  const portfolio = MSG[lang].portfolio as Record<string, string>;
-  const name = portfolio[`${project.key}Title`];
+export function projectJsonLd(project: ProyectoPublicado, lang: Lang = "es") {
+  const { title: name, desc, post } = project.content[lang];
   const path = `/proyectos/${project.slug}`;
   const url = abs(lang, path);
   const m = MIGAS[lang];
@@ -256,16 +250,14 @@ export function projectJsonLd(project: Project, lang: Lang = "es") {
     {
       "@type": "Article",
       "@id": `${SITE_URL}${path}#article`,
-      headline: project.post[lang].title ?? name,
-      description: portfolio[`${project.key}Desc`],
+      headline: post.title ?? name,
+      description: desc,
       url,
       mainEntityOfPage: url,
       inLanguage: lang,
-      ...(project.date && {
-        datePublished: isoDate(project.date),
-        dateModified: isoDate(project.date),
-      }),
-      ...(project.ogImage && { image: `${SITE_URL}${project.ogImage}` }),
+      datePublished: project.publishedAt,
+      dateModified: project.updatedAt,
+      image: `${SITE_URL}${project.ogImage ?? `/proyectos/${project.slug}/opengraph-image`}`,
       author: personRef,
       publisher: personRef,
     },

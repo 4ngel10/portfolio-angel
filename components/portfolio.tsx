@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 import { ProjectCover } from "./project-cover";
 import { useI18n } from "@/lib/i18n";
-import type { ProjectCard } from "@/lib/projects";
+import type { ProyectoCard } from "@/lib/proyectos-types";
 
-export function Portfolio({ projects }: { projects: ProjectCard[] }) {
-  const { t, locale, l } = useI18n();
+export function Portfolio({ projects }: { projects: ProyectoCard[] }) {
+  const { t, l } = useI18n();
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
@@ -64,10 +64,9 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
         >
           <RevealGroup className="flex gap-5" stagger={0.08}>
             {projects.map((p) => {
-              const title = t(`portfolio.${p.key}Title`);
               return (
                 <RevealItem
-                  key={p.key}
+                  key={p.slug}
                   className="flex shrink-0 basis-[85%] snap-start sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]"
                 >
                   {/* Cada card abre la página del proyecto (app/proyectos/[slug]). */}
@@ -81,7 +80,7 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
                     >
                       <ProjectCover
                         project={p}
-                        alt={p.coverAlt?.[locale] ?? title}
+                        alt={p.coverAlt ?? p.title}
                         sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 85vw"
                         className="h-52"
                       />
@@ -90,15 +89,15 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
                           className="mb-2 inline-block font-mono text-[11px] font-semibold tracking-wider uppercase"
                           style={{ color: "var(--accent)" }}
                         >
-                          {t(`portfolio.${p.key}Tag`)}
+                          {p.tag}
                         </span>
                         {/* En hover el título crece y pasa a negrita: invita a abrir el artículo.
                           scale en vez de font-size para no recolocar el resto de la card. */}
                         <h3 className="mb-2 origin-left text-[17px] leading-snug font-semibold tracking-tight transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06] group-hover:font-bold">
-                          {title}
+                          {p.title}
                         </h3>
                         <p className="text-muted mb-4 text-[13px] leading-relaxed">
-                          {t(`portfolio.${p.key}Desc`)}
+                          {p.desc}
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {p.tech.map((tt) => (

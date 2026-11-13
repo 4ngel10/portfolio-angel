@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Project } from "@/lib/projects";
+import type { ProyectoCard } from "@/lib/proyectos-types";
 
 const EASE = "ease-[cubic-bezier(0.23,1,0.32,1)]";
 
@@ -16,7 +16,7 @@ export function ProjectCover({
   priority = false,
   children,
 }: {
-  project: Pick<Project, "image" | "imageDark" | "cover" | "tint" | "coverPosition">;
+  project: Pick<ProyectoCard, "image" | "imageDark" | "cover" | "tint" | "coverPosition">;
   alt: string;
   sizes: string;
   className?: string;

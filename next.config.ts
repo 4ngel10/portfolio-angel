@@ -26,6 +26,7 @@ const SIN_REESCRIBIR = [
   "_next",
   ...RUTAS_PRIVADAS,
   "blog-img",
+  "portfolio-img",
   "cv",
   "sitemap\\.xml",
   "robots\\.txt",
@@ -67,6 +68,13 @@ const nextConfig: NextConfig = {
       afterFiles.unshift({
         source: "/blog-img/:slug/:archivo",
         destination: `${supabase}/storage/v1/object/public/blog/:slug/:archivo`,
+      });
+    }
+    if (supabase) {
+      // Igual que /blog-img, para las imágenes de los proyectos del portfolio (bucket "portfolio").
+      afterFiles.unshift({
+        source: "/portfolio-img/:slug/:archivo",
+        destination: `${supabase}/storage/v1/object/public/portfolio/:slug/:archivo`,
       });
     }
     return { afterFiles };
