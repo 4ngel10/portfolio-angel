@@ -1,14 +1,13 @@
 /**
- * SEO: descripciones de metadata y datos estructurados (JSON-LD, schema.org).
+ * SEO: descripciones de metadata y datos estructurados (JSON-LD, schema.org), en español e inglés.
  *
  * Los JSON-LD se pintan con <JsonLd> (components/json-ld.tsx) desde cada page.tsx.
- * Todo en español, que es el idioma que reciben los buscadores (el inglés se elige
- * en el navegador sobre la misma URL).
+ * El español vive en la ruta sin prefijo y el inglés bajo /en (lib/rutas.ts).
  *
- * hreflang: cada página se declara a sí misma como "es" y "x-default" (alternatesFor).
- * Sin hreflang "en" a propósito (decisión de Ángel): no hay una URL que sirva el inglés, y
- * un "en" hacia la página en español es un error. Por lo mismo no hay og:locale:alternate.
- * Si algún día hay rutas /en/..., se añaden aquí.
+ * hreflang (alternatesFor): cada página declara su propio canonical y, solo con los idiomas que
+ * existen de verdad para ella, "es", "en" y "x-default" (el español). Español e inglés se apuntan
+ * entre sí (reciprocidad obligatoria, o Google ignora los hreflang). Un artículo o proyecto sin
+ * traducción completa al inglés no tiene página en /en: devuelve 404 y no entra en el sitemap.
  */
 
 import { LEGAL, SITE_URL } from "./site";
@@ -16,33 +15,69 @@ import { CERTIFICATIONS } from "./certifications";
 import type { Project } from "./projects";
 import type { ServiceDetail as Service } from "./services";
 import type { BlogPost } from "./blog-types";
+import { LOCALES, localizedHref, type Lang } from "./rutas";
 import es from "@/messages/es.json";
+import en from "@/messages/en.json";
 
-/** Título de la home (49 caracteres, tope de 60). Sin marca: va en SITE_NAME (og:site_name y WebSite). */
-export const HOME_TITLE = "Informático para empresas y autónomos en Mallorca";
+const MSG = { es, en };
+
+/** Títulos de la home (tope de 60 caracteres). Sin marca: va en SITE_NAME (og:site_name y WebSite). */
+export const HOME_TITLES: Record<Lang, string> = {
+  es: "Informático para empresas y autónomos en Mallorca",
+  en: "IT support and web development in Mallorca",
+};
+export const HOME_DESCRIPTIONS: Record<Lang, string> = {
+  es: "Administrador de sistemas en un equipo que lleva más de 60 hoteles, y desarrollador web para autónomos y pymes. En Palma de Mallorca y en remoto.",
+  en: "Systems administrator on a team that looks after 60+ hotels, and web developer for freelancers and small businesses. In Palma de Mallorca and remote.",
+};
+/** Versión en español, la que usan las pruebas y los textos que aún no distinguen idioma. */
+export const HOME_TITLE = HOME_TITLES.es;
+export const HOME_DESCRIPTION = HOME_DESCRIPTIONS.es;
 /** Nombre del sitio, para og:site_name y el WebSite del JSON-LD (no el título largo de la home). */
 export const SITE_NAME = "Ángel Fernández";
-/** Imagen para redes de la home (1200x630). */
+/** Imagen para redes de la home (1200x630), la misma en los dos idiomas. */
 export const HOME_OG_IMAGE = "/og-home.jpg";
-export const HOME_DESCRIPTION =
-  "Administrador de sistemas en un equipo que lleva más de 60 hoteles, y desarrollador web para autónomos y pymes. En Palma de Mallorca y en remoto.";
 
-/** Canonical + hreflang de una página (ruta relativa a metadataBase). */
-export function alternatesFor(path: string) {
-  return { canonical: path, languages: { es: path, "x-default": path } };
+/** Valor de `openGraph.locale` por idioma. */
+export const OG_LOCALE: Record<Lang, string> = { es: "es_ES", en: "en_US" };
+
+/**
+ * Canonical + hreflang de una página. `path` es la ruta en español sin prefijo (`/servicios/web`);
+ * `idiomas` son los que existen para ella (por defecto los dos). Las rutas son relativas a
+ * metadataBase.
+ */
+export function alternatesFor(path: string, lang: Lang = "es", idiomas: readonly Lang[] = LOCALES) {
+  const existentes = idiomas.includes(lang) ? idiomas : [...idiomas, lang];
+  const languages: Record<string, string> = {};
+  for (const l of existentes) languages[l] = localizedHref(l, path);
+  languages["x-default"] = localizedHref(existentes.includes("es") ? "es" : existentes[0], path);
+  return { canonical: localizedHref(lang, path), languages };
 }
 
-/** Meta description de cada página de servicio, por id. */
-export const SERVICE_DESCRIPTIONS: Record<string, string> = {
-  sistemas:
-    "Soporte informático y sistemas para empresas en Palma y Mallorca. Copias de seguridad, Microsoft 365, redes y servidores. Remoto o presencial.",
-  web: "Diseño y desarrollo web a medida en Palma y Mallorca para autónomos y pymes. Webs rápidas y optimizadas para SEO, con dominio, hosting y mantenimiento.",
+/** Meta description de cada página de servicio, por idioma e id. */
+export const SERVICE_DESCRIPTIONS: Record<Lang, Record<string, string>> = {
+  es: {
+    sistemas:
+      "Soporte informático y sistemas para empresas en Palma y Mallorca. Copias de seguridad, Microsoft 365, redes y servidores. Remoto o presencial.",
+    web: "Diseño y desarrollo web a medida en Palma y Mallorca para autónomos y pymes. Webs rápidas y optimizadas para SEO, con dominio, hosting y mantenimiento.",
+  },
+  en: {
+    sistemas:
+      "IT support and systems for businesses in Palma and Mallorca. Backups, Microsoft 365, networks and servers. Remote or on site.",
+    web: "Custom web design and development in Palma and Mallorca for freelancers and small businesses. Fast, SEO ready websites with domain, hosting and maintenance.",
+  },
 };
 
 /** Título SEO de cada página de servicio (sin marca; el <title> añade " · Ángel Fernández"). */
-export const SERVICE_TITLES: Record<string, string> = {
-  sistemas: "Soporte informático en Palma y Mallorca",
-  web: "Diseño web en Palma y Mallorca",
+export const SERVICE_TITLES: Record<Lang, Record<string, string>> = {
+  es: {
+    sistemas: "Soporte informático en Palma y Mallorca",
+    web: "Diseño web en Palma y Mallorca",
+  },
+  en: {
+    sistemas: "IT support in Palma and Mallorca",
+    web: "Web design in Palma and Mallorca",
+  },
 };
 
 const PERSON_ID = `${SITE_URL}/#person`;
@@ -58,16 +93,22 @@ function isoDate(date: string) {
   return `${date}T09:00:00+01:00`;
 }
 
+/** URL absoluta de una ruta en español sin prefijo, en el idioma pedido. */
+function abs(lang: Lang, path: string) {
+  const ruta = localizedHref(lang, path);
+  return ruta === "/" ? SITE_URL : `${SITE_URL}${ruta}`;
+}
+
 type Crumb = { name: string; path: string };
 
-function breadcrumb(items: Crumb[]) {
+function breadcrumb(lang: Lang, items: Crumb[]) {
   return {
     "@type": "BreadcrumbList",
     itemListElement: items.map((c, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: c.name,
-      item: `${SITE_URL}${c.path}`,
+      item: abs(lang, c.path),
     })),
   };
 }
@@ -76,25 +117,33 @@ function graph(...nodes: object[]) {
   return { "@context": "https://schema.org", "@graph": nodes };
 }
 
-/** Home: WebSite + Person. */
-export function homeJsonLd() {
+const MIGAS = {
+  es: { inicio: "Inicio", servicios: "Servicios", proyectos: "Proyectos", blog: "Blog" },
+  en: { inicio: "Home", servicios: "Services", proyectos: "Projects", blog: "Blog" },
+} as const;
+
+/** Home: WebSite + ProfessionalService + Person. Mismas @id en los dos idiomas. */
+export function homeJsonLd(lang: Lang = "es") {
+  const descripcion = HOME_DESCRIPTIONS[lang];
+  const url = abs(lang, "/");
+  const region = lang === "en" ? "Balearic Islands" : "Islas Baleares";
   return graph(
     {
       "@type": "WebSite",
       "@id": WEBSITE_ID,
       name: SITE_NAME,
       alternateName: PERSON_NAME,
-      url: SITE_URL,
-      description: HOME_DESCRIPTION,
-      inLanguage: ["es", "en"],
+      url,
+      description: descripcion,
+      inLanguage: lang,
       publisher: { "@id": PERSON_ID },
     },
     {
       "@type": "ProfessionalService",
       "@id": BUSINESS_ID,
       name: PERSON_NAME,
-      description: HOME_DESCRIPTION,
-      url: SITE_URL,
+      description: descripcion,
+      url,
       email: LEGAL.email,
       image: `${SITE_URL}${HOME_OG_IMAGE}`,
       founder: { "@id": PERSON_ID },
@@ -102,7 +151,7 @@ export function homeJsonLd() {
       address: {
         "@type": "PostalAddress",
         addressLocality: "Palma de Mallorca",
-        addressRegion: "Islas Baleares",
+        addressRegion: region,
         addressCountry: "ES",
       },
       sameAs: ["https://www.linkedin.com/in/angelfernandezgarriga", "https://github.com/4ngel10"],
@@ -111,15 +160,18 @@ export function homeJsonLd() {
       "@type": "Person",
       "@id": PERSON_ID,
       name: PERSON_NAME,
-      jobTitle: ["Administrador de Sistemas", "Desarrollador Web"],
-      url: SITE_URL,
+      jobTitle:
+        lang === "en"
+          ? ["Systems Administrator", "Web Developer"]
+          : ["Administrador de Sistemas", "Desarrollador Web"],
+      url,
       image: `${SITE_URL}/angel-square.webp`,
       email: LEGAL.email,
       sameAs: ["https://www.linkedin.com/in/angelfernandezgarriga", "https://github.com/4ngel10"],
       address: {
         "@type": "PostalAddress",
         addressLocality: "Palma de Mallorca",
-        addressRegion: "Islas Baleares",
+        addressRegion: region,
         addressCountry: "ES",
       },
       // Solo nombre y emisor, como en la tira del hero (lib/certifications.ts).
@@ -153,18 +205,20 @@ export function homeJsonLd() {
   );
 }
 
-/** Página de servicio: Service + BreadcrumbList (Inicio > Servicios > servicio). */
-export function serviceJsonLd(service: Service) {
-  const name = (es.services as Record<string, string>)[`${service.key}Title`];
+/** Página de servicio: Service + FAQPage + BreadcrumbList (Inicio > Servicios > servicio). */
+export function serviceJsonLd(service: Service, lang: Lang = "es") {
+  const name = (MSG[lang].services as Record<string, string>)[`${service.key}Title`];
   const path = `/servicios/${service.id}`;
+  const m = MIGAS[lang];
   return graph(
     {
       "@type": "Service",
       "@id": `${SITE_URL}${path}#service`,
       name,
       serviceType: name,
-      description: SERVICE_DESCRIPTIONS[service.id],
-      url: `${SITE_URL}${path}`,
+      description: SERVICE_DESCRIPTIONS[lang][service.id],
+      url: abs(lang, path),
+      inLanguage: lang,
       provider: { "@id": BUSINESS_ID },
       areaServed: { "@type": "City", name: "Palma de Mallorca" },
     },
@@ -173,7 +227,8 @@ export function serviceJsonLd(service: Service) {
           {
             "@type": "FAQPage",
             "@id": `${SITE_URL}${path}#faq`,
-            mainEntity: service.faq.es.items.map((it) => ({
+            inLanguage: lang,
+            mainEntity: service.faq[lang].items.map((it) => ({
               "@type": "Question",
               name: it.q,
               acceptedAnswer: { "@type": "Answer", text: it.a },
@@ -182,28 +237,30 @@ export function serviceJsonLd(service: Service) {
         ]
       : []),
     // "Servicios" y "Proyectos" no tienen página propia: apuntan a su sección de la home.
-    breadcrumb([
-      { name: "Inicio", path: "/" },
-      { name: "Servicios", path: "/#services" },
+    breadcrumb(lang, [
+      { name: m.inicio, path: "/" },
+      { name: m.servicios, path: "/#services" },
       { name, path },
     ]),
   );
 }
 
 /** Página de proyecto: Article + BreadcrumbList (Inicio > Proyectos > proyecto). */
-export function projectJsonLd(project: Project) {
-  const portfolio = es.portfolio as Record<string, string>;
+export function projectJsonLd(project: Project, lang: Lang = "es") {
+  const portfolio = MSG[lang].portfolio as Record<string, string>;
   const name = portfolio[`${project.key}Title`];
   const path = `/proyectos/${project.slug}`;
+  const url = abs(lang, path);
+  const m = MIGAS[lang];
   return graph(
     {
       "@type": "Article",
       "@id": `${SITE_URL}${path}#article`,
-      headline: project.post.es.title ?? name,
+      headline: project.post[lang].title ?? name,
       description: portfolio[`${project.key}Desc`],
-      url: `${SITE_URL}${path}`,
-      mainEntityOfPage: `${SITE_URL}${path}`,
-      inLanguage: "es",
+      url,
+      mainEntityOfPage: url,
+      inLanguage: lang,
       ...(project.date && {
         datePublished: isoDate(project.date),
         dateModified: isoDate(project.date),
@@ -212,67 +269,77 @@ export function projectJsonLd(project: Project) {
       author: personRef,
       publisher: personRef,
     },
-    breadcrumb([
-      { name: "Inicio", path: "/" },
-      { name: "Proyectos", path: "/#portfolio" },
+    breadcrumb(lang, [
+      { name: m.inicio, path: "/" },
+      { name: m.proyectos, path: "/#portfolio" },
       { name, path },
     ]),
   );
 }
 
-export const BLOG_TITLE = "Blog de sistemas y desarrollo web · Ángel Fernández";
-export const BLOG_DESCRIPTION =
-  "Guías prácticas de sistemas, copias de seguridad, desarrollo web con Next.js y automatización, para autónomos y pymes.";
+export const BLOG_TITLES: Record<Lang, string> = {
+  es: "Blog de sistemas y desarrollo web · Ángel Fernández",
+  en: "Systems and web development blog · Ángel Fernández",
+};
+export const BLOG_DESCRIPTIONS: Record<Lang, string> = {
+  es: "Guías prácticas de sistemas, copias de seguridad, desarrollo web con Next.js y automatización, para autónomos y pymes.",
+  en: "Practical guides on systems, backups, web development with Next.js and automation, for freelancers and small businesses.",
+};
+export const BLOG_TITLE = BLOG_TITLES.es;
+export const BLOG_DESCRIPTION = BLOG_DESCRIPTIONS.es;
 
 /** Listado del blog: Blog (con sus artículos) + BreadcrumbList (Inicio > Blog). */
-export function blogIndexJsonLd(posts: BlogPost[]) {
+export function blogIndexJsonLd(posts: BlogPost[], lang: Lang = "es") {
+  const m = MIGAS[lang];
   return graph(
     {
       "@type": "Blog",
       "@id": `${SITE_URL}/blog#blog`,
-      name: BLOG_TITLE,
-      description: BLOG_DESCRIPTION,
-      url: `${SITE_URL}/blog`,
-      inLanguage: "es",
+      name: BLOG_TITLES[lang],
+      description: BLOG_DESCRIPTIONS[lang],
+      url: abs(lang, "/blog"),
+      inLanguage: lang,
       author: personRef,
       blogPost: posts.map((p) => ({
         "@type": "BlogPosting",
-        headline: p.post.es.title,
-        url: `${SITE_URL}/blog/${p.slug}`,
+        headline: p.post[lang].title,
+        url: abs(lang, `/blog/${p.slug}`),
         datePublished: p.publishedAt,
       })),
     },
-    breadcrumb([
-      { name: "Inicio", path: "/" },
-      { name: "Blog", path: "/blog" },
+    breadcrumb(lang, [
+      { name: m.inicio, path: "/" },
+      { name: m.blog, path: "/blog" },
     ]),
   );
 }
 
 /** Artículo del blog: BlogPosting + BreadcrumbList (Inicio > Blog > artículo). */
-export function blogPostJsonLd(post: BlogPost) {
-  const content = post.post.es;
+export function blogPostJsonLd(post: BlogPost, lang: Lang = "es") {
+  const content = post.post[lang];
   const path = `/blog/${post.slug}`;
+  const url = abs(lang, path);
+  const m = MIGAS[lang];
   return graph(
     {
       "@type": "BlogPosting",
       "@id": `${SITE_URL}${path}#article`,
       headline: content.title,
       description: content.description,
-      url: `${SITE_URL}${path}`,
-      mainEntityOfPage: `${SITE_URL}${path}`,
-      inLanguage: "es",
+      url,
+      mainEntityOfPage: url,
+      inLanguage: lang,
       datePublished: post.publishedAt,
       dateModified: post.updatedAt,
-      // La propia del artículo o, si no tiene, la generada por código.
+      // La propia del artículo o, si no tiene, la generada por código (misma en los dos idiomas).
       image: `${SITE_URL}${post.ogImage ?? `/blog/${post.slug}/opengraph-image`}`,
       author: personRef,
       publisher: personRef,
       isPartOf: { "@id": `${SITE_URL}/blog#blog` },
     },
-    breadcrumb([
-      { name: "Inicio", path: "/" },
-      { name: "Blog", path: "/blog" },
+    breadcrumb(lang, [
+      { name: m.inicio, path: "/" },
+      { name: m.blog, path: "/blog" },
       { name: content.title, path },
     ]),
   );

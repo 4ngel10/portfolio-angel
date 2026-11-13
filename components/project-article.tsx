@@ -38,6 +38,7 @@ export function formatDate(date: string, locale: Locale) {
 
 /** Texto con **negrita** y [enlace](url). Los enlaces externos abren en otra pestaña. */
 export function Inline({ text }: { text: string }) {
+  const { l } = useI18n();
   return text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g).map((part, i) => {
     const bold = part.match(/^\*\*([^*]+)\*\*$/);
     if (bold)
@@ -52,7 +53,7 @@ export function Inline({ text }: { text: string }) {
       return (
         <a
           key={i}
-          href={link[2]}
+          href={external ? link[2] : l(link[2])}
           {...(external && { target: "_blank", rel: "noopener noreferrer" })}
           className={`font-medium text-[var(--accent)] underline decoration-1 underline-offset-4 transition-colors hover:text-[var(--fg)] ${
             // Un enlace de una sola palabra ("3-2-1") no se parte por el guion.
@@ -276,7 +277,7 @@ function CaseSummary({ data }: { data: CaseStudy }) {
  * (sin su artículo), así el texto de los demás proyectos no viaja en el JS de la página.
  */
 export function ProjectArticle({ project, next }: { project: Project; next: ProjectCard | null }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
   const title = t(`portfolio.${project.key}Title`);
   const post = project.post[locale];
 
@@ -286,7 +287,7 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
       <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
           <Link
-            href="/#portfolio"
+            href={l("/#portfolio")}
             className="group text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[var(--fg)]"
           >
             <Arrow back />
@@ -386,7 +387,7 @@ export function ProjectArticle({ project, next }: { project: Project; next: Proj
       {next && (
         <section className="border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-            <Link href={`/proyectos/${next.slug}`} className="block">
+            <Link href={l(`/proyectos/${next.slug}`)} className="block">
               <div
                 className="group border-rule flex flex-col overflow-hidden rounded-2xl border transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)] md:flex-row"
                 style={{ background: "var(--bg)" }}

@@ -11,7 +11,7 @@ import type { BlogPostLink } from "@/lib/blog-types";
  * marca el scroll spy de la nav (el enlace "Blog" de la nav lleva a /blog).
  */
 export function BlogTeaser({ posts }: { posts: BlogPostLink[] }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
 
   return (
     <section id="blog" className="scroll-mt-[72px] py-16 md:py-20">
@@ -24,7 +24,7 @@ export function BlogTeaser({ posts }: { posts: BlogPostLink[] }) {
             {t("blog.homeLead")}
           </p>
           <Link
-            href="/blog"
+            href={l("/blog")}
             className="group text-muted mt-5 inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[var(--accent)]"
           >
             {t("blog.all")}
@@ -36,7 +36,7 @@ export function BlogTeaser({ posts }: { posts: BlogPostLink[] }) {
           {posts.map((p) => (
             <li key={p.slug} className="border-rule border-b">
               <Link
-                href={`/blog/${p.slug}`}
+                href={l(`/blog/${p.slug}`)}
                 className="group flex items-center justify-between gap-6 py-5"
               >
                 <span className="min-w-0">

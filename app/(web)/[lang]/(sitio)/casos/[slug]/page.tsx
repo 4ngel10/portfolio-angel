@@ -1,16 +1,17 @@
+import { LOCALES } from "@/lib/rutas";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { CASE_DRAFTS, casesVisible, getCaseDraft } from "@/lib/cases";
 
-type Params = Promise<{ slug: string }>;
+type Params = Promise<{ lang: string; slug: string }>;
 
 // Borradores: solo los slugs de lib/cases.ts, y nunca en producción.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return CASE_DRAFTS.map((c) => ({ slug: c.slug }));
+  return LOCALES.flatMap((lang) => CASE_DRAFTS.map((c) => ({ lang, slug: c.slug })));
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {

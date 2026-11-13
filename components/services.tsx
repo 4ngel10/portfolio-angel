@@ -15,7 +15,7 @@ const BULLET_ANCHORS: Record<string, string[]> = {
 
 /** `items` llega de la página (servidor) con solo la clave y el id de cada servicio. */
 export function Services({ items }: { items: { key: string; id: string }[] }) {
-  const { t } = useI18n();
+  const { t, l } = useI18n();
 
   const services = items.map((s) => ({
     key: s.key,
@@ -25,7 +25,7 @@ export function Services({ items }: { items: { key: string; id: string }[] }) {
     lead: t(`services.${s.key}Lead`),
     bullets: [1, 2, 3, 4].map((n, i) => ({
       label: t(`services.${s.key}b${n}`),
-      href: `/servicios/${s.id}#${BULLET_ANCHORS[s.key][i]}`,
+      href: l(`/servicios/${s.id}#${BULLET_ANCHORS[s.key][i]}`),
     })),
   }));
 
@@ -52,7 +52,7 @@ export function Services({ items }: { items: { key: string; id: string }[] }) {
                       de los puntos de la lista (z-10), que llevan cada uno a su apartado.
                       No se envuelve la card en un <a>: no se pueden anidar enlaces. */}
                 <Link
-                  href={`/servicios/${s.id}`}
+                  href={l(`/servicios/${s.id}`)}
                   aria-label={`${s.title}: ${t("servicesPage.more")}`}
                   className="absolute inset-0 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
                 />

@@ -31,11 +31,11 @@ const Arrow = () => (
 
 /** Card de un proyecto de PROJECTS: mismo diseño que las de la home, con zoom discreto y sin tilt. */
 function ProjectCard({ project }: { project: DatosCard }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
   const title = t(`portfolio.${project.key}Title`);
   return (
     <Link
-      href={`/proyectos/${project.slug}`}
+      href={l(`/proyectos/${project.slug}`)}
       className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
     >
       <div className={`${CARD} ${CARD_LINK}`} style={{ background: "var(--bg)" }}>
@@ -91,10 +91,10 @@ const SELF_COVER = {
 
 /** Card de esta misma web: igual que las de proyecto, pero enlaza a la home. */
 function SelfCard() {
-  const { t } = useI18n();
+  const { t, l } = useI18n();
   return (
     <Link
-      href="/"
+      href={l("/")}
       className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
     >
       <div className={`${CARD} ${CARD_LINK}`} style={{ background: "var(--bg)" }}>

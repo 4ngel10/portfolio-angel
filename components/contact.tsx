@@ -51,7 +51,7 @@ function ServiceSelect({ defaultValue, invalido }: { defaultValue: string; inval
 }
 
 export function Contact() {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
   // La acción corre en el servidor y funciona también sin JS (el formulario la usa como action).
   const [estado, formAction, enviando] = useActionState(enviarContacto, INICIAL);
   // Hora a la que se abrió el formulario: el servidor descarta envíos de menos de 3 s (bots).
@@ -390,7 +390,7 @@ export function Contact() {
               <p className="text-muted mt-3 text-[12px] leading-relaxed">
                 {t("contact.formConsentPre")}
                 <Link
-                  href="/privacidad"
+                  href={l("/privacidad")}
                   className="underline underline-offset-2 hover:text-[var(--fg)]"
                 >
                   {t("contact.formConsentLink")}

@@ -19,7 +19,7 @@ export function BlogArticle({
   /** Pinta un <div> en vez de <main id="main">, para la vista previa del admin (que ya tiene su <main>). */
   comoDiv?: boolean;
 }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
   const content = post.post[locale];
 
   return (
@@ -28,7 +28,7 @@ export function BlogArticle({
       <header className="mx-auto max-w-6xl px-6 pt-14 md:px-8 md:pt-20">
         <Reveal>
           <Link
-            href="/blog"
+            href={l("/blog")}
             className="group text-muted inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[var(--fg)]"
           >
             <Arrow back />
@@ -86,7 +86,7 @@ export function BlogArticle({
       {next && (
         <section className="border-rule border-t">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-            <Link href={`/blog/${next.slug}`} className="block">
+            <Link href={l(`/blog/${next.slug}`)} className="block">
               <ZoomCard
                 className="group border-rule flex flex-col gap-3 rounded-2xl border p-7 transition-[box-shadow,border-color] duration-300 hover:border-[var(--accent)] hover:shadow-[0_30px_60px_-25px_rgba(194,65,12,0.3)] md:p-10"
                 style={{ background: "var(--bg)" }}

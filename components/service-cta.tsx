@@ -11,7 +11,7 @@ import { useI18n } from "@/lib/i18n";
  * Fondo alterno (paper-alt): la sección siguiente va sin fondo. Sin tilt.
  */
 export function ServiceCta({ service }: { service: "web" | "sistemas" }) {
-  const { t } = useI18n();
+  const { t, l } = useI18n();
   return (
     <section className="bg-paper-alt border-rule border-t">
       <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
@@ -30,12 +30,12 @@ export function ServiceCta({ service }: { service: "web" | "sistemas" }) {
               {t(`project.cta.${service}Text`)}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-              <Link href={`/servicios/${service}`} className="btn-primary group self-start">
+              <Link href={l(`/servicios/${service}`)} className="btn-primary group self-start">
                 {t(`project.cta.${service}Button`)}
                 <Arrow />
               </Link>
               <Link
-                href="/#contact"
+                href={l("/#contact")}
                 className="text-sm font-medium text-[var(--accent)] underline decoration-1 underline-offset-4 transition-colors hover:text-[var(--fg)]"
               >
                 {t("nav.ctaContact")}

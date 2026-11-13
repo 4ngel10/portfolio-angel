@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/lib/theme";
-import { useI18n } from "@/lib/i18n";
+import { guardarIdioma, useI18n } from "@/lib/i18n";
+import { localizedHref, otroIdioma, stripLocale } from "@/lib/rutas";
 
 /**
  * Enlace de la nav: los de ancla (#about) son <a> normales para que los coja el scroll suave
@@ -19,16 +20,21 @@ export function NavLink(props: React.ComponentProps<"a"> & { href: string }) {
  * y el scroll spy marca la que se ve. En el resto llevan a la sección de la home y se marca
  * el apartado al que pertenece la página (Servicios, Proyectos o Blog).
  */
-export function Nav() {
-  const { t, locale, setLocale } = useI18n();
+export function Nav({ alternate }: { alternate?: string } = {}) {
+  const { t, locale, l } = useI18n();
   const { theme, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
-  const pathname = usePathname();
+  // Ruta sin el prefijo de idioma (/en/blog es /blog): así la comparación vale en los dos idiomas.
+  const pathname = stripLocale(usePathname());
   const isHome = pathname === "/";
-  // Fuera de la home, las anclas apuntan a la home: /#about.
-  const home = (hash: string) => (isHome ? hash : `/${hash}`);
+  // Fuera de la home, las anclas apuntan a la home: /#about (o /en#about).
+  const home = (hash: string) => (isHome ? hash : l(`/${hash}`));
+  // La misma página en el otro idioma. `alternate` (ruta en español) la fija una página sin
+  // traducción, por ejemplo un artículo solo en español, y lleva al listado.
+  const otro = otroIdioma(locale);
+  const hrefOtro = localizedHref(otro, alternate ?? pathname);
 
   // Menú móvil: es un desplegable bajo la barra (patrón disclosure), no un modal que tape
   // la página, así que no atrapa el foco. Escape lo cierra y devuelve el foco al botón.
@@ -105,7 +111,7 @@ export function Nav() {
       >
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-6 md:px-8">
           <NavLink
-            href={isHome ? "#top" : "/"}
+            href={isHome ? "#top" : l("/")}
             className="text-[15px] font-semibold tracking-tight"
           >
             Ángel Fernández<span style={{ color: "var(--accent)" }}>.</span>
@@ -130,9 +136,13 @@ export function Nav() {
           </div>
 
           <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={() => setLocale(locale === "es" ? "en" : "es")}
+            {/* Enlace real a la misma página en el otro idioma: navega sin JS. La cookie `locale` la
+                lee el portal para seguir el mismo idioma. */}
+            <Link
+              href={hrefOtro}
+              lang={otro}
+              hrefLang={otro}
+              onClick={() => guardarIdioma(otro)}
               className="text-muted rounded-full border px-3 py-3 font-mono text-xs transition-colors hover:text-[var(--fg)]"
               style={{ borderColor: "var(--rule)" }}
               aria-label={t("a11y.toggleLanguage")}
@@ -142,7 +152,7 @@ export function Nav() {
                 /
               </span>
               <span className={locale === "en" ? "text-ink font-semibold" : ""}>EN</span>
-            </button>
+            </Link>
 
             <button
               type="button"

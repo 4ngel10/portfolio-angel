@@ -728,3 +728,12 @@ export function projectCard(p: Project): ProjectCard {
 export function projectCards(): ProjectCard[] {
   return PROJECTS.map(projectCard);
 }
+
+/**
+ * ¿Tiene el proyecto artículo completo en inglés? Solo entonces existe /en/proyectos/<slug>, entra
+ * en el sitemap y lleva hreflang. Si no, esa URL devuelve 404.
+ */
+export function proyectoTieneIngles(p: Project): boolean {
+  const post = p.post.en;
+  return !!post && (post.title ?? "").trim() !== "" && (post.intro ?? "").trim() !== "" && post.sections.length > 0;
+}

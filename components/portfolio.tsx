@@ -8,7 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import type { ProjectCard } from "@/lib/projects";
 
 export function Portfolio({ projects }: { projects: ProjectCard[] }) {
-  const { t, locale } = useI18n();
+  const { t, locale, l } = useI18n();
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
@@ -72,7 +72,7 @@ export function Portfolio({ projects }: { projects: ProjectCard[] }) {
                 >
                   {/* Cada card abre la página del proyecto (app/proyectos/[slug]). */}
                   <Link
-                    href={`/proyectos/${p.slug}`}
+                    href={l(`/proyectos/${p.slug}`)}
                     className="block w-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
                   >
                     <div
