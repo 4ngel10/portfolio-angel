@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
-import { cvLink } from "@/lib/site";
+import { cvHref, cvLink } from "@/lib/site";
 import { srcSetSobreMi } from "@/lib/sobre-mi-foto";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
@@ -127,7 +127,12 @@ export function About() {
               abre el visor del sistema). */}
           {cv && (
             <Reveal className="max-lg:-mt-4 lg:col-span-8 lg:row-start-2 lg:mt-8">
-              <a href={cv.href} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              <a
+                href={cvHref(locale)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
                 <svg
                   width="18"
                   height="18"

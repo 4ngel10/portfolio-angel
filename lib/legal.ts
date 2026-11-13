@@ -24,7 +24,7 @@ export type LegalPage = {
   content: Record<Locale, LegalContent>;
 };
 
-const UPDATED = "2026-11-12";
+const UPDATED = "2026-11-13";
 
 const holderEs = [
   `**Titular:** ${LEGAL.nombre}`,
@@ -165,6 +165,8 @@ export const LEGAL_PAGES: LegalPage[] = [
               "Datos: nombre, correo electrónico, servicio de interés y mensaje. Finalidad: responder a tu consulta. Base legal: tu consentimiento, que das al enviar el formulario (art. 6.1.a RGPD).",
               { h3: "WhatsApp" },
               "Si me escribes por WhatsApp, tu mensaje, tu número de teléfono y tu nombre de perfil los trata WhatsApp (Meta) según su propia política de privacidad. Solo uso esos datos para responderte. Base legal: tu consentimiento, que das al iniciar la conversación (art. 6.1.a RGPD).",
+              { h3: "Descarga del CV" },
+              "Cuando descargas mi CV en PDF, mi servidor anota que se ha producido una descarga, solo como recuento. No se registra tu dirección IP, tu navegador ni ningún otro dato que te identifique, y no se instalan cookies. El CV contiene únicamente los datos que yo mismo publico.",
               { h3: "Área de clientes" },
               "Datos: los de tu cuenta (correo, nombre), los de tu empresa, proyectos, incidencias, presupuestos (incluida su aceptación o firma), horas y archivos que subas. Finalidad: prestar el servicio contratado y gestionar la relación con el cliente. Base legal: ejecución del contrato o de medidas precontractuales (art. 6.1.b RGPD) y obligaciones legales, como las fiscales y contables (art. 6.1.c).",
               { h3: "Correos del servicio" },
@@ -230,6 +232,8 @@ export const LEGAL_PAGES: LegalPage[] = [
               "Data: name, email, service of interest and message. Purpose: answering your enquiry. Legal basis: your consent, given when you submit the form (art. 6.1.a GDPR).",
               { h3: "WhatsApp" },
               "If you message me on WhatsApp, your message, phone number and profile name are processed by WhatsApp (Meta) under its own privacy policy. I only use that data to reply to you. Legal basis: your consent, given when you start the conversation (art. 6.1.a GDPR).",
+              { h3: "CV download" },
+              "When you download my CV as a PDF, my server records that a download took place, only as a count. Your IP address, your browser and any other data that could identify you are not recorded, and no cookies are set. The CV contains only the information I choose to publish myself.",
               { h3: "Client area" },
               "Data: your account details (email, name), your company, projects, issues, quotes (including their acceptance or signature), hours and files you upload. Purpose: providing the contracted service and managing the client relationship. Legal basis: performance of a contract or pre-contractual measures (art. 6.1.b GDPR) and legal obligations such as tax and accounting (art. 6.1.c).",
               { h3: "Service emails" },
@@ -313,6 +317,7 @@ export const LEGAL_PAGES: LegalPage[] = [
               "Al pulsar enviar, el formulario de contacto manda los datos a mi servidor y de ahí a Resend, que los entrega a mi correo. No instala cookies en tu navegador. Más información en la [política de privacidad](/privacidad).",
               "La web está alojada en Vercel. Como cualquier alojamiento, puede tratar datos técnicos de la conexión, como la dirección IP, en sus registros de servidor. Esto no instala cookies. Los detalles están en la [política de privacidad](/privacidad).",
               "Vercel Speed Insights mide de forma anónima el rendimiento de las páginas públicas (tiempos de carga, tipo de dispositivo y navegador, país). No se usa para identificarte ni para hacer seguimiento entre sitios, no crea cookies en tu navegador y no se carga en el área privada.",
+              "La descarga del CV en PDF queda anotada en los registros del servidor solo como recuento, sin tu dirección IP ni ningún dato que te identifique. No crea cookies en tu navegador.",
             ],
           },
           {
@@ -356,6 +361,7 @@ export const LEGAL_PAGES: LegalPage[] = [
               "When you press send, the contact form sends your data to my server and from there to Resend, which delivers it to my email. It sets no cookies in your browser. More information in the [privacy policy](/privacidad).",
               "The website is hosted on Vercel. Like any hosting provider, it may process technical connection data, such as the IP address, in its server logs. This does not set cookies. Details are in the [privacy policy](/privacidad).",
               "Vercel Speed Insights anonymously measures the performance of the public pages (load times, device type and browser, country). It is not used to identify you or to track you across sites, it sets no cookies in your browser and it is not loaded in the private area.",
+              "Downloads of the CV as a PDF are noted in the server logs only as a count, without your IP address or any data that identifies you. It sets no cookies in your browser.",
             ],
           },
           {

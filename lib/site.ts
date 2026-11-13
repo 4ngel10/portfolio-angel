@@ -66,6 +66,14 @@ export function cvLink(locale: keyof typeof CV): { href: string; enEspanol: bool
   return null;
 }
 
+/**
+ * Ruta pública del enlace al CV: pasa por /cv/[lang] (app/cv/[lang]/route.ts), que cuenta la
+ * descarga y redirige al PDF. Los componentes usan esta, no CV[...] ni el PDF a pelo.
+ */
+export function cvHref(locale: keyof typeof CV): string {
+  return `/cv/${locale}`;
+}
+
 /** Mensaje que aparece escrito al abrir el chat de WhatsApp, según el idioma. */
 const WHATSAPP_MENSAJE = {
   es: "Hola Ángel, vengo de tu web y me gustaría recibir información sobre tus servicios. ¿Podemos hablar?",

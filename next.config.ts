@@ -26,6 +26,7 @@ const SIN_REESCRIBIR = [
   "_next",
   ...RUTAS_PRIVADAS,
   "blog-img",
+  "cv",
   "sitemap\\.xml",
   "robots\\.txt",
   "favicon\\.ico",
