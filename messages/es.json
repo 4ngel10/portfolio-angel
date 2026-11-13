@@ -125,6 +125,12 @@
     "p4Tag": "Desarrollo web",
     "p4Title": "FlexGrip, landing de producto y venta directa",
     "p4Desc": "Tienda online de un producto propio, un kit de fitness con bandas elásticas y handgrip, con pago por Stripe y garantías a la vista.",
+    "p5Tag": "Infraestructura",
+    "p5Title": "Red profesional para un bar",
+    "p5Desc": "Segmentación de red en un bar con wifi para clientes aislada del TPV, las cámaras y la oficina.",
+    "p6Tag": "Infraestructura",
+    "p6Title": "Migración a Microsoft 365",
+    "p6Desc": "Migración de correo y 420 GB de archivos de una pyme de 24 personas a Microsoft 365 sin interrumpir la actividad.",
     "prev": "Proyecto anterior",
     "next": "Proyecto siguiente"
   },

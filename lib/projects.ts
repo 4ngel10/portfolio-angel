@@ -536,6 +536,310 @@ export const PROJECTS: Project[] = [
     },
   },
   {
+    slug: "migracion-microsoft-365",
+    key: "p6",
+    cover: "M365",
+    tint: 10,
+    tech: ["Microsoft 365", "Exchange Online", "SharePoint", "MFA"],
+    image: "/projects/m365-cover.svg",
+    coverAlt: {
+      es: "Esquema con una nube en la parte superior conectada por líneas de puntos a tres servicios, cada uno con su icono: correo, archivos y seguridad.",
+      en: "Diagram with a cloud at the top linked by dotted lines to three services, each with its icon: email, files and security.",
+    },
+    ogImage: "/projects/m365-og.jpg",
+    date: "2026-11-13",
+    service: "sistemas",
+    facts: {
+      es: [
+        { label: "Entorno", value: "Pyme de 24 usuarios con oficina y teletrabajo" },
+        { label: "Alcance", value: "29 buzones y 420 GB migrados sin corte" },
+        { label: "Qué incluye", value: "Exchange Online, SharePoint, MFA y formación" },
+      ],
+      en: [
+        { label: "Environment", value: "24 user SMB with office and remote staff" },
+        { label: "Scope", value: "29 mailboxes and 420 GB migrated with zero downtime" },
+        { label: "What it covers", value: "Exchange Online, SharePoint, MFA and training" },
+      ],
+    },
+    post: {
+      es: {
+        title: "Cómo migré una pyme a Microsoft 365 sin parar el trabajo",
+        intro:
+          "La empresa trabajaba con correo IMAP en un hosting compartido saturado y con un servidor de archivos local en la oficina, al que se conectaban por una VPN lenta desde casa. No tenían doble factor de autenticación, las contraseñas caducaban sin control y varios buzones superaban los 15 GB sin copia independiente.",
+        sections: [
+          {
+            heading: "El punto de partida",
+            blocks: [
+              "Una pyme del sector servicios con oficina central y parte de la plantilla en remoto. Eran 24 usuarios activos y 29 buzones, contando 5 compartidos (administración, comercial, soporte, facturación y dirección), con equipos Windows 10 y Windows 11 repartidos entre la oficina y los domicilios.",
+              "Los buzones IMAP estaban al límite de capacidad en el hosting antiguo y fallaba la sincronización entre el ordenador y el móvil. Los 420 GB de documentación departamental vivían en el servidor local, así que trabajar en remoto dependía de la conexión de la sede. Y no había MFA en ningún sitio.",
+              "En el día a día eso se notaba en correos que no llegaban a todos los dispositivos, archivos que tardaban minutos en abrirse desde casa y una puerta abierta si alguien perdía una contraseña.",
+            ],
+          },
+          {
+            heading: "El plan antes de tocar nada",
+            blocks: [
+              "Empecé con una auditoría completa de los 29 buzones, los alias y las listas de distribución. Después asigné las licencias Microsoft 365 Business Basic y Business Standard según el perfil de cada puesto.",
+              "Verifiqué el dominio y dejé preparados los registros DNS (MX, SPF, DKIM y DMARC) antes del cambio. El corte se planificó para un fin de semana, para que no afectara a la actividad.",
+            ],
+          },
+          {
+            heading: "Migración del correo",
+            blocks: [
+              {
+                ol: [
+                  "Creación de los 24 usuarios y los 5 buzones compartidos, y asignación de licencias en el tenant.",
+                  "Sincronización previa del histórico de correo desde el hosting antiguo, en segundo plano durante la semana.",
+                  "Reducción del TTL de los registros DNS 48 horas antes.",
+                  "Cambio de los registros MX y activación de SPF, DKIM y DMARC el viernes por la tarde.",
+                  "Repaso de los perfiles nuevos en Outlook y en los móviles el lunes a primera hora.",
+                ],
+              },
+              "No se perdió ningún correo y el corte efectivo fue de apenas unos minutos.",
+            ],
+          },
+          {
+            heading: "Archivos en SharePoint y OneDrive",
+            blocks: [
+              "Reestructuré los 420 GB en bibliotecas de SharePoint separadas por departamento, que son Administración, Comercial, Operaciones y Dirección. Los permisos se asignaron por grupos de seguridad de Entra ID y no persona a persona, y las carpetas personales pasaron a OneDrive.",
+              "El servidor local antiguo quedó accesible en modo solo lectura durante tres semanas, como respaldo de transición, antes de retirarlo.",
+            ],
+          },
+          {
+            heading: "Seguridad desde el primer día",
+            blocks: [
+              {
+                list: [
+                  "Autenticación multifactor (MFA) obligatoria para toda la plantilla.",
+                  "Bloqueo de los protocolos de correo heredados, como IMAP y POP3 básicos.",
+                  "Políticas básicas de acceso condicional.",
+                  "Administración separada, con una cuenta dedicada distinta de la del usuario diario.",
+                  "Alertas activas ante inicios de sesión sospechosos.",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "Qué se entregó",
+            blocks: [
+              "Documentación técnica con el mapa de buzones, los grupos de permisos y los registros DNS. Una sesión práctica de formación de una hora para el equipo sobre SharePoint y OneDrive. Y dos semanas de soporte tras el cambio para resolver dudas en puestos concretos.",
+              "Si tu empresa está en una situación parecida, el primer paso habitual es una llamada gratuita de 15 minutos y después un presupuesto. Este tipo de trabajo forma parte de mi servicio de [administración de sistemas](/servicios/sistemas).",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "How I migrated a small company to Microsoft 365 without stopping work",
+        intro:
+          "The company ran IMAP email on an overloaded shared hosting plan and a local file server in the office, which staff reached over a slow VPN from home. There was no two factor authentication, passwords expired with no control, and several mailboxes were over 15 GB with no independent backup.",
+        sections: [
+          {
+            heading: "Where we started",
+            blocks: [
+              "A small services company with a head office and part of the team working remotely. There were 24 active users and 29 mailboxes, including 5 shared ones (administration, sales, support, billing and management), with Windows 10 and Windows 11 machines split between the office and people's homes.",
+              "The IMAP mailboxes were at their capacity limit on the old hosting and sync between computer and phone kept failing. The 420 GB of departmental documents lived on the local server, so working remotely depended on the office connection. And there was no MFA anywhere.",
+              "In daily life that showed up as emails that did not reach every device, files that took minutes to open from home and an open door if anyone lost a password.",
+            ],
+          },
+          {
+            heading: "The plan before touching anything",
+            blocks: [
+              "I started with a full audit of the 29 mailboxes, aliases and distribution lists. Then I assigned Microsoft 365 Business Basic and Business Standard licences according to each role.",
+              "I verified the domain and prepared the DNS records (MX, SPF, DKIM and DMARC) ahead of the switch. The cutover was planned for a weekend so it would not affect the business.",
+            ],
+          },
+          {
+            heading: "Email migration",
+            blocks: [
+              {
+                ol: [
+                  "Creation of the 24 users and the 5 shared mailboxes, and licence assignment in the tenant.",
+                  "Early sync of the mail history from the old hosting, in the background during the week.",
+                  "Lowering the TTL of the DNS records 48 hours ahead.",
+                  "Switching the MX records and enabling SPF, DKIM and DMARC on Friday afternoon.",
+                  "Checking the new profiles in Outlook and on phones first thing on Monday.",
+                ],
+              },
+              "No email was lost and the actual downtime was only a few minutes.",
+            ],
+          },
+          {
+            heading: "Files in SharePoint and OneDrive",
+            blocks: [
+              "I restructured the 420 GB into SharePoint libraries split by department, namely Administration, Sales, Operations and Management. Permissions were assigned through Entra ID security groups rather than person by person, and personal folders moved to OneDrive.",
+              "The old local server stayed available in read only mode for three weeks as a transition fallback before it was retired.",
+            ],
+          },
+          {
+            heading: "Security from day one",
+            blocks: [
+              {
+                list: [
+                  "Multifactor authentication (MFA) required for the whole team.",
+                  "Legacy mail protocols blocked, such as basic IMAP and POP3.",
+                  "Basic conditional access policies.",
+                  "Separate administration, with a dedicated account distinct from the daily user account.",
+                  "Active alerts for suspicious sign ins.",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "What was delivered",
+            blocks: [
+              "Technical documentation with the mailbox map, the permission groups and the DNS records. A one hour hands on training session for the team on SharePoint and OneDrive. And two weeks of support after the switch to answer questions at specific desks.",
+              "If your company is in a similar situation, the usual first step is a free 15 minute call and then a quote. This kind of work is part of my [systems administration](/servicios/sistemas) service.",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "red-profesional-bar",
+    key: "p5",
+    cover: "NET",
+    tint: 12,
+    tech: ["VLAN", "Omada", "WireGuard", "Backups"],
+    image: "/projects/red-bar-cover.svg",
+    coverAlt: {
+      es: "Esquema de una red con un router en el centro y cuatro nodos conectados por líneas de puntos, cada uno con su icono: wifi de clientes, terminal de cobro, cámara y ordenador de oficina.",
+      en: "Network diagram with a router in the centre and four nodes linked by dotted lines, each with its icon: guest wifi, payment terminal, camera and office computer.",
+    },
+    ogImage: "/projects/red-bar-og.jpg",
+    date: "2026-11-13",
+    service: "sistemas",
+    facts: {
+      es: [
+        { label: "Entorno", value: "Bar restaurante con sala y terraza" },
+        { label: "Alcance", value: "4 VLAN aisladas, wifi de clientes, TPV, cámaras y oficina" },
+        { label: "Qué incluye", value: "Segmentación, copias automáticas y VPN WireGuard" },
+      ],
+      en: [
+        { label: "Environment", value: "Bar and restaurant with indoor dining and terrace" },
+        { label: "Scope", value: "4 isolated VLANs, guest wifi, till, cameras and office" },
+        { label: "What it covers", value: "Segmentation, automated backups and WireGuard VPN" },
+      ],
+    },
+    post: {
+      es: {
+        title: "Cómo monté una red profesional para un bar",
+        intro:
+          "El local funcionaba con el router básico del operador para todo. En la misma red convivían el wifi abierto de los clientes, dos TPV, el comandero, cuatro cámaras IP y el ordenador de administración. En horas punta de terraza el cobro con tarjeta se quedaba colgado y cualquier dispositivo conectado tenía visibilidad sobre la red interna.",
+        sections: [
+          {
+            heading: "El punto de partida",
+            blocks: [
+              "Un bar restaurante de unos 110 m² con sala interior y terraza, fibra simétrica de 600 Mbps y picos de hasta 45 clientes conectados a la vez al wifi. Todo colgaba del router del operador, en una única red plana.",
+              "El wifi de cortesía compartía rango IP con los dos TPV y la impresora de cocina, las cámaras IP no estaban segmentadas y las copias de la facturación vivían solo en el disco local del ordenador de oficina.",
+              "En el día a día eso suponía dos riesgos. El operativo, porque en horas punta el tráfico de los clientes competía con el de los terminales de cobro. Y el de seguridad, porque cualquier móvil conectado al wifi tenía visibilidad sobre los equipos del negocio, y si el disco de oficina fallaba se perdía la facturación.",
+            ],
+          },
+          {
+            heading: "Qué se separó y por qué",
+            blocks: [
+              "El local pasó de una red plana a cuatro redes aisladas, cada una con su función.",
+              {
+                list: [
+                  "**Red de clientes.** Solo salida a internet, aislamiento entre dispositivos y un límite de 15 Mbps por usuario para no saturar los 600 Mbps de la fibra.",
+                  "**Red de TPV y barra.** Prioridad de tráfico para los dos terminales de cobro, el comandero inalámbrico y las impresoras térmicas de barra y cocina.",
+                  "**Red de videovigilancia.** Cuatro cámaras IP y grabador NVR sin acceso directo a internet ni visibilidad desde el resto de subredes.",
+                  "**Red de oficina.** Equipo de gestión, contabilidad y control de proveedores separado del tráfico comercial.",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "Los equipos instalados",
+            blocks: [
+              "Un router con soporte VLAN y firewall por reglas entre subredes, un switch gestionable de 8 puertos con PoE para alimentar directamente las cuatro cámaras y los puntos de acceso sin enchufes extra, y dos puntos de acceso profesionales con gestión centralizada en Omada, uno en la sala y otro cubriendo la terraza.",
+              "Todo va alojado en un pequeño rack mural ventilado en el almacén, con un SAI para aguantar los microcortes eléctricos.",
+            ],
+          },
+          {
+            heading: "Copias y acceso remoto",
+            blocks: [
+              "Cada madrugada, al cierre, se hace una copia de seguridad cifrada de la base de datos del TPV y de la carpeta de facturación hacia un almacenamiento externo fuera del local. Si el ordenador de oficina falla, la facturación sigue a salvo.",
+              "Para el soporte hay un túnel VPN WireGuard. Puedo revisar el estado de los equipos o resolver una incidencia sin desplazarme al bar.",
+            ],
+          },
+          {
+            heading: "Cómo se ejecutó, paso a paso",
+            blocks: [
+              {
+                ol: [
+                  "Visita al local y medición de cobertura wifi en sala y terraza.",
+                  "Propuesta técnica y presupuesto cerrado.",
+                  "Cableado estructurado y montaje en rack fuera del horario de apertura, para no interrumpir el servicio.",
+                  "Pruebas de aislamiento entre VLAN y de carga simultánea en barra.",
+                  "Entrega con el esquema de red y las credenciales documentadas.",
+                ],
+              },
+              "Si tienes un negocio en una situación parecida, el primer paso habitual es una llamada gratuita de 15 minutos y después un presupuesto cerrado. Este tipo de trabajo forma parte de mi servicio de [administración de sistemas](/servicios/sistemas).",
+            ],
+          },
+        ],
+      },
+      en: {
+        title: "How I set up a professional network for a bar",
+        intro:
+          "The venue ran everything on the basic router from the internet provider. The open guest wifi, two tills, the handheld ordering device, four IP cameras and the admin computer all shared the same network. At peak hours on the terrace, card payments would hang, and any connected device could see the internal network.",
+        sections: [
+          {
+            heading: "Where we started",
+            blocks: [
+              "A bar and restaurant of about 110 m² with an indoor dining room and a terrace, a 600 Mbps symmetric fibre line and peaks of up to 45 customers on the wifi at once. Everything hung off the provider's router, on a single flat network.",
+              "The guest wifi shared an IP range with the two tills and the kitchen printer, the IP cameras were not segmented, and the billing backups lived only on the local disk of the office computer.",
+              "Day to day, that meant two risks. An operational one, because at peak hours customer traffic competed with the payment terminals. And a security one, because any phone on the wifi could see the business equipment, and if the office disk failed the billing records were gone.",
+            ],
+          },
+          {
+            heading: "What was separated and why",
+            blocks: [
+              "The venue went from one flat network to four isolated ones, each with its own role.",
+              {
+                list: [
+                  "**Guest network.** Internet access only, isolation between devices and a limit of 15 Mbps per user so the 600 Mbps line is never saturated.",
+                  "**Till and bar network.** Traffic priority for the two payment terminals, the wireless ordering device and the thermal printers at the bar and in the kitchen.",
+                  "**CCTV network.** Four IP cameras and an NVR recorder with no direct internet access and no visibility from the other subnets.",
+                  "**Office network.** Management computer, accounting and supplier control kept apart from the customer facing traffic.",
+                ],
+              },
+            ],
+          },
+          {
+            heading: "The equipment installed",
+            blocks: [
+              "A router with VLAN support and rule based firewalling between subnets, an 8 port managed PoE switch that powers the four cameras and the access points directly with no extra plugs, and two professional access points managed centrally with Omada, one in the dining room and one covering the terrace.",
+              "It all sits in a small ventilated wall rack in the storeroom, with a UPS to ride out short power cuts.",
+            ],
+          },
+          {
+            heading: "Backups and remote access",
+            blocks: [
+              "Every night after closing, an encrypted backup of the till database and the billing folder is sent to external storage away from the venue. If the office computer fails, the billing records stay safe.",
+              "For support there is a WireGuard VPN tunnel. I can check the state of the equipment or fix an issue without travelling to the bar.",
+            ],
+          },
+          {
+            heading: "How it was done, step by step",
+            blocks: [
+              {
+                ol: [
+                  "Site visit and wifi coverage measurement in the dining room and on the terrace.",
+                  "Technical proposal and fixed price quote.",
+                  "Structured cabling and rack mounting outside opening hours, so service was never interrupted.",
+                  "Isolation tests between VLANs and simultaneous load tests at the bar.",
+                  "Handover with the network diagram and documented credentials.",
+                ],
+              },
+              "If your business is in a similar situation, the usual first step is a free 15 minute call and then a fixed price quote. This kind of work is part of my [systems administration](/servicios/sistemas) service.",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
     slug: "homelab-proxmox",
     key: "p3",
     cover: "LAB",

@@ -17,11 +17,6 @@ export type CaseDraft = {
 
 export const CASE_DRAFTS: CaseDraft[] = [
   {
-    slug: "migracion-microsoft-365",
-    title: "Migración y refuerzo de Microsoft 365",
-    topic: "Migración a Microsoft 365 y medidas de seguridad aplicadas.",
-  },
-  {
     slug: "restauracion-de-backup",
     title: "Restauración de una copia de seguridad",
     topic: "Una restauración real desde copia y cómo se comprobó que los datos estaban bien.",
