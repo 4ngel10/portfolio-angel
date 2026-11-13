@@ -49,10 +49,29 @@ export const ETIQUETAS_CONOCIDAS: Record<Locale, readonly string[]> = {
 };
 
 /**
- * Palabras que no pueden aparecer en ningún texto (grupos hoteleros, empresas, clientes). Se compara
- * sin distinguir mayúsculas. Empieza vacía: se rellena a mano.
+ * Palabras que no pueden aparecer en ningún texto (grupos hoteleros, empresas, clientes). Salen de la
+ * variable de entorno PALABRAS_PROHIBIDAS, una lista separada por comas que se compara sin distinguir
+ * mayúsculas, para que los nombres reales no acaben en el repositorio. Vacía o sin definir, no valida
+ * nada. Solo la ve el servidor (no lleva NEXT_PUBLIC_): el editor del panel las recibe por props desde
+ * una página de admin.
  */
-export const PALABRAS_PROHIBIDAS: string[] = [];
+export function parsearPalabrasProhibidas(valor: string | undefined): string[] {
+  if (!valor) return [];
+  const vistas = new Set<string>();
+  const salida: string[] = [];
+  for (const trozo of valor.split(",")) {
+    const palabra = trozo.trim();
+    const clave = palabra.toLowerCase();
+    if (palabra === "" || vistas.has(clave)) continue;
+    vistas.add(clave);
+    salida.push(palabra);
+  }
+  return salida;
+}
+
+export function palabrasProhibidasDeEntorno(): string[] {
+  return parsearPalabrasProhibidas(process.env.PALABRAS_PROHIBIDAS);
+}
 
 /** Textos fijos de un caso de ejemplo, en los dos idiomas. */
 export const EJEMPLO = {
@@ -269,12 +288,14 @@ function rutaDeImagenValida(src: string): boolean {
  */
 export function validarProyecto(
   p: ProyectoParaValidar,
-  opciones: { publicar: boolean },
+  opciones: { publicar: boolean; prohibidas?: readonly string[] },
 ): Resultado {
   const errores: Fallo[] = [];
   const avisos: Fallo[] = [];
   const bloquea = (f: Fallo, siempre = false) =>
     (opciones.publicar || siempre ? errores : avisos).push(f);
+  // En el navegador la variable no existe y la lista llega por opciones (desde el servidor).
+  const prohibidas = opciones.prohibidas ?? palabrasProhibidasDeEntorno();
 
   // Campos comunes.
   if (!slugValido(p.slug)) {
@@ -378,7 +399,7 @@ export function validarProyecto(
     // Palabras prohibidas (nombres de clientes o empresas).
     for (const t of textosDe(idioma, c)) {
       const bajo = t.texto.toLowerCase();
-      const encontrada = PALABRAS_PROHIBIDAS.find(
+      const encontrada = prohibidas.find(
         (w) => w !== "" && bajo.includes(w.toLowerCase()),
       );
       if (encontrada) {

@@ -8,6 +8,7 @@ import { utcAMadridLocal } from "@/lib/blog-types";
 import { estadoDe, listarVersionesProyecto, obtenerProyectoAdmin } from "@/lib/proyectos-admin";
 import { contenidoAEditor } from "@/lib/proyectos-editor";
 import { portadasConocidas } from "@/lib/proyectos-portadas";
+import { palabrasProhibidasDeEntorno } from "@/lib/proyectos-validate";
 import { SITE_URL } from "@/lib/site";
 import { PortfolioEditor } from "@/components/portal/portfolio-editor";
 import { PageHeader } from "@/components/portal/ui";
@@ -67,6 +68,7 @@ export default async function EditarProyectoPage({ params }: { params: Params })
         conocidas={conocidas}
         versiones={versiones}
         siteUrl={SITE_URL}
+        prohibidas={palabrasProhibidasDeEntorno()}
         portadas={portadas}
       />
     </>

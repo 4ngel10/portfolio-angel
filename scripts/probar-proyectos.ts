@@ -28,7 +28,7 @@ import {
 import type { ProyectoLocale } from "../lib/proyectos-types";
 import {
   EJEMPLO,
-  PALABRAS_PROHIBIDAS,
+  parsearPalabrasProhibidas,
   contarFrases,
   validarProyecto,
   type ProyectoParaValidar,
@@ -321,12 +321,41 @@ console.log("Comprobador, lo que tiene que detectar");
     hay(x, "es.post.sections[1].blocks[1].alt") && hay(x, "es.post.sections[1].blocks[1].width"),
   );
 
+  // Palabras prohibidas: salen de la variable de entorno PALABRAS_PROHIBIDAS (aquí, una de prueba).
+  const anterior = process.env.PALABRAS_PROHIBIDAS;
   const y = ejemploBase();
-  PALABRAS_PROHIBIDAS.push("Hotelera");
   y.es.post.intro = "Trabajo hecho para la cadena Hotelera Sol.";
-  comprobar("palabra prohibida", hay(y, "es.post.intro"));
-  PALABRAS_PROHIBIDAS.length = 0;
-  comprobar("sin palabras prohibidas, la lista vacía no bloquea", !hay(y, "es.post.intro"));
+  y.en.post.intro = "Work done for the Hotelera Sol chain.";
+  delete process.env.PALABRAS_PROHIBIDAS;
+  comprobar("sin variable, no valida nada", !hay(y, "es.post.intro"));
+  process.env.PALABRAS_PROHIBIDAS = "";
+  comprobar("variable vacía, no valida nada", !hay(y, "es.post.intro"));
+  process.env.PALABRAS_PROHIBIDAS = " , ,";
+  comprobar("variable solo con comas y espacios, no valida nada", !hay(y, "es.post.intro"));
+  process.env.PALABRAS_PROHIBIDAS = "Cliente Falso SL, hotelera sol ,,Otra";
+  comprobar("palabra de la variable en español", hay(y, "es.post.intro"));
+  comprobar("palabra de la variable en inglés, sin distinguir mayúsculas", hay(y, "en.post.intro"));
+  comprobar(
+    "el mensaje señala la palabra",
+    errores(y).some((e) => e.ruta === "es.post.intro" && e.mensaje.includes("hotelera sol")),
+  );
+  const limpio2 = ejemploBase();
+  comprobar("un proyecto sin esas palabras sigue sin errores", errores(limpio2).length === 0);
+  comprobar("con una palabra prohibida, un borrador no bloquea (solo avisa)", !hay(y, "es.post.intro", false));
+  comprobar(
+    "las palabras pueden llegar por opciones (el navegador)",
+    validarProyecto(y, { publicar: true, prohibidas: ["Sol"] }).errores.some((e) => e.ruta === "es.post.intro"),
+  );
+  comprobar(
+    "las opciones mandan sobre la variable",
+    !validarProyecto(y, { publicar: true, prohibidas: ["nada"] }).errores.some((e) => e.ruta === "es.post.intro"),
+  );
+  comprobar(
+    "parsearPalabrasProhibidas recorta, quita vacías y repite",
+    parsearPalabrasProhibidas("  Uno ,uno,, Dos Palabras ,").join("|") === "Uno|Dos Palabras",
+  );
+  if (anterior === undefined) delete process.env.PALABRAS_PROHIBIDAS;
+  else process.env.PALABRAS_PROHIBIDAS = anterior;
 
   const z = ejemploBase();
   z.es.title = "";

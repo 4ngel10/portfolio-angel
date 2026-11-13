@@ -45,6 +45,8 @@ type Props = {
   siteUrl: string;
   /** Imágenes que ya hay en public/projects, para elegirlas en vez de subirlas. */
   portadas: string[];
+  /** Palabras que no se pueden nombrar (variable PALABRAS_PROHIBIDAS), leídas en el servidor. */
+  prohibidas: string[];
 };
 
 type CampoTexto = Exclude<keyof CamposProyectoIdioma, "facts" | "results" | "quotePermiso">;
@@ -90,6 +92,7 @@ export function PortfolioEditor({
   versiones,
   siteUrl,
   portadas,
+  prohibidas,
 }: Props) {
   const { t, locale } = usePT();
   const router = useRouter();
@@ -187,11 +190,11 @@ export function PortfolioEditor({
         es: contenido.es,
         en: contenido.en,
       },
-      { publicar: true },
+      { publicar: true, prohibidas },
     );
     const palabras = (c: CamposProyectoIdioma) => contarPalabras(`${c.intro}\n${c.body}`);
     return { ...r, palabras: palabras(diferido[idioma]) };
-  }, [diferido, tamanos, idioma]);
+  }, [diferido, tamanos, idioma, prohibidas]);
 
   const slugOk = slugValido(p.slug);
   const futura = fecha !== "" && (madridLocalAUtc(fecha)?.getTime() ?? 0) > Date.now();
