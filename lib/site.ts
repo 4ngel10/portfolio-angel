@@ -48,10 +48,23 @@ export const CONTACT: {
 };
 
 /**
- * CV en PDF, uno por idioma (ruta en /public, p. ej. "/cv/angel-fernandez-es.pdf"). Vacío, no se
- * muestra el enlace en Sobre mí ni en el footer.
+ * CV en PDF, uno por idioma (ruta en /public/cv, nombre sin acentos). Vacío para un idioma, no se
+ * muestra su enlace en Sobre mí ni en el footer. El original va en originales/cv/, nunca en public/.
  */
-export const CV: { es: string; en: string } = { es: "", en: "" };
+export const CV: { es: string; en: string } = {
+  es: "/cv/angel-fernandez-garriga-cv-es.pdf",
+  en: "",
+};
+
+/**
+ * Enlace al CV para un idioma. Si no hay PDF en ese idioma, cae al español y lo marca (`enEspanol`)
+ * para que el texto lo diga. Devuelve null si no hay ningún PDF: entonces no se pinta nada.
+ */
+export function cvLink(locale: keyof typeof CV): { href: string; enEspanol: boolean } | null {
+  if (CV[locale]) return { href: CV[locale], enEspanol: false };
+  if (CV.es) return { href: CV.es, enEspanol: true };
+  return null;
+}
 
 /** Mensaje que aparece escrito al abrir el chat de WhatsApp, según el idioma. */
 const WHATSAPP_MENSAJE = {

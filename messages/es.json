@@ -40,7 +40,9 @@
     "catNetwork": "Red y seguridad",
     "catBackup": "Copias y gestión",
     "catWeb": "Web",
-    "cvLink": "Descargar mi CV (PDF)"
+    "cvLink": "Descargar mi CV en PDF",
+    "cvLinkEs": "Descargar mi CV en PDF",
+    "cvNewTab": "se abre en una pestaña nueva"
   },
   "services": {
     "title": "Dos servicios, una sola persona al teléfono.",
@@ -237,7 +239,8 @@
     "legal": "Aviso legal",
     "privacy": "Privacidad",
     "cookies": "Cookies",
-    "cv": "CV (PDF)"
+    "cv": "CV (PDF)",
+    "cvEs": "CV (PDF)"
   },
   "legal": {
     "updated": "Última revisión:"
