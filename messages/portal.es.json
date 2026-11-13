@@ -161,6 +161,20 @@
       "confirmSlug": "Escribe el slug para borrar un artículo publicado."
     }
   },
+  "portfolio": {
+    "err": {
+      "invalid": "Los datos del proyecto no son válidos o son demasiado grandes.",
+      "imageInvalid": "Las imágenes deben empezar por /portfolio-img/ o /projects/.",
+      "notFound": "No se encuentra el proyecto.",
+      "slugLocked": "El slug de un proyecto publicado no se puede cambiar. Despublícalo primero.",
+      "slugTaken": "Ya hay un proyecto con ese slug.",
+      "saveFailed": "No se pudo guardar. Inténtalo de nuevo.",
+      "fixErrors": "Corrige los errores del comprobador.",
+      "badDate": "La fecha de publicación no es válida.",
+      "confirmSlug": "Escribe el slug para borrar un proyecto publicado.",
+      "moveFailed": "No se pudo cambiar el orden. Inténtalo de nuevo."
+    }
+  },
   "nav": {
     "projects": "Proyectos",
     "incidents": "Incidencias",

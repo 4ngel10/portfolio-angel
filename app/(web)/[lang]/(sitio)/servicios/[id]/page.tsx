@@ -6,7 +6,8 @@ import { ServicePage } from "@/components/services-page";
 import { Footer } from "@/components/footer";
 import { Flotantes } from "@/components/flotantes";
 import { JsonLd } from "@/components/json-ld";
-import { PROJECTS, projectCard, type ProjectCard } from "@/lib/projects";
+import { getProyectoCardsServicio } from "@/lib/proyectos-db";
+import type { ProyectoCard } from "@/lib/proyectos-types";
 import { SERVICES, getService } from "@/lib/services";
 import { OG_LOCALE, SERVICE_DESCRIPTIONS, SERVICE_TITLES, alternatesFor, serviceJsonLd } from "@/lib/seo";
 import es from "@/messages/es.json";
@@ -16,6 +17,8 @@ type Params = Promise<{ lang: string; id: string }>;
 
 // Una página estática por servicio; cualquier otro id da 404.
 export const dynamicParams = false;
+// Las cards de proyectos salen de Supabase: se regenera cada hora y al cambiar desde el panel.
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return LOCALES.flatMap((lang) => SERVICES.map((s) => ({ lang, id: s.id })));
@@ -44,15 +47,13 @@ export default async function Page({ params }: { params: Params }) {
   const service = getService(id);
   if (!service) notFound();
   const otro = SERVICES[(SERVICES.indexOf(service) + 1) % SERVICES.length];
-  // Las cards de los proyectos de este servicio ("self" es la card de esta misma web).
-  const proyectos: (ProjectCard | "self")[] = [];
-  for (const slug of service.projects ?? []) {
-    if (slug === "self") proyectos.push("self");
-    else {
-      const p = PROJECTS.find((x) => x.slug === slug);
-      if (p) proyectos.push(projectCard(p));
-    }
-  }
+  // Las cards de los proyectos de este servicio (los elige el panel, y solo salen los publicados)
+  // y, al final, la de esta misma web ("self").
+  const proyectos: (ProyectoCard | "self")[] =
+    service.id === "web" || service.id === "sistemas"
+      ? await getProyectoCardsServicio(service.id, lang)
+      : [];
+  if (service.self) proyectos.push("self");
 
   return (
     <>

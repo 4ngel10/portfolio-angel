@@ -13,7 +13,7 @@
  * La entradilla (`intro`) no va aquí, tiene su propio campo.
  */
 
-import type { PostBlock, PostImage, PostSection } from "./projects";
+import type { PostBlock, PostImage, PostSection } from "./proyectos-types";
 
 export type TamanoImagen = { width: number; height: number };
 

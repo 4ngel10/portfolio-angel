@@ -17,35 +17,9 @@
 
 import type { Locale } from "./i18n";
 
-/** Imagen dentro del artículo. width y height son los del archivo, para reservar el hueco. */
-export type PostImage = {
-  img: string;
-  alt: string;
-  width: number;
-  height: number;
-  caption?: string;
-};
-export type PostBlock = string | { h3: string } | { list: string[] } | { ol: string[] } | PostImage;
-export type PostSection = { heading?: string; blocks: PostBlock[] };
-export type Post = { title?: string; seoTitle?: string; intro?: string; sections: PostSection[] };
+import type { CaseStudy, Post } from "./proyectos-types";
 
-/**
- * Resumen estructurado de un caso (plantilla de proyecto). Todo es opcional y solo se pinta lo que
- * tiene contenido. Nada inventado: las cifras de `results` y la `quote` tienen que ser reales
- * (la cita, con permiso del cliente); el `snippet` va sin datos del cliente.
- */
-export type CaseStudy = {
-  /** Situación del cliente antes del proyecto. */
-  context?: string;
-  /** Qué hice yo en concreto. */
-  role?: string;
-  /** Cifras reales antes y después. */
-  results?: { label: string; before: string; after: string }[];
-  /** Fragmento de código o configuración, saneado. */
-  snippet?: { title?: string; code: string };
-  /** Cita del cliente, con su permiso. */
-  quote?: { text: string; author: string };
-};
+export type { CaseStudy, Post, PostBlock, PostImage, PostSection } from "./proyectos-types";
 
 export type Project = {
   slug: string;

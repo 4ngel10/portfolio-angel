@@ -33,8 +33,11 @@ export type ServiceDetail = {
   closing: Record<Locale, string>;
   groups: Record<Locale, ServiceGroup[]>;
   /** Secciones opcionales, de momento solo en sistemas: modalidades y preguntas. */
-  /** Proyectos reales: slugs de PROJECTS, y "self" para la card de esta misma web. */
-  projects?: string[];
+  /**
+   * Si la sección de proyectos reales termina con la card de esta misma web. Los demás proyectos se
+   * eligen en el panel (`en_servicios` de portfolio_projects), no aquí.
+   */
+  self?: boolean;
   modes?: Record<Locale, { title: string; lead: string; note: string; items: ServiceMode[] }>;
   faq?: Record<Locale, { title: string; items: ServiceFaq[] }>;
 };
@@ -497,7 +500,7 @@ export const SERVICES: ServiceDetail[] = [
         },
       ],
     },
-    projects: ["flexgrip", "prompt-vault", "self"],
+    self: true,
     modes: {
       es: {
         title: "Cómo podemos trabajar.",

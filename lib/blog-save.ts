@@ -13,6 +13,23 @@ import type { TamanoImagen } from "./blog-markup";
  */
 
 export const BUCKET_BLOG = "blog";
+
+/**
+ * Dónde viven las imágenes de un contenido: el bucket de Supabase, la ruta pública por la que se
+ * sirven y la carpeta de public/ con las imágenes anteriores a Supabase. El blog y el portfolio
+ * comparten la conversión y la subida, solo cambia el destino.
+ */
+export type DestinoImagen = { bucket: string; urlBase: string; carpetaPublica: string };
+export const DESTINO_BLOG: DestinoImagen = {
+  bucket: BUCKET_BLOG,
+  urlBase: "/blog-img/",
+  carpetaPublica: "blog",
+};
+export const DESTINO_PORTFOLIO: DestinoImagen = {
+  bucket: "portfolio",
+  urlBase: "/portfolio-img/",
+  carpetaPublica: "projects",
+};
 export const VERSIONES_QUE_SE_CONSERVAN = 20;
 
 /** JSON con las claves ordenadas: jsonb no conserva el orden, así que no se puede comparar a pelo. */
@@ -36,8 +53,7 @@ export function ogValido(og: string): boolean {
 }
 
 /** Ruta del archivo dentro del bucket para una imagen /blog-img/..., o null si no es de fiar. */
-function claveEnBucket(ruta: string): string | null {
-  const prefijo = "/blog-img/";
+function claveEnBucket(ruta: string, prefijo: string): string | null {
   if (!ruta.startsWith(prefijo)) return null;
   const clave = ruta.slice(prefijo.length);
   if (clave === "" || clave.includes("..") || clave.includes("//") || clave.startsWith("/"))
@@ -46,15 +62,18 @@ function claveEnBucket(ruta: string): string | null {
 }
 
 /** Lee el archivo de una imagen y devuelve su tamaño, o null si no se puede. */
-async function leerTamano(ruta: string): Promise<TamanoImagen | null> {
+export async function leerTamano(
+  ruta: string,
+  destino: DestinoImagen = DESTINO_BLOG,
+): Promise<TamanoImagen | null> {
   try {
     let bytes: Buffer | null = null;
-    const clave = claveEnBucket(ruta);
+    const clave = claveEnBucket(ruta, destino.urlBase);
     if (clave) {
-      const { data } = await createAdminClient().storage.from(BUCKET_BLOG).download(clave);
+      const { data } = await createAdminClient().storage.from(destino.bucket).download(clave);
       if (data) bytes = Buffer.from(await data.arrayBuffer());
-    } else if (ruta.startsWith("/blog/") && !ruta.includes("..")) {
-      const base = path.join(process.cwd(), "public", "blog");
+    } else if (ruta.startsWith(`/${destino.carpetaPublica}/`) && !ruta.includes("..")) {
+      const base = path.join(process.cwd(), "public", destino.carpetaPublica);
       const archivo = path.join(process.cwd(), "public", ruta);
       if (archivo.startsWith(base + path.sep)) bytes = await readFile(archivo);
     }

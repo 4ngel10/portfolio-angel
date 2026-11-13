@@ -10,7 +10,7 @@ import { Process } from "./process";
 import { RealProjects } from "./real-projects";
 import { SERVICE_ICONS } from "./service-icons";
 import { useI18n } from "@/lib/i18n";
-import type { ProjectCard } from "@/lib/projects";
+import type { ProyectoCard } from "@/lib/proyectos-types";
 import type { ServiceDetail } from "@/lib/services";
 
 const Arrow = ({ back = false }: { back?: boolean }) => (
@@ -53,7 +53,7 @@ export function ServicePage({
 }: {
   service: ServiceDetail;
   other: { id: string; key: string };
-  projects: (ProjectCard | "self")[];
+  projects: (ProyectoCard | "self")[];
 }) {
   const { t, locale, l } = useI18n();
   // Apartado al que se llega desde un punto de la home (#redes...). No se usa :target porque

@@ -4,7 +4,7 @@
  */
 
 import type { Locale } from "./i18n";
-import type { PostSection } from "./projects";
+import type { PostSection } from "./proyectos-types";
 
 export type BlogCategory = "sistemas" | "desarrollo" | "automatizacion";
 

@@ -1,0 +1,2 @@
+ALTER TABLE "portfolio_projects" ADD COLUMN "en_servicios" text[] DEFAULT '{}'::text[] NOT NULL;--> statement-breakpoint
+ALTER TABLE "portfolio_projects" ADD CONSTRAINT "portfolio_projects_en_servicios_check" CHECK ("portfolio_projects"."en_servicios" <@ array['web', 'sistemas']::text[]);

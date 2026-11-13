@@ -2,7 +2,7 @@ import "server-only";
 import sharp from "sharp";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { slugify } from "@/lib/portal/validate";
-import { BUCKET_BLOG } from "./blog-save";
+import { DESTINO_BLOG, type DestinoImagen } from "./blog-save";
 import { densidadSvg, motivoSvgInseguro } from "./blog-svg";
 
 /**
@@ -79,7 +79,7 @@ export function nombreImagen(origen: string): string {
 }
 
 /**
- * Sube la imagen a <slug>/<nombre>.<ext> del bucket "blog". `admin` es el cliente con service role,
+ * Sube la imagen a <slug>/<nombre>.<ext> del bucket del destino ("blog" por defecto). `admin` es el cliente con service role,
  * que el llamador ya ha autorizado. Sin `sobrescribir`, un nombre que existe da 409.
  */
 export async function subirImagen(
@@ -88,12 +88,13 @@ export async function subirImagen(
   nombre: string,
   img: ImagenProcesada,
   sobrescribir = false,
+  destino: DestinoImagen = DESTINO_BLOG,
 ): Promise<{ ruta: string } | ErrorImagen> {
   if (img.data.length > MAX_BYTES_SALIDA) {
     return { error: "La imagen convertida pesa más de 5 MB.", status: 413 };
   }
   const archivo = `${nombre}.${img.extension}`;
-  const { error } = await admin.storage.from(BUCKET_BLOG).upload(`${slug}/${archivo}`, img.data, {
+  const { error } = await admin.storage.from(destino.bucket).upload(`${slug}/${archivo}`, img.data, {
     contentType: img.contentType,
     cacheControl: "31536000",
     upsert: sobrescribir,
@@ -104,5 +105,5 @@ export async function subirImagen(
       ? { error: "Ya hay una imagen con ese nombre. Usa otro.", status: 409 }
       : { error: "No se pudo guardar la imagen.", status: 500 };
   }
-  return { ruta: `/blog-img/${slug}/${archivo}` };
+  return { ruta: `${destino.urlBase}${slug}/${archivo}` };
 }

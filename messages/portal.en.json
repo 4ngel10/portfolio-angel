@@ -161,6 +161,20 @@
       "confirmSlug": "Type the slug to delete a published article."
     }
   },
+  "portfolio": {
+    "err": {
+      "invalid": "The project data is not valid or is too large.",
+      "imageInvalid": "Images must start with /portfolio-img/ or /projects/.",
+      "notFound": "Project not found.",
+      "slugLocked": "The slug of a published project cannot be changed. Unpublish it first.",
+      "slugTaken": "There is already a project with that slug.",
+      "saveFailed": "Could not save. Try again.",
+      "fixErrors": "Fix the checker errors.",
+      "badDate": "The publication date is not valid.",
+      "confirmSlug": "Type the slug to delete a published project.",
+      "moveFailed": "Could not change the order. Try again."
+    }
+  },
   "nav": {
     "projects": "Projects",
     "incidents": "Issues",

@@ -44,7 +44,7 @@ function cliente() {
 }
 
 /** Partes de una fecha en la zona horaria de Madrid, con el desfase como +01:00 o +02:00. */
-function partesMadrid(fecha: Date) {
+export function partesMadrid(fecha: Date) {
   const partes = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Madrid",
     year: "numeric",
