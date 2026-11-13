@@ -180,7 +180,7 @@ export const LEGAL_PAGES: LegalPage[] = [
               {
                 list: [
                   "**Supabase:** base de datos, autenticación y almacenamiento de archivos del área de clientes.",
-                  "**Vercel:** alojamiento de la web y medición anónima de su rendimiento (Speed Insights).",
+                  "**Vercel:** alojamiento de la web y medición anónima de su rendimiento (Speed Insights: tiempos de carga, dispositivo, navegador y país, sin cookies).",
                   "**Resend:** envío de los correos del servicio y entrega del mensaje del formulario de contacto a mi correo.",
                   "**IONOS:** alojamiento del correo en el que recibo esos mensajes.",
                 ],
@@ -247,7 +247,7 @@ export const LEGAL_PAGES: LegalPage[] = [
               {
                 list: [
                   "**Supabase:** database, authentication and file storage for the client area.",
-                  "**Vercel:** website hosting and anonymous measurement of its performance (Speed Insights).",
+                  "**Vercel:** website hosting and anonymous measurement of its performance (Speed Insights: load times, device, browser and country, no cookies).",
                   "**Resend:** sending of service emails and delivery of the contact form message to my email.",
                   "**IONOS:** hosting of the mailbox where I receive those messages.",
                 ],
@@ -293,9 +293,9 @@ export const LEGAL_PAGES: LegalPage[] = [
       es: {
         title: "Política de cookies",
         description:
-          "Qué cookies y almacenamiento local usa esta web: solo técnicos y de preferencias, sin analítica ni publicidad, por lo que no se pide consentimiento.",
+          "Qué cookies y almacenamiento local usa esta web: solo técnicos y de preferencias, sin analítica de marketing ni cookies de seguimiento, por lo que no se pide consentimiento.",
         intro:
-          "Esta web no usa cookies de analítica, publicidad ni seguimiento, y no carga recursos de terceros que las instalen (las fuentes se sirven desde el propio sitio). Solo se usan cookies y almacenamiento local técnicos o de preferencias, que según el art. 22.2 de la LSSI-CE no requieren consentimiento.",
+          "Esta web no usa analítica de marketing ni cookies de seguimiento ni de publicidad, y no carga recursos de terceros que las instalen (las fuentes se sirven desde el propio sitio). Solo se usan cookies y almacenamiento local técnicos o de preferencias, que según el art. 22.2 de la LSSI-CE no requieren consentimiento.",
         sections: [
           {
             heading: "Qué se guarda en tu navegador",
@@ -316,7 +316,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               "Al pulsar enviar, el formulario de contacto manda los datos a mi servidor y de ahí a Resend, que los entrega a mi correo. No instala cookies en tu navegador. Más información en la [política de privacidad](/privacidad).",
               "La web está alojada en Vercel. Como cualquier alojamiento, puede tratar datos técnicos de la conexión, como la dirección IP, en sus registros de servidor. Esto no instala cookies. Los detalles están en la [política de privacidad](/privacidad).",
-              "Vercel Speed Insights mide de forma anónima el rendimiento de las páginas públicas (tiempos de carga, tipo de dispositivo y navegador, país). No se usa para identificarte ni para hacer seguimiento entre sitios, no crea cookies en tu navegador y no se carga en el área privada.",
+              "Vercel Speed Insights es la única medición que hay en la web y sirve solo para medir el rendimiento de las páginas públicas (tiempos de carga, tipo de dispositivo, navegador y país). Funciona sin cookies. No se usa para identificarte ni para hacer seguimiento entre sitios, no crea cookies en tu navegador ni guarda un identificador tuyo, y no se carga en el área privada.",
               "La descarga del CV en PDF queda anotada en los registros del servidor solo como recuento, sin tu dirección IP ni ningún dato que te identifique. No crea cookies en tu navegador.",
             ],
           },
@@ -337,9 +337,9 @@ export const LEGAL_PAGES: LegalPage[] = [
       en: {
         title: "Cookie policy",
         description:
-          "Which cookies and local storage this website uses: only technical and preference ones, with no analytics or advertising, so no consent is required.",
+          "Which cookies and local storage this website uses: only technical and preference ones, with no marketing analytics or tracking cookies, so no consent is required.",
         intro:
-          "This website does not use analytics, advertising or tracking cookies, and it does not load third-party resources that set them (fonts are served from the site itself). It only uses technical or preference cookies and local storage, which under art. 22.2 of the Spanish LSSI-CE do not require consent.",
+          "This website uses no marketing analytics, tracking cookies or advertising cookies, and it does not load third-party resources that set them (fonts are served from the site itself). It only uses technical or preference cookies and local storage, which under art. 22.2 of the Spanish LSSI-CE do not require consent.",
         sections: [
           {
             heading: "What is stored in your browser",
@@ -360,7 +360,7 @@ export const LEGAL_PAGES: LegalPage[] = [
             blocks: [
               "When you press send, the contact form sends your data to my server and from there to Resend, which delivers it to my email. It sets no cookies in your browser. More information in the [privacy policy](/privacidad).",
               "The website is hosted on Vercel. Like any hosting provider, it may process technical connection data, such as the IP address, in its server logs. This does not set cookies. Details are in the [privacy policy](/privacidad).",
-              "Vercel Speed Insights anonymously measures the performance of the public pages (load times, device type and browser, country). It is not used to identify you or to track you across sites, it sets no cookies in your browser and it is not loaded in the private area.",
+              "Vercel Speed Insights is the only measurement on the site and it is used only to measure the performance of the public pages (load times, device type, browser and country). It works without cookies. It is not used to identify you or to track you across sites, it sets no cookies in your browser and stores no identifier about you, and it is not loaded in the private area.",
               "Downloads of the CV as a PDF are noted in the server logs only as a count, without your IP address or any data that identifies you. It sets no cookies in your browser.",
             ],
           },
