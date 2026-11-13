@@ -81,6 +81,9 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      // El CV en PDF no se indexa ni se guarda en caché de buscadores (lleva datos personales). Va
+      // como cabecera y no con Disallow en robots.ts: con Disallow Google no llegaría a ver el noindex.
+      { source: "/cv/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, noarchive" }] },
       // CSP de la web pública: frame-ancestors (enforced) y la política completa en modo prueba.
       // Las rutas privadas las recibe de proxy.ts con nonce, así que se excluyen aquí. La
       // frame-ancestors NO puede ir en las cabeceras globales: en Vercel llega también a la petición

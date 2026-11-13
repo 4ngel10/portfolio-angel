@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
-import { CV } from "@/lib/site";
+import { cvLink } from "@/lib/site";
 import { srcSetSobreMi } from "@/lib/sobre-mi-foto";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
@@ -46,6 +46,7 @@ function StackCategory({ cat }: { cat: (typeof STACK)[number] }) {
 
 export function About() {
   const { t, locale } = useI18n();
+  const cv = cvLink(locale);
 
   return (
     <section id="about" className="bg-paper-alt scroll-mt-[72px] py-24 md:py-28">
@@ -59,7 +60,7 @@ export function About() {
         {/* Desde lg, el recorte va a la derecha del texto, alineado abajo con el último párrafo. En
             móvil y tablet va justo debajo del título (order-first), como la foto del hero. */}
         <div className="mt-10 grid gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:gap-y-0">
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 lg:row-start-1">
             <RevealGroup className="max-w-3xl space-y-6" stagger={0.08}>
               <RevealItem as="div">
                 <p className="text-muted text-base leading-[1.75] md:text-[17px]">
@@ -71,20 +72,13 @@ export function About() {
                   {t("about.p2")}
                 </p>
               </RevealItem>
-              {CV[locale] && (
-                <RevealItem as="div">
-                  <a href={CV[locale]} download className="btn-secondary">
-                    {t("about.cvLink")}
-                  </a>
-                </RevealItem>
-              )}
             </RevealGroup>
           </div>
 
           {/* Recorte con fondo transparente. Carga diferida y sin priority: está lejos del primer
               pantallazo. Los anchos de srcset y sizes cubren 168 px (móvil) y 208 px (escritorio) a 1x, 2x
               y 3x, así que cada pantalla baja una sola variante (lib/sobre-mi-foto.ts). */}
-          <Reveal className="order-first lg:order-none lg:col-span-4 lg:justify-self-end">
+          <Reveal className="order-first lg:order-none lg:col-span-4 lg:row-start-1 lg:justify-self-end">
             <div className="group relative mx-auto w-[168px] lg:mx-0 lg:w-[208px]">
               {/* Halo muy sutil, para que el polo oscuro no se pierda sobre el fondo. */}
               <div
@@ -127,6 +121,33 @@ export function About() {
               ))}
             </div>
           </Reveal>
+
+          {/* Botón del CV. Va en su propia fila desde lg para que el recorte siga alineado abajo con el
+              último párrafo y no con el botón. Se abre en pestaña nueva (sin download: en móvil lo
+              abre el visor del sistema). */}
+          {cv && (
+            <Reveal className="max-lg:-mt-4 lg:col-span-8 lg:row-start-2 lg:mt-8">
+              <a href={cv.href} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                {t(cv.enEspanol ? "about.cvLinkEs" : "about.cvLink")}
+                <span className="sr-only">, {t("about.cvNewTab")}</span>
+              </a>
+            </Reveal>
+          )}
         </div>
 
         <div className="mt-6">

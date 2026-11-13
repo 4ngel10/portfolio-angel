@@ -40,7 +40,9 @@
     "catNetwork": "Network and security",
     "catBackup": "Backups and management",
     "catWeb": "Web",
-    "cvLink": "Download my CV (PDF)"
+    "cvLink": "Download my résumé (PDF)",
+    "cvLinkEs": "Résumé (PDF, in Spanish)",
+    "cvNewTab": "opens in a new tab"
   },
   "services": {
     "title": "Two services, one person on the phone.",
@@ -237,7 +239,8 @@
     "legal": "Legal notice",
     "privacy": "Privacy",
     "cookies": "Cookies",
-    "cv": "CV (PDF)"
+    "cv": "Résumé (PDF)",
+    "cvEs": "Résumé (PDF, in Spanish)"
   },
   "legal": {
     "updated": "Last reviewed:"
