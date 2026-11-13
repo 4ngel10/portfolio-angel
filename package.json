@@ -29,7 +29,7 @@
     "postgres": "^3.4.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "resend": "^6.34.1",
+    "resend": "^6.37.0",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
